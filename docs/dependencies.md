@@ -26,8 +26,9 @@
 | xunit | 2.9.2 | Apache-2.0 | none | |
 | xunit.runner.visualstudio | 2.8.2 | Apache-2.0 | none | |
 | NetArchTest.Rules | 1.3.2 | MIT | none | BenMorris/NetArchTest (repo LICENSE = MIT; nuspec omits license node). Loads net9 assemblies OK. |
-| Shouldly | 4.3.0 | **BSD-3-Clause** | none | ⚠ ADR/GOREV labelled this "MIT"; the actual SPDX is **BSD-3-Clause** (still permissive, no commercial restriction). Flagged for Cowork to ratify. |
+| Shouldly | 4.3.0 | **BSD-3-Clause** | none | ⚠ ADR/GOREV labelled this "MIT"; the actual SPDX is **BSD-3-Clause** (still permissive, no commercial restriction). Ratified by Cowork (slice-1). |
 | Microsoft.AspNetCore.Mvc.Testing | 9.0.18 | MIT | none | `WebApplicationFactory<Program>`; pinned to the 9.0.x shared framework. |
+| CsCheck | 4.7.0 | Apache-2.0 | none | slice-2a. Property-based testing (ADR 0002 K2-H2). Test-only; 0 transitive deps. License re-verified from the nuspec SPDX expression (`Apache-2.0`) — matches ADR risk #9 closure. |
 
 ## License-gate summary
 All packages are permissive OSI licenses (MIT / Apache-2.0 / BSD-3-Clause) — no copyleft, no

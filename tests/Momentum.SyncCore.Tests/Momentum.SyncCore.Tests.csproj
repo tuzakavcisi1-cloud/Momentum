@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+    <!-- Property-based testing (ADR 0002 K2-H2). Apache-2.0. Test-only. -->
+    <PackageReference Include="CsCheck" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\backend\Momentum.Domain\Momentum.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
