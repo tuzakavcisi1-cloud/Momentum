@@ -81,7 +81,7 @@ Oklar yalnız içe. Infrastructure, Application **arayüzlerini** uygular (DIP);
 - **BannedApiAnalyzers:** `P:System.DateTime.Now`,`P:System.DateTime.UtcNow` yasak (K-C5) — mutant (UtcNow çağıran dosya) build'i kırar.
 - **CVE kapısı (red line #3'ün diğer yarısı):** verify'de `dotnet list package --vulnerable --include-transitive` (gerekirse OWASP dependency-check). Eklenen **her** pakete tek-satır **lisans + CVE** beyanı (FluentValidation/Serilog/Mapster/Scalar/Asp.Versioning/NetArchTest dâhil).
 
-**K-H2 — Test yığını [KARARA BAĞLANDI].** xUnit + **Shouldly (MIT)**. *(FluentAssertions 8.x ticari; v7.x Apache. Shouldly teknik-doğru + sıfır-bedel → denetçi ratifiye etti; yedek FA 7.x. Onur eskalasyonu gerekmez.)*
+**K-H2 — Test yığını [KARARA BAĞLANDI].** xUnit + **Shouldly (BSD-3-Clause)**. *(FluentAssertions 8.x ticari; v7.x Apache. Shouldly teknik-doğru + sıfır-bedel → denetçi ratifiye etti; yedek FA 7.x.)* **Errata (18 Tem 2026, slice-1 doğrulaması sonrası):** Shouldly gerçek lisansı **BSD-3-Clause** (nuspec SPDX), MIT değil — permissive & red-line-safe olduğundan ratifiye edildi. İzinli lisans ailesi: **MIT/Apache/BSD-3-Clause**.
 
 ### I. Senkron & gerçek-zamanlı YÖNÜ (mekanik → 0002)
 **K-I1 — Senkron/çakışma:** delta/operasyon kuyruğu + **HLC** + **alan-düzeyi** çözüm (LWW+merge); sunucu HLC otoritesi (K-C5). Per-record monotonik HLC, "since X" delta çekişi + checkpoint'in (0002) ön koşulu.
@@ -112,7 +112,7 @@ Makineyle zorlanan Clean Architecture "mimari kalite" ekseninde en yüksek getir
 | Kimlik | UUIDv7 istemci-üretimli | Sequential (offline-first'i kırar) |
 | Olay | Outbox (atomik) | Doğrudan dual-write (tutarsızlık) |
 | Mediator | martinothamar (MIT) | MediatR 13+ (ticari/log) · MediatR 12 (donmuş) |
-| Assertion | Shouldly (MIT) | FluentAssertions 8 (ticari) |
+| Assertion | Shouldly (BSD-3-Clause) | FluentAssertions 8 (ticari) |
 
 ## 6. Riskler / açık noktalar
 1. **K-B1a — mediator kütüphanesi:** ✅ karara bağlandı → martinothamar/Mediator (MIT, stabil pin). Kalan risk: tek-bakımcı bus-factor (CQRS soyutlamasıyla sınırlı; yedek MediatR 12.x Apache).

@@ -5,7 +5,7 @@
 
 ## ⏭ DEVİR NOTU (18 Tem 2026 — oturum 3: slice-1 BUILD + BAĞIMSIZ DOĞRULANDI)
 - **Son yapılan:** Claude Code slice-1'i (backend omurga) build etti → **commit 6a614aa**. **Cowork bağımsız doğruladı** (Desktop Commander / gerçek FS, builder beyanına güvenmeden): temiz rebuild **0 uyarı / 0 hata** (-warnaserror); **13/13 test** (arch 4 + api 9); **CVE 0 zafiyet** (6 proje); commit **temiz** (PROJE_HAFIZA/docs/ADR'ye dokunulmamış, bin/obj/sır yok, tree clean, 8 KANIT commit'te). **Kör kapı yok — CANLI kanıt:** üretime `DateTime.UtcNow` enjekte → **RS0030 build FAILED**; `git checkout` → **0/0** geri döndü. (health-ready→503 kapısı geçen 13 test içinde.) **HÜKÜM: SÜRÜM UYGUN.**
-- **Errata/karar:** Shouldly lisansı **BSD-3-Clause** (ADR K-H2 "MIT" demişti) — permissive & red-line-safe → **RATİFİYE**; izinli lisanslar artık MIT/Apache/**BSD-3-Clause**. (dependencies.md zaten doğru yazmış.) Kalıntı: Claude Code test host'u (PID 13640) açık kalıp DLL kilitlemişti → Cowork kapattı (kural: host'u kapat).
+- **Errata/karar:** Shouldly lisansı **BSD-3-Clause** (ADR K-H2 etiketi errata ile düzeltildi) — permissive & red-line-safe → **RATİFİYE**; izinli lisanslar artık MIT/Apache/**BSD-3-Clause**. (dependencies.md zaten doğru yazmış.) Kalıntı: Claude Code test host'u (PID 13640) açık kalıp DLL kilitlemişti → Cowork kapattı (kural: host'u kapat).
 - **Sıradaki ilk iş:** **ADR 0002** — senkron protokol mekaniği (delta tel-format + HLC tick + alan-düzeyi çakışma + idempotency + Outbox tablo şeması + taç-mücevher doğrulama kapısı): şıklarla sun → engineering/red-team kapıları → kilit → spec. Alternatif (Onur seçerse): önce DB/Docker dilimi (reboot) ya da ilk entity dikey dilimi.
 - **Açık:** DB ertelendi (Docker/WSL2, reboot). GitHub ilk push'ta authorize.
 
