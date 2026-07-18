@@ -30,4 +30,33 @@ public readonly record struct HlcKey(Hlc Hlc, Guid OperationId) : IComparable<Hl
     public static bool operator <=(HlcKey left, HlcKey right) => left.CompareTo(right) <= 0;
 
     public static bool operator >=(HlcKey left, HlcKey right) => left.CompareTo(right) >= 0;
+
+    // --- slice-2b1 D0 (ADDITIVE): 4-part parse for persistence (Encode already exists) --------------
+
+    public static HlcKey Parse(string encoded) =>
+        TryParse(encoded, out var key) ? key : throw new FormatException($"Invalid HlcKey encoding: '{encoded}'.");
+
+    public static bool TryParse(string? encoded, out HlcKey key)
+    {
+        key = default;
+        if (encoded is null)
+        {
+            return false;
+        }
+
+        var lastDot = encoded.LastIndexOf('.');
+        if (lastDot < 0)
+        {
+            return false;
+        }
+
+        if (!Hlc.TryParse(encoded[..lastDot], out var hlc)
+            || !Guid.TryParseExact(encoded[(lastDot + 1)..], "N", out var operationId))
+        {
+            return false;
+        }
+
+        key = new HlcKey(hlc, operationId);
+        return true;
+    }
 }

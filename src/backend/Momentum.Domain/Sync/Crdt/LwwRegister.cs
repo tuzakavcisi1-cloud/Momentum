@@ -29,4 +29,12 @@ public sealed class LwwRegister
         Key = candidate;
         return true;
     }
+
+    /// <summary>slice-2b1 D0 (ADDITIVE): restore a persisted winning value+key (hydrate; no comparison).</summary>
+    public void Load(string? value, HlcKey key)
+    {
+        HasValue = true;
+        Value = value;
+        Key = key;
+    }
 }

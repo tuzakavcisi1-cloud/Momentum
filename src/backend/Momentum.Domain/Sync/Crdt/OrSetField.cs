@@ -217,4 +217,64 @@ public sealed class OrSetField
 
         return max;
     }
+
+    // --- slice-2b1 D0 (ADDITIVE): hydrate from / dump to persistence rows --------------------------
+
+    /// <summary>Restore a persisted tag row: <paramref name="hlc"/>=null means a tombstone-only marker.</summary>
+    public void LoadTag(string element, Guid tag, Hlc? hlc, bool cancelled)
+    {
+        var state = GetOrCreate(element);
+        if (hlc is { } stamp)
+        {
+            state.Adds[tag] = stamp;
+        }
+
+        if (cancelled)
+        {
+            state.Cancelled.Add(tag);
+        }
+    }
+
+    /// <summary>Restore a persisted remove stamp (C4 activity max).</summary>
+    public void LoadRemoveStamp(string element, Hlc hlc) => GetOrCreate(element).RemoveStamps.Add(hlc);
+
+    /// <summary>Reads the resulting state of a tag (for delta persistence). <c>hlc</c>=null for a tombstone-only tag.</summary>
+    public bool TryGetTag(string element, Guid tag, out Hlc? hlc, out bool cancelled)
+    {
+        hlc = null;
+        cancelled = false;
+        if (!_elements.TryGetValue(element, out var state) || (!state.Adds.ContainsKey(tag) && !state.Cancelled.Contains(tag)))
+        {
+            return false;
+        }
+
+        hlc = state.Adds.TryGetValue(tag, out var stamp) ? stamp : null;
+        cancelled = state.Cancelled.Contains(tag);
+        return true;
+    }
+
+    /// <summary>All tag rows (adds and tombstone-only) for dump; <c>Hlc</c>=null means tombstone-only.</summary>
+    public IEnumerable<(string Element, Guid Tag, Hlc? Hlc, bool Cancelled)> DumpTags()
+    {
+        foreach (var (element, state) in _elements)
+        {
+            var tags = new HashSet<Guid>(state.Adds.Keys);
+            tags.UnionWith(state.Cancelled);
+            foreach (var tag in tags)
+            {
+                yield return (element, tag, state.Adds.TryGetValue(tag, out var stamp) ? stamp : null, state.Cancelled.Contains(tag));
+            }
+        }
+    }
+
+    public IEnumerable<(string Element, Hlc Hlc)> DumpRemoveStamps()
+    {
+        foreach (var (element, state) in _elements)
+        {
+            foreach (var hlc in state.RemoveStamps)
+            {
+                yield return (element, hlc);
+            }
+        }
+    }
 }

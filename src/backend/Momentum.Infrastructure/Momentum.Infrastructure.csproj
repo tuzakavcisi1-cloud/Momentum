@@ -1,10 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!--
-    ADR 0001 K-A1: Infrastructure -> Application only.
-    GOREV slice-1: intentionally MINIMAL (layer + arch-rule target). Do not fill.
-    EF Core / Npgsql / external services arrive in later slices.
-  -->
+  <!-- ADR 0001 K-A1: Infrastructure -> Application only. slice-2b1: EF Core + Npgsql persistence. -->
+
+  <ItemGroup>
+    <!-- EF Core pinned to 9.0.1 to match Npgsql.EntityFrameworkCore.PostgreSQL 9.0.4's dependency
+         (avoids the Relational 9.0.1 vs 9.0.18 assembly conflict). -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Momentum.Application\Momentum.Application.csproj" />

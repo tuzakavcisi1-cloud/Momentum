@@ -45,6 +45,15 @@ public sealed class EntityState
 
     public bool TryGetSet(string name, out OrSetField set) => _sets.TryGetValue(name, out set!);
 
+    // --- slice-2b1 D0 (ADDITIVE): hydrate registers/groups from persistence -------------------------
+
+    public void LoadField(string name, string? value, HlcKey key) => GetOrCreate(_fields, name).Load(value, key);
+
+    public void LoadOrder(string name, string? value, HlcKey key) => GetOrCreate(_orders, name).Load(value, key);
+
+    public void LoadGroup(string name, IReadOnlyDictionary<string, string?> fields, HlcKey key) =>
+        GetOrCreate(_groups, name).Load(fields, key);
+
     /// <summary>
     /// C4 delete/edit conflict surfacing (DERIVED): <c>isDeleted == "true"</c> AND some other write's
     /// stamp is strictly greater than the winning <c>isDeleted</c> key. Scalar/order/group compare via

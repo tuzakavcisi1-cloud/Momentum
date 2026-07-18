@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Momentum.SyncCore.Tests", "tests\Momentum.SyncCore.Tests\Momentum.SyncCore.Tests.csproj", "{E0E5EC28-713F-4033-AB38-D618997958C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Momentum.Persistence.Tests", "tests\Momentum.Persistence.Tests\Momentum.Persistence.Tests.csproj", "{8DD05DBC-BB77-4278-996D-17E15DFE5387}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,18 @@ Global
 		{E0E5EC28-713F-4033-AB38-D618997958C0}.Release|x64.Build.0 = Release|Any CPU
 		{E0E5EC28-713F-4033-AB38-D618997958C0}.Release|x86.ActiveCfg = Release|Any CPU
 		{E0E5EC28-713F-4033-AB38-D618997958C0}.Release|x86.Build.0 = Release|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Debug|x64.Build.0 = Debug|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Debug|x86.Build.0 = Debug|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Release|x64.ActiveCfg = Release|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Release|x64.Build.0 = Release|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Release|x86.ActiveCfg = Release|Any CPU
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,5 +144,6 @@ Global
 		{964C31A1-0C3A-4926-A133-9979B31C1E97} = {FE360695-3F2B-1049-3887-35FBB5135923}
 		{8AD2A108-D63B-4DFE-A3F6-EE03163F998E} = {FE360695-3F2B-1049-3887-35FBB5135923}
 		{E0E5EC28-713F-4033-AB38-D618997958C0} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{8DD05DBC-BB77-4278-996D-17E15DFE5387} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

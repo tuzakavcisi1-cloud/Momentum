@@ -1,12 +1,25 @@
 using Asp.Versioning;
 using Asp.Versioning.Builder;
+using FluentValidation;
+using Mediator;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Momentum.Api.Auth;
 using Momentum.Api.Endpoints;
+using Momentum.Api.Health;
+using Momentum.Application.Abstractions;
+using Momentum.Application.Behaviors;
+using Momentum.Application.Features.Sync;
+using Momentum.Infrastructure;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Context;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// slice-2b1 D1: the connection string comes from user-secrets/env (red line #1); no DB configured ->
+// the host still boots DB-less (slice-1 contract) and the Npgsql readiness probe is not registered.
+var connectionString = builder.Configuration.GetConnectionString("Momentum");
+var hasDatabase = !string.IsNullOrWhiteSpace(connectionString);
 
 // --- ADR 0001 K-G3: structured logging (Serilog) --------------------------------------------
 builder.Host.UseSerilog((_, configuration) => configuration
@@ -17,9 +30,18 @@ builder.Host.UseSerilog((_, configuration) => configuration
 // --- ADR 0001 K-C5: the clock is TimeProvider ONLY (DateTime.* is banned in production) -------
 builder.Services.AddSingleton(TimeProvider.System);
 
-// --- ADR 0001 K-B1/K-B1a: CQRS mediator. AddMediator is source-generated INTO the Application
-//     assembly, so it discovers the handlers there (cross-assembly wiring). -------------------
+// --- ADR 0001 K-B1/K-B1a: CQRS mediator. Lifetime = Scoped is set in Application via
+//     [assembly: MediatorOptions] (compile-time; handlers may depend on scoped persistence ports). ----
 builder.Services.AddMediator();
+
+// --- slice-2b1: persistence (SyncDbContext + raw-SQL ports) + sync request pipeline ---------------
+// DB-less boot uses a placeholder connection string that is never connected to (no readiness probe).
+builder.Services.AddSyncInfrastructure(hasDatabase
+    ? connectionString!
+    : "Host=localhost;Port=5432;Database=momentum;Username=momentum;Password=not_configured");
+builder.Services.AddScoped<ICurrentUser, NullCurrentUser>();          // deny-by-default (K-D5)
+builder.Services.AddScoped<IValidator<SyncRequest>, SyncRequestValidator>();
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>)); // K-G1
 
 // --- ADR 0001 K-D3: uniform error model (ProblemDetails / RFC 9457) in ALL environments -------
 builder.Services.AddProblemDetails();
@@ -35,9 +57,14 @@ builder.Services.AddApiVersioning(options =>
     options.ReportApiVersions = true;
 });
 
-// --- ADR 0001 K-D2: health checks, tagged for the live/ready split ---------------------------
-builder.Services.AddHealthChecks()
+// --- ADR 0001 K-D2 + slice-2b1 D8: health checks. "self" is live+ready; the Npgsql probe is added to
+//     "ready" ONLY when a DB is configured (so the DB-less slice-1 host stays ready). ----------------
+var healthChecks = builder.Services.AddHealthChecks()
     .AddCheck("self", () => HealthCheckResult.Healthy("Process is up."), tags: ["live", "ready"]);
+if (hasDatabase)
+{
+    healthChecks.AddCheck<NpgsqlReadyHealthCheck>("postgres", tags: ["ready"]);
+}
 
 var app = builder.Build();
 
@@ -79,6 +106,7 @@ ApiVersionSet versionSet = app.NewApiVersionSet()
 // Endpoints live in named static classes (arch rule 2; GOREV slice-1 D3).
 HealthEndpoints.Map(app);
 DiagnosticsEndpoints.Map(app, versionSet);
+SyncEndpoints.Map(app, versionSet); // slice-2b1: POST /v1/sync
 
 app.Run();
 

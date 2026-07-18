@@ -30,4 +30,13 @@ public sealed class ResolvedGroupField
         Key = candidate;
         return true;
     }
+
+    /// <summary>slice-2b1 D0 (ADDITIVE): restore a persisted group (hydrate; no comparison).</summary>
+    public void Load(IReadOnlyDictionary<string, string?> fields, HlcKey key)
+    {
+        ArgumentNullException.ThrowIfNull(fields);
+        HasValue = true;
+        _fields = new Dictionary<string, string?>(fields, StringComparer.Ordinal);
+        Key = key;
+    }
 }

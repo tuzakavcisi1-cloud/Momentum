@@ -78,6 +78,56 @@ public sealed class FieldStrategyRegistry
         return true;
     }
 
+    /// <summary>
+    /// slice-2b1 D0 (ADDITIVE): resolve the strategy for a persisted <c>sync_scalar_meta</c> field key
+    /// (scalar, fractional, group marker <c>"group"</c>, or group member <c>"group.member"</c>) so hydrate
+    /// routes channels via the ONE registry (no second copy in Infrastructure). Set names use OR-Set.
+    /// </summary>
+    public bool TryGetStrategy(string entityType, string field, out FieldStrategy strategy)
+    {
+        ArgumentNullException.ThrowIfNull(field);
+        strategy = default;
+        if (!_entities.TryGetValue(entityType, out var def))
+        {
+            return false;
+        }
+
+        if (def.Scalars.Contains(field))
+        {
+            strategy = FieldStrategy.ScalarLww;
+            return true;
+        }
+
+        if (def.Fractionals.Contains(field))
+        {
+            strategy = FieldStrategy.FractionalIndex;
+            return true;
+        }
+
+        if (def.OrSets.Contains(field))
+        {
+            strategy = FieldStrategy.OrSet;
+            return true;
+        }
+
+        if (def.Groups.ContainsKey(field))
+        {
+            strategy = FieldStrategy.ResolvedGroup; // marker row (field == group name)
+            return true;
+        }
+
+        var dot = field.IndexOf('.', StringComparison.Ordinal);
+        if (dot > 0
+            && def.Groups.TryGetValue(field[..dot], out var members)
+            && members.Contains(field[(dot + 1)..]))
+        {
+            strategy = FieldStrategy.ResolvedGroup; // "group.member" row
+            return true;
+        }
+
+        return false;
+    }
+
     private static FieldStrategyRegistry BuildDefault()
     {
         static IReadOnlySet<string> Set(params string[] names) => new HashSet<string>(names, StringComparer.Ordinal);
