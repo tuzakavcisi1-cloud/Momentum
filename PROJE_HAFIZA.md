@@ -3,6 +3,12 @@
 > Bu dosya projenin TEK canlı hafızasıdır. Her oturumda ÖNCE bu dosyayı + `CLAUDE.md`'yi TAM oku.
 > Kanonik konum: `C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum`
 
+## ⏭ DEVİR NOTU (18 Tem 2026 — oturum 3: slice-1 BUILD + BAĞIMSIZ DOĞRULANDI)
+- **Son yapılan:** Claude Code slice-1'i (backend omurga) build etti → **commit 6a614aa**. **Cowork bağımsız doğruladı** (Desktop Commander / gerçek FS, builder beyanına güvenmeden): temiz rebuild **0 uyarı / 0 hata** (-warnaserror); **13/13 test** (arch 4 + api 9); **CVE 0 zafiyet** (6 proje); commit **temiz** (PROJE_HAFIZA/docs/ADR'ye dokunulmamış, bin/obj/sır yok, tree clean, 8 KANIT commit'te). **Kör kapı yok — CANLI kanıt:** üretime `DateTime.UtcNow` enjekte → **RS0030 build FAILED**; `git checkout` → **0/0** geri döndü. (health-ready→503 kapısı geçen 13 test içinde.) **HÜKÜM: SÜRÜM UYGUN.**
+- **Errata/karar:** Shouldly lisansı **BSD-3-Clause** (ADR K-H2 "MIT" demişti) — permissive & red-line-safe → **RATİFİYE**; izinli lisanslar artık MIT/Apache/**BSD-3-Clause**. (dependencies.md zaten doğru yazmış.) Kalıntı: Claude Code test host'u (PID 13640) açık kalıp DLL kilitlemişti → Cowork kapattı (kural: host'u kapat).
+- **Sıradaki ilk iş:** **ADR 0002** — senkron protokol mekaniği (delta tel-format + HLC tick + alan-düzeyi çakışma + idempotency + Outbox tablo şeması + taç-mücevher doğrulama kapısı): şıklarla sun → engineering/red-team kapıları → kilit → spec. Alternatif (Onur seçerse): önce DB/Docker dilimi (reboot) ya da ilk entity dikey dilimi.
+- **Açık:** DB ertelendi (Docker/WSL2, reboot). GitHub ilk push'ta authorize.
+
 ## ⏭ DEVİR NOTU (18 Tem 2026 — oturum 3: ADR 0001 KİLİTLENDİ)
 - **Son yapılan:** **ADR 0001 (Genel Mimari / Backend Omurga)** yazıldı ve **3 bağımsız kapıdan** geçti: engineering:architecture + engineering:system-design + red-team. v1→v3 acımasız denetimle olgunlaştı — taşıyıcı senkron/işbirliği kontratları (entity-base, `operationId` zarfı, integration-event zarfı, **Outbox** atomikliği, sunucu **HLC** otoritesi, **soft-delete/tombstone**) 0001'e *yön* olarak alındı; **"şimdi-kodla vs yön-notu"** çizgisi açıkça çizildi (over-engineering'e karşı). İki lisans tuzağı yakalandı: **FluentAssertions 8 + AutoMapper ticari** → **Shouldly + Mapster (MIT)**. `DateTime.UtcNow` yasağı NetArchTest→**BannedApiAnalyzers**'a taşındı; **CVE kapısı** eklendi (red-line #3 tamamlandı). **K-B1a mediator** Onur tarafından Cowork'e devredildi → araştırmayla **`martinothamar/Mediator` (MIT, stabil pin)** seçildi. ADR **KİLİTLİ**. Dosya: `docs/ADR/0001-genel-mimari.md`.
 - **Sıradaki ilk iş:** **Claude Code slice-1 build** — spec HAZIR + denetlendi: `GOREV_CLAUDE_CODE/GOREV-slice-1-backend-omurga.md` (v2; bağımsız spec-QA'dan geçti — 11 muğlaklık + 2 kör kapı [CVE exit-0, arch Kural-2 minimal-API] + 2 kırılgan test [health-503, ProblemDetails ortam tuzağı] kapatıldı). Onur Claude Code'a verecek → build → **Cowork Desktop Commander ile BAĞIMSIZ doğrula** (build/test/arch/banned/CVE'yi kendi koş) + KANIT + hafıza checkpoint. Sonra **ADR 0002** (senkron mekaniği).
@@ -60,6 +66,6 @@
 2. ✓ `git init` (main) + `.gitignore`/`.gitattributes` + ilk commit `a12b3a2`.
 3. ✓ **ADR 0001 KİLİTLİ (v3)** (`docs/ADR/0001-genel-mimari.md`) — Clean Arch + CQRS/martinothamar-Mediator; 3 bağımsız kapı (architecture + system-design + red-team) geçti.
 4. `verify` iskeleti (`tests/`) + ilk mutant/ısırma testi kurgusu.
-5. ✓ **slice-1 spec HAZIR** (`GOREV_CLAUDE_CODE/GOREV-slice-1-backend-omurga.md` v2, spec-QA geçti). **SIRADA:** Claude Code build → Cowork bağımsız doğrulama + KANIT + hafıza. Sonra ADR 0002 (senkron mekaniği).
+5. ✓ **slice-1 spec** (v2, spec-QA geçti) → ✓ **Claude Code build (6a614aa)** → ✓ **Cowork BAĞIMSIZ DOĞRULADI** (rebuild 0/0, 13/13 test, CVE temiz, banned-gate canlı ısırdı, commit temiz; **SÜRÜM UYGUN**; Shouldly=BSD-3 ratifiye). **SIRADA:** ADR 0002 (senkron mekaniği) — ya da Onur: DB/Docker dilimi / ilk entity dilimi.
 6. DB: kalıcılık diliminde Docker Desktop (WSL2+reboot) → PostgreSQL (compose). (Atıl native kurulum silindi ✓)
 7. İlk push'ta GitHub authorize (Claude in Chrome ile).
