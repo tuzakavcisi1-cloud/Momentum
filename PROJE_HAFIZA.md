@@ -5,7 +5,7 @@
 
 ## ⏭ DEVİR NOTU (18 Tem 2026 — oturum 3: ADR 0001 KİLİTLENDİ)
 - **Son yapılan:** **ADR 0001 (Genel Mimari / Backend Omurga)** yazıldı ve **3 bağımsız kapıdan** geçti: engineering:architecture + engineering:system-design + red-team. v1→v3 acımasız denetimle olgunlaştı — taşıyıcı senkron/işbirliği kontratları (entity-base, `operationId` zarfı, integration-event zarfı, **Outbox** atomikliği, sunucu **HLC** otoritesi, **soft-delete/tombstone**) 0001'e *yön* olarak alındı; **"şimdi-kodla vs yön-notu"** çizgisi açıkça çizildi (over-engineering'e karşı). İki lisans tuzağı yakalandı: **FluentAssertions 8 + AutoMapper ticari** → **Shouldly + Mapster (MIT)**. `DateTime.UtcNow` yasağı NetArchTest→**BannedApiAnalyzers**'a taşındı; **CVE kapısı** eklendi (red-line #3 tamamlandı). **K-B1a mediator** Onur tarafından Cowork'e devredildi → araştırmayla **`martinothamar/Mediator` (MIT, stabil pin)** seçildi. ADR **KİLİTLİ**. Dosya: `docs/ADR/0001-genel-mimari.md`.
-- **Sıradaki ilk iş:** slice-1 **GOREV_CLAUDE_CODE spec**'i yaz. Kabul kriterleri = ADR §3 "slice-1'de KODLA" listesi: 4 katman solution + NetArchTest DIP kuralları + BannedApiAnalyzers + CVE kapısı + OpenAPI(JSON)+UI + health live/ready + **ready→503 ısıran testi** + ProblemDetails + `TimeProvider` DI + `ICurrentUser` arayüzü + `/v1` + Serilog/correlation-id. Sonra **ADR 0002** (senkron mekaniği).
+- **Sıradaki ilk iş:** **Claude Code slice-1 build** — spec HAZIR + denetlendi: `GOREV_CLAUDE_CODE/GOREV-slice-1-backend-omurga.md` (v2; bağımsız spec-QA'dan geçti — 11 muğlaklık + 2 kör kapı [CVE exit-0, arch Kural-2 minimal-API] + 2 kırılgan test [health-503, ProblemDetails ortam tuzağı] kapatıldı). Onur Claude Code'a verecek → build → **Cowork Desktop Commander ile BAĞIMSIZ doğrula** (build/test/arch/banned/CVE'yi kendi koş) + KANIT + hafıza checkpoint. Sonra **ADR 0002** (senkron mekaniği).
 - **Açık:** DB ertelendi (Docker/WSL2). GitHub ilk push'ta authorize. **Bakım notu:** global `CLAUDE.md` `engineering`/`design`/`operations`'ı "kaldırıldı" gösteriyor ama bu oturumda kuruluydu ve kapılar fiilen çalıştı → bakım kuralına göre listeden silinmeli (3 denetçi de işaretledi).
 
 ## ⏭ DEVİR NOTU (18 Tem 2026 — oturum 2 kapanış)
@@ -60,6 +60,6 @@
 2. ✓ `git init` (main) + `.gitignore`/`.gitattributes` + ilk commit `a12b3a2`.
 3. ✓ **ADR 0001 KİLİTLİ (v3)** (`docs/ADR/0001-genel-mimari.md`) — Clean Arch + CQRS/martinothamar-Mediator; 3 bağımsız kapı (architecture + system-design + red-team) geçti.
 4. `verify` iskeleti (`tests/`) + ilk mutant/ısırma testi kurgusu.
-5. **SIRADA:** İlk GOREV_CLAUDE_CODE spec (slice-1: solution + katmanlar + sağlık ucu; kabul kriterleri = ADR 0001 §3 "KODLA" listesi). Sonra ADR 0002 (senkron mekaniği).
+5. ✓ **slice-1 spec HAZIR** (`GOREV_CLAUDE_CODE/GOREV-slice-1-backend-omurga.md` v2, spec-QA geçti). **SIRADA:** Claude Code build → Cowork bağımsız doğrulama + KANIT + hafıza. Sonra ADR 0002 (senkron mekaniği).
 6. DB: kalıcılık diliminde Docker Desktop (WSL2+reboot) → PostgreSQL (compose). (Atıl native kurulum silindi ✓)
 7. İlk push'ta GitHub authorize (Claude in Chrome ile).
