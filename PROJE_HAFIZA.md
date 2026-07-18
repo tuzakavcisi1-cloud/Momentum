@@ -3,6 +3,11 @@
 > Bu dosya projenin TEK canlı hafızasıdır. Her oturumda ÖNCE bu dosyayı + `CLAUDE.md`'yi TAM oku.
 > Kanonik konum: `C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum`
 
+## ⏭ DEVİR NOTU (18 Tem 2026 — oturum 3: ADR 0001 KİLİTLENDİ)
+- **Son yapılan:** **ADR 0001 (Genel Mimari / Backend Omurga)** yazıldı ve **3 bağımsız kapıdan** geçti: engineering:architecture + engineering:system-design + red-team. v1→v3 acımasız denetimle olgunlaştı — taşıyıcı senkron/işbirliği kontratları (entity-base, `operationId` zarfı, integration-event zarfı, **Outbox** atomikliği, sunucu **HLC** otoritesi, **soft-delete/tombstone**) 0001'e *yön* olarak alındı; **"şimdi-kodla vs yön-notu"** çizgisi açıkça çizildi (over-engineering'e karşı). İki lisans tuzağı yakalandı: **FluentAssertions 8 + AutoMapper ticari** → **Shouldly + Mapster (MIT)**. `DateTime.UtcNow` yasağı NetArchTest→**BannedApiAnalyzers**'a taşındı; **CVE kapısı** eklendi (red-line #3 tamamlandı). **K-B1a mediator** Onur tarafından Cowork'e devredildi → araştırmayla **`martinothamar/Mediator` (MIT, stabil pin)** seçildi. ADR **KİLİTLİ**. Dosya: `docs/ADR/0001-genel-mimari.md`.
+- **Sıradaki ilk iş:** slice-1 **GOREV_CLAUDE_CODE spec**'i yaz. Kabul kriterleri = ADR §3 "slice-1'de KODLA" listesi: 4 katman solution + NetArchTest DIP kuralları + BannedApiAnalyzers + CVE kapısı + OpenAPI(JSON)+UI + health live/ready + **ready→503 ısıran testi** + ProblemDetails + `TimeProvider` DI + `ICurrentUser` arayüzü + `/v1` + Serilog/correlation-id. Sonra **ADR 0002** (senkron mekaniği).
+- **Açık:** DB ertelendi (Docker/WSL2). GitHub ilk push'ta authorize. **Bakım notu:** global `CLAUDE.md` `engineering`/`design`/`operations`'ı "kaldırıldı" gösteriyor ama bu oturumda kuruluydu ve kapılar fiilen çalıştı → bakım kuralına göre listeden silinmeli (3 denetçi de işaretledi).
+
 ## ⏭ DEVİR NOTU (18 Tem 2026 — oturum 2 kapanış)
 - **Son yapılan:** Ortam kuruldu+doğrulandı: **.NET 9 SDK 9.0.316 (64-bit, makine PATH'inde öne alındı)**, **Flutter 3.44.6 + Dart 3.12.2** (`C:\src\flutter`, kullanıcı PATH). **`git init` (branch `main`) + kapsamlı `.gitignore`/`.gitattributes` + ilk commit `a12b3a2`** (14 dosya, iskelet .gitkeep'lerle korundu). Repo kimliği (repo-yerel): Onur Kesim / onurkesimbjk@gmail.com.
 - **PostgreSQL — ERTELENDİ (Onur kararı):** Native `initdb` bu makinede çalışmıyor: **sistem locale tr-TR / ANSI cp1254**; initdb "Türkiye"deki non-ASCII `ü`'yü reddediyor. Üç varyasyon (`--no-locale`, açık `--lc-*=C`, ICU) + `LC_ALL=C` env + `Set-Culture` — hiçbiri çözmüyor (sistem locale'i değiştirip reboot gerek). Docker da WSL2 istiyor (kurulu değil → reboot). Karar: **DB ertelendi**, kalıcılık diliminde **Docker** ile kurulacak. Atıl yarım kurulum `C:\Program Files\PostgreSQL\16` Onur onayıyla **tamamen silindi** (klasör + ARP + Başlat menüsü; doğrulandı).
@@ -48,11 +53,13 @@
 - **18 Tem 2026 (oturum 2 — planlama):** Ortam tanısı: .NET 9 SDK'nın kurulmadığı tespit edildi (devir notu düzeltildi). Onur onayıyla kilitlenen kurulum kararları: bu oturumda tam kurulum, Native PostgreSQL 16 (Docker ertelendi), Flutter git clone stable → `C:\src\flutter`. 64-bit .NET 9 SDK PATH'te öne alınacak; eski x86'ya dokunulmayacak.
 - **18 Tem 2026 (oturum 2 — yürütme):** .NET 9 SDK 9.0.316 (64-bit) kuruldu, makine PATH'inde x86'nın önüne alındı (doğrulandı). Flutter 3.44.6 stable kuruldu (`flutter doctor` çalıştı; Android cmdline-tools/lisans + VS C++ eksikleri sonraki dilimlere). `git init` (main) + `.gitignore`/`.gitattributes` + ilk commit `a12b3a2`. **PostgreSQL kararı değişti → ERTELENDİ:** tr-TR/cp1254 sistem locale'i initdb'yi kırıyor (bayrak/env/culture çözmedi); WSL2 yok → native ve Docker ikisi de reboot ister. Onur: DB'yi ertele, kalıcılık diliminde Docker. Atıl `C:\Program Files\PostgreSQL\16` Onur onayıyla silindi (klasör+ARP+Başlat menüsü).
 
+- **18 Tem 2026 (oturum 3 — ADR 0001 KİLİT):** ADR 0001 (Clean Arch 4 katman + CQRS/feature-folder; senkron YÖNÜ delta+HLC+alan-düzeyi [mekanik 0002]; UUIDv7; Outbox; soft-delete/tombstone; ProblemDetails RFC 9457; ısıran kapılar NetArchTest+BannedApiAnalyzers+CVE+ready-503) **3 bağımsız kapıdan** (architecture / system-design / red-team) geçirilip kilitlendi. Lisans-temiz yığın: martinothamar/Mediator + Shouldly + Mapster + Serilog + Asp.Versioning + Scalar (MIT/Apache). K-B1a Onur devri → martinothamar/Mediator (MIT) araştırmayla seçildi. FluentAssertions 8 / AutoMapper (ticari) ELENDİ.
+
 ## AÇIK İŞLER / SONRAKİ ADIMLAR
 1. ✓ .NET 9 + Flutter kuruldu; `flutter doctor` çalıştı (Android cmdline-tools/lisans + VS C++ sonraki dilimlerde).
 2. ✓ `git init` (main) + `.gitignore`/`.gitattributes` + ilk commit `a12b3a2`.
-3. **SIRADA:** İlk ADR (`docs/ADR/0001-genel-mimari.md`) — Clean Architecture + senkron stratejisi (tasarımı şıklarla sun → onay → kapılar → kilit).
+3. ✓ **ADR 0001 KİLİTLİ (v3)** (`docs/ADR/0001-genel-mimari.md`) — Clean Arch + CQRS/martinothamar-Mediator; 3 bağımsız kapı (architecture + system-design + red-team) geçti.
 4. `verify` iskeleti (`tests/`) + ilk mutant/ısırma testi kurgusu.
-5. İlk GOREV_CLAUDE_CODE spec (backend omurga: solution + katmanlar + sağlık ucu).
+5. **SIRADA:** İlk GOREV_CLAUDE_CODE spec (slice-1: solution + katmanlar + sağlık ucu; kabul kriterleri = ADR 0001 §3 "KODLA" listesi). Sonra ADR 0002 (senkron mekaniği).
 6. DB: kalıcılık diliminde Docker Desktop (WSL2+reboot) → PostgreSQL (compose). (Atıl native kurulum silindi ✓)
 7. İlk push'ta GitHub authorize (Claude in Chrome ile).
