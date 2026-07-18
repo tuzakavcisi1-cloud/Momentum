@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- ADR 0001 K-A1: Api -> Application + Infrastructure (composition root / wiring only). -->
+
+  <ItemGroup>
+    <!-- K-D1: built-in OpenAPI JSON generator (pinned to the 9.0.x shared framework). -->
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.18" />
+    <!-- K-D1: Scalar API reference UI (no built-in Swagger UI in .NET 9). -->
+    <PackageReference Include="Scalar.AspNetCore" Version="2.16.15" />
+    <!-- K-D4: URL-segment API versioning (/v1). -->
+    <PackageReference Include="Asp.Versioning.Http" Version="8.1.1" />
+    <!-- K-G3: structured logging + request logging + correlation-id. -->
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Momentum.Application\Momentum.Application.csproj" />
+    <ProjectReference Include="..\Momentum.Infrastructure\Momentum.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

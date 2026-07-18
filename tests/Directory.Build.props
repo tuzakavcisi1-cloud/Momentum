@@ -1,0 +1,21 @@
+<Project>
+
+  <!--
+    Central build settings for ALL test projects.
+    net9 / nullable / warnings-as-errors (same rigor as production) BUT NO BannedApiAnalyzers:
+    tests are allowed to use DateTime directly (they assert on the clock).
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,31 @@
+<Project>
+
+  <!--
+    Central build settings for ALL backend production projects (Momentum.Domain,
+    Momentum.Application, Momentum.Infrastructure, Momentum.Api).
+    ADR 0001 K-H1: net9, nullable, warnings-as-errors, Roslyn analyzers, NuGet audit,
+    and the BannedApiAnalyzers gate (DateTime.* is banned in production code).
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <!-- CVE gate (ADR 0001 K-H1 / red line #3): audit direct + transitive; warnings-as-errors makes advisories fail the build. -->
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+  </PropertyGroup>
+
+  <!-- DateTime ban (ADR 0001 K-C5): only TimeProvider is the clock. src/backend ONLY. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.6.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
+  </ItemGroup>
+
+</Project>

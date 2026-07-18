@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    ADR 0001 K-A1: Infrastructure -> Application only.
+    GOREV slice-1: intentionally MINIMAL (layer + arch-rule target). Do not fill.
+    EF Core / Npgsql / external services arrive in later slices.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Momentum.Application\Momentum.Application.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- ADR 0001 K-A1: Domain is pure. It references NOTHING. -->
+
+</Project>
