@@ -1,0 +1,87 @@
+# ============================================================
+# Momentum — .gitignore
+# ============================================================
+
+# ---- Sırlar / ortam (ASLA commit edilmez) ----
+.env
+*.env
+.env.*
+!.env.example
+appsettings.*.Local.json
+appsettings.Local.json
+secrets.json
+*.pfx
+*.p12
+*.key
+*.pem
+key.properties
+
+# ---- .NET / ASP.NET Core ----
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.user
+*.suo
+*.userosscache
+*.dbmdl
+project.lock.json
+artifacts/
+.vs/
+TestResults/
+*.received.*
+coverage*.json
+*.trx
+
+# ---- Flutter / Dart ----
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+.fvm/
+*.iml
+doctor.log
+
+# Flutter/Android
+**/android/.gradle/
+**/android/local.properties
+**/android/key.properties
+**/android/**/GeneratedPluginRegistrant.*
+**/android/captures/
+
+# Flutter/iOS (Mac yok — yalnızca CI)
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/**/*.mode1v3
+
+# Flutter/genel üretilen
+**/generated_plugin_registrant.dart
+
+# ---- Node (tooling varsa) ----
+node_modules/
+npm-debug.log*
+yarn-error.log
+
+# ---- IDE / editör ----
+.idea/
+.vscode/
+*.swp
+*~
+
+# ---- İşletim sistemi ----
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# ---- Log / geçici ----
+*.log
+*.tmp
