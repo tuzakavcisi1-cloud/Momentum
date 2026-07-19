@@ -6,10 +6,13 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Momentum.Api.Auth;
 using Momentum.Api.Endpoints;
 using Momentum.Api.Health;
+using Momentum.Api.Realtime;
 using Momentum.Application.Abstractions;
+using Momentum.Application.Abstractions.Sync;
 using Momentum.Application.Behaviors;
 using Momentum.Application.Features.Sync;
 using Momentum.Infrastructure;
+using Momentum.Infrastructure.Sync;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Context;
@@ -42,6 +45,18 @@ builder.Services.AddSyncInfrastructure(hasDatabase
 builder.Services.AddScoped<ICurrentUser, NullCurrentUser>();          // deny-by-default (K-D5)
 builder.Services.AddScoped<IValidator<SyncRequest>, SyncRequestValidator>();
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>)); // K-G1
+
+// --- slice-2b2: realtime signal (K2-F2/G1/G3). ISignalPublisher binds to SignalR only HERE -- the
+//     dispatcher (Infrastructure) and the Domain/Application layers never see a SignalR type (D9-b). ---
+builder.Services.AddSignalR();
+builder.Services.AddScoped<ISignalPublisher, SignalRSignalPublisher>();
+builder.Services.AddSingleton<OutboxDispatcherOptions>(); // production default: BatchSize=100, Lease=30s
+if (hasDatabase)
+{
+    // D2-e: registered ONLY when a real connection string exists, so the DB-less slice-1 host (used by
+    // Api.Tests' 9 tests) never starts a dispatcher that would immediately fault its DB calls.
+    builder.Services.AddHostedService<OutboxDispatcher>();
+}
 
 // --- ADR 0001 K-D3: uniform error model (ProblemDetails / RFC 9457) in ALL environments -------
 builder.Services.AddProblemDetails();
@@ -94,6 +109,26 @@ app.UseSerilogRequestLogging();
 // scheme yet, so enforcing a fallback authorization policy here would break the host; health
 // and OpenAPI/Scalar stay anonymous until the identity slice wires auth in.
 
+// slice-2b2 D4 (Onur kilidi #2): /hubs/sync deny-by-default. [Authorize] cannot be used (no auth scheme
+// is registered -> it would 500, not 401). This is a plain path-based middleware, NOT AddEndpointFilter
+// (SignalR's endpoint is not a route-handler/controller builder, so endpoint filters do not apply to
+// it). Rejecting HERE -- before negotiate -- is what makes HubConnection.StartAsync actually throw
+// (Hub.OnConnectedAsync's Context.Abort() runs AFTER the handshake already succeeded, D4 gerekce).
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/hubs/sync"))
+    {
+        var currentUser = context.RequestServices.GetRequiredService<ICurrentUser>();
+        if (currentUser.UserId is null)
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return;
+        }
+    }
+
+    await next(context);
+});
+
 // K-D1: OpenAPI JSON + Scalar UI, mapped in every environment (no auth in this slice -> no leak).
 app.MapOpenApi();            // -> /openapi/v1.json
 app.MapScalarApiReference(); // -> /scalar/v1
@@ -107,6 +142,8 @@ ApiVersionSet versionSet = app.NewApiVersionSet()
 HealthEndpoints.Map(app);
 DiagnosticsEndpoints.Map(app, versionSet);
 SyncEndpoints.Map(app, versionSet); // slice-2b1: POST /v1/sync
+
+app.MapHub<SyncHub>("/hubs/sync"); // slice-2b2 D4: payload-less realtime signal
 
 app.Run();
 

@@ -170,6 +170,7 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
             oldScopeId = TryScope(preProjectId);
         }
 
+        var now = _timeProvider.GetUtcNow();
         return new OutboxRecord(
             AggregateType: op.EntityType,
             AggregateId: op.EntityId,
@@ -181,7 +182,8 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
             EventType: $"{op.EntityType}.changed",
             Payload: WireMapping.ClampedPayload(wireOp, receiveWall),
             Hlc: effective.Encode(),
-            OccurredAt: _timeProvider.GetUtcNow());
+            OccurredAt: now,
+            AvailableAt: now); // slice-2b2 D6-1: ONE clock source (TimeProvider) -- no SQL now() default
     }
 
     private static string? ReadProjectId(string entityType, EntityState entity) =>

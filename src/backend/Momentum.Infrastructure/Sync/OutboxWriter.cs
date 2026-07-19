@@ -15,8 +15,8 @@ public sealed class OutboxWriter(SyncDbContext db) : IOutboxWriter
 
         await using var command = await db.CreateRawCommandAsync(
             "INSERT INTO outbox_messages " +
-            "(id, aggregate_type, aggregate_id, operation_id, owner_id, scope_id, old_scope_id, actor_id, event_type, payload, hlc, occurred_at) " +
-            "VALUES (@id, @at, @ai, @oi, @ow, @sc, @os, @ac, @et, @pl::jsonb, @hl, @oc)",
+            "(id, aggregate_type, aggregate_id, operation_id, owner_id, scope_id, old_scope_id, actor_id, event_type, payload, hlc, occurred_at, available_at) " +
+            "VALUES (@id, @at, @ai, @oi, @ow, @sc, @os, @ac, @et, @pl::jsonb, @hl, @oc, @av)",
             cancellationToken);
         command.Parameters.AddWithValue("id", Guid.CreateVersion7());
         command.Parameters.AddWithValue("at", record.AggregateType);
@@ -30,6 +30,7 @@ public sealed class OutboxWriter(SyncDbContext db) : IOutboxWriter
         command.Parameters.AddWithValue("pl", record.Payload);
         command.Parameters.AddWithValue("hl", record.Hlc);
         command.Parameters.AddWithValue("oc", record.OccurredAt);
+        command.Parameters.AddWithValue("av", record.AvailableAt);
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
 }

@@ -1,4 +1,4 @@
-# Dependencies — slice-1 (backend omurga)
+# Dependencies — slice-1 (backend omurga) + slice-2b1/2b2
 
 > ADR 0001 K-H1 / red line #3: every package carries a license + CVE line.
 > Licenses were read from each package's NuGet `.nuspec` (SPDX expression) or, where the
@@ -34,6 +34,9 @@
 | Npgsql.EntityFrameworkCore.PostgreSQL | 9.0.4 | **PostgreSQL** | none | slice-2b1 (Infrastructure). ⚠ ERRATA: SPDX is **PostgreSQL License** (permissive, BSD/MIT-like — no copyleft/commercial restriction), NOT MIT. Added to the allowed permissive family for this slice. |
 | FluentValidation | 12.1.1 | Apache-2.0 | none | slice-2b1 (Application). Structural /v1/sync validation (K-G2). SPDX confirmed Apache-2.0. |
 | Testcontainers.PostgreSql | 4.13.0 | MIT | none | slice-2b1 (test-only). Real-DB hazard/concurrency gates (ADR 0002 K2-H). |
+| Microsoft.Extensions.Hosting.Abstractions | 9.0.0 | MIT | none | slice-2b2 (Infrastructure, production). `OutboxDispatcher : BackgroundService` — Infrastructure is a plain SDK project (no `Microsoft.AspNetCore.App` shared framework), so the Generic Host abstractions need an explicit reference. Does NOT pull in SignalR/AspNetCore (D9-b's arch rule stays true). SPDX confirmed from nuspec. |
+| Microsoft.AspNetCore.SignalR.Client | 9.0.0 | MIT | none | slice-2b2 (test-only: Momentum.Persistence.Tests AND Momentum.Api.Tests — D10 v3 correction, both projects, not one). Real `HubConnection` for D8-vi/vii. SPDX confirmed from nuspec. |
+| Microsoft.Extensions.TimeProvider.Testing | 9.0.0 | MIT | none | slice-2b2 (test-only: Momentum.Persistence.Tests). `FakeTimeProvider` — D8-iii's deterministic lease/backoff advance (no real sleep). SPDX confirmed from nuspec. |
 
 ## License-gate summary
 All packages are permissive OSI licenses (MIT / Apache-2.0 / BSD-3-Clause / **PostgreSQL License**) —
@@ -49,3 +52,9 @@ added to the allowed family for this slice — surfaced here (not silently passe
 real license is **BSD-3-Clause**. The *package choice* is already ratified by ADR K-H2; only the
 license label was inaccurate. BSD-3-Clause satisfies the gate's intent (permissive, non-commercial),
 but since GOREV §6 says "yalnız MIT/Apache", this is surfaced here (not silently passed) for Cowork.
+
+**slice-2b2:** 3 new packages, all MIT (SPDX confirmed from nuspec, see rows above). No SignalR
+server package exists — SignalR ships inside `Microsoft.AspNetCore.App` (the Api project's shared
+framework), not as a NuGet reference. YASAK list honored: no Redis/backplane package, no MessagePack,
+no new mock/mapper/assertion library (all test doubles in this slice — `RecordingSignalPublisher`,
+`RecordingGroupManager`, `FakeHubCallerContext` — are hand-written), no `AspNetCore.HealthChecks.*`.

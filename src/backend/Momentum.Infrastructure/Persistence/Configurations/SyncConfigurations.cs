@@ -26,7 +26,9 @@ public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<Outbox
         builder.Property(x => x.OccurredAt).HasColumnName("occurred_at");
         builder.Property(x => x.SignaledAt).HasColumnName("signaled_at");
         builder.Property(x => x.Attempts).HasColumnName("attempts").HasDefaultValue(0);
-        builder.Property(x => x.AvailableAt).HasColumnName("available_at").HasDefaultValueSql("now()");
+        // slice-2b2 D6-1: NO default (SQL now() is banned -- one clock source, TimeProvider). OutboxWriter
+        // always writes this column explicitly; a bare INSERT that omits it now fails NOT NULL (correct).
+        builder.Property(x => x.AvailableAt).HasColumnName("available_at");
         builder.HasIndex(x => x.OwnerId).HasDatabaseName("ix_outbox_messages_owner_id");
     }
 }

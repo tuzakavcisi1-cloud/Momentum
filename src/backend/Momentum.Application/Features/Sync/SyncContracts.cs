@@ -66,3 +66,10 @@ public sealed record SyncResponse(
     IReadOnlyList<WireIngestResult> Applied,
     IReadOnlyList<WireChange> Changes,
     IReadOnlyList<WireSnapshotEntity>? Snapshot);
+
+/// <summary>
+/// A payload-less realtime signal (ADR 0002 K2-G1, GOREV slice-2b2 D1). <c>CursorHint</c> is the
+/// Application wire cursor (NOT Domain's authoritative <c>SyncCursor</c>) — a type-level reminder that
+/// this is a hint clients may use to decide whether to pull, never a substitute for the real cursor.
+/// </summary>
+public sealed record SignalEnvelope(string Group, WireCursor CursorHint);

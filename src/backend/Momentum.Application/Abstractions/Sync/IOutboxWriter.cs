@@ -10,7 +10,10 @@ public interface IOutboxWriter
     Task WriteAsync(OutboxRecord record, CancellationToken cancellationToken);
 }
 
-/// <summary>The EF-mapped outbox fields (GOREV slice-2b1 D4). Hlc is the 3-part codec of the effective op-HLC.</summary>
+/// <summary>The EF-mapped outbox fields (GOREV slice-2b1 D4, slice-2b2 D6-1). Hlc is the 3-part codec of
+/// the effective op-HLC. <see cref="AvailableAt"/> is written EXPLICITLY from <c>TimeProvider</c> — the
+/// DB-default <c>now()</c> was removed (slice-2b2 D2-b/D6): dispatcher lease comparisons use ONE clock
+/// source only, never SQL <c>now()</c>.</summary>
 public sealed record OutboxRecord(
     string AggregateType,
     Guid AggregateId,
@@ -22,4 +25,5 @@ public sealed record OutboxRecord(
     string EventType,
     string Payload,
     string Hlc,
-    DateTimeOffset OccurredAt);
+    DateTimeOffset OccurredAt,
+    DateTimeOffset AvailableAt);

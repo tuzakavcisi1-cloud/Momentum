@@ -20,6 +20,13 @@ public static class DependencyInjection
         services.AddScoped<IClientClock, ClientClock>();
         services.AddScoped<ISyncPuller, SyncPuller>();
 
+        // slice-2b2: dispatcher (D2) + scope-membership (D5) ports. OutboxClaimStore opens its OWN
+        // NpgsqlConnection (never the shared SyncDbContext one, D2-g) but is still DI-scoped so
+        // OutboxDispatcher must resolve it through a fresh scope per pump (D2-e), same as every other
+        // sync port here.
+        services.AddScoped(_ => new OutboxClaimStore(connectionString));
+        services.AddScoped<IScopeMembershipSource, ScopeMembershipSource>();
+
         return services;
     }
 }

@@ -11,6 +11,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <!-- slice-2b2 D2: OutboxDispatcher : BackgroundService. Plain SDK project (not Web) -> the Generic
+         Host abstractions are not part of the implicit framework here and need an explicit reference.
+         MIT; does NOT pull in SignalR/AspNetCore (D9-b's "Infrastructure not SignalR-dependent" stays true). -->
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

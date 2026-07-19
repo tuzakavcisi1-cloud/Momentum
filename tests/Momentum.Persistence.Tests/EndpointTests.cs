@@ -13,11 +13,6 @@ using Xunit;
 
 namespace Momentum.Persistence.Tests;
 
-public sealed class FakeCurrentUser(Guid userId) : ICurrentUser
-{
-    public Guid? UserId => userId;
-}
-
 /// <summary>WAF endpoint tests: deny-by-default 401, structural 400, and the Npgsql readiness 503 gate.</summary>
 public sealed class EndpointTests
 {

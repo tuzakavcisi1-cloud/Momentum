@@ -67,6 +67,23 @@ public sealed class ArchitectureRuleTests
         result.IsSuccessful.ShouldBeTrue(FailureMessage(result));
     }
 
+    /// <summary>
+    /// slice-2b2 D9-b: written as a cheap regression, but NOT counted as a bitten gate. The rule is
+    /// tautological on THIS project shape -- Momentum.Infrastructure.csproj is plain <c>Microsoft.NET.Sdk</c>
+    /// (no <c>FrameworkReference Microsoft.AspNetCore.App</c>), so SignalR types are not even reachable
+    /// from there; no production-code mutation could make this rule fail. Reported honestly as such.
+    /// </summary>
+    [Fact]
+    public void Rule4_Infrastructure_must_not_depend_on_SignalR()
+    {
+        var result = Types.InAssembly(InfrastructureAssembly)
+            .ShouldNot()
+            .HaveDependencyOn("Microsoft.AspNetCore.SignalR")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(FailureMessage(result));
+    }
+
     private static string FailureMessage(TestResult result)
     {
         var failing = result.FailingTypeNames is null ? "(none)" : string.Join(", ", result.FailingTypeNames);

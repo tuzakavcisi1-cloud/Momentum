@@ -8,6 +8,10 @@
     <!-- Testcontainers-Postgres (ADR 0002 K2-H): real DB hazard/concurrency gates. MIT. -->
     <PackageReference Include="Testcontainers.PostgreSql" Version="4.13.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.18" />
+    <!-- slice-2b2 D10: D8-vi (G3) needs a real HubConnection. MIT. -->
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0" />
+    <!-- slice-2b2 D10: D8-iii's FakeTimeProvider (deterministic lease/backoff advance). MIT. -->
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

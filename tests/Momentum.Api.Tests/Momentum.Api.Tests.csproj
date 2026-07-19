@@ -6,10 +6,18 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageReference Include="Shouldly" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.18" />
+    <!-- slice-2b2 D10/D10-b: D8-vii (hub reddi) needs a real HubConnection. MIT. -->
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\backend\Momentum.Api\Momentum.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- slice-2b2 D10-b (FakeCurrentUser yerleşimi pin): the two test projects do not reference each
+         other; linking the single file avoids duplicating the class instead of a whole shared project. -->
+    <Compile Include="..\Momentum.Persistence.Tests\FakeCurrentUser.cs" Link="FakeCurrentUser.cs" />
   </ItemGroup>
 
 </Project>

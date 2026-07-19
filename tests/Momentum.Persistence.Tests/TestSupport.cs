@@ -117,10 +117,77 @@ public sealed class SyncTestApp : IAsyncDisposable
         return state;
     }
 
+    /// <summary>
+    /// slice-2b2 D0: calls <c>IClientClock.UpsertGreatestAsync</c> DIRECTLY, WITHOUT the client advisory
+    /// lock (no <c>LockClientAsync</c> call) -- simulates a future "forgot the lock" code path to prove
+    /// the storage-level GREATEST invariant holds independent of caller discipline.
+    /// </summary>
+    public async Task UpsertClientClockGreatestAsync(Guid clientId, Hlc candidate, CancellationToken cancellationToken = default)
+    {
+        await using var scope = _provider.CreateAsyncScope();
+        await scope.ServiceProvider.GetRequiredService<IClientClock>().UpsertGreatestAsync(clientId, candidate, cancellationToken);
+    }
+
+    /// <summary>
+    /// slice-2b2 D0-b: opens a scope + an EXPLICIT, held-open transaction and returns a handle whose
+    /// <c>UpsertGreatestAsync</c> runs inside it (not committed until <see cref="HeldClientClockScope.CommitAsync"/>).
+    /// "Altyapı notu" (D0-b): no such "hold a txn/scope open across an await" helper existed before this slice.
+    /// </summary>
+    public async Task<HeldClientClockScope> BeginClientClockScopeAsync(CancellationToken cancellationToken = default)
+    {
+        var scope = _provider.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<SyncDbContext>();
+        var connection = (NpgsqlConnection)db.Database.GetDbConnection();
+        if (connection.State != System.Data.ConnectionState.Open)
+        {
+            await connection.OpenAsync(cancellationToken);
+        }
+
+        var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
+        var clock = scope.ServiceProvider.GetRequiredService<IClientClock>();
+        return new HeldClientClockScope(scope, transaction, clock);
+    }
+
     public ValueTask DisposeAsync()
     {
         _provider.Dispose();
         return ValueTask.CompletedTask;
+    }
+}
+
+/// <summary>See <see cref="SyncTestApp.BeginClientClockScopeAsync"/> (GOREV slice-2b2 D0-b).</summary>
+public sealed class HeldClientClockScope : IAsyncDisposable
+{
+    private readonly AsyncServiceScope _scope;
+    private readonly Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction _transaction;
+    private readonly IClientClock _clock;
+    private bool _committed;
+
+    internal HeldClientClockScope(AsyncServiceScope scope, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction, IClientClock clock)
+    {
+        _scope = scope;
+        _transaction = transaction;
+        _clock = clock;
+    }
+
+    public Task UpsertGreatestAsync(Guid clientId, Hlc candidate, CancellationToken cancellationToken = default) =>
+        _clock.UpsertGreatestAsync(clientId, candidate, cancellationToken);
+
+    public async Task CommitAsync(CancellationToken cancellationToken = default)
+    {
+        await _transaction.CommitAsync(cancellationToken);
+        _committed = true;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (!_committed)
+        {
+            await _transaction.RollbackAsync();
+        }
+
+        await _transaction.DisposeAsync();
+        await _scope.DisposeAsync();
     }
 }
 
