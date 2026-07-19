@@ -37,6 +37,10 @@ public sealed class MaterializationRoundTripTests(PostgresFixture fixture)
         await app.SyncAsync(actor, Wire.PushNoPull(actor, OrderOp(actor, entity, "Task", "listPos", "m1", 2)));
         await app.SyncAsync(actor, Wire.PushNoPull(actor,
             Wire.TaskGroup(Guid.CreateVersion7(), actor, entity, actor, 3, ("status", "done"), ("completedAt", "2026-07-19T11:00:00Z"))));
+        // FEWER-member REPLACE (mutant-1's kill surface): a delta-shaped writer that only touches
+        // "this op's own keys" would leave completed_at STALE (non-null) instead of clearing it.
+        await app.SyncAsync(actor, Wire.PushNoPull(actor,
+            Wire.TaskGroup(Guid.CreateVersion7(), actor, entity, actor, 5, ("status", "redo"))));
         await app.SyncAsync(actor, Wire.PushNoPull(actor,
             Wire.TaskSet(Guid.CreateVersion7(), actor, entity, actor, 4, adds: [new WireSetAdd("el0", tag, Wire.Hlc(actor, 4))], removes: null)));
 
