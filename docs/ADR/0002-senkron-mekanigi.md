@@ -188,6 +188,20 @@ SELECT * FROM outbox_messages
 - **K2-H10 — Sunucu-HLC restart:** **per-client** `max(outbox.hlc) WHERE client_id` (global değil) restore; mutant → bayat damgalama.
 - **K2-H11 — Kapsam-geçişi + soft-ref + registry-zorlama:** çift-yayın hayalet bırakmaz; kısmi-batch FK-ihlali yaratmaz; kanal-atlayan alan reddedilir.
 
+**İstemci ve materyalizasyon (slice-3, Onur kilitledi 19 Tem 2026):**
+
+**K2-I1 — İstemci uzlaştırma rolü: SUNUCU-OTORİTER, TEK RESOLVER. [PAZARLIKSIZ]**
+Flutter istemcisi **kendi HLC/CRDT resolver'ını TAŞIMAZ.** Çevrimdışı yazım *iyimser* uygulanır (yerel Drift/SQLite durumu hemen güncellenir, kullanıcı beklemez) ve op kuyruğa alınır; **çakışma çözümü YALNIZ sunucuda** yapılır. Pull'da dönen sunucu durumu, o entity için **otoriter** kabul edilir ve yereli ezer.
+*Gerekçe:* ikinci bir resolver, ikinci bir doğruluk kaynağı demektir ve bu projede o sınıf hatanın maliyeti ölçüldü — **ERRATA E-1** (aynı değişmezliğin üç kopyası birbiriyle çelişiyordu) ve slice-2c'nin **D1b**'si (bağımsız Oracle üretimle birlikte düzeltilmezse ayrışıyordu, ve o yalnızca bir *test* motoruydu). Üretim istemcisinde aynı ayrışma, kullanıcının verisinde sessiz kayıp olur.
+*Kabul edilen ödünleşim (adlandırıldı):* sunucu farklı karar verirse istemcide **geri-alma/titreme (rollback/flicker)** görülebilir. Bu bilinçlidir; UI bunu "senkronlanıyor / güncellendi" göstergesiyle karşılar, gizlemez.
+*Bunu isteyen bir gelecek dilim çıkarsa:* Dart tarafına da oracle + property + mutant zinciri kurmadan ikinci resolver YAZILAMAZ.
+
+**K2-I2 — Materyalize entity satırı İNŞA EDİLİR (§2'deki kalıcılık modelinin açık kalan yarısı).**
+Bugün DB'de yalnız senkron meta tabloları var (`outbox_messages`, `processed_operations`, `sync_client_clock`, `sync_gc_state`, `sync_orset_removes`, `sync_orset_tags`, `sync_scalar_meta`); **hiçbir entity tablosu yok** — yani projeksiyon yalnız bellekte yaşıyor. Bu dilimde `tasks` / `task_lists` materyalize edilir ve okuma API'siyle sunulur. Sunucu-tarafı sorgu/arama ve ileride Semantic Kernel bu satıra dayanır.
+*Kapsam pini:* bu dilimde **Task + TaskList**. `Project`/`Tag` ertelendi — `Project` üyeliği auth diliminde (K2-E3) zaten yeniden ele alınacağı için şimdi materyalize etmek iki kez yapmak olur.
+
+**K2-I3 — Dilim bölünmesi.** slice-3a = sunucu materyalizasyonu + okuma API'si; slice-3b = Flutter istemci (Drift + senkron kuyruğu + çevrimdışı anahtarı + çakışma demosu), hedef platformlar **Web + Android** (Mac yok → iOS CI-only). Her ikisi kendi KANIT'ıyla kapanır.
+
 ---
 
 ## 3. Uygulama sırası
