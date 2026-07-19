@@ -1,4 +1,20 @@
-# GÖREV (Claude Code) — slice-3a DÜZELTME-1: D5'in ORTAK SENARYOSU  [v3 — KİLİT ONUR'DA]
+# GÖREV (Claude Code) — slice-3a DÜZELTME-1: D5'in ORTAK SENARYOSU  [v4 — KİLİT ONUR'DA]
+
+> **v3'ün kusurları — ÜÇÜNCÜ TUR, 2 BLOKER + 3 MAJÖR (ikisi de v3'ün KENDİ düzeltmesinin yan etkisiydi):**
+> 1. **[BLOKER] §2 ile §6 `mutant-16` üzerinde ÇELİŞİYORDU** — §2 "yeniden koşulur, KANIT güncellenir",
+>    §6 "DOKUNMA, yeniden koşma". v3'ün §2'ye yeniden-koşum kuralını eklerken §6'yı güncellememesinden;
+>    v2'de kırılan §2↔§3 çelişkisinin §6'ya kaymış hâli.
+> 2. **[BLOKER] `mutant-16` BUGÜN ZATEN 3 test kırıyor** (adım 7 + adım 8 + **D0-c yan hasarı**) ama v5 §5:385
+>    beklenen olarak **2** yazıyor ⇒ v3'ün "fazla kırılırsa DUR" muhafızı **garantili YANLIŞ DUR** üretirdi.
+>    Cowork bunu bu oturumda kendi koşumuyla ölçmüştü; spec'e taşımayı atlamıştı.
+> 3. **[MAJÖR] `git apply --check` yalnız `mutant-1`'e bağlıydı** ama 8 KANIT yeniden üretiliyor ⇒ kalan 7'de
+>    "elle yazılmış diff" kusuru serbestçe geri gelebilirdi.
+> 4. **[MAJÖR] Doğrulama YANLIŞ ARTEFAKTI sınıyordu** — `<temp>.patch` doğrulanıyordu, oysa onarılan kusur
+>    **KANIT'a yapıştırılan bloğun** elle üretilmiş olmasıydı; yapıştırma bozulsa check yine exit 0 verirdi.
+> 5. **[MAJÖR] 4 adımlı sıra KANIT v2.1 (c)'yi (revert sonrası tam suite yeşil) düşürüyordu.**
+> Ayrıca: tombstone gerekçesi hâlâ lafzen yanlıştı (eleman-kapsamlı **ve** tag-anahtarlı) · `Adim9`'un assert
+> BİÇİMİ pinsizdi (güçlendirilirse `mutant-14`'ün sayısı bozulur) · kova (iii) "ölçülmez" diyordu, doğrusu
+> "assert edilir ama ayırt edici değil" · kriter `5b.` madde işareti render'da kayboluyordu.
 
 > **v2'nin kusurları — DELTA DENETİMİ, 1 BLOKER + 4 MAJÖR:**
 > 1. **[BLOKER] v2, `mutant-14`'ün yayılma alanının GENİŞLEDİĞİNİ göremezdi** ve "diğer 15 mutant yeniden
@@ -84,6 +100,19 @@ repoda **fiilen yanlış bir KANIT** kalır. Kural:
 - v5 §5 satır 383'ün `mutant-14` hücresi **"D5-b adım 1 FAIL"** → **"D5-b adım 1 + adım 5 FAIL"** olarak
   errata edilir.
 
+**BİLİNEN VE ÖNGÖRÜLEN #2 — `mutant-16` BUGÜN ZATEN 3 TEST KIRIYOR [ölçüldü, birleştirmeden BAĞIMSIZ]:**
+v5 §5:385 beklenen olarak **2** test yazıyor (adım 7 + adım 8) ama gerçek **3**'tür — üçüncüsü
+`TaskMaterializationD0Tests.D0c_keyset_pagination_crosses_the_null_boundary_without_gaps_or_repeats`
+(mutasyon `list_pos`'u sessizce NULL yaptığı için keyset senaryosunun 3 non-NULL + 3 NULL kurgusu çöker).
+Cowork bunu **kendi koşumuyla ölçtü** (`KANIT/slice-3a/cowork-bagimsiz-dogrulama.txt`, mutant-16 satırı) ve
+builder'ın KANIT'ında da kayıtlı. **`mutant-16` için beklenen TAM liste ÜÇTÜR; DÖRDÜNCÜ test kırılırsa DUR.**
+D0-c bu dilimde **değişmez** (`TaskMaterializationD0Tests.cs`'e dokunulmaz, `D5Scenario`'yu kullanmaz)
+⇒ yan hasar birleştirmeden etkilenmez. v5 §5:385 hücresi de buna göre errata edilir.
+
+**MUHAFIZIN DOĞRU OKUNUŞU:** §3'ün "fazla/az kırılırsa DUR" kuralı, **yukarıda adı geçen iki öngörülen
+genişleme hariç** uygulanır (`mutant-14` = 2 test · `mutant-16` = 3 test). Kalan 6 mutant için beklenen
+sayı v5 §5 tablosundakidir.
+
 ## 3. KİLİTLİ KARARLAR (Onur, 19-20 Tem 2026)
 
 **K1 — PAYLAŞILAN KURUCU + `stopAfterStep`.** Senaryo TEK yerde tanımlanır; D5-b'nin 9 testi N'inci adıma kadar
@@ -155,9 +184,10 @@ Adım 0 sayacın **en altını**, adım 10 **en üstünü** alır.
 **yanlış sebeple** kırmızı olur.
 
 **ADIM 4 TOMBSTONE PİNİ [PAZARLIKSIZ]:** adım 4'ün tags op'u **YENİ bir eleman (`el1`, tag `Tag4`)** ekler.
-*Gerekçe — DOĞRU BİÇİMİYLE:* tombstone **TAG düzeyindedir, eleman düzeyinde değil** (`OrSetField.cs:51-52,92`;
-`Cancelled` bir `HashSet<Guid>` **tag** kümesidir). Yani `el0` **`Tag3` ile** yeniden eklenirse ölü doğar,
-ama `el0` **yeni bir tag'le** eklenirse **canlı doğardı**. Yeni eleman seçilmesinin sebebi ayrım netliğidir:
+*Gerekçe — DOĞRU BİÇİMİYLE:* tombstone **eleman-KAPSAMLI ve tag-ANAHTARLIDIR** — `Cancelled`,
+`ElementState`'in **içinde** bir `HashSet<Guid>` tag kümesidir (`OrSetField.cs:51-52,92`). Yani:
+`el0`+`Tag3` **ölü doğar**; `el0`+yeni tag **canlı doğar**; `el1`+herhangi bir tag **canlı doğar**.
+Yeni eleman seçilmesinin sebebi ayrım netliğidir:
 `el0`'ın canlanması D5-b `Adim3`'ün "boş küme" hikâyesiyle kavramsal olarak çakışır. C4 bayrağı her hâlükârda
 adım 4'te yanar (`MaxStamp()` ölü doğan add'ın damgasını da sayar, `OrSetField.cs:229-236`).
 *v2 gerekçeyi eleman düzeyinde yazmıştı — yanlıştı; karar aynı kalıyor.*
@@ -190,6 +220,12 @@ Dokuz test **metodu ve ADI AYNEN KORUNUR** (`Adim1_…`…`Adim9_…`) — KANIT
 Her metot: `D5Scenario.BuildAsync(app, stopAfterStep: N)` → **ham SQL** ile v5 §D5-b tablosundaki **literal** assert.
 `TaskProjection.From`/`TaskListProjection.From` **ÇAĞRILMAZ**. **Beklenen değerler v5'ten değiştirilmeden taşınır.**
 
+**ASSERT BİÇİMİ PİNİ [PAZARLIKSIZ]:** `Adim9`'un `malformed_fields` assert'i **`ShouldNotContain("isDeleted")`
+biçiminde KALIR** (`LiteralOracleD5bTests.cs:186`), tam-dizi eşitliğine **ÇEVRİLMEZ**. Birleşik senaryoda N=9'da
+`malformed_fields` determinist olarak `{dueAt}`'tır; assert'i "güçlendirmek" `mutant-14`'ün beklenen sayısını
+2'den 3'e çıkarır ve §2'nin pinini geçersiz kılar. Genel kural: **hiçbir mevcut assert'in BİÇİMİ değiştirilmez**,
+yalnız kurulum ortak kurucuya devredilir.
+
 ---
 
 **E3 — D5-a YENİDEN KURULUR (`MaterializationRoundTripTests.cs`).**
@@ -208,7 +244,9 @@ alan alan, koleksiyonlarda `SequenceEqual`.
   (NULL — adım 2'nin küçültücü REPLACE'i). **`mutant-1`'in D5-a'daki tek ihlal yüzeyi budur.**
   *v2 buraya `notes`'u da koymuştu — YANLIŞTI: adım 1b op'u `"notes"` anahtarını taşır, `mutant-1`'in
   `touched` kümesine girer, kolon yazılır ⇒ `NULL` doğrudur, bayat değildir. `notes` kova (iii)'tedir.*
-- **(iii) D5-a TARAFINDAN ÖLÇÜLMEZ [açık beyan]:** `is_deleted` ve `has_delete_edit_conflict` — adım 9'un `"True"`
+- **(iii) ASSERT EDİLİR ama AYIRT EDİCİ DEĞİL (varsayılan ↔ varsayılan) [açık beyan]:** *(bu kolonlar D5-a'da
+  fiilen karşılaştırılır — "ölçülmez" demek yanlış olurdu; ayırt edici olmayan bir karşılaştırma yaparlar.)*
+  `is_deleted` ve `has_delete_edit_conflict` — adım 9'un `"True"`
   yazımı adım 4'ün silmesini ezer (`EntityState.cs:63-65,77`) ⇒ N=10'da **zorunlu olarak `false`** = varsayılan.
   **Kapıları D5-b `Adim4` (N=4, `true`) ve `Adim9` (N=9, `false`)'dur** · `remind_at`(NULL, adım 10) ·
   `notes`(NULL — adım 1 durum 2; `mutant-1` yüzeyi DEĞİL, kapısı `mutant-14`/`Adim1`'dir) ·
@@ -247,9 +285,12 @@ Bayat kalan kolon **`completed_at`** olmalıdır; KANIT'a assert mesajıyla yaz.
 4. `araclar/verify.ps1` **DEĞİŞMEDEN** geçer (Docker açık), **exit 0**.
 5. `mutant-1` **tek koşumda TAM 2 test** düşürür (§E4'teki tam adlar); `TaskList_materialization_round_trips_…`
    **YEŞİL** kalır. KANIT'ta **ham** çıktı + `git apply --check` exit 0 (§6'nın sırasıyla).
-5b. **D5'te kapısı olan 8 mutant** (`1,2,7,9,10,11,14,16`) yeniden koşuldu; her KANIT'ta kırılan testlerin
-   **TAM listesi** var. Yayılma alanı değişen mutant(lar) için v5 §5 tablosu errata edildi
-   (**`mutant-14` için bu ZATEN ÖNGÖRÜLDÜ: adım 1 + adım 5**). Diğer 8 mutanta dokunulmadı — gerekçesi raporda.
+   - **5b.** **D5'te kapısı olan 8 mutant** (`1,2,7,9,10,11,14,16`) yeniden koşuldu; her KANIT'ta kırılan
+     testlerin **TAM listesi** ve §6'nın (5)/(6) doğrulama çıktıları var. Öngörülen iki genişleme ölçümle
+     teyit edildi (**`mutant-14` = 2 test · `mutant-16` = 3 test**) ve v5 §5 tablosunun ilgili hücreleri
+     errata edildi. Diğer 8 mutanta (`3,4,5,6,8,12,13,15`) dokunulmadı — gerekçe raporda; ayrıca bu 8'in
+     KANIT'ındaki (c) yeşil özetlerinin **D5 gövdesi değişmeden önce** alındığı, kapı yüzeyleri
+     değişmediği için geçerli kaldığı beyan edilir.
 6. D5-b'nin beklenen literalleri ve test adları **değişmemiş** — `git diff` ile göster.
 7. E3'ün **üç kovalı** kolon ölçümü raporda, gerçek değerlerle.
 8. Persistence.Tests süresi ölçülüp rapora yazıldı (§3 bedeli tahmindi, ölçüm değildi).
@@ -262,19 +303,31 @@ diff'lerinde `+` öneki düşmüş, `+++ b/` → `++ b/`"* — **YANLIŞTIR.** B
 dosyadan kendi yeniden ölçtü: her iki dosyada da `^++ ` satırı **0**, `+++ b/` yerinde. Gördüğü bozukluk
 **Cowork'ün kendi yama-çıkarma/görüntüleme hattının artefaktıydı**; kaynağı doğrulamadan KANIT'a kusur diye
 yazılmış ve pazarlıksız emre çevrilmişti.
-- **`mutant-16-order-channel-read-from-fields.txt`'in diff'i TEMİZDİR (gerçek hash'ler `a8e52a5..75f98a7`) —
-  DOKUNMA, yeniden koşma.**
+- **`mutant-16-order-channel-read-from-fields.txt`'in diff BLOĞU TEMİZDİR** (gerçek hash'ler
+  `a8e52a5..75f98a7`) — **SAPMA-3 gerekçesiyle yeniden YAZILMASI gerekmez.** Ama bu dosya **§2 gereği
+  YENİDEN KOŞULUR** (kapısı D5'tedir): KANIT'ın **(b) ham kırmızı** ve **(c) yeşil-sonrası** bölümleri
+  yeni ölçümle değiştirilir, diff bloğu aşağıdaki 4 adımlı sırayla **taze üretilir**.
+  *(v3 burada "dokunma, yeniden koşma" diyordu — §2 ile ÇELİŞİYORDU, v4'ün düzeltmesi.)*
 - **`mutant-1-materializer-delta-columns.txt`'in diff bloğu GERÇEKTEN bozuktur ama sebebi başkadır:**
   `index xxxxxxx..yyyyyyy 100644` **yer tutucu** blob hash'leridir ⇒ blok `git diff` çıktısı değil **elle
   yazılmıştır**; ayrıca `@@ -36,9 +36,26 @@` hunk sayaçları gövdeyle uyuşmaz ⇒ blok parse edilemez.
   İhlal edilen kural: KANIT v2.1 (a) *"HAM çıktı YAPIŞTIRILIR, yeniden yazılmaz"*.
-  **Onarım — SIRA PİNLİ [PAZARLIKSIZ]:** `git apply --check` yamanın **mevcut ağaca** uygulanabilirliğini sınar;
-  mutasyon hâlâ uygulanmışken koşulursa "does not apply" verir ve builder **ikinci bir sahte KANIT satırı**
-  yazar (düzeltilmeye çalışılan kusurun aynısı). Sıra:
-  (1) mutasyonu uygula → `git diff -- <dosya> > <temp>.patch`;
-  (2) `<temp>.patch`'in **ham içeriğini** KANIT'a yapıştır (tek karakter değiştirmeden);
-  (3) testleri koş, sonra `git checkout -- <dosya>` ile **revert et**;
-  (4) **temiz ağaçta** `git apply --check <temp>.patch` koş → **exit 0** olmalı; bunu rapora yaz.
+  **Onarım — SIRA PİNLİ [PAZARLIKSIZ] · §2'nin YENİDEN KOŞULAN 8 MUTANTININ HEPSİ İÇİN GEÇERLİ:**
+  `git apply --check` yamanın **mevcut ağaca** uygulanabilirliğini sınar; mutasyon hâlâ uygulanmışken
+  koşulursa "does not apply" verir ve builder **ikinci bir sahte KANIT satırı** yazar (düzeltilmeye
+  çalışılan kusurun aynısı). Sıra:
+  1. mutasyonu uygula → `git diff -- <dosya> > <temp>.patch`;
+  2. `<temp>.patch`'in **ham içeriğini** KANIT'ın (a) bölümüne yapıştır (tek karakter değiştirmeden);
+  3. `dotnet build` + **TAM SUITE** koş → ham kırmızı KANIT (b)'ye;
+  4. `git checkout -- <dosya>` ile **revert et**, `dotnet build` + **TAM SUITE** koş → ham yeşil özet
+     KANIT (c)'ye *(KANIT v2.1 kuralı (c); sıradan düşerse atlanır)*;
+  5. **KANIT dosyasına YAPIŞTIRILAN bloğu geri çıkar** (`<kanit>.extracted`) ve
+     `git diff --no-index <temp>.patch <kanit>.extracted` → **BOŞ** olmalı
+     *(asıl onarılan kusur, KANIT'a yazılan bloğun elle üretilmiş olmasıdır; yalnız `<temp>.patch`'i
+     doğrulamak yapıştırma bozulmasını GÖREMEZ)*;
+  6. temiz ağaçta `git apply --check <kanit>.extracted` → **exit 0**.
+  **(5) ve (6)'nın çıktısını her KANIT'a ayrı ayrı yaz.** Windows'ta satır sonu farkı çıkarsa
+  `--whitespace=nowarn` kullan ve bunu sapma olarak bildir.
 
 **SAPMA-4 [zorunlu].** `KANIT/slice-3a/verify-run-raw.txt` ve `verify-run-full.txt` **silinir** (artık dosyalar).
 Kanonik `verify-run.txt` tam ve `EXIT_CODE=0` içerir — **dokunma**.
