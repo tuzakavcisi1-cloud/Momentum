@@ -123,10 +123,25 @@ SAPMA-2 [MİNÖR — KABUL, kayda geçti] — Domain/Sync/Projection/ProjectionF
   aksine güçlendiriyor: ayrıştırma kurallarını iki projeksiyona kopyalamak kırmızı çizgi ihlali olurdu.
   Kusur builder'da değil, kriter 6(b)'nin eksik sayımındadır (spec kusuru).
 
-SAPMA-3 [MİNÖR — KABUL edilmez, düzeltilsin] — mutant-1 ve mutant-16'nın KANIT diff'leri GEÇERLİ DİFF
-  DEĞİL: eklenen satırlarda `+` öneki düşmüş, `+++ b/` → `++ b/` olmuş. Diğer 14 KANIT dosyası temiz.
-  KANIT KURALI v2.1 (a) "mutasyonun TAM diff'i" ister; uygulanamayan bir diff izlenebilirliği kırar
-  (bu iki mutantı elle yeniden kurmak zorunda kaldım). 2b2 BULGU-4'ün aynı ailesi.
+SAPMA-3 [DÜZELTİLDİ — İLK TEŞHİS YANLIŞTI, COWORK HATASI] — mutant-1 ve mutant-16'nın KANIT diff'leri.
+  *** İLK YAZDIĞIM TEŞHİS: "eklenen satırlarda `+` öneki düşmüş, `+++ b/` → `++ b/` olmuş." BU YANLIŞTIR. ***
+  Bağımsız denetim bunu kırdı, ben de KENDİM yeniden ölçtüm (orijinal KANIT dosyalarına doğrudan grep):
+      mutant-1 : '^++ ' = 0 satır · '^+++ b/' = 1 satır · 'index xxxxxxx' = 1
+      mutant-16: '^++ ' = 0 satır · '^+++ b/' = 2 satır · 'index xxxxxxx' = 0  (hash'ler gerçek: a8e52a5..75f98a7)
+      mutant-4 : '^++ ' = 0 satır · '^+++ b/' = 1 satır  (kontrol grubu)
+  Gördüğüm "++ b/" bozukluğu ORİJİNAL DOSYADA YOKTUR; benim yama-çıkarma/görüntüleme hattımın artefaktıydı.
+  ** mutant-16'nın KANIT diff'i TEMİZDİR ve DOKUNULMAMALIDIR. **
+  GERÇEK KUSUR YALNIZ mutant-1'DE ve başka bir şeydir: `index xxxxxxx..yyyyyyy 100644` — YER TUTUCU blob
+  hash'leri, yani diff bloğu `git diff` çıktısı değil ELLE YAZILMIŞTIR; ayrıca ikinci hunk başlığının
+  (`@@ -36,9 +36,26 @@`) sayaçları gövdeyle uyuşmuyor ⇒ blok parse edilemiyor. KANIT KURALI v2.1 (a)
+  "HAM koşucu/diff çıktısı YAPIŞTIRILIR, yeniden yazılmaz" der; ihlal edilen kural budur.
+  DÜZELTME: mutant-1'in diff bloğu `git diff` çıktısıyla değiştirilsin ve `git apply --check` ile
+  doğrulandığı rapora yazılsın. mutant-16 ONARILMAZ (kusursuz).
+  *** COWORK HATASI — KAYDA GEÇTİ: kendi araç hattımın ürettiği bir artefaktı, kaynağı doğrulamadan,
+  KANIT'a "kusur" diye yazdım ve düzeltme spec'inde PAZARLIKSIZ emir hâline getirdim. Bu, 2b2 BULGU-4'te
+  builder'ı eleştirdiğim kusurun (yeniden yazılmış kanıt) aynı ailesidir ve oturum 7'de bir alt-ajan
+  beyanını doğrulamadan aktarma hatasının tekrarıdır. KURAL TEYİDİ: bir kusur iddiası KANIT'a girmeden
+  önce KAYNAK DOSYADAN, kendi araç zincirimin dışında bir yolla teyit edilir. ***
 
 SAPMA-4 [MİNÖR — KABUL] — verify-run-raw.txt + verify-run-full.txt gereksiz artık dosyalar. Kanonik
   verify-run.txt TAM ve EXIT_CODE=0 içeriyor (doğrulandı). Temizlenmesi yeterli.
