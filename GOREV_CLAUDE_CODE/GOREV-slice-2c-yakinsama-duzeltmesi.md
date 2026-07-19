@@ -23,7 +23,7 @@ Sıralama: **A > deleteKey > B**. `ApplyAdd`'in `Adds.TryAdd`'i **ilk geleni** s
 
 ## 2. Kapsam — NE VAR / NE YOK
 
-**VAR:** E-1'in üç uygulama noktası · **Oracle'ın eş-düzeltmesi (D1b)** · E-1b (kalıcılık GREATEST'i + ısırdığını kanıtlayan test) · pinli-tohum + **üreteçten bağımsız literal** regresyon · C4'ün **add** ve **remove** pozitif testleri · komütatiflik property testi · hidrasyon round-trip regresyonu · collation kapısının genişletilmesi · `CompactBelow`↔`MaxStamp` bağının pinlenmesi · **6 mutant** + KANIT.
+**VAR:** E-1'in üç uygulama noktası · **Oracle'ın eş-düzeltmesi (D1b)** · E-1b (kalıcılık GREATEST'i + ısırdığını kanıtlayan test) · pinli-tohum + **üreteçten bağımsız literal** regresyon · C4'ün **add** ve **remove** pozitif testleri · komütatiflik property testi · hidrasyon round-trip regresyonu · collation kapısının genişletilmesi · `CompactBelow`↔`MaxStamp` bağının pinlenmesi · **7 mutant** + KANIT. *(v3'te düzeltildi: bu satır "6 mutant" diyordu, §4 tablosu ve kabul kriteri 4 ise 7 diyordu — otoriter olan TABLODUR. Builder tabloyu esas alıp 7'yi de koşturdu, doğru karar.)*
 
 **YOK — adlandırılmış erteleme (sessiz açık bırakma YASAK):**
 - Register/group/order birleştirme yollarının **sistematik komütatiflik taraması** (Onur kapsamı "kusur + property-test sertleştirme" olarak kilitledi).
