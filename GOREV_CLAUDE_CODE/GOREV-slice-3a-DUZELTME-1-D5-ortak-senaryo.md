@@ -1,4 +1,21 @@
-# GÖREV (Claude Code) — slice-3a DÜZELTME-1: D5'in ORTAK SENARYOSU  [v4 — KİLİT ONUR'DA]
+# GÖREV (Claude Code) — slice-3a DÜZELTME-1: D5'in ORTAK SENARYOSU  [v5 — KİLİT ONUR'DA]
+
+> **v4'ün kusurları — DÖRDÜNCÜ TUR, 2 BLOKER + 5 MAJÖR. Turun ASIL sorusu şuydu ve cevabı EVET çıktı:**
+> *"Cowork bu oturumda bir sayı ÖLÇÜP KANIT'a yazmış ama SPEC'e taşımayı atlamış başka vaka var mı?"*
+> 1. **[MAJÖR→ERRATA-2] `mutant-13` AYNI SINIFTAN İKİNCİ VAKA.** Cowork ölçtü: yalnız canlılık assert'i
+>    kırıldı (SyncCore 39/40 = 1 test). v5 §5:400 hâlâ "üç-kova assert'i de kırılır" diyor ve kendi
+>    §D2b:223'üyle de çelişiyor. `mutant-16`'nın aynası: orada spec **eksik**, burada **fazla** söylüyordu.
+> 2. **[BLOKER] §6 kendi sırasıyla çelişiyordu** — mutant-16 maddesi "4 adımlı" diyordu, sıra 6 adımdı
+>    (v4 sırayı uzatırken sayıyı güncellememişti). Aynı §2↔§6 dikişinin **üçüncü** kırılması.
+> 3. **[BLOKER] Adım 5'in "bloğu geri çıkar"ı DETERMİNİST DEĞİLDİ** — sınır işareti yoktu ⇒ builder kendi
+>    ad-hoc çıkarıcısını yazacaktı; **SAPMA-3'ü doğuran araç-hattı sınıfının ta kendisi**, üstelik
+>    "kanıt adımı" diye emredilmiş hâli. Sınır satırları (`<<<BEGIN RAW DIFF`) pinlendi.
+> 4. **[MAJÖR] `git diff … > dosya` PowerShell 5.1'de UTF-16LE+CRLF yazar** ⇒ adım 5/6 garantili patlardı;
+>    ayrıca `--whitespace` `git apply`'ın seçeneğidir, `git diff`'in değil. `--output=` pinlendi.
+> 5. **[MAJÖR] KANIT'ların ÖZET bölümü sıraya dâhil değildi** — `mutant-10` ve `mutant-11`'in gerekçeleri
+>    ("D5-a isDeleted hiç yazmadığı için…", "tag EKLER ama KALDIRMAZ") birleşik senaryoda **yanlışlanıyor**.
+> 6. **[MAJÖR] §2'nin "kalan 6 mutant v5 tablosundakidir" cümlesi `mutant-1`'i yanlış sayıya bağlıyordu.**
+> 7. **[MAJÖR] Ara dosyaların silinmesi emredilmemişti** ⇒ 16 izlenmeyen dosya, kriter 4 ("temiz ağaç") düşerdi.
 
 > **v3'ün kusurları — ÜÇÜNCÜ TUR, 2 BLOKER + 3 MAJÖR (ikisi de v3'ün KENDİ düzeltmesinin yan etkisiydi):**
 > 1. **[BLOKER] §2 ile §6 `mutant-16` üzerinde ÇELİŞİYORDU** — §2 "yeniden koşulur, KANIT güncellenir",
@@ -109,9 +126,10 @@ builder'ın KANIT'ında da kayıtlı. **`mutant-16` için beklenen TAM liste Ü�
 D0-c bu dilimde **değişmez** (`TaskMaterializationD0Tests.cs`'e dokunulmaz, `D5Scenario`'yu kullanmaz)
 ⇒ yan hasar birleştirmeden etkilenmez. v5 §5:385 hücresi de buna göre errata edilir.
 
-**MUHAFIZIN DOĞRU OKUNUŞU:** §3'ün "fazla/az kırılırsa DUR" kuralı, **yukarıda adı geçen iki öngörülen
-genişleme hariç** uygulanır (`mutant-14` = 2 test · `mutant-16` = 3 test). Kalan 6 mutant için beklenen
-sayı v5 §5 tablosundakidir.
+**MUHAFIZIN DOĞRU OKUNUŞU:** §3'ün "fazla/az kırılırsa DUR" kuralı şu beklenen sayılara göre uygulanır:
+`mutant-14` = **2** · `mutant-16` = **3** (yukarıdaki iki öngörülen genişleme) · `mutant-1` = **2**
+(**§E4'ün TAM adlı pini geçerlidir, v5 §5:370'in gevşek okunuşu DEĞİL — o 3 sanılabilir**) ·
+kalan 5 (`2,7,9,10,11`) = **1'er test**, v5 §5 tablosundaki gibi.
 
 ## 3. KİLİTLİ KARARLAR (Onur, 19-20 Tem 2026)
 
@@ -207,7 +225,10 @@ adım 4'te yanar (`MaxStamp()` ölü doğan add'ın damgasını da sayar, `OrSet
 
 **ORDER KANALI PİNİ (v5'ten aynen):** `Wire`'da Order yardımcısı YOKTUR; `listPos`/`boardPos`/`pos` Order
 kanalıdır, `Fields`'e konursa op `RejectedRegistryViolation` ile elenir ve test **yanlış sebeple** kırmızı olur.
-`WireOp` **inline** kurulur. Adım 8'in TaskList yazımları **ActorA**'dır.
+`WireOp` **inline** kurulur. **ACTOR PİNİ: adım 6 DIŞINDAKİ TÜM op'lar `ActorA` ile push edilir**
+(adım 0 dâhil — adım 0'ın actor'ı `Adim6`'nın "ilk yazan sahiplenir" assert'ini belirler).
+**ADLANDIRMA UYARISI:** `task_tags.tag` kolonu **ELEMANI** tutar (`PresentElements()`), tag Guid'ini değil;
+`D5Ids.Tag3/Tag4` isimleri tersini çağrıştırır — kova (i)'deki beklenen değer `el1`'dir.
 **YARDIMCI TAŞIMA PİNİ:** `OrderOp` **her iki** test dosyasından (`LiteralOracleD5bTests.cs:190-193` ve
 `MaterializationRoundTripTests.cs:92-95`) ve `TaskListFieldOp` (yalnız D5-b'de) **SİLİNİR**, kurucuya taşınır.
 `ReadTagsAsync` (her iki dosyada) ve `ReadTimestampAsync` (D5-a'da) **KALIR** — okuma yardımcılarıdır.
@@ -306,8 +327,11 @@ yazılmış ve pazarlıksız emre çevrilmişti.
 - **`mutant-16-order-channel-read-from-fields.txt`'in diff BLOĞU TEMİZDİR** (gerçek hash'ler
   `a8e52a5..75f98a7`) — **SAPMA-3 gerekçesiyle yeniden YAZILMASI gerekmez.** Ama bu dosya **§2 gereği
   YENİDEN KOŞULUR** (kapısı D5'tedir): KANIT'ın **(b) ham kırmızı** ve **(c) yeşil-sonrası** bölümleri
-  yeni ölçümle değiştirilir, diff bloğu aşağıdaki 4 adımlı sırayla **taze üretilir**.
-  *(v3 burada "dokunma, yeniden koşma" diyordu — §2 ile ÇELİŞİYORDU, v4'ün düzeltmesi.)*
+  yeni ölçümle değiştirilir, diff bloğu aşağıdaki **6 adımlı** sırayla **taze üretilir**.
+  **BEDAVA KONTROL:** `src/**` değişmediği için taze `git diff` çıktısı mevcut blokla **bayt özdeş** olmalıdır;
+  ayrışırsa **DUR ve bildir**.
+  *(v3 "dokunma, yeniden koşma" diyordu — §2 ile çelişiyordu; v4 sırayı 6'ya çıkarırken burada "4 adımlı"
+  yazmayı unutmuştu — aynı dikişin üçüncü kırılması, v5'in düzeltmesi.)*
 - **`mutant-1-materializer-delta-columns.txt`'in diff bloğu GERÇEKTEN bozuktur ama sebebi başkadır:**
   `index xxxxxxx..yyyyyyy 100644` **yer tutucu** blob hash'leridir ⇒ blok `git diff` çıktısı değil **elle
   yazılmıştır**; ayrıca `@@ -36,9 +36,26 @@` hunk sayaçları gövdeyle uyuşmaz ⇒ blok parse edilemez.
@@ -316,24 +340,57 @@ yazılmış ve pazarlıksız emre çevrilmişti.
   `git apply --check` yamanın **mevcut ağaca** uygulanabilirliğini sınar; mutasyon hâlâ uygulanmışken
   koşulursa "does not apply" verir ve builder **ikinci bir sahte KANIT satırı** yazar (düzeltilmeye
   çalışılan kusurun aynısı). Sıra:
-  1. mutasyonu uygula → `git diff -- <dosya> > <temp>.patch`;
-  2. `<temp>.patch`'in **ham içeriğini** KANIT'ın (a) bölümüne yapıştır (tek karakter değiştirmeden);
-  3. `dotnet build` + **TAM SUITE** koş → ham kırmızı KANIT (b)'ye;
+  1. mutasyonu uygula → **`git diff --output=<temp>.patch -- <dosya>`**
+     *[PAZARLIKSIZ: `>` YÖNLENDİRMESİ KULLANMA. PowerShell 5.1'in `>` operatörü **UTF-16LE + CRLF** yazar;
+     adım 5 her satırı farklı gösterir, adım 6 "does not apply" verir. `--output` baytları git'e yazdırır.]*
+  2. `<temp>.patch`'in **ham içeriğini** KANIT'ın diff bölümüne yapıştır — **SINIR SATIRLARI ARASINA**:
+     ```
+     <<<BEGIN RAW DIFF
+     …git diff çıktısı, tek karakter değiştirilmeden…
+     >>>END RAW DIFF
+     ```
+     *[PAZARLIKSIZ: sınır satırları olmadan "geri çıkarma" deterministik değildir ve builder kendi ad-hoc
+     çıkarıcısını yazar — **SAPMA-3'ü doğuran araç-hattı sınıfının ta kendisi**. Sınır satırları arasında
+     diff'ten başka HİÇBİR karakter olmaz.]*
+  3. `dotnet build` + **TAM SUITE** koş → ham kırmızı KANIT'ın (b) bölümüne;
   4. `git checkout -- <dosya>` ile **revert et**, `dotnet build` + **TAM SUITE** koş → ham yeşil özet
-     KANIT (c)'ye *(KANIT v2.1 kuralı (c); sıradan düşerse atlanır)*;
-  5. **KANIT dosyasına YAPIŞTIRILAN bloğu geri çıkar** (`<kanit>.extracted`) ve
-     `git diff --no-index <temp>.patch <kanit>.extracted` → **BOŞ** olmalı
-     *(asıl onarılan kusur, KANIT'a yazılan bloğun elle üretilmiş olmasıdır; yalnız `<temp>.patch`'i
-     doğrulamak yapıştırma bozulmasını GÖREMEZ)*;
-  6. temiz ağaçta `git apply --check <kanit>.extracted` → **exit 0**.
-  **(5) ve (6)'nın çıktısını her KANIT'a ayrı ayrı yaz.** Windows'ta satır sonu farkı çıkarsa
-  `--whitespace=nowarn` kullan ve bunu sapma olarak bildir.
+     KANIT'ın (c) bölümüne *(KANIT v2.1 kuralı (c); sıradan düşerse atlanır)*;
+  5. bloğu geri çıkar: `sed -n '/^<<<BEGIN RAW DIFF$/,/^>>>END RAW DIFF$/p' <kanit> | sed '1d;$d' > <kanit>.extracted`
+     sonra **`git diff --no-index --ignore-cr-at-eol <temp>.patch <kanit>.extracted`** → çıktı **BOŞ** ve
+     **exit 0** olmalı *(asıl onarılan kusur, KANIT'a yazılan bloğun elle üretilmiş olmasıdır; yalnız
+     `<temp>.patch`'i doğrulamak yapıştırma bozulmasını GÖREMEZ)*;
+  6. temiz ağaçta **`git apply --check --whitespace=nowarn <kanit>.extracted`** → **exit 0**
+     *(`--whitespace` `git apply`'ın seçeneğidir, `git diff`'in DEĞİL — adım 5'e verme)*;
+  7. `<temp>.patch` ve `<kanit>.extracted` **SİLİNİR**; `git status` boş olduğu rapora yazılır
+     *(ana spec kriter 4: "temiz ağaçta kalıntı yok"; 8 mutant × 2 dosya = 16 izlenmeyen dosya olurdu)*.
+  **(5), (6) ve (7)'nin çıktısını her KANIT'a ayrı ayrı yaz.**
+
+**KANIT ÖZET BÖLÜMLERİ DE YENİDEN YAZILIR [PAZARLIKSIZ].** Yeniden koşulan 8 dosyanın
+`4) OZET — KIRILAN TESTLER` bölümü (`HEDEF` / `YAN ISIRMA` / `TOPLAM: Failed: N`) yeni ölçümle güncellenir.
+**D5-a'nın ESKİ senaryosuna atıf yapan GEREKÇELER yanlışlanmıştır ve düzeltilmelidir:**
+`mutant-10`'un *"D5-a'nin Task testi isDeleted hic yazmadigi icin…"* ve `mutant-11`'in *"D5-a'nin Task testi
+bir tag EKLER ama hic KALDIRMAZ"* cümleleri — birleşik senaryoda D5-a adım 4/9'da `isDeleted` **yazar** ve
+adım 3'te tag **kaldırır**. *(Sonuç yine 1 test kalır; çöken şey gerekçedir — ama yanlış gerekçe KANIT'ta
+kalamaz.)* `mutant-14`'ün `TOPLAM: Failed: 1` satırı **2** olur.
 
 **SAPMA-4 [zorunlu].** `KANIT/slice-3a/verify-run-raw.txt` ve `verify-run-full.txt` **silinir** (artık dosyalar).
 Kanonik `verify-run.txt` tam ve `EXIT_CODE=0` içerir — **dokunma**.
 
-**ERRATA [v5 kriter 6(b)].** Listeye `Domain/Sync/Projection/ProjectionFields.cs` eklenir (Cowork SAPMA-2:
+**ERRATA-1 [v5 kriter 6(b)].** Listeye `Domain/Sync/Projection/ProjectionFields.cs` eklenir (Cowork SAPMA-2:
 dosya 5(a)'nın `Sync/Projection/*` jokerince zaten kapsanıyordu, 6(b)'nin sayımı eksikti).
+
+**ERRATA-2 [v5 §5:400 — `mutant-13`]. ÖLÇÜMLE YANLIŞLANMIŞ HÜCRE.** v5 §5:400 *"Üç-kova assert'i de kırılır —
+KANIT'ın kırılan-test listesi ikisini de gösterecektir"* diyor. **Cowork kendi koşumuyla ölçtü: YALNIZ
+canlılık assert'i kırıldı (SyncCore 39/40 = TEK test).** Builder'ın KANIT'ı da bunu doğruluyor. Üstelik v5
+kendi §D2b:223'üyle de çelişiyordu (üç-kova kuralı donmuş numaralandırmayı **göremez**). **Cümle SİLİNİR;
+beklenen tam liste TEK testtir:** `FieldStrategyRegistryCoverageTests.DescribeFieldKeys_derives_live_…`.
+*`mutant-13` yeniden KOŞULMAZ (kapısı D2b, `D5Scenario`'yu kullanmaz) — errata yalnız metinseldir.*
+**Bu, `mutant-16` vakasının aynası ve AYNI SINIFI:** orada spec **eksik** sayıyordu (yanlış "FAZLA ⇒ DUR"),
+burada **fazla** söylüyor (yanlış "AZ ⇒ DUR"). İkisi de bu oturumda ölçülüp spec'e taşınmamıştı.
+
+**ERRATA-3 [v5 kriter 9].** Kriter hangi veritabanında ölçüleceğini yazmıyordu (Cowork SAPMA-5).
+Eklenir: *"ölçüm **kalıcı compose volume'ünde** (`momentum_momentum-pgdata`) yapılır, efemeral
+Testcontainers DB'sinde değil."*
 
 **KANIT KURALI v2.1 aynen yürürlükte:** `DOTNET_CLI_UI_LANGUAGE=en` · **ham** koşucu özeti + kırılan testlerin
 koşucudan kopyalanmış tam adları · hiçbir karakter değiştirilmez · her KANIT: (a) tam diff, (b) ham kırmızı,
