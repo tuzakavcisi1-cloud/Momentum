@@ -138,10 +138,21 @@ public sealed class SyncStore(SyncDbContext db) : ISyncStore
     private async Task UpsertTagAsync(string entityType, Guid entityId, string setName, string element, Guid tag, Hlc? hlc, bool cancelled, CancellationToken cancellationToken)
     {
         // A later add of an already-cancelled tag ONLY fills hlc (cancelled stays -> born-dead stamp kept, B4).
+        // ADR 0002 ERRATA E-1b: GREATEST is a NAMED EXCEPTION to "no SQL LWW/CRDT implementation" (same
+        // pattern as sync_client_clock's K2-A4 GREATEST) -- the Domain decision is already made (the
+        // caller passed the resolved max), but a caller that persists WITHOUT hydrating first (a stale
+        // direct write) must not be able to drag an existing higher stamp backwards. Text GREATEST is
+        // safe here: Hlc.Encode() is fixed-width/lowercase-hex and the column is COLLATE "C" (D3b), so
+        // byte order matches Hlc.CompareTo; Postgres GREATEST ignores NULL (a tombstone-only row's NULL
+        // hlc never beats a real stamp).
+        // NOTE (asymmetry, intentionally left alone per GOREV slice-2c D3): this DO UPDATE does not
+        // touch `cancelled` -- safe today because adds always run before removes in one op's delta, but
+        // that ordering is an implicit dependency, not enforced by this statement.
         await using var command = await db.CreateRawCommandAsync(
             "INSERT INTO sync_orset_tags (entity_type, entity_id, set_name, element, add_tag, hlc, cancelled) " +
             "VALUES (@t, @e, @s, @el, @tag, @h, @c) " +
-            "ON CONFLICT (entity_type, entity_id, set_name, element, add_tag) DO UPDATE SET hlc = excluded.hlc",
+            "ON CONFLICT (entity_type, entity_id, set_name, element, add_tag) " +
+            "DO UPDATE SET hlc = GREATEST(excluded.hlc, sync_orset_tags.hlc)",
             cancellationToken);
         AddSetKey(command, entityType, entityId, setName, element, tag);
         command.Parameters.AddWithValue("h", (object?)hlc?.Encode() ?? DBNull.Value);

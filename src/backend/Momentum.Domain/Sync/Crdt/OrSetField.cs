@@ -51,12 +51,33 @@ public sealed class OrSetField
     private static bool IsActive(ElementState element, Guid tag) =>
         element.Adds.ContainsKey(tag) && !element.Cancelled.Contains(tag);
 
-    /// <summary>Records an add (idempotent per tag). Membership depends on the tombstone set.</summary>
+    /// <summary>Records an add (idempotent per tag, max-join — ADR 0002 ERRATA E-1). Membership depends
+    /// on the tombstone set.</summary>
     public void ApplyAdd(SetAdd add)
     {
         ArgumentNullException.ThrowIfNull(add);
         var element = GetOrCreate(add.Element);
-        element.Adds.TryAdd(add.Tag, add.Hlc); // first stamp kept; born-dead if already cancelled
+        MergeStamp(element.Adds, add.Tag, add.Hlc); // max-join; born-dead if already cancelled
+    }
+
+    /// <summary>
+    /// ERRATA E-1: a CvRDT merge must be a semilattice JOIN (idempotent + commutative + associative).
+    /// "First stamp wins" (the original bug) and "last stamp wins" are both idempotent but NOT
+    /// commutative — two different ingest orders keep two different stamps, and since
+    /// <see cref="MaxStamp"/> feeds the DERIVED K2-C4 conflict flag, that flag flipped 1/0 depending on
+    /// order even though set MEMBERSHIP itself converged. The fix: keep the stamp with the greater full
+    /// <see cref="Hlc.CompareTo"/> — never just <c>WallMs</c> (equal-WallMs collisions at the clamp
+    /// ceiling are exactly where the bug lived). Shared by <see cref="ApplyAdd"/> (live) and
+    /// <see cref="LoadTag"/> (hydrate) so the rule is IDENTICAL in both paths — <see cref="LoadTag"/>
+    /// must not simply call <see cref="ApplyAdd"/>, or a mutation that breaks one collapses into the
+    /// other and loses distinguishability (GOREV slice-2c D2 UYGULAMA PİNİ).
+    /// </summary>
+    private static void MergeStamp(Dictionary<Guid, Hlc> adds, Guid tag, Hlc candidate)
+    {
+        if (!adds.TryGetValue(tag, out var existing) || candidate.CompareTo(existing) > 0)
+        {
+            adds[tag] = candidate;
+        }
     }
 
     /// <summary>Cancels the observed tags permanently (tombstone), remapping compacted tags first.</summary>
@@ -76,6 +97,15 @@ public sealed class OrSetField
     /// gcHorizon compaction (K2-C2): each element's below-horizon non-cancelled add-tags collapse to a
     /// single canonical tag (highest <c>(Hlc, Tag-hex)</c>). Cancelled and above-horizon tags are kept.
     /// Removed tags are remapped to the canonical so later removes still land (composed transitively).
+    /// <para>
+    /// D6 PIN (GOREV slice-2c): <c>canonical</c> MUST be the arg-max of <c>belowActive</c> (by
+    /// <see cref="Hlc.CompareTo"/>, tag-hex only as the final tiebreak) so that <see cref="MaxStamp"/> is
+    /// PRESERVED across compaction — every dropped tag's stamp is, by construction, ≤ the canonical's.
+    /// If the canonical selection rule ever changes (e.g. tag-hex-first, or "first below-horizon tag"),
+    /// <see cref="MaxStamp"/> would silently drop a stamp and the derived K2-C4 conflict flag would
+    /// regress with NO test failing here — this invariant is what stands between that and silence
+    /// (see the companion unit test asserting MaxStamp is unchanged before/after compaction).
+    /// </para>
     /// </summary>
     public void CompactBelow(Hlc horizon)
     {
@@ -220,13 +250,21 @@ public sealed class OrSetField
 
     // --- slice-2b1 D0 (ADDITIVE): hydrate from / dump to persistence rows --------------------------
 
-    /// <summary>Restore a persisted tag row: <paramref name="hlc"/>=null means a tombstone-only marker.</summary>
+    /// <summary>
+    /// Restore a persisted tag row: <paramref name="hlc"/>=null means a tombstone-only marker. Uses the
+    /// SAME max-join as <see cref="ApplyAdd"/> (<see cref="MergeStamp"/>, ADR 0002 ERRATA E-1) — a
+    /// hydrate path that just overwrote with "last row wins" would contradict the live-apply rule.
+    /// NOTE (D2, GOREV slice-2c): this is an API-CONTRACT gate, not a production-path gate — the
+    /// persisted PK is (entity_type, entity_id, set_name, element, add_tag), so production hydrate
+    /// (<c>SyncRowHydration</c>) calls this AT MOST ONCE per (element, tag); the max-join only becomes
+    /// observable if a caller invokes it twice for the same key (exactly what the D2 unit test does).
+    /// </summary>
     public void LoadTag(string element, Guid tag, Hlc? hlc, bool cancelled)
     {
         var state = GetOrCreate(element);
         if (hlc is { } stamp)
         {
-            state.Adds[tag] = stamp;
+            MergeStamp(state.Adds, tag, stamp);
         }
 
         if (cancelled)

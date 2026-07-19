@@ -56,6 +56,63 @@ public sealed class OrSetProperties
         return set.Contains("el0");
     }
 
+    /// <summary>
+    /// D2d (GOREV slice-2c, ADR 0002 ERRATA E-1) — commutativity property, GENERATOR PINNED: stamps draw
+    /// <c>WallMs</c> from a small 3-value pool with <c>Counter</c>/<c>ClientIdx</c> varying independently,
+    /// so WallMs-EQUAL/Counter-or-ClientId-DIFFERENT collisions are FORCED to occur often. <see cref="H"/>
+    /// (used by the other P7 tests) fixes Counter=0/ClientIdx=0 — there, WallMs equality means "IDENTICAL
+    /// stamp", which would let a half-max ("WallMs-only") merge rule pass completely undetected. That is
+    /// exactly mutant-7's kill surface, and exactly where the real bug lived: duplicate clamp-ceiling
+    /// WallMs values with different Counter/ClientId (KANIT/slice-2b2 BULGU-3).
+    /// </summary>
+    [Fact]
+    public void P8_orset_add_merge_is_order_independent_including_wallms_ties()
+    {
+        var stampGen =
+            from wallOffset in Gen.Int[0, 2]
+            from counter in Gen.UInt[0u, 3u]
+            from clientIdx in Gen.Int[0, 2]
+            select new Hlc(1_700_000_000_000 + wallOffset, counter, Ids.Client(clientIdx));
+
+        (from stamps in stampGen.Array[1, 8]
+         from shuffleSeed in Gen.Int[1, int.MaxValue]
+         select (stamps, shuffleSeed))
+            .Sample(
+                t =>
+                {
+                    var trueMax = t.stamps.Aggregate((a, b) => a.CompareTo(b) >= 0 ? a : b);
+
+                    MaxStampAfterApplying(t.stamps).ShouldBe(trueMax);
+                    MaxStampAfterApplying(t.stamps.Reverse().ToArray()).ShouldBe(trueMax);
+                    MaxStampAfterApplying(Shuffled(t.stamps, t.shuffleSeed)).ShouldBe(trueMax);
+                },
+                iter: PropertyConfig.Iter);
+    }
+
+    private static Hlc MaxStampAfterApplying(IReadOnlyList<Hlc> stamps)
+    {
+        var set = new OrSetField();
+        foreach (var stamp in stamps)
+        {
+            set.ApplyAdd(new SetAdd("el0", Ids.Tag(0), stamp));
+        }
+
+        return set.MaxStamp()!.Value;
+    }
+
+    private static Hlc[] Shuffled(Hlc[] stamps, int seed)
+    {
+        var copy = (Hlc[])stamps.Clone();
+        var rng = new Random(seed);
+        for (var i = copy.Length - 1; i > 0; i--)
+        {
+            var j = rng.Next(i + 1);
+            (copy[i], copy[j]) = (copy[j], copy[i]);
+        }
+
+        return copy;
+    }
+
     [Fact]
     public void P7_remove_only_cancels_observed_tags()
     {

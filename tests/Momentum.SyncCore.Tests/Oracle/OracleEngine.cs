@@ -288,7 +288,17 @@ public sealed class OracleEngine
             foreach (var add in delta.Adds)
             {
                 var el = GetElement(set, add.Element);
-                el.Adds.TryAdd(add.Tag, add.Hlc);
+
+                // ERRATA E-1 (D1b, GOREV slice-2c): independent fix -- written in the oracle's own naive
+                // style, NOT copied from Momentum.Domain.Sync.OrSetField (isolation rule, top of file). A
+                // CvRDT merge must be a semilattice JOIN: keep whichever stamp compares greater under the
+                // full Hlc order. "First wins" (the original oracle bug, mirroring production's own) is
+                // idempotent but not commutative -- P3 (OracleDiffProperty) diverges from production
+                // without this fix (KANIT/slice-2c/d1b-justification-p3-diverges-after-d1-alone.txt).
+                if (!el.Adds.TryGetValue(add.Tag, out var existingStamp) || add.Hlc.CompareTo(existingStamp) > 0)
+                {
+                    el.Adds[add.Tag] = add.Hlc;
+                }
             }
 
             foreach (var remove in delta.Removes)

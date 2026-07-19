@@ -68,4 +68,22 @@ public sealed class SchemaTests(PostgresFixture fixture)
             "SELECT collation_name FROM information_schema.columns WHERE table_name = 'outbox_messages' AND column_name = 'hlc'"))
             .ShouldBe("C");
     }
+
+    /// <summary>
+    /// D3b (GOREV slice-2c): E-1b's correctness (text GREATEST == Hlc.CompareTo) depends on
+    /// COLLATE "C" on the columns it runs against; only <c>outbox_messages.hlc</c> was ever asserted.
+    /// A NEW [Fact] (existing test bodies are unchanged, per kabul kriteri 2) covers the other two.
+    /// </summary>
+    [Fact]
+    public async Task Orset_tag_and_client_clock_hlc_columns_are_collation_c()
+    {
+        var connectionString = await TestDatabase.CreateAsync(fixture);
+
+        (await Db.ScalarAsync<string>(connectionString,
+            "SELECT collation_name FROM information_schema.columns WHERE table_name = 'sync_orset_tags' AND column_name = 'hlc'"))
+            .ShouldBe("C");
+        (await Db.ScalarAsync<string>(connectionString,
+            "SELECT collation_name FROM information_schema.columns WHERE table_name = 'sync_client_clock' AND column_name = 'hlc'"))
+            .ShouldBe("C");
+    }
 }

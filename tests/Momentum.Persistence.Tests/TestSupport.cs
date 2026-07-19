@@ -118,6 +118,18 @@ public sealed class SyncTestApp : IAsyncDisposable
     }
 
     /// <summary>
+    /// slice-2c D3: calls <c>ISyncStore.PersistDeltaAsync</c> DIRECTLY on a caller-supplied (typically
+    /// UNHYDRATED) <see cref="EntityState"/> -- no <c>LockEntityAsync</c>, no <c>HydrateAsync</c>. Proves
+    /// the storage-level GREATEST on <c>sync_orset_tags.hlc</c> holds even when a caller skipped the
+    /// normal lock+hydrate discipline (the D0/D0-b pattern, repeated for the OR-Set tag column).
+    /// </summary>
+    public async Task PersistSetDeltaWithoutHydrationAsync(ChangeOperation op, EntityState state, CancellationToken cancellationToken = default)
+    {
+        await using var scope = _provider.CreateAsyncScope();
+        await scope.ServiceProvider.GetRequiredService<ISyncStore>().PersistDeltaAsync(op, state, cancellationToken);
+    }
+
+    /// <summary>
     /// slice-2b2 D0: calls <c>IClientClock.UpsertGreatestAsync</c> DIRECTLY, WITHOUT the client advisory
     /// lock (no <c>LockClientAsync</c> call) -- simulates a future "forgot the lock" code path to prove
     /// the storage-level GREATEST invariant holds independent of caller discipline.
