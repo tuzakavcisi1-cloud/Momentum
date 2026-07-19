@@ -55,6 +55,16 @@ public sealed class EntityState
         GetOrCreate(_groups, name).Load(fields, key);
 
     /// <summary>
+    /// GOREV slice-3a D2a: whether this entity is deleted, per the Ordinal-equality rule (ADR 0002
+    /// K2-C4) -- the ONE authority for "isDeleted"; the Application read-model materialization must call
+    /// THIS, never re-implement the check (<c>bool.TryParse</c> is FORBIDDEN there -- it is case-insensitive
+    /// and trims whitespace, diverging from this rule).
+    /// </summary>
+    public bool IsDeleted =>
+        _fields.TryGetValue(IsDeletedField, out var d) && d.HasValue
+        && string.Equals(d.Value, DeletedValue, StringComparison.Ordinal);
+
+    /// <summary>
     /// C4 delete/edit conflict surfacing (DERIVED): <c>isDeleted == "true"</c> AND some other write's
     /// stamp is strictly greater than the winning <c>isDeleted</c> key. Scalar/order/group compare via
     /// full <see cref="HlcKey"/>; set writes compare via the <c>(WallMs, Counter, ClientId-hex)</c>
@@ -64,17 +74,12 @@ public sealed class EntityState
     {
         get
         {
-            if (!_fields.TryGetValue(IsDeletedField, out var deleted) || !deleted.HasValue)
+            if (!IsDeleted)
             {
                 return false;
             }
 
-            if (!string.Equals(deleted.Value, DeletedValue, StringComparison.Ordinal))
-            {
-                return false;
-            }
-
-            var deleteKey = deleted.Key;
+            var deleteKey = _fields[IsDeletedField].Key; // IsDeleted true implies the key's presence
 
             foreach (var (name, register) in _fields)
             {

@@ -128,6 +128,35 @@ public sealed class FieldStrategyRegistry
         return false;
     }
 
+    /// <summary>
+    /// GOREV slice-3a D2b: every field key an <paramref name="entityType"/> can carry — for the
+    /// registry-vs-projection full-coverage gate (unknown entityType -&gt; empty). TÜRETME PİNİ
+    /// (PAZARLIKSIZ): derived ONLY from <see cref="_entities"/>, never a hand-written literal list, so
+    /// this can never silently drift from the enforcement table in <see cref="IsOperationValid"/>.
+    /// </summary>
+    public IReadOnlyCollection<string> DescribeFieldKeys(string entityType)
+    {
+        if (!_entities.TryGetValue(entityType, out var def))
+        {
+            return [];
+        }
+
+        var keys = new HashSet<string>(StringComparer.Ordinal);
+        keys.UnionWith(def.Scalars);
+        keys.UnionWith(def.Fractionals);
+        keys.UnionWith(def.OrSets);
+        foreach (var (groupName, members) in def.Groups)
+        {
+            keys.Add(groupName);
+            foreach (var member in members)
+            {
+                keys.Add($"{groupName}.{member}");
+            }
+        }
+
+        return keys;
+    }
+
     private static FieldStrategyRegistry BuildDefault()
     {
         static IReadOnlySet<string> Set(params string[] names) => new HashSet<string>(names, StringComparer.Ordinal);

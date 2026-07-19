@@ -9,7 +9,7 @@ namespace Momentum.Persistence.Tests;
 public sealed class ModelValidationTests
 {
     [Fact]
-    public void Model_is_valid_and_has_seven_tables()
+    public void Model_is_valid_and_has_ten_tables()
     {
         var options = new DbContextOptionsBuilder<SyncDbContext>()
             .UseNpgsql("Host=localhost;Database=x;Username=x;Password=x")
@@ -17,7 +17,9 @@ public sealed class ModelValidationTests
 
         using var db = new SyncDbContext(options);
 
-        db.Model.GetEntityTypes().Count().ShouldBe(7); // building IModel throws if invalid
+        // GOREV slice-3a kriter 2/12 (measured, not assumed): 7 sync tables + tasks/task_lists/task_tags.
+        // malformed_fields (List<string> -> text[]) is an EF primitive collection, NOT a separate entity type.
+        db.Model.GetEntityTypes().Count().ShouldBe(10); // building IModel throws if invalid
     }
 }
 
@@ -85,5 +87,24 @@ public sealed class SchemaTests(PostgresFixture fixture)
         (await Db.ScalarAsync<string>(connectionString,
             "SELECT collation_name FROM information_schema.columns WHERE table_name = 'sync_client_clock' AND column_name = 'hlc'"))
             .ShouldBe("C");
+    }
+
+    /// <summary>
+    /// D3b (GOREV slice-3a): collation SCHEMA-DECLARATION gate for the new position/tag columns. This
+    /// pins the DECLARATION, not runtime behavior -- postgres:17-alpine uses musl libc, whose strcoll
+    /// approximates strcmp, so the default collation MAY behave identically to "C" here (see the
+    /// behavioral measurement in KANIT/slice-3a for mutant-6's honest bite-surface declaration).
+    /// </summary>
+    [Fact]
+    public async Task Task_position_and_tag_columns_are_collation_c()
+    {
+        var connectionString = await TestDatabase.CreateAsync(fixture);
+
+        foreach (var (table, column) in new[] { ("tasks", "list_pos"), ("tasks", "board_pos"), ("task_lists", "pos"), ("task_tags", "tag") })
+        {
+            (await Db.ScalarAsync<string>(connectionString,
+                "SELECT collation_name FROM information_schema.columns WHERE table_name = @t AND column_name = @c", ("t", table), ("c", column)))
+                .ShouldBe("C");
+        }
     }
 }

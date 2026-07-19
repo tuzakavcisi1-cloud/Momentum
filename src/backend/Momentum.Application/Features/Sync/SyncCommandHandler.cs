@@ -21,6 +21,7 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
     private readonly IProcessedOperations _processed;
     private readonly IClientClock _clientClock;
     private readonly ISyncPuller _puller;
+    private readonly IEntityMaterializer _materializer;
     private readonly TimeProvider _timeProvider;
 
     public SyncCommandHandler(
@@ -30,6 +31,7 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
         IProcessedOperations processed,
         IClientClock clientClock,
         ISyncPuller puller,
+        IEntityMaterializer materializer,
         TimeProvider timeProvider)
     {
         _transaction = transaction;
@@ -38,6 +40,7 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
         _processed = processed;
         _clientClock = clientClock;
         _puller = puller;
+        _materializer = materializer;
         _timeProvider = timeProvider;
     }
 
@@ -52,7 +55,7 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
         // --- push: one transaction per op (poison op drops only its own txn) ---
         foreach (var wireOp in request.Ops ?? [])
         {
-            var result = await ProcessOpAsync(wireOp, receiveWall, cancellationToken);
+            var result = await ProcessOpAsync(wireOp, receiveWall, command.ActorId, cancellationToken);
             applied.Add(WireMapping.ToWire(result));
             if (result is { Code: IngestResultCode.Applied, EffectiveOpHlc: { } effective }
                 && (maxEffective is null || effective.CompareTo(maxEffective.Value) > 0))
@@ -106,7 +109,7 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
         return new SyncResponse(serverHlc, nextCursor, hasMore, resyncRequired, applied, changes, snapshot);
     }
 
-    private async ValueTask<IngestResult> ProcessOpAsync(WireOp wireOp, long receiveWall, CancellationToken cancellationToken)
+    private async ValueTask<IngestResult> ProcessOpAsync(WireOp wireOp, long receiveWall, Guid authenticatedActorId, CancellationToken cancellationToken)
     {
         await using var scope = await _transaction.BeginOpScopeAsync(cancellationToken);
         var op = WireMapping.ToDomain(wireOp);
@@ -149,6 +152,9 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
         if (result is { Code: IngestResultCode.Applied, EffectiveOpHlc: { } effective })
         {
             await _store.PersistDeltaAsync(op, entity, cancellationToken);
+            // slice-3a F1: SAME op-transaction, right after PersistDeltaAsync, Applied branch ONLY.
+            // ownerId is the AUTHENTICATED actor -- NEVER op.ActorId (F5, mutant-3's target).
+            await _materializer.MaterializeAsync(op, entity, authenticatedActorId, cancellationToken);
             await _clientClock.UpsertGreatestAsync(op.ClientId, effective, cancellationToken);
             await _outbox.WriteAsync(BuildOutbox(wireOp, op, entity, effective, preProjectId, receiveWall), cancellationToken);
         }

@@ -26,6 +26,12 @@ public sealed class SyncDbContext(DbContextOptions<SyncDbContext> options) : DbC
 
     public DbSet<SyncGcState> SyncGcState => Set<SyncGcState>();
 
+    public DbSet<TaskRow> Tasks => Set<TaskRow>();
+
+    public DbSet<TaskListRow> TaskLists => Set<TaskListRow>();
+
+    public DbSet<TaskTagRow> TaskTags => Set<TaskTagRow>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);

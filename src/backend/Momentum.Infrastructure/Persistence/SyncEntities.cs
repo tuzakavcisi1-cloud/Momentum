@@ -75,3 +75,44 @@ public sealed class SyncGcState
     public int Id { get; set; }
     public long GcHorizonSeq { get; set; }
 }
+
+// GOREV slice-3a D1: materialized read rows. Reads/writes go through RAW SQL (EntityMaterializer /
+// TaskReadStore), mirroring every other Sync/* table -- these entities exist for migrations + model
+// validation only (ADR 0002 K2-I2).
+
+public sealed class TaskRow
+{
+    public Guid EntityId { get; set; }
+    public Guid OwnerId { get; set; }
+    public string? Title { get; set; }
+    public string? Notes { get; set; }
+    public int? Priority { get; set; }
+    public DateTimeOffset? DueAt { get; set; }
+    public DateTimeOffset? RemindAt { get; set; }
+    public Guid? ProjectId { get; set; }
+    public bool IsDeleted { get; set; }
+    public string? RecurrenceRule { get; set; }
+    public string? ListPos { get; set; }
+    public string? BoardPos { get; set; }
+    public string? Status { get; set; }
+    public DateTimeOffset? CompletedAt { get; set; }
+    public bool HasDeleteEditConflict { get; set; }
+    public List<string> MalformedFields { get; set; } = [];
+}
+
+public sealed class TaskListRow
+{
+    public Guid EntityId { get; set; }
+    public Guid OwnerId { get; set; }
+    public string? Name { get; set; }
+    public bool IsDeleted { get; set; }
+    public string? Pos { get; set; }
+    public bool HasDeleteEditConflict { get; set; }
+    public List<string> MalformedFields { get; set; } = [];
+}
+
+public sealed class TaskTagRow
+{
+    public Guid TaskId { get; set; }
+    public string Tag { get; set; } = string.Empty;
+}

@@ -19,6 +19,8 @@ public static class DependencyInjection
         services.AddScoped<IProcessedOperations, ProcessedOperations>();
         services.AddScoped<IClientClock, ClientClock>();
         services.AddScoped<ISyncPuller, SyncPuller>();
+        services.AddScoped<IEntityMaterializer, EntityMaterializer>(); // slice-3a D3
+        services.AddScoped<ITaskReadStore, TaskReadStore>(); // slice-3a D4
 
         // slice-2b2: dispatcher (D2) + scope-membership (D5) ports. OutboxClaimStore opens its OWN
         // NpgsqlConnection (never the shared SyncDbContext one, D2-g) but is still DI-scoped so

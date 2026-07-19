@@ -142,6 +142,8 @@ ApiVersionSet versionSet = app.NewApiVersionSet()
 HealthEndpoints.Map(app);
 DiagnosticsEndpoints.Map(app, versionSet);
 SyncEndpoints.Map(app, versionSet); // slice-2b1: POST /v1/sync
+TaskEndpoints.Map(app, versionSet); // slice-3a D4: GET /v1/tasks(/{id})
+TaskListEndpoints.Map(app, versionSet); // slice-3a D4: GET /v1/task-lists
 
 app.MapHub<SyncHub>("/hubs/sync"); // slice-2b2 D4: payload-less realtime signal
 

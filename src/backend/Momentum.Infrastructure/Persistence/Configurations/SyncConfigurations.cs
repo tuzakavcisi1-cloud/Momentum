@@ -114,3 +114,66 @@ public sealed class SyncGcStateConfiguration : IEntityTypeConfiguration<SyncGcSt
         builder.Property(x => x.GcHorizonSeq).HasColumnName("gc_horizon_seq").HasDefaultValue(0L);
     }
 }
+
+// GOREV slice-3a D1: materialized read rows (ADR 0002 K2-I2). Position/tag columns COLLATE "C" (D3b) --
+// fractional-index keys carry punctuation a linguistic collation may ignore at the primary level;
+// OrSetField already compares element identity via StringComparer.Ordinal.
+
+public sealed class TaskRowConfiguration : IEntityTypeConfiguration<TaskRow>
+{
+    public void Configure(EntityTypeBuilder<TaskRow> builder)
+    {
+        builder.ToTable("tasks");
+        builder.HasKey(x => x.EntityId);
+        builder.Property(x => x.EntityId).HasColumnName("entity_id").ValueGeneratedNever();
+        builder.Property(x => x.OwnerId).HasColumnName("owner_id");
+        builder.Property(x => x.Title).HasColumnName("title");
+        builder.Property(x => x.Notes).HasColumnName("notes");
+        builder.Property(x => x.Priority).HasColumnName("priority");
+        builder.Property(x => x.DueAt).HasColumnName("due_at");
+        builder.Property(x => x.RemindAt).HasColumnName("remind_at");
+        builder.Property(x => x.ProjectId).HasColumnName("project_id");
+        builder.Property(x => x.IsDeleted).HasColumnName("is_deleted").HasDefaultValue(false);
+        builder.Property(x => x.RecurrenceRule).HasColumnName("recurrence_rule");
+        builder.Property(x => x.ListPos).HasColumnName("list_pos").UseCollation("C");
+        builder.Property(x => x.BoardPos).HasColumnName("board_pos").UseCollation("C");
+        builder.Property(x => x.Status).HasColumnName("status");
+        builder.Property(x => x.CompletedAt).HasColumnName("completed_at");
+        builder.Property(x => x.HasDeleteEditConflict).HasColumnName("has_delete_edit_conflict").HasDefaultValue(false);
+        builder.Property(x => x.MalformedFields).HasColumnName("malformed_fields").HasDefaultValueSql("'{}'");
+        // Optimizes the default includeDeleted=false path; includeDeleted=true still needs a Sort (is_deleted
+        // as a leading column) -- deliberate, the default path is the one optimized (GOREV slice-3a D1).
+        builder.HasIndex(x => new { x.OwnerId, x.IsDeleted, x.ListPos, x.EntityId }).HasDatabaseName("ix_tasks_owner_deleted_listpos_entity");
+        builder.HasIndex(x => new { x.OwnerId, x.ProjectId }).HasDatabaseName("ix_tasks_owner_project");
+    }
+}
+
+public sealed class TaskListRowConfiguration : IEntityTypeConfiguration<TaskListRow>
+{
+    public void Configure(EntityTypeBuilder<TaskListRow> builder)
+    {
+        builder.ToTable("task_lists");
+        builder.HasKey(x => x.EntityId);
+        builder.Property(x => x.EntityId).HasColumnName("entity_id").ValueGeneratedNever();
+        builder.Property(x => x.OwnerId).HasColumnName("owner_id");
+        builder.Property(x => x.Name).HasColumnName("name");
+        builder.Property(x => x.IsDeleted).HasColumnName("is_deleted").HasDefaultValue(false);
+        builder.Property(x => x.Pos).HasColumnName("pos").UseCollation("C");
+        builder.Property(x => x.HasDeleteEditConflict).HasColumnName("has_delete_edit_conflict").HasDefaultValue(false);
+        builder.Property(x => x.MalformedFields).HasColumnName("malformed_fields").HasDefaultValueSql("'{}'");
+        builder.HasIndex(x => new { x.OwnerId, x.IsDeleted, x.Pos, x.EntityId }).HasDatabaseName("ix_task_lists_owner_deleted_pos_entity");
+    }
+}
+
+public sealed class TaskTagRowConfiguration : IEntityTypeConfiguration<TaskTagRow>
+{
+    public void Configure(EntityTypeBuilder<TaskTagRow> builder)
+    {
+        builder.ToTable("task_tags");
+        builder.HasKey(x => new { x.TaskId, x.Tag });
+        builder.Property(x => x.TaskId).HasColumnName("task_id");
+        // K2-E5 soft-ref (named pin, GOREV slice-3a D1): no FK to tasks.entity_id -- entity-cross-reference
+        // is soft everywhere else in this schema (outbox aggregate_id, sync_scalar_meta entity_id, ...).
+        builder.Property(x => x.Tag).HasColumnName("tag").UseCollation("C");
+    }
+}
