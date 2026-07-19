@@ -191,10 +191,16 @@ D9 KANIT KURALI iki sey sart kosar: (a) YALNIZ gercekten kosulmus test-kosucu ci
      (H9 + Reconnect). Benim tam-cozum kosumumda 3 test kirildi; ucuncusu
      DispatcherTests.Scope_transition_dispatches_to_both_old_and_new_scope_groups.
      Bu, kuralin (b) sikkinin dogrudan ihlalidir.
- (3) VAR OLMAYAN TEST SINIFI. mutant-1 KANIT'i "yesil kalan 30 test" arasinda
-     `ModelValidationTests` adini veriyor; repoda boyle bir sinif/dosya YOK. Ayrica
-     mutant-1, mutant-3 ve mutant-11'de assertion satir numaralari yanlis (kopyala-
-     yapistir izi). Bunlar, listenin kosum ciktisindan kopyalanmadigini gosteriyor.
+ (3) [DUZELTME -- 19 Tem 2026, bu maddenin ILK HALI YANLISTI] mutant-1 KANIT'inin
+     andigi `ModelValidationTests` sinifi REPODA VARDIR: tests/Momentum.Persistence.
+     Tests/SchemaTests.cs:9 (sinif adi dosya adindan FARKLI oldugu icin dosya-adiyla
+     arayan ilk tarama bulamadi). Bu maddeyi ilk yazarken bir alt-ajanin "sinif yok"
+     beyanini KENDIM DOGRULAMADAN aktardim -- builder'i tam bu kusurdan elestirirken
+     ayni kusuru isledim; sonraki hedefli denetim yakaladi ve burada duzeltiyorum.
+     AYAKTA KALAN kisim: mutant-1, mutant-3 ve mutant-11'de assertion satir numaralari
+     yanlis (kopyala-yapistir izi) -- listenin ham kosum ciktisindan kopyalanmadigini
+     bu gosteriyor. BULGU-4'un (1) ve (2) maddeleri de aynen ayaktadir; (2)'yi kendi
+     kosumumla dogrulamistim.
 
 AGIRLIK: Bu 2b1'in BULGU-1'i (mutanti HIC kosmadan "beklenir" yazmak) DEGILDIR --
   ben 11 mutantin 11'ini de kendim kosarak ISIRDIKLARINI dogruladim, yani mutantlar
