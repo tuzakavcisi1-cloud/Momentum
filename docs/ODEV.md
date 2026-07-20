@@ -35,7 +35,21 @@ tek başına değerlendirilmeyecektir. *(Doğrudan sonucu için bkz. §6.)*
 **2-3 hafta** — Onur'un kendi tahmini (Tuzak Avcısı projesine harcadığı süreyle kıyaslayarak).
 **Şirketin verdiği bir tarih DEĞİLDİR**; iç hedeftir ama bağlayıcı kabul edilir.
 
-Başlangıç: 18 Tem 2026. ⇒ Hedef teslim aralığı: **1–8 Ağu 2026**.
+Başlangıç: 18 Tem 2026. ⇒ İlk hedef teslim aralığı: 1–8 Ağu 2026.
+
+### 3.1 GÜNCELLEME [Onur, 20 Tem 2026 — K7-b]: hedef ~**15 Ağu 2026**
+
+Cowork'ün iş kırılımı 1–8 Ağu penceresine (**12-19 gün**) karşı **17-23 gün** iş gösterdi
+(kapı yükü dâhil; geçmiş dilimlerde ~%30). Onur **kapsamı sabit tutup takvimi esnetmeyi** seçti.
+*Reddedilen:* kesme sırasını şimdi kilitleyip alttan düşürmek · kapsam ve takvimi birlikte sabitleyip
+kapı yükünü düşürmek.
+
+**Bu bir TAHMİNDİR, ölçüm değildir** — ve esnetilen tarih şirketin verdiği bir tarih olmadığı için
+esnetme maliyeti dışsal değildir. **Ancak §8(2) hâlâ açıktır: ödevin ne zaman beklendiği bilinmiyor.**
+
+Plan [TAHMİN]: 21-23 Tem `slice-3a-auth` · 24 Tem-5 Ağu `slice-3b` (Flutter) ·
+6-8 Ağu gerçek zamanlı işbirliği istemcisi · 9-10 Ağu NLP hızlı ekleme ·
+11-12 Ağu CI/CD + paketleme · 13-15 Ağu tampon + teslim paketi. **Tampon yalnız 3 gün.**
 
 ## 4. Kapsam kilidi [Onur, 20 Tem 2026]
 
@@ -52,7 +66,27 @@ arama · karanlık mod.
 **(c) Farklılaştırıcılar: yalnız 1-2 tanesi.** Havuz: NLP hızlı ekleme · Kanban+Takvim görünümü ·
 time-blocking + Google Takvim · AI asistan. *(Önceki "dördü de" kararı bu kilitle daraltılmıştır.)*
 
-**Kapsam dışı [adlandırılmış]:** iOS fiili cihaz testi (Mac yok → yalnız CI'da derlenir).
+### 4.1 SEÇİM [Onur, 20 Tem 2026 — K7-a]: **YALNIZ NLP HIZLI EKLEME**
+
+Havuzdan **bir** farklılaştırıcı yapılacaktır: *doğal dille hızlı görev ekleme*
+(ör. `"yarın 17:00 rapor gönder #iş !p1"` → tarih + etiket + öncelik ayrıştırması).
+
+**Seçim gerekçesi:** §5'e göre Todoist'in **en çok övülen etkileşimi** budur ⇒ §2'nin
+"önce uygulamaya bakılacak" ölçütüne en doğrudan cevap. Ayrıca ayrıştırıcı **saf ve
+deterministiktir** ⇒ property + mutant kapısı kurulabilir (bu projenin kapı doktrini geçerli kalır),
+ve **backend değişikliği sıfırdır** — tarih/öncelik/etiket/RRULE alanları slice-3a'da zaten
+materyalize ediliyor.
+
+**Elenenler ve gerekçeleri [adlandırılmış]:**
+
+| aday | eleme gerekçesi |
+|---|---|
+| **AI asistan** | LLM çağrısı deterministik değil ⇒ **mutantla ısırtılamaz**; ya kapısız kalır (doktrin deliği) ya da kapı tiyatrosu doğurur. Ayrıca API anahtarı gerektirir ve **çevrimdışı vitriniyle çelişir**. |
+| **Time-blocking + Google Takvim** | OAuth + dış API + token saklama; **ikinci bir senkron/çakışma problemi** açar. Değerlendiricinin makinesinde hesap/ağ olmadan çalışmaz ⇒ §2'nin "**kesinlikle çalışan uygulama**" ölçütüne doğrudan tehdit. |
+| **Kanban + Takvim görünümü** | Elenmesi kalite değil **takvim** gerekçesiyledir: görsel etkisi en yüksek aday ve `boardPos`/fractional pos backend'de hazır, ama drag-drop + takvim widget'ı ~2-3 gün yer, widget testleri kırılgan, a11y kapısı zorlaşır. **Tampon açılırsa ilk geri çağrılacak adaydır.** |
+
+**Kapsam dışı [adlandırılmış]:** iOS fiili cihaz testi (Mac yok → yalnız CI'da derlenir) ·
+AI asistan · Google Takvim entegrasyonu · Kanban/Takvim görünümü.
 
 ## 5. Referans uygulamalar [Cowork araştırdı, 20 Tem 2026]
 
@@ -82,6 +116,26 @@ birlikte okunduğunda:
   daha az zarar verir**. Bu projenin doktrini zaten "beyan edilmiş sınır kabul edilebilir,
   gizlenmiş sınır edilemez"dir.
 
+### 6.1 GÜNCELLEME [Cowork kararı, 20 Tem 2026 — K7-c]: kritik yolun önüne **ince kimlik dilimi**
+
+Kritik yol slice-3b olarak kalır, ama önüne **`slice-3a-auth`** (TAHMİN 1,5-2 gün) konur.
+*(Onur kararı Cowork'e bıraktı; gerekçe kayda geçirilmiştir.)*
+
+**Gerekçe:** kimlik burada bir özellik değil **şema kararıdır** — çevrimdışı-öncelikli istemcide
+"bu yerel satır kimin", "token nerede duruyor", "401 gelince kuyruktaki yazımlar ne oluyor",
+"çıkışta yerel DB'ye ne oluyor" soruları Drift şemasını ve depo katmanını belirler; 3b'den sonraya
+bırakmak migration + yeniden yazım demektir. Ayrıca **gerçek zamanlı işbirliği vitrini iki gerçek
+kullanıcı ister** ve F5 kilidi (`owner_id` kimliği doğrulanmış actor'dan) ancak böyle fiilen
+devreye girer — bugün `WireOp.ActorId` **istemci-beyanlıdır**.
+
+**"Tam auth" bilinçli olarak seçilmedi.** Parola sıfırlama / e-posta doğrulama demoya sıfır katkı
+yapar ama SMTP + sır yönetimi + dış bağımlılık getirir — §4.1'de AI asistan ve Google Takvim'i
+eleyen risk sınıfının aynısı. **Yenileme token'ı yine de dâhildir:** çevrimdışı istemcide erişim
+token'ı süresi dolduğunda kuyruktaki yazımların kaybolmaması mimari zorunluluktur, konfor değil.
+
+**Auth kapsam dışı [adlandırılmış]:** parola sıfırlama · e-posta doğrulama · OAuth/sosyal giriş ·
+2FA · RBAC (paylaşım yetkisi işbirliği diliminde asgari düzeyde ele alınır).
+
 ## 7. Kapsamın kökeni — ne nereden geldi [şeffaflık]
 
 | madde | kaynak |
@@ -99,6 +153,13 @@ birlikte okunduğunda:
 ## 8. Açık kalemler
 
 1. Örnek uygulamanın adı — Onur hatırlarsa §5 güncellenir.
-2. Teslim biçimi (repo linki mi, paketlenmiş build mi, canlı sunum mu) — sorulmadı/söylenmedi.
-3. Farklılaştırıcılardan **hangi 1-2'sinin** yapılacağı — §4(c), henüz seçilmedi.
+2. **Teslim biçimi** (repo linki mi, paketlenmiş build mi, canlı sunum mu) — sorulmadı/söylenmedi.
+   **AÇIK VE ÖNEMLİ:** §3.1 takvimi esnetti; ödevin ne zaman ve hangi biçimde beklendiği hâlâ
+   bilinmiyor. Öğrenilirse §3 ve teslim paketi doğrudan etkilenir.
+3. ~~Farklılaştırıcılardan hangi 1-2'sinin yapılacağı~~ → **KAPANDI (20 Tem 2026):** yalnız
+   **NLP hızlı ekleme**, bkz. §4.1.
 4. CI/CD (GitHub Actions) — ADR 0001'in "yayına götürme sürecini biliyoruz" vaadi, henüz kurulmadı.
+   Plana girdi: 11-12 Ağu (§3.1).
+5. **Auth'un ürün-içi görünürlüğü** — §6.1 ince kimlik dilimini kilitledi, ama çok-kullanıcılı
+   *paylaşım* (liste/proje davet akışı) gerçek zamanlı işbirliği diliminde tasarlanacak; bugün
+   kapsamı belirsiz.
