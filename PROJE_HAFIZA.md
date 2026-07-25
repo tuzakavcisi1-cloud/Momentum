@@ -30,7 +30,11 @@ AÇIK [DOĞRULANMADI] (2): `flutter_secure_storage`'ın Windows şifreleme yönt
 AÇIK KAPI (1, adlandırılmış): **sızmış-parola listesinin lisans+CVE kapısı KOŞMADI** — `GOREV-slice-3c-auth` spec'inde koşar; geri dönüşü belgede yazılı.
 GİT (ölçüldü): HEAD `2acc9f0` · origin/main `56362ed` · **19 ileri, push yok** · `.git/index.lock` YOK.
   Ağaç: ` M PROJE_HAFIZA.md` · ` M docs/ADR/0003-kimlik-cekirdegi.md` · ` D docs/ADR/0003-kimlik-cekirdegi-v6-YAZIM-DEVAM-EDIYOR.md` · `?? arsiv/…v5….md` · `?? _to_delete/`
-ONUR'DAN BEKLENEN: **commit** (sandbox atamaz). ✅ **`_to_delete/` SİLİNDİ** (Onur, 25 Tem 2026, PowerShell): silmeden önce `Get-FileHash` ile **iki dosyanın da `6F6BE71A…38CB08`** olduğu Onur'un makinesinde doğrulandı ⇒ **bilgi kaybı YOK**; `Test-Path` **False**. Silme sonrası ağaç (Onur'un koşumu): ` M PROJE_HAFIZA.md` · ` M docs/ADR/0003-kimlik-cekirdegi.md` · ` D docs/ADR/0003-kimlik-cekirdegi-v6-YAZIM-DEVAM-EDIYOR.md` · `?? arsiv/…v5….md` — **commit tam bu hâlde atılır.**
+ONUR'DAN BEKLENEN: **commit** (sandbox atamaz). ✅ **`_to_delete/` SİLİNDİ** (Onur, 25 Tem 2026, PowerShell): silmeden önce `Get-FileHash` ile **iki dosyanın da `6F6BE71A…38CB08`** olduğu Onur'un makinesinde doğrulandı ⇒ **bilgi kaybı YOK**; `Test-Path` **False**. ✅ **COMMIT ATILDI (Onur, 25 Tem 2026): `b772ae8`** — *docs(adr-0003): v6 canonical…* · 3 dosya · +213 / −117 · ağaç **TEMİZ** · `origin/main` `56362ed`, **20 ileri, PUSH YOK**.
+  ⚠ **GİT LOG'UNDA YANILTICI BİR SATIR VAR — KAPI-6 BUNA ALDANMASIN [ölçüldü, içerik DOĞRU]:** `git add -A` sonrası git bir **yeniden adlandırma sezdi** ve commit çıktısına şunu yazdı:
+  *"rename `docs/ADR/0003-kimlik-cekirdegi-v6-YAZIM-DEVAM-EDIYOR.md` => `arsiv/0003-kimlik-cekirdegi-TASLAK-v5-2026-07-25.md` (93%)"*.
+  **Bu bir SEZGİSEL EŞLEŞTİRMEDİR, olan biteni TERS anlatır** (v6'nın arşive atıldığını ima eder). Gerçekte: v5'in içeriği arşive **kopyalandı**, v6'nın içeriği kanonik yola **yazıldı**, ara dosya **silindi**; git iki dosyayı %93 benzer buldukları için eşleştirdi.
+  **İÇERİK COMMIT'İN İÇİNDEN ÖLÇÜLDÜ (beyan değil):** `git show HEAD:arsiv/…v5….md | sha256sum` ⇒ **`758bd1bf…22ef6`** (= v5) · `git show HEAD:docs/ADR/0003-kimlik-cekirdegi.md | sha256sum` ⇒ **`6f6be71a…38cb08`** (= v6). **İkisi de DOĞRU.** ⇒ **kusur yalnız log'un OKUNUŞUNDA; ağaçta ve blob'larda kusur YOKTUR.**
 TÜM ÇALIŞMA: C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum
 
 
