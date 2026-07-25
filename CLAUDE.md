@@ -23,6 +23,14 @@ yeni büyük iş başlatma — **"dolu bağlamda ADR yazma yasağı" BURADAN ba�
 **Ölçemezsen yeşil de kırmızı da varsayma: ölçemediğini söyle, Onur'a sor.** Her büyük iş başında ve her
 checkpoint'te ölçümü **raporla**.
 
+## Git — sandbox'tan okuma [ÖLÇÜLDÜ, PAZARLIKSIZ]
+Cowork bağlı diskte **düz `git status` KOŞMAZ**: mount `unlink`'e izin vermediği için git
+`.git/index.lock`'u silemez ve **bayat kilit bırakır** — Onur'un bir sonraki `git add`/`commit`'i
+*"Unable to create '.git/index.lock': File exists"* ile patlar. **Her zaman:**
+`git --no-optional-locks status --porcelain` (kontrollü testle doğrulandı: kilit bırakmıyor).
+Aynı kural `git log`/`git diff` için de geçerlidir. Kilit oluşursa sandbox onu **silemez**,
+yalnız `mv` ile kenara alabilir; kalıcı silmeyi Onur yapar.
+
 ## Kırmızı çizgiler (değişmez) [PAZARLIKSIZ]
 1. Sırlar repoya girmez (.env + .gitignore + secret yönetimi).
 2. PII minimumda; gizlilik-öncelikli.

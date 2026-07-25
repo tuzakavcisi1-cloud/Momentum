@@ -12,7 +12,22 @@ DURUM: **ADR 0003 v5 YAZILDI ve KANONİK YOLA ALINDI. 9/9 BLOKER + 3 YENİ BULGU
   (170.261 bayt, sha256 `b85ce0b3…` = denetlenen sürümle **birebir aynı**). Arşivde artık **dört** taslak var.
   ⚠ **v5 DENETLENMEDİ.** Yapılan tek şey **öz-doğrulamadır** (kodlama · bayt/satır · numara bütünlüğü ·
   bayat referans taraması · ölçüm aracı koşumu). **BUNLAR KAPI DEĞİLDİR.**
-  origin/main = 56362ed · yerel HEAD = 060a37a · 15 ileri · **PUSH YOK**.
+  **✅ COMMIT ATILDI (Onur, 25 Tem 2026): `e29f60d`** — *docs(adr-0003): v5 - close all 9 blockers…*
+  **15 dosya · +4.806 / −3 satır.** Commit anında ağaç **TEMİZDİ** (`git status` boş). ⚠ **Bu checkpoint satırının kendisi `PROJE_HAFIZA.md`'yi yeniden kirletti** — commit sonrası tek kirli dosya budur ve bilinçlidir (hafıza kuralı: checkpoint YERİNDE ve ANINDA yazılır). Bayat `.git/index.lock` (0 bayt,
+  3 sa 24 dk) kaldırıldı. **🔻 GERİ ÇEKİLEN İDDİA:** Cowork önce *"sebebi ölçülmedi, tekrarlarsa
+  Kaspersky istisnasına bak"* dedi. **YANLIŞTI ve kontrollü testle ölçüldü:** bağlı diskte
+  **düz `git status` kilidi bırakıyor** (index'i tazeleyip yazmak istiyor, mount `unlink`'e izin
+  vermiyor ⇒ `warning: unable to unlink '.git/index.lock': Operation not permitted`), buna karşılık
+  **`git --no-optional-locks status` HİÇ kilit bırakmıyor**. ⇒ **Kilidi bu oturumun kendisi üretti.**
+  **YENİ KURAL (CLAUDE.md'ye yazıldı): Cowork sandbox'tan ASLA düz `git status` koşmaz.**
+  **İKİNCİ COMMIT** — *docs(claude,hafiza): forbid bare `git status` from the sandbox* (2 dosya).
+  ⇒ **origin/main = 56362ed · 17 ileri · PUSH YOK.**
+  ⚠ **Bu satır BİLİNÇLİ olarak kendi commit'inin sha'sını YAZMAZ.** *Gerekçe (bu oturumda fiilen yaşandı):*
+  bir not, kendisini içeren commit'in sha'sını taşıyamaz — sha'yı yazıp commit'lersen sha değişir,
+  düzeltirsen yine değişir; **sonsuz döngü**. `amend` bunu bir kez daha kanıtladı (`b211f8a` → `0810b8b`).
+  **KURAL: kendine-atıflı olgu, atıf yaptığı artefaktın içinde saklanmaz.** Güncel sha: `git log -1`.
+  **AĞAÇ TEMİZ** (`git --no-optional-locks status` boş) · `.git/index.lock` **yok** · `_to_delete/` silindi.
+  Commit'ten çıkarılıp koşuldu: ADR sha256 `758bd1bf…` (birebir) · araç `--altin-kume` **çıkış kodu 0**.
   ⚠ AĞAÇ (commit Onur'da): M CLAUDE.md · M PROJE_HAFIZA.md · M docs/ODEV.md
     ?? docs/ADR/0003-kimlik-cekirdegi.md (v5) · ?? araclar/adr-kapi-taramasi.py
     ?? KANIT/adr-0003/ · ?? arsiv/…v1/v2/v3/**v4**… · ?? _to_delete/ (yalnız v5'in ara dosyası — SİLİNEBİLİR)
