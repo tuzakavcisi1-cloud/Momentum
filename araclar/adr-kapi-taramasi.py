@@ -230,11 +230,19 @@ def tara(metin, kanonik_baslik=None):
     # B5-3: KAPILILIK YALNIZ ÇIPA SÜTUNUNDAN ÇÖZÜLÜR — §3'ün düz metninde/giriş
     # paragrafında/devir cümlesinde adı geçen bir karar KAPILI SAYILMAZ.
     kapili = set()
+    devredilmis = set()
     capasiz_tablo = []
     for bas_no, basliklar, govde in _tablolar(satirlar, mutant[0], mutant[1]):
         if basliklar and "çıpa" in basliklar[-1]:
             for _sn, hucreler in govde:
-                kapili |= set(JETON.findall(_son_dolu(hucreler)))
+                hucre = _son_dolu(hucreler)
+                # `[devir]` işaretli satır bir KAPI DEĞİLDİR: kararın kapısı başka bir belgede
+                # (ör. `slice-3b` spec'i) koşar. Çıpa sütununda görünmesi yalnız İZLENEBİLİRLİK
+                # içindir. Kapı sayılırsa hem sahte "kapılı" hem sahte ÇELİŞKİ üretir.
+                if "[devir]" in hucre:
+                    devredilmis |= set(JETON.findall(hucre))
+                    continue
+                kapili |= set(JETON.findall(hucre))
         else:
             capasiz_tablo.append((bas_no, basliklar[-1] if basliklar else "(başlıksız)", len(govde)))
 
@@ -264,8 +272,13 @@ def tara(metin, kanonik_baslik=None):
     kapili |= {_kok(j) for j in list(kapili)}
     beyanli |= {_kok(j) for j in list(beyanli)}
 
+    for kid in sorted(k for k in kararlar if k in devredilmis and k not in beyanli and k not in kapili):
+        bulgular.append(("K6", kararlar[kid],
+                         "DEVREDİLMİŞ AMA BEYANSIZ: %s çıpa sütununda `[devir]` işaretli ama §3.1'in "
+                         "'kapısız kalan' tablosunda YOK — devir, kapısızlık beyanının YERİNE GEÇMEZ." % kid))
+
     for kid, satir in sorted(kararlar.items()):
-        if kid not in kapili and kid not in beyanli:
+        if kid not in kapili and kid not in beyanli and kid not in devredilmis:
             bulgular.append(("K1", satir, "KAPISIZ-VE-BEYANSIZ KARAR: %s — ne §3'ün ÇIPA SÜTUNUNDA ne §3.1'de geçiyor." % kid))
     for jt, satir in sorted(alt_maddeler.items()):
         if jt not in kapili and jt not in beyanli:
@@ -275,8 +288,10 @@ def tara(metin, kanonik_baslik=None):
     # (Araç bunu ÇÖZMEZ, İHBAR EDER: ya kapı gerçek değildir ya beyan bayattır.)
     for kid in sorted(k for k in kararlar if k in kapili and k in beyanli):
         bulgular.append(("K6", kararlar[kid],
-                         "ÇELİŞKİ: %s hem §3'ün çıpa sütununda (kapılı) hem §3.1'de (kapısız beyanlı) geçiyor — "
-                         "ikisi aynı anda doğru olamaz; ya kapı süs ya beyan bayat." % kid))
+                         "ÖZELLİK DÜZEYİ BELİRSİZLİĞİ [ELLE DOĞRULA]: %s hem §3'ün çıpa sütununda (kapılı) hem "
+                         "§3.1'de (kapısız beyanlı) geçiyor. Araç KARAR-ID düzeyindedir: kararın BİR ÖZELLİĞİNİN "
+                         "kapısız olması meşru olabilir, ama bunu MEKANİK olarak ayırt edemez ⇒ ya kapı süstür, "
+                         "ya beyan bayattır, ya da §3.1 satırı hangi ÖZELLİĞİN kapısız olduğunu yazmalıdır." % kid))
 
     # --- K2: sarkan atıf (emekli etiket) --------------------------------
     for jt in sorted(set(JETON.findall(mutant_metin)) | set(JETON.findall(beyan_metin))):
@@ -467,6 +482,7 @@ def tara(metin, kanonik_baslik=None):
         "kanonik_sayi": len(kanonik),   # DÜRÜSTLÜK: her kanonik SATIR sözlüğe girer; taranamayanlar
                                         # `kanonik_atlanan` altında GEREKÇESİYLE raporlanır (B5-1).
         "capasiz_tablo": len(capasiz_tablo),
+        "devredilmis": len([k for k in kararlar if k in devredilmis and k not in kapili]),
         "mutant": len(numaralar),
     }
     return bulgular, ozet
@@ -596,6 +612,11 @@ CAPASIZ_TABLO = TEMIZ.replace(
 MUAFIYET_TABLOSU = TEMIZ.replace(
     "| kapısız kalan | neden |\n|---|---|\n| **K9-B1** | Çerçevenin kendi doğrulaması; bilinçli. |",
     "| çıkarılan muafiyet | neden düştü | kapısı |\n|---|---|---|\n| **K9-B1** | Artık kapılıdır. | **M9** |")
+
+# v6 yazımı: `[devir]` işaretli çıpa KAPI SAYILMAZ (aksi hâlde §3.1 beyanıyla sahte ÇELİŞKİ doğar).
+DEVIR_ISARETI = TEMIZ.replace(
+    "| **M2** | Ömür sabitlenir | *\"…\"* FAIL | TS | K9-C1 |",
+    "| **M2** | Ömür sabitlenir | *\"…\"* FAIL | TS | K9-C1 |\n| **M-L1** | İstemci ayağı kaldırılır | *\"…\"* FAIL | DART | **[devir]** K9-B1 — kapısı slice-3b |")
 
 # B5-4: KANONİK SAYI MUTANT TABLOSUNA GÖMÜLÜ. Eski araç §3'ü ve §3.1'i hiç taramıyordu.
 MUTANTA_GOMULU = TEMIZ.replace(
@@ -767,6 +788,15 @@ def altin_kume():
     else:
         gecti = False
         print("    ❌ BAŞARISIZ — muafiyet tablosu beyan sayılıyor ⇒ sahte 'beyanlı' + sahte ÇELİŞKİ. bulgular: %s" % b12)
+
+    b17, o17 = tara(DEVIR_ISARETI, kanonik_baslik="KANONİK SAYILAR")
+    print("\n[17] `[devir]` İŞARETLİ ÇIPA KAPI SAYILMAZ — beklenen: 0 bulgu, devredilmiş=0 (K9-B1 zaten beyanlı)")
+    print("    özet: %s" % o17)
+    if not b17:
+        print("    ✅ GEÇTİ — devir işareti sahte 'kapılı' ve sahte ÇELİŞKİ üretmiyor.")
+    else:
+        gecti = False
+        print("    ❌ BAŞARISIZ — `[devir]` kapı sayılıyor. bulgular: %s" % b17)
 
     # --- [11] RAPORLAYICI SESSİZ DARALTMA YAPMAMALI ---------------------------
     # (Onarım sırasında fiilen yaşandı: `K6` üretiliyordu ama sabit kod listesi yüzünden

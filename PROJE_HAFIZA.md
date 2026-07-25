@@ -3,6 +3,45 @@
 > Bu dosya projenin TEK canlı hafızasıdır. Her oturumda ÖNCE bu dosyayı + `CLAUDE.md`'yi TAM oku.
 > Kanonik konum: `C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum`
 
+## ⏭ DEVİR NOTU (25 Tem 2026 — oturum 22 GERÇEK kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR
+
+DURUM: **Kapı-5 koştu (KİLİTLENEMEZ) · araç onarıldı · K26/K28 kilitlendi · v6 YAZIMI BAŞLADI, YARIM.**
+  **[K21 ÖLÇÜMÜ — kapanış] 559.924 token = %56,0 ⇒ 🟡 SARI.** K21'in *"DOLU BAĞLAMDA ADR YAZMA YASAĞI"*
+  tam bu banttan başlar ⇒ **v6 yazımı burada DURDURULDU**, devir ölçüme dayanıyor.
+  Eğri: 126k → 245k → 311k → 353k → 481k → 502k → 533k → 548k → **560k**.
+KANONİK ADR HÂLÂ **v5**: `docs/ADR/0003-kimlik-cekirdegi.md` · sha256 `758bd1bf…22ef6` · **TEK BAYT DOKUNULMADI**.
+ÇALIŞMA DOSYASI: `docs/ADR/0003-kimlik-cekirdegi-v6-YAZIM-DEVAM-EDIYOR.md` (219.175 bayt · 1.086 satır).
+BU OTURUMUN ÜRETTİKLERİ: `KANIT/adr-0003/kapi-5-denetim-raporu.md` · `KANIT/adr-0003/olcum-araci-onarim-kanit.txt`
+  · onarılmış `araclar/adr-kapi-taramasi.py` (altın küme **22 kontrol**, çıkış kodu 0) · K25-K29 checkpoint'leri.
+ARACIN v6 ÜZERİNDEKİ KOŞUMU: **`K1`=0 · `K2`=0 · `K3`=0 · `K5`=0 · `K6`=3 · `K4`=27** (toplam 30; v5'te 40).
+YENİ OTURUMUN İLK İŞİ — **v6 YAZIMININ DEVAMI, ALTI KALEM (sırayla):**
+  1. **§2-C ~satır 330: OLGUSAL OLARAK YANLIŞ CÜMLE HÂLÂ DURUYOR.** *"pencere reuse-detection'ı `[KS-4]`
+     geciktirir"* ⇒ doğrusu **`[KS-1]`**, çevrimdışı kurbanda **`[KS-2]`**'ye uzar. §0.4'e GERİ ÇEKİLEN
+     İDDİA olarak yazılır ve K14-a'nın maliyet muhasebesi bu gerçek sayıyla yeniden tartılır. §6 Risk #11 de aynı yanlışı tekrarlıyor.
+  2. **KARAR METİNLERİ (mutantlar yazıldı, kararlar YAZILMADI):** K3-B1'e **salt tazeliği** kararı (M54) ·
+     K3-I4'e **`static class HkdfLabels` pini** (M55) · K3-B6'ya **blocklist maddesi** (`[KS-31]`, gömülü
+     10.000 kayıt, lisans kırmızı-çizgi-#3 kapısından geçer) (M56).
+  3. **`K4`'ün 27 bulgusunun kalem kalem adjudikasyonu** — çoğu ZAYIF sınıf ya da `[KS-LITERAL]` muafiyetli;
+     hepsi aracın çıktısında *"ELLE DOĞRULA"* etiketiyle listeli.
+  4. **`[çıpa+]` 16 ≠ 18** kaynaktan çözülmeli (hangi iki kararın etiketi düşmüş).
+  5. **M5-7:** `Microsoft.Extensions.TimeProvider.Testing` `Momentum.Api.Tests`'te YOK ⇒ §3.2(6)'ya
+     *"paket bu projeye EKLENECEKTİR — aynı sürüm, yeni paket değil"* yazılır.
+  6. Kapı-5'in **kalan majörleri ve minörleri** + kapı-4'ten devreden borç.
+  Sonra: **v6 kanonik yola alınır, v5 arşive** → **6. TUR BAĞIMSIZ KAPI, AYRI OTURUM.**
+KAPI-6'YA PAZARLIKSIZ İKİ GÖREV: **(a) v6'yı denetle · (b) ONARILMIŞ ARACI da denetle** — v6'yı yazan el
+  aracı da onardı (K29-a'nın adlandırılmış bedeli). Aracın **bildirilmiş sınırları** kaynak dosyanın
+  başındaki *"ARACIN BEYAN EDİLMİŞ SINIRLARI"* bloğunda yazılı; **çıpa hücresindeki jetonun o mutantın
+  kararı gerçekten test ettiğini kanıtlamadığı** en büyük sınırdır ve ELLE denetlenmelidir.
+YÜRÜRLÜKTEKİ KURALLAR: **K26 (bağımsızlık = DÖRT KANAL; bağlayıcı olan: üretici kendi denetçisini
+  SPAWN EDEMEZ)** · K21 · K13-a · hafıza satır ~380'in **BEŞ PAZARLIKSIZ istisnası** · satır ~253
+  taksonomi (ölü tuzak = MAJÖR, kör kapı = BLOKER) · PUSH YASAK · sandbox'tan commit ETME ·
+  düz `git status` YASAK (daima `git --no-optional-locks`) · §4 kuralı.
+AÇIK [DOĞRULANMADI] (2): flutter_secure_storage Windows şifreleme · WebKit `http://localhost` `__Host-`.
+ONUR'DAN BEKLENEN: commit · AÇIK İŞLER md.9 ve md.10'un düzeltilmesi (md.10 hâlâ *"Ayrı ADR-0004 YAZILMAZ"*
+  diyor — satır ~298 bunu çürütüyor; md.9 hâlâ ADR 0003'ü *"TASLAK v1 / son tur"* diye anlatıyor).
+TÜM ÇALIŞMA: C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum
+
+
 ## ⏭ DEVİR NOTU (25 Tem 2026 — oturum 22 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR
 
 DURUM: **5. TUR BAĞIMSIZ KAPI KOŞTU. HÜKÜM: ADR 0003 v5 KİLİTLENEMEZ.**
@@ -107,6 +146,39 @@ ORTAM: Docker 29.6.1 + compose v5.3.0 · Backend 110/110 test, verify exit 0, CV
 TÜM ÇALIŞMA: C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum
 
 ## ⏭ CHECKPOINT (25 Tem 2026 — oturum 21 kapanış: **K24 — ADR 0003 v5 YAZILDI, KANONİK YOLA ALINDI**)
+## ⏭ CHECKPOINT (25 Tem 2026 — oturum 22: **K29 — v6 YAZIMI BAŞLADI; `K1`=0 · `K2`=0 · `K3`=0 · `K5`=0. BELGE YARIMDIR**)
+
+- **[K21 ÖLÇÜMÜ]** Checkpoint anında **~%55 ⇒ 🟡 SARI.** Kural gereği **eldeki madde bitirildi, yeni büyük iş BAŞLATILMADI.**
+- **[KARAR — Onur, 25 Tem 2026] K29-a: v6'YI KAPI-5'İ KOŞAN OTURUM YAZAR.** İki kural çatışıyordu: K26'nın bağlayıcı maddesi *"üretici kendi denetçisini spawn edemez"* (tersini yasaklamaz) ile yürürlük listesindeki eski *"denetim ve yazım ayrı oturum"*. **Onur K26'yı tutarlı uygulamayı seçti.** *Gerekçe:* 12 blokerin ve aracın 40 bulgusunun **bağlamı bu oturumdadır**; devir notu üzerinden yeniden kurmak kayıp üretir ve bir oturum daha harcar (15 Ağu baskısı). *Bedel [adlandırılmış]:* düzeltmeyi yapan el kusuru bulan eldir ⇒ **kapı-6 hem v6'yı hem ONARILMIŞ ARACI denetlemek ZORUNDADIR.**
+- **📄 ÇALIŞMA DOSYASI: `docs/ADR/0003-kimlik-cekirdegi-v6-YAZIM-DEVAM-EDIYOR.md`** (219.175 bayt · 1.086 satır · UTF-8, BOM yok, U+FFFD 0). ⚠ **KANONİK ADR HÂLÂ v5'TİR** — `docs/ADR/0003-kimlik-cekirdegi.md`'ye **TEK BAYT DOKUNULMADI** (sha256 `758bd1bf…` değişmedi).
+- **✅ YAZILANLAR (32 düzeltme + 5 yeni kalem, her biri "eskisi tam olarak bulundu" güvencesiyle uygulandı):**
+  **K28 kilitleri:** `[KS-4]` **60 sn → 10 dk** (+ M29'un `61 sn` literali `[KS-4]`'ü aşan süreye çevrildi, Risk #13 `[KS-6]`'ya düzeltildi) · **`KS-3` ve `KS-29`** = *"ailenin KALAN `expires_at`'i, üst sınır KS-2"*, kapıları **M36b** · **`KS-31`** (blocklist boyutu 10.000) + **M56** (blocklist mutantı) · **M54** (salt tazeliği) + **M55** (HKDF alan ayrımı).
+  **Bloker kapanışları:** **§6 Risk #17 YAZILDI** (satır 413'ün sarkan atfı artık gerçek bir kaleme gidiyor) · **M31 satırı 11 hücreden 7'ye indirildi** ⇒ v4'ün GFM'de render OLMAYAN dört ayaklı metni **silindi**, v5'in üç ayaklı hâli artık gerçekten görünüyor (**B-6 fiilen kapandı**) · **numara pini** 880 ve 1073'te **M50 → M60** · **KS-11/KS-12** sarkan *"M41 üçüncü/dördüncü ayak"* atıfları `*(kapısız — §3.1)*` yapıldı · **§2-J satır 594-595** `ProblemDetails` üretimini Api'ye verdi (M49'un mutasyonu artık karar metni DEĞİL) · **§3.2(4)** uç stili koddan ölçülen `MapGroup("/v{version:apiVersion}").WithApiVersionSet(...)` ile düzeltildi · **M42b'nin ayırt edici olmayan kill sinyali** ALTIN VEKTÖR testine çevrildi (`KON` → `B`) ve geri çekilen sinyal gerekçesiyle yazıldı.
+  **Aday bloker kapanışları:** **M53** artık saati `[KS-4]`'ü aşacak kadar ilerletiyor (dal (c) mutantı kurtarıyordu = kör kapı) · **M40b'nin önkoşulu** zamana değil **mekanizmaya** çıpalandı.
+  **Majörler:** *"13.451 bayt / %8"* → **11.112 bayt / %6,5** (ölçüldü) · satır 406'nın `[KS-LITERAL]` muafiyeti kaldırıldı, `**[KS-30]**` yazıldı · satır 409'un `32` literali düştü · **Isopoh** *"lisans belirsiz"* → **`[DOĞRULANMADI]`, eleme gerekçesi ASKIDA** · §3.1'in araç tarihçesi (*"üçünü"*) düzeltildi · §3.1'in bayat **M36 → M36b** ve **M31 → M52** atıfları düzeltildi.
+  **Yapısal:** **M-L tablosuna GERÇEK ÇIPA SÜTUNU eklendi** (4 → 5 sütun); `[çıpa+]` etiketleri **`[devir]`** oldu · **§3.1'e K3-L5…K3-L9 beyanı KARAR KİMLİĞİYLE yazıldı** (v5 yalnız mutant kimliğiyle yazdığı için araç beşini de kapısız görüyordu) · **M43'ün çıpasına K3-L10**, **M44'ün çıpasına K3-C6(2)** eklendi.
+- **✅ ARAÇ DA GÜNCELLENDİ (aynı oturum):** `[devir]` işaretli çıpa **kapı sayılmaz** (aksi hâlde beyanla sahte çelişki doğar) + *"devredilmiş ama beyansız"* ihbarı + `K6`'nın çelişki mesajı **dürüstleştirildi** (*"ÖZELLİK DÜZEYİ BELİRSİZLİĞİ — araç KARAR-ID düzeyindedir, ayırt edemez, ELLE DOĞRULA"*). Altın küme **21 → 22 kontrol**, çıkış kodu **0**.
+- **📊 ARACIN v6 ÜZERİNDEKİ KOŞUMU: `K1`=0 · `K2`=0 · `K3`=0 · `K5`=0 · `K6`=3 · `K4`=27 (toplam 30; v5'te 40 idi).** `kapili` 33 · `beyanli` 14 · `devredilmis` 4 · `capasiz_tablo` **0**.
+- **🔴 BELGE YARIMDIR — KALAN İŞ (v6'nın bir sonraki oturumu):**
+  1. **§2-C satır ~330'un OLGUSAL OLARAK YANLIŞ cümlesi HÂLÂ DURUYOR:** *"pencere reuse-detection'ı `[KS-4]` geciktirir"* — doğrusu **`[KS-1]`**, çevrimdışı kurbanda **`[KS-2]`**. K14-a'nın maliyet muhasebesi bu cümleye dayanıyor; **geri çekilip yeniden yazılmalı** (K28-a'nın yazım borcu).
+  2. **Karar METİNLERİ yazılmadı** (yalnız mutantlar yazıldı): K3-B1'e **salt tazeliği** kararı · K3-I4'e **`HkdfLabels` pini** · K3-B6'ya **blocklist maddesi** (`[KS-31]`, gömülü liste, lisans kapısı).
+  3. **`K4`'ün 27 bulgusunun kalem kalem adjudikasyonu** (çoğu ZAYIF sınıf ya da `[KS-LITERAL]` muafiyetli — hepsi *"ELLE DOĞRULA"* etiketiyle listeli).
+  4. **`[çıpa+]` 16 ≠ 18** kaynaktan çözülmeli (hangi iki kararın etiketi düşmüş).
+  5. **Kapı-5 majör M5-7:** `Microsoft.Extensions.TimeProvider.Testing` `Momentum.Api.Tests`'te YOK — §3.2(6)'ya *"paket bu projeye EKLENECEKTİR, aynı sürüm, yeni paket değil"* yazılmalı.
+  6. Kapı-5'in **kalan 7 majörü ve ~28 minörü** + kapı-4'ten devreden borç.
+- **Sıradaki ilk iş:** **v6 yazımının devamı** (yukarıdaki 6 kalem) → **v6 kanonik yola alınır, v5 arşive** → **6. TUR BAĞIMSIZ KAPI, AYRI OTURUM: hem v6'yı hem ONARILMIŞ ARACI denetler.**
+
+
+## ⏭ CHECKPOINT (25 Tem 2026 — oturum 22: **K28 — KAPI-5'İN DÖRT ADAY BLOKERİ KİLİTLENDİ**)
+
+- **Bağlam:** kapı-5'in 6 aday blokerinden **ikisi karar değil düzeltmedir** (M53'ün saati `[KS-4]`'ü aşacak kadar ilerletilir · M40b'nin önkoşulu zamana değil **mekanizmaya** çıpalanır: *"süpürücü fixture'a kaydedilmez"*) ⇒ v6'nın yazım işi, Onur kararı gerekmez. Kalan dördü Onur tarafından kilitlendi.
+- **[KARAR — Onur, 25 Tem 2026] K28-a: `[KS-4]` REPLAY PENCERESİ 60 sn → 10 dk.** *Gerekçe:* K14-a'nın **kendi adlandırdığı** kırılma senaryoları (uçak modu · hücresel el değiştirme · TCP reset · Android Doze/process kill) **dakika ölçeğindedir**; 60 sn'lik pencere bunların hiçbirini kapatmıyordu ⇒ yanıtı kaybolan **meşru kullanıcı dal (d)'ye düşüp HIRSIZ ilan ediliyor ve ailesi iptal ediliyordu**. Değerlendirici demo sırasında uçak moduna alıp döndüğünde oturumun düşmemesi **ODEV §2'nin "kesinlikle çalışan uygulama" ölçütüne doğrudan hizmet eder**. *Bedel [adlandırılmış]:* `successor_secret_enc` daha uzun yaşar ⇒ **§6 Risk #13'ün penceresi büyür** — ama dal (c) **yeni token basmadığı** için bedel sınırlıdır. *v6'nın yazması gerekenler:* KS-4 = 10 dk · **M29'un kill sinyali** (`61 sn` literali düşer, `[KS-4]`'ü aşan süre yazılır) · Risk #13'ün aritmetiği (`[KS-4]`+`[KS-6]`) · §2-C satır 330'un **olgusal olarak yanlış** tespit-gecikmesi cümlesi (gecikme `[KS-4]` değil `[KS-1]`, çevrimdışı kurbanda `[KS-2]`'ye uzar) **geri çekilir ve düzeltilir**. *Reddedilenler [adlandırılmış]:* **60 sn kalsın + sınırı adlandır** (en ucuz, ama demo sırasında gerçekten olabilecek bir senaryoyu *"kabul edilmiş bedel"* diye geçiştirir; denetçi bunu *"kullanıcıyı hırsız ilan eden sistem"* diye okur) · **zarafet penceresi geri gelsin** (sorunu kökten çözer ama K3-C5'in ADLANDIRILARAK REDDEDİLMİŞ kararını geri açar ve M27/M29'u yeniden tasarlamayı gerektirir).
+- **[KARAR — Onur, 25 Tem 2026] K28-b: `KS-3` = "ailenin KALAN `expires_at`'i, tavanı `[KS-2]`".** Belge kendisiyle çelişiyordu: kanonik tablo *"KS-2 ile AYNI"* (sabit 30 gün), gövde ve **M36b'nin assert'i** *"ailenin kalan süresi (±2 sn)"* diyordu ⇒ ilk `/refresh`'ten sonra ikisi **asla eşit değildir** ve `[KS-3]`'ü harfiyen uygulayan bir builder'ın **baseline'ı kırmızı doğardı**. *Gerekçe:* düzeltme **tek satırlıktır ve kapı değişmez** (M36b zaten bunu ölçüyor); güvenlik olarak da doğrusudur — çerez **aileyle birlikte ölür**, aileden uzun yaşamaz. **`KS-29` (CSRF çerezi) da aynı biçimde yeniden yazılır.** *Reddedilen:* sabit 30 gün (daha basit kural ama çerez ailesi ölünce de tarayıcıda yaşar ve M36b'nin kill sinyali yeniden yazılmak zorunda kalır).
+- **[KARAR — Onur, 25 Tem 2026] K28-c: SIZMIŞ-PAROLA KARA LİSTESİ YAPILIR — GÖMÜLÜ TOP-10K + MUTANT.** Belge 15 karakteri *"NIST SP 800-63B-4 `SHALL`"* diye gerekçelendirirken **aynı standardın ikinci `SHALL`'ını (yaygın/sızmış parola blocklist'i) ne karara bağlamış ne kapsam dışı ilan etmişti** ⇒ **adlandırılmamış sapma** (`grep "blocklist|pwned|sızdırılmış"` ⇒ 0). *Karar:* en yaygın **10.000 parola repoya gömülür** (~100 KB), kayıt ve parola değiştirmede kontrol edilir. *Gerekçe:* **ağ yok, dış bağımlılık yok, çevrimdışı vitrinle çelişmez, DETERMİNİSTİKTİR ⇒ mutantla ısırtılabilir** (projenin kapı doktrini korunur); `123456` artık kabul edilmez. *v6'nın yazması gerekenler:* K3-B6'ya blocklist maddesi · **yeni mutant** (rezerv aralıktan) · liste dosyasının lisansı **kırmızı çizgi #3 kapısından** geçirilir. *Reddedilenler [adlandırılmış]:* **kapsam dışı + adlandırılmış sapma** (sıfır iş, emsali var — hesap kilitleme SHALL'ı böyle yazılmıştı — ama *"15 karakteri NIST diye savunup öbür SHALL'ı atlamak"* eleştirisi açık kalırdı) · **HIBP k-anonimlik API'si** (en güçlü koruma, ama **DIŞ AĞ BAĞIMLILIĞI** = ODEV §4.1'in AI asistanı ve Google Takvim'i elediği risk sınıfının AYNISI; deterministik olmadığı için **mutantla ısırtılamaz**).
+- **[KARAR — Onur, 25 Tem 2026] K28-d: İKİ KAPISIZ KRİPTO ÖZELLİĞİNE DE MUTANT YAZILIR.** **(a) Parola salt tazeliği:** salt'ın her parolada TAZE ve rastgele olduğu belgede hiçbir yerde ölçülmüyordu (`grep "salt"` ⇒ yalnız 140·183·224·225, §3'te **sıfır**) ⇒ **sabit salt kullanan bir implementasyon M5·M6·M6b·M7·M31·M32·M34'ün HEPSİNİ geçer** ve sonuç gökkuşağı tablosuna açık bir parola deposudur. **(b) HKDF `info` etiketlerinin çakışmazlığı:** kopyala-yapıştırla `K_csrf`'in etiketi `K_jwt`'ninkine eşitlenirse **alan ayrımı tümüyle çöker** ama M42·M42b·M42c·M25·M35 **beşi de yeşil kalır**. *Karar:* **M5c** (*"aynı parola iki kez hash'lenince FARKLI PHC dizesi üretilir ve salt alanı `[KS-23]` uzunluğundadır"*) + **M42d** (*"`K_jwt`, `K_csrf`, `K_rt` ikişer ikişer FARKLIDIR"*), ikisi de **`B` seviyesi** (saf birim testi, DB gerektirmez, kırılgan değil), numaralar **rezerv M54–M59'dan**. *Gerekçe:* belge **AES nonce'u için AYNI özelliği M50 ile zaten kapılamış** ⇒ emsal kendi içinde var; ikisi de **kırmızı çizgi sınıfı** (parola deposu + anahtar ayrımı). *Reddedilenler:* ikisini de §3.1'e beyan etmek (sıfır iş, ama *"en kritik iki özellik kapısız"* eleştirisi doğar) · salt'a kapı / HKDF'ye beyan (orta yol, ama HKDF çakışması **daha sinsi** olduğu için tam da kapı isteyen kalemdir).
+- **Sıradaki ilk iş:** **v6 YAZIMI — AYRI OTURUM** (12 bloker + 7 majör + K28'in dört kilidi + aracın 40 bulgusunun adjudikasyonu + `[çıpa+]` 16≠18'in kaynaktan çözülmesi). Sonra **6. TUR BAĞIMSIZ KAPI — AYRI OTURUM; ONARILMIŞ ARACI DA DENETLEYECEK.**
+
+
 ## ⏭ CHECKPOINT (25 Tem 2026 — oturum 22: **K27 — ÖLÇÜM ARACI ONARILDI, ALTIN KÜME 21 KONTROLE ÇIKTI, FARKLI MODELLE SALDIRILDI**)
 
 - **[K21 ÖLÇÜMÜ]** Onarım sonunda canlı bağlam **481.392 token = %48,1 ⇒ 🟢 YEŞİL.**
