@@ -15,6 +15,14 @@
 - **Otomatik (verify):** backend build+test+analyzer+güvenlik; frontend analyze+test+a11y; OpenAPI kontrat; **taç mücevher kapısı** (senkron/çakışmayı bağımsız 2. implementasyonla doğrula + idempotency). Her kapı MUTANT testiyle ısırdığını kanıtlar (KÖR KAPI YOK).
 - **Uzman ajanlar (kilitte):** architecture, code-review, testing-strategy, accessibility-review, risk-assessment, RED-TEAM EN SON.
 
+## Oturum sağlığı ve devir [K21 — PAZARLIKSIZ]
+Devir kararı **ölçülür, hissedilmez.** Canlı bağlam = transcript'teki son mesajın
+`input + cache_read + cache_creation` toplamı (`~/.claude/projects/*/<oturum-id>.jsonl`; kendi oturum-id'nle).
+🟢 **<%55 devam** (devir/temiz-oturum önerisi YOK) · 🟡 **%55-75** eldeki maddeyi bitir, checkpoint yaz,
+yeni büyük iş başlatma — **"dolu bağlamda ADR yazma yasağı" BURADAN başlar** · 🔴 **>%75** devir notu yaz, kapat.
+**Ölçemezsen yeşil de kırmızı da varsayma: ölçemediğini söyle, Onur'a sor.** Her büyük iş başında ve her
+checkpoint'te ölçümü **raporla**.
+
 ## Kırmızı çizgiler (değişmez) [PAZARLIKSIZ]
 1. Sırlar repoya girmez (.env + .gitignore + secret yönetimi).
 2. PII minimumda; gizlilik-öncelikli.

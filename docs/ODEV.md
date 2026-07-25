@@ -156,10 +156,23 @@ token'ı süresi dolduğunda kuyruktaki yazımların kaybolmaması mimari zorunl
 2. **Teslim biçimi** (repo linki mi, paketlenmiş build mi, canlı sunum mu) — sorulmadı/söylenmedi.
    **AÇIK VE ÖNEMLİ:** §3.1 takvimi esnetti; ödevin ne zaman ve hangi biçimde beklendiği hâlâ
    bilinmiyor. Öğrenilirse §3 ve teslim paketi doğrudan etkilenir.
+   **GÜNCELLEME [Onur, 25 Tem 2026 — K12]:** Onur 3 haftalık **iç** çerçeveyi teyit etti
+   (*"3 haftamız var ona göre ama hızlı da gidebilir erken de bitirebiliriz"*) ve **süreye göre
+   kapsam/derinlik kesilmesini açıkça reddetti** (*"süreye göre bir şeylerden kısıp hızlı gideceğim
+   diye hata yapmanı istemiyorum"*). ⇒ Öncelik sırası **kalite > hız**. **Bu YENİ DIŞ BİLGİ DEĞİLDİR:**
+   şirketten gelen bir tarih hâlâ yok ve **teslim biçimi hâlâ bilinmiyor** ⇒ bu madde AÇIK kalır.
 3. ~~Farklılaştırıcılardan hangi 1-2'sinin yapılacağı~~ → **KAPANDI (20 Tem 2026):** yalnız
    **NLP hızlı ekleme**, bkz. §4.1.
 4. CI/CD (GitHub Actions) — ADR 0001'in "yayına götürme sürecini biliyoruz" vaadi, henüz kurulmadı.
    Plana girdi: 11-12 Ağu (§3.1).
+   **GÜNCELLEME [Onur, 25 Tem 2026 — K22-a]: PAKETLEMENİN BİR PARÇASI `slice-3c-auth`'a ÖNE ÇEKİLDİ.**
+   Ölçüldü (oturum 21): repoda **`Dockerfile` YOKTUR** ve `docker-compose.yml` yalnız `postgres:17-alpine`
+   tanımlıyor ⇒ ADR 0003'ün `KON` (konteyner) test seviyesi ve geliştirme bootstrap'ı **var olmayan bir
+   artefakta** çıpalıydı. **Karar:** API `Dockerfile` + giriş betiği + compose `api` servisi **kimlik
+   diliminde** yazılır. *Gerekçe:* değerlendirici uygulamayı **tek komutla** (`docker compose up`) ayağa
+   kaldırır ⇒ **§2'nin "kesinlikle çalışan uygulama; önce uygulamaya bakılacak" ölçütüne doğrudan hizmet.**
+   **CI/CD'nin kendisi (GitHub Actions) 11-12 Ağu'da kalır** — bu madde AÇIK; `KON` testleri o güne kadar
+   **yerelde** koşulur ve KANIT'a yazılır (ADR 0003 §3.2(7)'de adlandırılmış sapma olarak yazılıdır).
 5. **Auth'un ürün-içi görünürlüğü** — §6.1 ince kimlik dilimini kilitledi, ama çok-kullanıcılı
    *paylaşım* (liste/proje davet akışı) gerçek zamanlı işbirliği diliminde tasarlanacak; bugün
    kapsamı belirsiz.
