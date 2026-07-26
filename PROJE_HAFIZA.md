@@ -9,6 +9,39 @@
 > NOTLARINI GEÇERSİZ KILAR"* diyor. Yalnız tepeyi okuyan bir oturum **bayat durum alır.**
 > **KURAL (bundan sonra): en yeni checkpoint/devir notu DAİMA bu satırın hemen altına yazılır.**
 
+## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K52 — SPEC KİLİTLENDİ; `esdeger-mutant` SINIFI BUILD'E DEVREDİLDİ**)
+
+**🔒 K52 — KİLİT: `GOREV-slice-3b-istemci-iskeleti.md` v3 KİLİTLENDİ (Onur, 26 Tem 2026).** Build başlayabilir.
+**KİLİTLİ KİMLİK:** **34.821 b · `sha256 1AB02B73`** · U+FFFD 0 · CRLF 0 · `spec-kapi-kapsama` **BULGU YOK / EXIT 0** (altın küme 9/9). **Kilitten sonra değişen her bayt bu kilidi BOZAR.**
+> ⚠ **KANONİK-KOPYA SINIFI, ANINDA YAKALANDI [gizlenmiyor]:** bu satır ilk yazımında **34.098 b · `AC85074D`** diyordu — ölçüm, kilit damgası dosyaya yazılmadan ÖNCE alınmıştı ve damga eklenince **anında bayatladı**. Kapanış ölçümünde yakalandı ve düzeltildi. *Aynı sınıf K45'te de görülmüştü; bu, "kimlik ölçümü SON işlemden SONRA alınır" kuralının ikinci kanıtıdır.*
+**Kilidin açık şartı:** radar bu artefaktı **KIRMIZI** bırakıyor; kalan sınıf **`esdeger-mutant`** ve **kâğıtta kapatılamaz** — bir mutantın gerçekten ısırıp ısırmadığı ancak **koşarak** görülür. Kilit, bu sınıfın **BUILD'e devredilmesi** kararıdır (**R2b**: *"kâğıtta 2 turdan fazla test tasarımı denetimi YASAK; kalan iddialar KODA devredilir"*). ⇒ **§6'nın "her mutant için KIRMIZI çıktı" zorunluluğu bu kilidin bedelidir ve gevşetilemez.**
+*Reddedilen:* kâğıtta bir tur daha (radar R1'in yasakladığı 3. tur; ADR 0003'ü sekiz oturuma sokan örüntünün birebir kendisi).
+
+**SPEC'İN NİHAİ ŞEKLİ:** 7 kapı (G1 MCP · G2 CVE · G3 lisans · G4 token · G5 a11y · G6 kalıcılık · G7 veri) · 16 adlandırılmış kural (D0–D6 · A11Y‑1…7 · kontrast · metin) · **23 mutant** · 15+1 kabul kriteri · 6 "önce ölç" kalemi (B‑1…B‑6) · 7 `DESIGN.md` borcu (BD‑1…BD‑7).
+
+**SONRAKİ İŞ — CLAUDE CODE:** `Momentum` kökünden aç (üst klasörden AÇMA), spec'i uygula, `KANIT/slice-3b/` üret. **Cowork build ETMEZ; artefaktı bağımsız DOĞRULAR** (builder'ın beyanına güvenmez, çıktıyı kendi söker — `tuzak-app-qa` disiplininin bu projedeki karşılığı).
+
+**AÇIK BORÇLAR (bu oturumda kapatılmadı, adlandırıldı):** `DESIGN.md` BD‑1…BD‑7 (K46 gereği dokunulmadı) · `radar.py`'nin R3 asgari örneklem koruması (ayrı el) · kontrast betiğinin kalıcı hâli (kod tarafı G5'e girdi) · **push borcu: 6 commit** (`ab1ee61` · `648da7b` · `1b1b505` · `237b9b5` · `9ce1bb8` · kilit commit'i).
+
+## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K51 — RADAR KIRMIZI'DA `MEKANİKLEŞTİR` KİLİTLENDİ; ARAÇ YAZILDI VE İLK KOŞUMDA ÜÇ DENETİM TURUNUN KAÇIRDIĞI İKİ KUSURU BULDU**)
+
+**🔴 K51 — KİLİT: `MEKANİKLEŞTİR` (Onur, 26 Tem 2026).** Radar `GOREV-slice-3b-spec`'i **KIRMIZI** verdi: **R1 — `kor-kapi` + `esdeger-mutant` iki tur üst üste, mekanik kapısı yok ⇒ 3. tur YASAK.** Dört şık ölçülmüş bedelle sunuldu; Onur R1'in lafzını seçti. *Reddedilenler: DEVRET (v3'te kalan kör kapı build'den sonra çıkar) · DARALT (a11y bloğunu ertelemek ödevin ayırt edici yüzünü zayıflatır) · DURDUR (bu artefakt 1 oturumda `[13→4→0]` yakınsıyor, ADR 0003'ün 8 oturumluk tablosu DEĞİL).*
+
+**✅ ARAÇ: `araclar/spec-kapi-kapsama.py`** — 9.276 b · `sha256 5599BB59` · U+FFFD 0 · CRLF 0 · **saf ASCII çıktı**.
+Bir GOREV spec'inin **§5 KAPI+KURAL envanteri** ile **§6 MUTANT tablosunu** ayrıştırır; **her kapının VE her adlandırılmış kuralın** en az bir mutantı olduğunu ispatlar. Kodlar: `S0` biçim · `S1` mutantsız kapı · `S2` mutantsız kural · `S3` hayalet atıf (envanterde olmayan hedefe atıf).
+**ALTIN KÜME 9/9 GEÇTİ · EXIT 0:** temiz spec **susar** (yanlış-pozitif kontrolü) · mutantsız kapı **S1** · mutantsız kural **S2** · hayalet atıf **S3** · bölüm yoksa **S0** · **tek mutant iki kuralı kapatırsa susar** (ikinci yanlış-pozitif kontrolü) · `D0`–`D2` **kod aralığı açılır** · **BAĞLI TİRE (U+2011) tuzağı normalize edilir** · boş mutant tablosu **S0**.
+
+**🔴 ARAÇ İLK GERÇEK KOŞUMDA İKİ KUSUR BULDU — ÜÇ DENETİM TURUNUN HİÇBİRİ BULMAMIŞTI:** `D0` ve `D4` **MUTANTSIZDI**. (Bir denetçi *"D1 ve D4 mutantsız"* demişti; **D1 kapatılmış, D4 gözden kaçmıştı**; `D0`'ı **kimse görmemişti**.) ⇒ **M22** (`D0`: `tokens` bloğunu **KOPYA** üzerinde boz — `DESIGN.md`'ye dokunulmaz, K46) ve **M23** (`D4`: gerekçesiz muafiyet) eklendi; **21 mutant 23 oldu**; araç yeniden koşuldu: **BULGU YOK, EXIT 0.**
+*K33 örüntüsünün **on birinci** kanıtı: yine **koşulan araç** buldu, akıl yürütme değil.*
+
+**✅ KİLİDİN İŞE YARADIĞI ÖLÇÜLDÜ — İDDİA DEĞİL:** radar yeniden koşuldu ve **`kor-kapi` sınıfı R1'den R1b'ye geçti**: *"Tekrar eden ama **MEKANİKLESMIS** sinif(lar): kor-kapi ⇒ bu sinif icin tur eklemek **mesrudur**."* Bloker eğrisi **`[13, 4, 0, 0]`**. R4 hızı **%32 → %7,7**'ye düştü (v2→v3 küçültmesi tuttu).
+
+**🔴 KALAN TEK R1 SINIFI: `esdeger-mutant` — VE BU KÂĞITTA KAPATILAMAZ.** Aracın **beyan edilmiş sınırı**: mutantın *gerçekten ısırdığını* ölçmez, yalnız **kapsamayı** ölçer; eşdeğer-mutant tespiti **çalışan kod ister**. Bu, projenin kendi **R2b** dersinin birebir tarifidir: *"kâğıtta 2 turdan fazla test tasarımı denetimi YASAK; kalan iddialar KODA devredilir."* ⇒ **Bu sınıfı kapatacak tek şey BUILD'dir.**
+
+**DEFTER NOTU [dürüstlük]:** `D0`/`D4` kusurları **tur 1'de doğmuştu** ama o turda **ölçülmemişti**; `PROJE_RADAR.jsonl`'daki tur 1 `uretilen=13` sayısı bu yüzden **EKSİKTİR** (gerçek 15). Defter append-only olduğu için **geriye dönük düzeltilmedi**; bu not kayıttır.
+
+**GİT:** `9ce1bb8` — 9 dosya, +991/−1. Ağaç **TEMİZ**, `.git/index.lock` **YOK**, `origin/main`'e göre **5 İLERİ**. **PUSH ONUR'DA.**
+
 ## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K50 — RED-TEAM v2'Yİ DE KIRDI; K49'UN ÖNGÖRDÜĞÜ GERİ DÜŞÜŞ TETİKLENDİ**)
 
 **K49 (Onur kilidi):** *"G1'in 4. ayağını `vm_service` ile GERÇEKTEN doldur"* — **açık şartıyla birlikte kilitlendi: *"`vm_service`'in ne döndürdüğü ölçülmedi; çıkmazsa (a)'ya [3 ayak + 1 ön koşul] düşülür."*** Spec v2 (36.513 b · `3AE01B04`) bu kilide göre yazıldı.

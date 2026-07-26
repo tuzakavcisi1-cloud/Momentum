@@ -1,8 +1,10 @@
 # GÖREV (Claude Code) — slice-3b: Flutter istemci iskeleti + TAM ÇEVRİMDIŞI CRUD (K42-d adım 2)  [v3]
 
-> **DÖRT TUR BAĞIMSIZ DENETİMDEN GEÇTİ.** v1 → (üç denetçi: 18 bloker · 39 majör · 16 minör) → v2 → (red-team: 4 bloker · 6 majör · 4 minör) → **v3**.
-> **Denetim tarihçesi ve çürütülen bulgular `PROJE_HAFIZA.md` K48/K50'dedir.** Bu belge yalnız **yapılacak işi** taşır.
-> **HENÜZ KİLİTLİ DEĞİLDİR.** Onur kilitlemeden build başlamaz. **Yazan el denetleyemez (K26).**
+> 🔒 **KİLİTLİ — Onur, 26 Tem 2026 (K52).** Build başlayabilir.
+> **DÖRT TUR BAĞIMSIZ DENETİMDEN GEÇTİ.** v1 → (üç denetçi: 18 bloker · 39 majör · 16 minör) → v2 → (red-team: 4 bloker · 6 majör · 4 minör) → v3 → (`spec-kapi-kapsama.py`: 2 mutantsız kural) → **v3 kilitli**.
+> **Denetim tarihçesi ve çürütülen bulgular `PROJE_HAFIZA.md` K48/K50/K51'dedir.** Bu belge yalnız **yapılacak işi** taşır.
+> 🔴 **KİLİDİN AÇIK ŞARTI [K52]:** radar bu artefaktı **KIRMIZI** bırakıyor; kalan sınıf **`esdeger-mutant`** ve **kâğıtta kapatılamaz** — bir mutantın gerçekten ısırıp ısırmadığı ancak **koşarak** görülür. Kilit, bu sınıfın **BUILD'e devredilmesi** kararıdır (R2b). ⇒ **§6'nın "her mutant için KIRMIZI çıktı" zorunluluğu bu kilidin bedelidir ve gevşetilemez.** Bir mutant ısırmıyorsa **DUR ve raporla** — o an eşdeğer-mutant bulunmuş demektir ve bu **başarıdır**, gizlenecek şey değil.
+> **Yazan el denetleyemez (K26):** bu belgeyi Cowork yazdı; **artefaktı Cowork bağımsız doğrulayacak**, senin beyanına güvenmeyecek.
 
 - **Rol:** Sen **build** edersin. `PROJE_HAFIZA.md`, `CLAUDE.md`, **`DESIGN.md`**, `docs/ADR/*`'a **DOKUNMA**.
 - **Dil:** Kod/isimler İngilizce; kullanıcı metinleri **Türkçe** (F6); commit mesajı **ASCII**, **çift tırnaksız**.
