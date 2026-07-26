@@ -82,8 +82,11 @@ Cowork = tasarım/ADR/spec/orkestrasyon/hafıza/denetim; Claude Code = build. Co
 
 ## Hafıza kuralı (checkpoint) [K53'te BÖLÜNDÜ]
 **İki dosya, iki iş:**
-- **`DURUM.md` — CANLI DURUM.** Her oturumun okuduğu tek dosya. **≤ 12 KB kalmak ZORUNDA.** Durum değişince **YERİNDE değiştirilir** (eski satır silinir, yenisi yazılır — burada tarihçe **birikmez**). Aşarsa budanır.
+- **`DURUM.md` — CANLI DURUM.** Her oturumun okuduğu tek dosya. **≤ 32 KB kalmak ZORUNDA** [K58, 27 Tem 2026 — eski tavan 12 KB'dı]. Durum değişince **YERİNDE değiştirilir** (eski satır silinir, yenisi yazılır — burada tarihçe **birikmez**). Aşarsa budanır.
+  > **Tavanın gerekçesi OKUMA KAPASİTESİ DEĞİLDİR** (12 KB ≈ 3,5k token; sınırın kat kat altı). İki gerçek gerekçe: ① **R4 freni** — bu projede ölçüldü, ADR 0003 dokuz turda 120→300 KB büyüdü ve her büyüme yeni çapraz-atıf kusuru doğurdu; ② **dikkat** — 3,5k token okunur, 40k token *göz gezdirilir* ve göz gezdirilen belgede bayat iddia hayatta kalır. 12→32 KB gevşetmesinin ölçülmüş gerekçesi: bayat-atıf sınıfı artık **mekanikleşti** (`sayi-tazeligi.py`, `dosya-kimlik.py`, defter `D1`–`D5`), yani R4'ün dayandığı varsayım zayıfladı.
+  > 🔴 **BEYAN EDİLMİŞ ZAYIF KONTROL:** bu tavanı şu an **hiçbir kapı zorlamıyor** — oturum 30'da elle sekiz kez uygulandı. Yalnız bir elin hatırladığı sınır **kör kapıdır**. Bilinçli karar (Onur, K58): 32 KB'da tavan uzun süre ısırmayacağı için şimdi araç yazılmadı; **ilk ısırdığında `belge-tavan-kapisi.py` yazılır.** Ölçüm zaten her checkpoint'te `dosya-kimlik.py` çıktısında görünüyor.
 - **`PROJE_HAFIZA.md` — APPEND-ONLY KARAR ARŞİVİ.** Karar/kapı/kilit anında **üste** yeni checkpoint eklenir; **hiçbir şey silinmez**, hiçbir şey yerinde düzeltilmez (bayat bir satır varsa **düzeltme notu** yazılır). Oturum açılışında **okunmaz**.
+  > **DİZİN [K58]:** dosyanın başındaki `<!-- DIZIN:BAS -->…<!-- DIZIN:SON -->` bloğu **mekanik üretimdir, ELLE DÜZENLENMEZ**: `python araclar\hafiza-dizin.py .`. Append-only ihlali değildir — dizin **kayıt değil, kayıtlardan TÜRETİLMİŞ veridir** ve her koşumda sıfırdan yeniden üretilir. **Yeni checkpoint `<!-- DIZIN:SON -->` satırının ALTINA eklenir.**
 
 Checkpoint **anında** yazılır — karar/kapı/kilit anında, küçük ve hemen. Oturum sonunda toplu yazma YOK. Onur "güncelle" demesini bekleme.
 **Kimlik ölçümü DAİMA son yazımdan SONRA alınır** (iki kez bayat kimlik yazıldı; `python araclar\dosya-kimlik.py <dosya>`).
