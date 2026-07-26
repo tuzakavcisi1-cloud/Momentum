@@ -47,9 +47,23 @@ kapı yükünü düşürmek.
 **Bu bir TAHMİNDİR, ölçüm değildir** — ve esnetilen tarih şirketin verdiği bir tarih olmadığı için
 esnetme maliyeti dışsal değildir. **Ancak §8(2) hâlâ açıktır: ödevin ne zaman beklendiği bilinmiyor.**
 
-Plan [TAHMİN]: 21-23 Tem `slice-3a-auth` · 24 Tem-5 Ağu `slice-3b` (Flutter) ·
+Plan [TAHMİN]: 21-23 Tem ~~`slice-3a-auth`~~ · 24 Tem-5 Ağu `slice-3b` (Flutter) ·
 6-8 Ağu gerçek zamanlı işbirliği istemcisi · 9-10 Ağu NLP hızlı ekleme ·
 11-12 Ağu CI/CD + paketleme · 13-15 Ağu tampon + teslim paketi. **Tampon yalnız 3 gün.**
+
+### 3.2 ERRATA + DURUM [26 Tem 2026, oturum 25 — K34; kapı-6 §7(5) bulgusunun karşılığı]
+
+**(a) DİLİM ADI DÜZELTİLDİ:** yukarıdaki plandaki `slice-3a-auth` **BAYATTIR** → doğrusu **`slice-3c-auth`**
+(K14-h, 25 Tem 2026). Gerekçe: `slice-3a` adı **zaten kullanılıyordu** (ADR 0002 K2-I3'ün sunucu
+materyalizasyon dilimi; `KANIT/slice-3a/` dolu) ve `slice-3b` = Flutter istemci.
+*Bilinen ve kabul edilen kusur: kimlik dilimi 3b'den ÖNCE koşuyor ⇒ harf sırası kronolojiyi yalanlıyor.*
+**§4.1'deki `slice-3a` ifadesi DOĞRUDUR ve dokunulmamıştır** — orası materyalizasyon dilimini kastediyor.
+
+**(b) PLAN TAKVİMİ FİİLEN AŞILDI — ölçüm, kesme önerisi DEĞİL (K12-b):** `slice-3c-auth` penceresi
+**21-23 Tem**'di; bugün **26 Tem** ve dilim **hâlâ kilitli değil**. Harcanan: ADR 0003 için
+**6 yazım turu + 6 kapı turu**. Kanonik sürüm **v6**, hüküm **KİLİTLENEMEZ** (9 bloker · 31 majör · 14 minör).
+Kalan: v7 yazımı + aracın 2. onarımı (ayrı el) + 7. kapı turu + ADR 0004 + spec + build + doğrulama.
+**15 Ağu hedefi ağır baskı altındadır.** K12-b yürürlükte: **ölçüm raporlanır, kapsam kesilmez.**
 
 ## 4. Kapsam kilidi [Onur, 20 Tem 2026]
 
@@ -110,16 +124,46 @@ DOĞRULANMAMIŞTIR** — seçim, Onur'un "en çok indirme/beğeni alan" talimat�
 birlikte okunduğunda:
 
 - **Kritik yol = slice-3b (Flutter istemci).** Backend'in kanıt zinciri güçlü ve yeterli olgunlukta.
-- **Backend'de kalan işler zaman kutulanmalıdır.** Süresi ölçülemeyen bir onarım turu, çalışan
-  uygulamanın önüne geçemez.
-- Adlandırılmış ve KANIT'ta açıkça beyan edilmiş bir kapı zayıflığı, **olmayan bir istemciden
-  daha az zarar verir**. Bu projenin doktrini zaten "beyan edilmiş sınır kabul edilebilir,
-  gizlenmiş sınır edilemez"dir.
+- ~~**Backend'de kalan işler zaman kutulanmalıdır.** Süresi ölçülemeyen bir onarım turu, çalışan
+  uygulamanın önüne geçemez.~~
+  > **⏱ ERRATA [Onur, 26 Tem 2026 — K34-a]: BU CÜMLE YÜRÜRLÜKTEN KALKTI. Yürürlükteki kural K13-a'dır:
+  > *"bloker sıfırlanana kadar tur; tur sayısı raporlanır, SINIRLANMAZ."***
+  > *Gerekçe [ölçüldü]:* bu cümle **20 Tem** tarihlidir; **aynı dosyanın** §8(2) **K12 güncellemesi 25 Tem**
+  > tarihlidir ve Onur orada süreye göre kapsam/derinlik kesilmesini **açıkça reddetmiştir**
+  > (*"süreye göre bir şeylerden kısıp hızlı gideceğim diye hata yapmanı istemiyorum"* ⇒ **kalite > hız**).
+  > Bu dosyanın kendi başlığı *"her güncelleme tarihli olarak eklenir"* der ⇒ **sonraki tarihli hüküm geçerlidir.**
+  > ⇒ Kapı-6'nın *"ODEV §6 ⟷ K13-a aynı anda yürürlükte olamaz"* bulgusu **doğruydu**, ama çelişki
+  > ODEV ⟷ hafıza değil, **bu dosyanın kendi içinde bayat kalmış bir satırdı.**
+  > *Bedel [adlandırılmış, gizlenmiyor]:* **v6→v7 döngüsünün matematiksel bir ÜST SINIRI YOKTUR.**
+  > Sonlanma yalnız *"bloker sıfırlanana kadar"* koşuluna bağlıdır. Bu, §2'nin *"kesinlikle çalışan
+  > uygulama"* ölçütüyle gerçek bir gerilim taşır ve **§3.2(b)'nin takvim ölçümü her turda raporlanır.**
+  > *Reddedilenler [adlandırılmış]:* ODEV'in üstün tutulup ADR'ye zaman kutusu konması (kilit ölçütü
+  > ilk kez gevşer, emsal doğar) · kilit ölçütünün daraltılması (yalnız kör kapı + inşa edilemezlik
+  > turu uzatır — *"bloker"* tanımı tur ortasında değişir, kapı-1…6'nın tüm blokerleri geriye dönük
+  > yeniden sınıflandırılmak zorunda kalır ve iki standart doğar).
+- **YERİNE GEÇEN ÖLÇÜT [K34-a]:** adlandırılmış ve KANIT'ta açıkça beyan edilmiş bir kapı zayıflığı,
+  **olmayan bir istemciden daha az zarar verir**. Bu projenin doktrini zaten *"beyan edilmiş sınır
+  kabul edilebilir, gizlenmiş sınır edilemez"*dir. Süre baskısı **ölçülür ve raporlanır** (§3.2(b)),
+  ama **tek başına kesme gerekçesi olmaz** (K12-b).
 
 ### 6.1 GÜNCELLEME [Cowork kararı, 20 Tem 2026 — K7-c]: kritik yolun önüne **ince kimlik dilimi**
 
-Kritik yol slice-3b olarak kalır, ama önüne **`slice-3a-auth`** (TAHMİN 1,5-2 gün) konur.
-*(Onur kararı Cowork'e bıraktı; gerekçe kayda geçirilmiştir.)*
+Kritik yol slice-3b olarak kalır, ama önüne **~~`slice-3a-auth`~~ → `slice-3c-auth`**
+(o günkü TAHMİN: **1,5-2 gün**) konur. *(Onur kararı Cowork'e bıraktı; gerekçe kayda geçirilmiştir.)*
+
+> **⏱ ERRATA + GERÇEKLEŞEN [26 Tem 2026, oturum 25 — K34]:**
+> **(a) AD:** `slice-3a-auth` **BAYATTIR** → `slice-3c-auth` (K14-h). Bkz. §3.2(a).
+> **(b) BÜTÇE — "1,5-2 gün" TAHMİNİ TUTMADI ve bu ölçümle kayda geçiyor:** dilim
+> **18 Tem'de değil 25 Tem'de** başladı ve **bugün 26 Tem itibarıyla hâlâ kilitli değildir.**
+> Fiilen harcanan: **ADR 0003 için 6 yazım turu + 6 kapı turu** (v1 24,7 K → v6 **241.689 bayt · 1.123 satır**),
+> artı **ADR 0004 hiç yazılmadı** ve **`GOREV-slice-3c-auth` spec'i hiç yazılmadı.**
+> ⇒ Bugünkü dürüst tahmin **1,5-2 gün DEĞİL**; kalan iş: v7 + aracın 2. onarımı (ayrı el) + 7. kapı turu
+> + ADR 0004 (yazım + ≥1 kapı) + spec + build + Cowork doğrulaması. **[Bu bir TAHMİN değil, GERÇEKLEŞEN
+> ölçümdür; kalan kısım tahmindir ve sayı verilmemektedir — K13-a gereği tur sayısı öngörülemez.]**
+> **(c) SEBEP [adlandırılmış, gizlenmiyor]:** tahmin, kimlik dilimini **bir kodlama işi** sayıyordu;
+> gerçekte K8-a ile **tam aktivasyon** kapsamı seçildi (dört ertelenmiş gereksinim + hub kimliği +
+> `outbox.owner_id`) ve belge **altı bağımsız kapı turu** yedi. **Bu, kalite tercihinin ölçülmüş bedelidir**
+> (K12-b: kalite > hız) — bir tahmin hatası olarak değil, **kilitlenmiş bir kararın maliyeti** olarak okunmalıdır.
 
 **Gerekçe:** kimlik burada bir özellik değil **şema kararıdır** — çevrimdışı-öncelikli istemcide
 "bu yerel satır kimin", "token nerede duruyor", "401 gelince kuyruktaki yazımlar ne oluyor",
