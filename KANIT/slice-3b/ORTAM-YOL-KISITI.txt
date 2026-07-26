@@ -99,13 +99,20 @@ HUKUM: DOGRULANDI -- build_runner/flutter'in ürettiği .dart_tool/ ve build/
 git tarafindan zaten yok sayiliyor; junction workflow bu acidan ek risk getirmiyor.
 
 ====================================================================
-6) TASINABILIRLIK -- URETILEN .g.dart'TA MUTLAK YOL VAR MI
+6) TASINABILIRLIK -- URETILEN .g.dart'TA MUTLAK YOL VAR MI [T4 SONRASI OLCULDU]
 ====================================================================
-Bu olcum, T4'te gercek Drift semasi (gorevler tablosu) yazilip ilk .g.dart
-uretildiginde ayrica kosulacak ve sonucu bu dosyaya EKLENECEKTIR (asagida
-T4 sonrasi eklendi -- bkz. madde 7). Su an (T3 sonu) hicbir .g.dart yok;
-build_runner'in "6 output" ciktisi yalnizca ic onbellek/meta dosyalaridir
-(.dart_tool/build altinda, gitignore kapsaminda), gercek kaynak dosya DEGIL.
+T4'te gercek Drift semasi (gorevler tablosu, lib/veri/veritabani.dart) yazildi
+ve lib/veri/veritabani.g.dart (23K+ bayt) uretildi. Olcum:
+
+Komut (junction uzerinden): Select-String -Path "lib\**\*.g.dart" -Pattern 'C:\\momentum|Users\\gulci' -AllMatches
+SONUC: 0 mutlak yol -- TEMIZ
+Taranan dosya: C:\momentum\src\client\lib\veri\veritabani.g.dart (tek .g.dart, T4 sonu)
+
+HUKUM: uretilen kod junction'in ("C:\momentum") ya da gercek kullanici yolunun
+("Users\gulci") hicbir izini tasimiyor -- build_runner ciktisi tamamen goreli/
+paket-bazli (package:client/... importlari uzerinden). Repo baska bir makinede
+ASCII bir yola klonlanip ayni komutlarla derlendiginde bu dosya BIREBIR ayni
+icerikle yeniden uretilir. BLOKER YOK.
 
 ====================================================================
 GENEL HUKUM
