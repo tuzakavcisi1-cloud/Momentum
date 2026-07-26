@@ -188,6 +188,19 @@ def tara(kok, design_yolu, kod_kok, token_dosyasi):
             "durum": "BOS-GIRDI",
         }
 
+    # --- BELGE VAR, KOD YOK -> D1/D3 ERTELENIR (kusur DEGIL, olculemez) ---
+    # Gerekce: kod dogmadan once D1/D3'u kusur saymak, her MUST token icin bir
+    # YANLIS-POZITIF taban cizgisi uretir; surekli kirmizi yanan kapi gormezden
+    # gelinir (ADR aracinin ogrenilmis dersi). D0 (bicim) YINE ISIRIR -- erteleme
+    # kapiyi KORLESTIRMEZ ve bu altin kumede mutantla kanitlanir.
+    if tokenlar and not dosyalar:
+        must_s = len([t for t in tokenlar if t["seviye"] == "MUST"])
+        nice_s = len(tokenlar) - must_s
+        return bulgular, {
+            "token": len(tokenlar), "must": must_s, "nice": nice_s,
+            "dart_dosya": 0, "durum": "BELGE-VAR-KOD-YOK", "ertelenen": must_s,
+        }
+
     # token dosyasinin govdesi (D3 icin) -- kullanim taramasindan HARIC tutulur
     token_dosyasi_tam = os.path.join(kod_kok, token_dosyasi) if not os.path.isabs(token_dosyasi) else token_dosyasi
     token_govdesi = _oku(token_dosyasi_tam) if os.path.exists(token_dosyasi_tam) else ""
@@ -364,6 +377,18 @@ def altin_kume():
                               "bosluk.m 16 MBosluk.m"),
          TOKENS_TEMIZ, MAIN_TEMIZ)
 
+    # 11) BELGE VAR, KOD YOK -- D1/D3 ERTELENIR, SUSMALI
+    #     (kod dogmadan MUST kullanimini kusur saymak yanlis-pozitif taban cizgisi uretir)
+    vaka("BELGE VAR ama 0 dart -- D1/D3 ERTELENIR, SUSMALI", [],
+         DESIGN_TEMIZ, None, None)
+
+    # 12) MUTANT: erteleme kapiyi KORLESTIRMEMELI -- kod yokken bile D0 ISIRMALI
+    #     Bu vaka olmadan 11) numarali erteleme bir KOR KAPI olurdu.
+    vaka("BELGE VAR, 0 dart, ama tokens blogu BOZUK -- D0 YINE ISIRMALI", ["D0"],
+         DESIGN_TEMIZ.replace("bosluk.m     = 16       -> MBosluk.m",
+                              "bosluk.m 16 MBosluk.m"),
+         None, None)
+
     cizgi = "=" * 78
     print(cizgi)
     print("ALTIN KUME -- DESIGN TOKEN KAPISININ KENDI KANITI (kor kapi yok)")
@@ -411,6 +436,30 @@ def rapor(bulgular, ozet, kok, design_yolu, kod_kok):
         print("Arac SUSUYOR -- bu bir TEMIZ hukum DEGIL, olculecek bir sey OLMADIGININ beyanidir.")
         print("\n" + cizgi)
         print("HUKUM: OLCULECEK SEY YOK (exit 0)")
+        print(cizgi)
+        return 0
+
+    if ozet.get("durum") == "BELGE-VAR-KOD-YOK":
+        print("\nOZET: token %d (MUST %d / NICE %d) | dart dosyasi 0"
+              % (ozet["token"], ozet["must"], ozet["nice"]))
+        print("\nBELGE VAR, KOD YOK.")
+        print("  D1 (MUST kullanimi) ve D3 (sembol tanimi) ERTELENDI: %d MUST token"
+              % ozet.get("ertelenen", 0))
+        print("  D2/D4 kod ister, kosulmadi. D0 (bicim) KOSULDU ve %s."
+              % ("BULGU VERDI" if bulgular else "temiz"))
+        print("\n  Bu bir TEMIZ hukum DEGILDIR. Belgenin MUST vaadi HENUZ OLCULMEMISTIR;")
+        print("  ilk .dart dosyasi dogdugu anda bu kapi GERCEK hukum verecektir.")
+        if bulgular:
+            print("\nBULGULAR (%d):" % len(bulgular))
+            for kod, dosya, satir, mesaj in bulgular:
+                yer = "%s:%s" % (dosya, satir) if satir else dosya
+                print("  [%s] %s\n        %s" % (kod, yer, mesaj))
+            print("\n" + cizgi)
+            print("HUKUM: KUSURLU (bicim) -- %d bulgu. (exit 1)" % len(bulgular))
+            print(cizgi)
+            return 1
+        print("\n" + cizgi)
+        print("HUKUM: BEKLEMEDE -- belge bicimi temiz, MUST vaadi KOD DOGUNCA olculecek. (exit 0)")
         print(cizgi)
         return 0
 
