@@ -89,4 +89,5 @@ Checkpoint **anında** yazılır — karar/kapı/kilit anında, küçük ve heme
 **Kimlik ölçümü DAİMA son yazımdan SONRA alınır** (iki kez bayat kimlik yazıldı; `python araclar\dosya-kimlik.py <dosya>`).
 
 ## Ortam
-Windows / PowerShell. Kanonik kök: `...\TO DO LİST\Momentum`. Mac yok → iOS CI-only. Build/kod bu klasörde (OneDrive'da değil, senkron derdi yok).
+Windows / PowerShell. **Kanonik kök: `C:\dev\Momentum` — SAF ASCII OLMAK ZORUNDA [K56].**
+> Eski kök (`…\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum`) **dört ayrı araç zincirini kırıyordu**: `build_runner` · `flutter analyze` (LSP çerçeveleme) · **Android Gradle Plugin** · `.ps1` yol literali. Suçlu **boşluk değil, Türkçe karakter** (izole edildi). **Junction ÇÖZMEZ** — JVM reparse point'i gerçek yola çözer. `android.overridePathCheck` **EKLENMEZ** (kapı susturmak + repoya geçici çözüm commit'lemek olur). **Kural: yeni klasör/yol açarken saf ASCII kullan.** Mac yok → iOS CI-only. Build/kod bu klasörde (OneDrive'da değil, senkron derdi yok).

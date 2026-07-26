@@ -10,7 +10,8 @@
 
 Çok platformlu görev yönetimi (to-do): **Flutter** istemci (Android + Web) + **N-katmanlı .NET 9 / ASP.NET Core** backend + **PostgreSQL**. İşe-alım/portfolyo ödevi; odak **mimari ve kod kalitesi**. Vitrin: **çevrimdışı-öncelikli senkron + gerçek zamanlı işbirliği**.
 
-Kanonik kök: `C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum`
+**Kanonik kök: `C:\dev\Momentum`** 🔴 **[K56, 26 Tem 2026 — TAŞINDI]**
+> Eski kök `…\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum` idi ve **yoldaki Türkçe karakterler (Ö/İ) DÖRT ayrı araç zincirini kırıyordu** (§7). Kök neden kaldırıldı; **junction kaldırıldı, `android.overridePathCheck` EKLENMEDİ** — hiçbir kapı susturulmadı.
 
 ---
 
@@ -30,7 +31,7 @@ Kanonik kök: `C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum
 |---|---|
 | **Backend** | ✅ slice-1 → 3a bitti. `araclar\verify.ps1` ⇒ build 0 uyarı/0 hata · **test 110/110** · CVE 0 · EXIT 0 |
 | **Veritabanı** | ✅ Docker 29.6.1, `momentum-postgres` Up (healthy) |
-| **İstemci (Flutter)** | 🟡 **BAŞLADI — T0·T1·T2 BİTTİ.** `src/client/` iskeleti var (android+web, 135 satır `flutter create` üretimi), `pubspec.yaml` spec'in T2 bloğuyla **birebir**. `KANIT/slice-3b/00-ortam.txt` yazıldı. **Sıradaki: T3 (token katmanı).** |
+| **İstemci (Flutter)** | 🟢 **T0→T7 BİTTİ** (son commit `3f043ca`). `tokens.dart` (32 sembol) · `veritabani.dart`+`gorev_deposu.dart` (F4 dikişi, UUID v4, paketsiz) · 8 bileşen + `MomentumTema` · durum vitrini (8 durum `ByValueKey` ile) · `main.dart` gerçek uygulamaya bağlı (F7 bayrak korumalı). **`flutter analyze` 0 bulgu · `flutter test` 20/20 yeşil · üretilen `.g.dart`'ta 0 mutlak yol.** **Sıradaki: T8 (kapı araçları) — taşımadan sonra.** |
 | **Tasarım sistemi** | ✅ `DESIGN.md` v1 (15.742 b · `534DFF68`) — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7 |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
 | **Radar** | `GOREV-slice-3b-spec` KIRMIZI (kalan sınıf `esdeger-mutant`, build'e devredildi) · `slice-3b-istemci` YEŞİL · `docs/ADR/0003` KIRMIZI (park, beklenen) |
@@ -54,6 +55,7 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 - **K53** — Verimlilik reformu: kâğıt denetim turu tavanı **1** · radar KIRMIZI'da varsayılan **DEVRET** · koşan-uygulama-mutant tavanı **3** · iki oturum 0 ürün kodu = **sert durak (R7)** · hafıza bölündü.
 - **K54** — `GOREV-slice-3b` spec'i **v4, KİLİTLİ**. Kilitli kimlik: **36.337 b · `BE4581BA`** (K52'nin `1AB02B73`'ü geçersizdir). Değişen her bayt kilidi bozar.
 - **K55** — Başka bir el çalışırken `git add -A` **YASAK**; `urun_kodu_satiri` = *"o oturumda repoya giren ürün kodu, **hangi el olursa olsun**"*.
+- **K56** — Kanonik kök **saf ASCII** olmak zorunda (`C:\dev\Momentum`). `android.overridePathCheck` **eklenmez**; junction **kullanılmaz**. Kapı susturmak yerine **kök neden kaldırıldı**.
 - **K46** — `DESIGN.md`'ye **tek bayt yazılmaz** (BD‑1…BD‑7 borçları açık).
 - **K42-d** — Taç mücevher dilimi dört adım, atlanmaz: (1)✅ Docker+verify → (2) Flutter+Drift+çevrimdışı CRUD → (3) senkron kuyruğu → (4) SignalR.
 - **K41** — ADR 0003 v7 **DONDURULDU**; açılması üç şartın BİRLİKTE sağlanmasına + Onur'un açık onayına bağlı.
@@ -89,6 +91,10 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 - **Commit mesajına ÇİFT TIRNAK yazma** (PowerShell argümanı böler, commit sessizce düşer). Her commit'ten sonra `git log --oneline -1` ile SHA'yı doğrula.
 - **git'te `--no-optional-locks` ZORUNLU.** Commit **yalnız Desktop Commander** ile; `device_bash`/mount ile **YASAK**. **PUSH ONUR'DA.**
 - **`device_stage_files` BAYAT KOPYA sunuyor** (ölçüldü: v2 stage'lendi, v1 göründü) ⇒ gerçeği **`desktop-commander read_file`** ile oku; denetçi ajanlara **kanonik yol** ver.
+- 🔴 **YOL SAF ASCII KALMAK ZORUNDA — DÖRT ÖLÇÜLMÜŞ KIRILMA [K56].** Eski kökteki Türkçe karakterler (Ö/İ) şunları kırdı: ① `dart run build_runner build` → *"package_config.json did not contain its own root package"* ② `flutter analyze` → LSP JSON‑RPC çerçeveleme çöküşü (çok baytlı UTF‑8 ↔ `Content-Length`) ③ **Android Gradle Plugin** yol denetimi ④ `.ps1` Türkçe yol literali (PS 5.1 ANSI okur, `Test-Path` sessizce `False`).
+  **İZOLE EDİLDİ:** boşluk **suçsuz** (boşluklu ASCII yolda EXIT=0), suçlu **Türkçe karakter**.
+  **JUNCTION ÇÖZMEDİ:** Dart/Flutter zinciri junction'ı şeffaf geçiyordu ama **JVM (Gradle) reparse point'i gerçek yola çözüyor** (`File.getCanonicalPath()`) ⇒ AGP gerçek Türkçe yolu görüyordu. `flutter build web` aynı junction'dan EXIT=0 (JVM yok) — karşıt kanıt.
+  **`android.overridePathCheck=true` EKLENMEDİ** (kapı susturmak + repoya commit'lenen bir geçici çözüm bırakmak olurdu). **Kök neden kaldırıldı: repo ASCII köke taşındı.** Ham kanıt: `KANIT/slice-3b/ORTAM-YOL-KISITI.txt`.
 - **Git Bash/MSYS, `cmd /c`'deki `/c`'yi POSIX yol sanıp `C:/` diye YENİDEN YAZIYOR** (ölçüldü: gerçek komut `cmd C:/ dart pub …` olarak koştu, süreç dakikalarca takıldı) ⇒ ham `cmd /c` içeren komutlar **PowerShell'den** koşulur.
 - **Başka bir el (Claude Code) çalışırken `git add -A` YASAK** — onun commit'lenmemiş işini kör olarak içeri alır (ölçüldü: `dee6dbc`). Yol belirterek `git add <yol>` yap ya da o el commit'ini atana kadar bekle.
 - **`flutter test --platform chrome` bu ortamda SONUÇ ÜRETMİYOR** (iki bağımsız ölçüm: 7 dk ve 9,8 dk, boş testle bile `loading…`'de kaldı) ⇒ web test ayağı `[DOĞRULANMADI]`.
@@ -102,7 +108,9 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 ## 8. AÇIK BORÇLAR (adlandırılmış, gizlenmemiş)
 
 - **`DESIGN.md` BD‑1…BD‑7** — koyu tema kapısız (§1.1 tablo, `tokens` bloğunda değil) · `renk.ayirici` kuralı numarasız/ölü · odak-halkası/birincil kontrast çifti ölçülmemiş · `MomentumTema` widget değil · `20/28` mutlak mı oran mı belirsiz · "10/10" bayat (araç 12 vaka) · §3.1 dört MUST token'ı hiçbir bileşene atamıyor. **K46 gereği kapatılmadı.**
-- **`radar.py` kanonik-kopya borcu** — proje kopyası 0.2.0, **plugin sürümü bu düzeltmeleri taşımıyor**. Kanonik = proje içindeki.
+- 🔴 **`radar.py` KURAL ADI ÇAKIŞMASI [açık, kapatılmalı]** — proje kopyasında ürün-kodu durgunluğu kuralı **`R7`** adını taşıyor, ama `proje-radari` plugin doktrininde **`R7` zaten "kapı granülerliği"dir**. Plugin 0.2.0'da doğru ad **`R8`**'dir. **Proje kopyası `R7` → `R8` olarak düzeltilmeli** (kod + defter kayıtları + bu dosya).
+- **`radar.py` kanonik-kopya borcu** — plugin **0.2.0**'a yükseltildi (defter dürüstlük kapısı `D1`–`D5`, `--olc-urun-kodu`, `radar.config.json`, altın küme 18 vaka). **Proje kopyası bu eklentileri TAŞIMIYOR**; plugin'den geri taşınmalı.
+- 🔴 **Spec T2/Z10 kilit düzeltmesi [açık]** — `build_runner ^2.15.2` bu Flutter SDK'sıyla **çözülemiyor** (analyzer ≥13.3.0 → meta ^1.18.3 ↔ flutter_test meta 1.18.0 pini). Fiilen `^2.15.1` kullanıldı ve ölçüldü (`analyzer 13.0.0` · `meta 1.18.0`), sapma `KANIT/slice-3b/T2-SAPMA.txt`'te. **Spec'in T2 ve Z10 satırları güncellenmeli + yeni kilit sha'sı ölçülmeli.** Z10'un boşluğu da yazılmalı: *sürüm ölçümü ≠ çözümlenebilirlik ölçümü.*
 - **`pub.dev` uçları** (`/advisories`, `/metrics`) dokümantasyonsuz ve sürüm garantisiz — kalkan: fixture altın kümeleri.
 - **Kontrast betiğinin kalıcı hâli** `araclar/` dışında; kod tarafı G5'in `textContrastGuideline` ayağına girdi.
 - **Açık `[DOĞRULANMADI]` (5):** flutter_secure_storage Windows şifrelemesi · WebKit `http://localhost` `__Host-` · Isopoh lisans ailesi · NIST SP 800-38D · Web'de `textScaler`/tema davranışının Android'den farkı.

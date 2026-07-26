@@ -11,6 +11,26 @@
 >
 > 🔴 **BU DOSYA ARTIK OTURUM AÇILIŞINDA OKUNMAZ [K53, 26 Tem 2026].** Canlı durum **`DURUM.md`**'dedir (≤12 KB). Burası **APPEND-ONLY KARAR ARŞİVİDİR**: yeni checkpoint üste eklenir, **hiçbir şey silinmez, hiçbir şey yerinde düzeltilmez** (bayat satır varsa **düzeltme notu** yazılır). Buraya yalnız *"bu karar neden alındı?"* diye sorulduğunda bakılır.
 
+## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K56 — REPO ASCII KÖKE TAŞINIYOR; KAPI SUSTURULMADI**)
+
+**🔴 K56 — KİLİT (Onur, 26 Tem 2026): kanonik kök `C:\dev\Momentum`. `android.overridePathCheck` EKLENMEYECEK; junction KALDIRILACAK.**
+
+**AYNI KÖK NEDENİN DÖRDÜNCÜ ÖLÇÜLMÜŞ KUSURU.** Claude Code üç ayrı turda **DUR ve sor** dedi (spec'in tam olarak üretmesi için tasarlandığı davranış) ve üçü de gerçekti. Türkçe karakterli yol (`Ö`/`İ`) şunları kırdı:
+① `dart run build_runner build` → *"package_config.json did not contain its own root package"* · ② `flutter analyze` → LSP JSON‑RPC çerçeveleme çöküşü (çok baytlı UTF‑8 ↔ `Content-Length`) · ③ **Android Gradle Plugin** yol denetimi · ④ `.ps1` Türkçe yol literali (bilinen eski kusur).
+**İZOLASYON KANITI (Claude Code ölçtü):** boşluklu **ASCII** yolda EXIT=0 · aynı projeye sadece **"Ö"** eklenince EXIT=255 ⇒ **boşluk suçsuz, Türkçe karakter suçlu**.
+**JUNCTION ÇÖZMEDİ VE BUNUN SEBEBİ DE ÖLÇÜLDÜ:** Dart/Flutter zinciri junction'ı şeffaf geçiyor, ama **JVM reparse point'i gerçek yola çözüyor** (`File.getCanonicalPath()`) ⇒ AGP hata mesajında **junction'ı değil gerçek Türkçe yolu** gösterdi. Karşıt kanıt: `flutter build web` aynı junction'dan **EXIT=0** (JVM yok).
+
+**🔴 REDDEDİLEN ÇÖZÜM VE GEREKÇESİ [bu, K53'ün doğrudan uygulanmasıdır]:** AGP'nin kendi resmî kaçış yolu `android.overridePathCheck=true` **EKLENMEDİ**. Üç gerekçe: (a) **bir kapıyı susturur, sebebi çözmez** — AGP o kontrolü keyfi koymadı, aapt2/NDK'nın ASCII-dışı yollarda gerçek kırılma geçmişi var; risk **ölçülmeden ertelenirdi**. (b) Junction repo **DIŞINDAYDI**, bu bayrak **`gradle.properties` ile REPOYA commit'lenirdi** ⇒ işe-alım denetçisi *"bu proje neden Android'in yol kontrolünü devre dışı bırakmış?"* diye sorardı — portfolyo kokusu. (c) Elde **üç veri noktası** vardı: geçici çözüm biriktikçe her turda yeni bir sürpriz çıkıyordu.
+*Reddedilen diğer şık: Android'i erteleyip web ile devam (F1 kilidi Android'de 3 gerçek ayak istiyor ve ekran görüntüsü web'de fiziksel olarak yok — Z6 ⇒ G1 yarım kalırdı).*
+
+**✅ TAŞIMADAN ÖNCE TEMİZ DURUŞ ÖLÇÜLDÜ:** son commit **`3f043ca`** · `git status --porcelain` **BOŞ** · `.git/index.lock` **YOK** · junction `C:\momentum` (kaldırılacak) · silinecek önbellekler `src/client/.dart_tool` ve `src/client/build` (mutlak yol saklıyorlar).
+
+**✅ İSTEMCİ DURUMU (taşımadan önce):** **T0 → T7 BİTTİ.** `tokens.dart` (32 sembol, `Brightness` tabanlı çözüm) · `veritabani.dart` + `gorev_deposu.dart` (F4 dikişi, F8 saat/kimlik dikişi, UUID v4 **paketsiz**, `senkronDurumu` CHECK kısıtı) · 8 görsel bileşen + `MomentumTema` · durum vitrini (8 durum `ByValueKey` ile) · `main.dart` gerçek uygulamaya bağlı (F7 bayrak korumalı). **`flutter analyze` 0 bulgu · `flutter test` 20/20 yeşil · G7'nin 6 maddesi test edildi · üretilen `.g.dart`'ta 0 mutlak yol** (taşınabilirlik ölçüldü — Onur'un şartıydı).
+
+**✅ T2 SAPMASI ÖLÇÜLDÜ VE KAYDA GEÇTİ:** `build_runner ^2.15.2` bu Flutter SDK'sıyla **çözülemiyor** (2.15.2 → `analyzer >=13.3.0` → `meta ^1.18.3`, ama `flutter_test` `meta`'yı **1.18.0**'a pinliyor). `^2.15.1` ile çözüldü ve ölçüldü: `analyzer 13.0.0` · `meta 1.18.0`. Ham kanıt `KANIT/slice-3b/T2-SAPMA.txt`. **Spec'e DOKUNULMADI** (`BE4581BA` sabit). ⇒ **Z10'un ölçüm boşluğu adlandırıldı: sürüm ölçümü ≠ ÇÖZÜMLENEBİLİRLİK ölçümü.** `pub-surum-olc.py`'ye çözümlenebilirlik ayağı eklenmeli (borç).
+
+**AÇIK BORÇLAR (üçü de `DURUM.md` §8'de):** `radar.py` proje kopyasında **`R7` → `R8`** ad çakışması (plugin doktrininde R7 zaten "kapı granülerliği") · plugin 0.2.0'ın yeni yetenekleri proje kopyasına geri taşınmalı · spec T2/Z10 kilit düzeltmesi.
+
 ## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K53 VERİMLİLİK REFORMU + K54 SPEC v4 (KİLİT GÜNCELLEMESİ)**)
 
 **🔴 TEŞHİS (Onur'un talebiyle masaya yatırıldı):** 29 oturumun sonunda **backend çalışıyordu** (slice-1→3a, `verify.ps1` **110/110**), ama **istemci 0 satırdı**. Bugün bulunan kusurların neredeyse hepsine bakıldığında ortak nokta şuydu: *hiçbiri ÜRÜN kusuru değildi* — `M4 eşdeğer mutant`, `G3 ölçemediğini ölçüyor`, `A11Y-2 mutantsız`, `D0/D4 mutantsız`… hepsi **DENETİM AYGITININ** kusuruydu. **Kök neden denetimin MİKTARI değil, ZAMANLAMASI: henüz koşamayan iddialar kâğıtta doğrulanmaya çalışılıyordu.** Radar bunu (R2b) ADR 0003'e dokuz turdur söylüyordu.
