@@ -30,7 +30,7 @@ Kanonik kök: `C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum
 |---|---|
 | **Backend** | ✅ slice-1 → 3a bitti. `araclar\verify.ps1` ⇒ build 0 uyarı/0 hata · **test 110/110** · CVE 0 · EXIT 0 |
 | **Veritabanı** | ✅ Docker 29.6.1, `momentum-postgres` Up (healthy) |
-| **İstemci (Flutter)** | ⛔ **0 satır Dart.** Spec kilitli (K52), build **henüz başlamadı** |
+| **İstemci (Flutter)** | 🟡 **BAŞLADI — T0·T1·T2 BİTTİ.** `src/client/` iskeleti var (android+web, 135 satır `flutter create` üretimi), `pubspec.yaml` spec'in T2 bloğuyla **birebir**. `KANIT/slice-3b/00-ortam.txt` yazıldı. **Sıradaki: T3 (token katmanı).** |
 | **Tasarım sistemi** | ✅ `DESIGN.md` v1 (15.742 b · `534DFF68`) — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7 |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
 | **Radar** | `GOREV-slice-3b-spec` KIRMIZI (kalan sınıf `esdeger-mutant`, build'e devredildi) · `slice-3b-istemci` YEŞİL · `docs/ADR/0003` KIRMIZI (park, beklenen) |
@@ -88,6 +88,9 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 - **Commit mesajına ÇİFT TIRNAK yazma** (PowerShell argümanı böler, commit sessizce düşer). Her commit'ten sonra `git log --oneline -1` ile SHA'yı doğrula.
 - **git'te `--no-optional-locks` ZORUNLU.** Commit **yalnız Desktop Commander** ile; `device_bash`/mount ile **YASAK**. **PUSH ONUR'DA.**
 - **`device_stage_files` BAYAT KOPYA sunuyor** (ölçüldü: v2 stage'lendi, v1 göründü) ⇒ gerçeği **`desktop-commander read_file`** ile oku; denetçi ajanlara **kanonik yol** ver.
+- **Git Bash/MSYS, `cmd /c`'deki `/c`'yi POSIX yol sanıp `C:/` diye YENİDEN YAZIYOR** (ölçüldü: gerçek komut `cmd C:/ dart pub …` olarak koştu, süreç dakikalarca takıldı) ⇒ ham `cmd /c` içeren komutlar **PowerShell'den** koşulur.
+- **Başka bir el (Claude Code) çalışırken `git add -A` YASAK** — onun commit'lenmemiş işini kör olarak içeri alır (ölçüldü: `dee6dbc`). Yol belirterek `git add <yol>` yap ya da o el commit'ini atana kadar bekle.
+- **`flutter test --platform chrome` bu ortamda SONUÇ ÜRETMİYOR** (iki bağımsız ölçüm: 7 dk ve 9,8 dk, boş testle bile `loading…`'de kaldı) ⇒ web test ayağı `[DOĞRULANMADI]`.
 - **`.ps1`'e Türkçe yol literali yazma** (PowerShell 5.1 ANSI okur, `Test-Path` sessizce `False`).
 - **pub.dev HTML sayfaları BAYAT veri döndürür** — kanıt yalnız `/api/` ucudur.
 - **Kimlik ölçümü SON yazımdan SONRA alınır** (iki kez bayat kimlik yazıldı).

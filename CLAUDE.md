@@ -13,7 +13,8 @@
    **Koşan uygulama** isteyen mutant (emülatör/tarayıcı + yeniden derleme) tavanı: **3 / dilim.**
    **Statik** (linter/tarayıcı betiği) ve **widget testi** mutantları: **tavansız** — saniyeler sürerler ve portfolyonun en ikna edici parçasıdır.
    Bir kural mutantsız kalacaksa `## 6b. MUTANT BORCU` altına **gerekçesiyle** yazılır; `spec-kapi-kapsama.py` gerekçesiz borcu **reddeder**. **KAPI borçlanamaz**, yalnız kural.
-4. **İKİ OTURUM ÜST ÜSTE 0 SATIR ÜRÜN KODU = SERT DURAK.** Radar `R7` bunu ölçer (`urun_kodu_satiri` alanı; **araç/betik/belge SAYILMAZ**). Kırmızı yanarsa **bir sonraki oturum ürün koduyla başlar**; yeni belge/ADR/spec/araç turu **açılmaz**.
+4. **İKİ OTURUM ÜST ÜSTE 0 SATIR ÜRÜN KODU = SERT DURAK.** Radar `R7` bunu ölçer. Kırmızı yanarsa **bir sonraki oturum ürün koduyla başlar**; yeni belge/ADR/spec/araç turu **açılmaz**.
+   **`urun_kodu_satiri` TANIMI [K55'te düzeltildi]:** *"o oturum penceresinde repoya giren **ÜRÜN kodu — HANGİ EL olursa olsun**"* (Cowork, Claude Code, fark etmez). **Araç/betik/belge SAYILMAZ.** Üretilmiş iskelet (`flutter create` vb.) sayılır ama **niteliği beyan edilir**. *Bu tanım ilk gerçek kullanımda düzeltildi: "Cowork'ün yazdığı kod" diye okunursa, **Claude Code build ederken R7 yanlış-pozitif verir**.*
 5. **YÜRÜYEN İSKELET ÖNCE, KAPILAR SONRA.** Koşan kod üzerindeki kapı kendini doğrular; kâğıt üzerindeki kapı doğrulanamaz. Yeni bir dikey dilimde önce **çalışan en küçük şey**, sonra kapılar.
 
 **Ayrım (her tasarımda uygulanır):** **ÜRÜN kapısı** (*"uygulama çevrimdışı kalıcı mı?"*) her kuruşu hak eder. **SÜREÇ kapısı** (*"her kuralın mutantı var mı?"*) faydalıdır ama **tavanı vardır**.

@@ -41,7 +41,19 @@
 **🔒 K54 — SPEC v4, KİLİT GÜNCELLENDİ.** v3 → v4 tek kalem: §6'ya **MALİYET SINIFI** (A statik / B widget / C koşan uygulama) ve **A → B → C koşum sırası** eklendi. **Mutant sayısı, kapılar, kurallar, kabul kriterleri DEĞİŞMEDİ.** Sınıf C tam üç: **M3 · M9 · M4** ⇒ K53 tavanı **karşılanıyor**, kesinti gerekmedi.
 **YENİ KİLİTLİ KİMLİK: 36.337 b · `sha256 BE4581BA`** (K52'nin `1AB02B73`'ü **artık geçersizdir**). `spec-kapi-kapsama` ⇒ **BULGU YOK / EXIT 0**.
 
-**GİT:** Claude Code Onur tarafından **durduruldu** (build başlamamıştı, kilit değişikliği güvenli).
+**GİT:** Claude Code Onur tarafından **durduruldu**.
+
+> 🔴 **K55 — DÜZELTME NOTU (append-only; yukarıdaki satır DEĞİŞTİRİLMEDİ, çürütüldü):**
+> Yukarıda *"build başlamamıştı, kilit değişikliği güvenli"* yazıyor. **BU YANLIŞTI.** Commit anında ölçüldü: **Claude Code T0, T1 ve T2'yi BİTİRMİŞTİ** ve işini **commit etmemişti**; Cowork'ün `git add -A` komutu onu kendi commit'ine (`dee6dbc`) **süpürdü** — commit mesajı o dosyaları anlatmıyor. **İki kusur, ikisi de Cowork'ün:** (a) ölçmeden *"başlamamıştı"* denildi; (b) `git add -A` başka bir elin işini kör olarak içeri aldı.
+> **Pratik risk düşüktü ve bu da ÖLÇÜLDÜ:** v3→v4 değişikliği yalnız **§0 ve §6**'ya dokundu; Claude Code **T2'deydi** ve o bölümlere henüz gelmemişti ⇒ kilit değişikliği yapılan işi geçersizleştirmedi. Ama gerekçe **şanstı, ölçüm değildi**.
+> **KURAL (bundan sonra):** başka bir el (Claude Code) çalışırken `git add -A` **YASAK**; ya yol belirtilerek `git add <yol>` yapılır ya da o elin işi bitip commit'ini attıktan sonra eklenir.
+>
+> **✅ CLAUDE CODE'UN T0'I ÖRNEK NİTELİKTE — İKİ DEĞERLİ ÇIKTI:**
+> 1. **Z16/B‑6 BAĞIMSIZ OLARAK YENİDEN ÖLÇÜLDÜ:** ayrı bir atılabilir projede `flutter test --platform chrome`, **tek satırlık boş bir testle 589 saniye (9,8 dk)** boyunca `loading…` satırından ilerlemedi (red-team 7 dk demişti — **aynı sınıfın ikinci ve daha kötü tekrarı**). Spec'in öngördüğü gibi **kriter 2'nin web ayağı `[DOĞRULANMADI]`** yazıldı; `DUR-ve-raporla` tetiklenmedi **çünkü spec bu ihtimali yazılı olarak kapsıyordu**. *Bu, spec'in doğru yazıldığının kanıtıdır: öngörülen sınır, öngörüldüğü gibi davrandı.*
+> 2. **YENİ ORTAM KUSURU (kanla yazılı listeye girdi):** **Git Bash/MSYS, `cmd /c` argümanındaki `/c` dizgesini POSIX mutlak yol sanıp `C:/` olarak YENİDEN YAZIYOR** (süreç ağacında doğrulandı: gerçek komut `cmd C:/ dart pub global run dart_mcp_server`). ⇒ Ham `cmd /c` içeren komutlar **PowerShell'den** koşulur, **Bash'ten değil**.
+> Ayrıca T0, `DESIGN.md`'nin **`534DFF68`** olduğunu bağımsız olarak doğruladı ve Z1/Z10'un **hepsiyle birebir eşleşti**.
+>
+> **🔴 R7'NİN TANIMI DÜZELTİLDİ (ilk gerçek kullanımda ortaya çıkan kusur):** `urun_kodu_satiri`, *"Cowork'ün yazdığı kod"* değil, **"o oturum penceresinde repoya giren ürün kodu — HANGİ EL olursa olsun"** demektir. Aksi hâlde **Claude Code build ederken R7 yanlış-pozitif verir**. Ölçülen gerçek: `src/client/` altında **135 satır Dart** (`flutter create` üretimi — sayı gerçek, **niteliği beyan edilmiştir**) + `pubspec.yaml`'ın T2 bağımlılık bloğuyla **birebir** uyumu. Düzeltme kaydı deftere eklendi; **R7 artık yanmıyor ve bu DOĞRUDUR — proje durmadı, inşa ediyordu.**
 
 ## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K52 — SPEC KİLİTLENDİ; `esdeger-mutant` SINIFI BUILD'E DEVREDİLDİ**)
 
