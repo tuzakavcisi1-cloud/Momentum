@@ -34,7 +34,7 @@ Kanonik kök: `C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum
 | **Tasarım sistemi** | ✅ `DESIGN.md` v1 (15.742 b · `534DFF68`) — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7 |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
 | **Radar** | `GOREV-slice-3b-spec` KIRMIZI (kalan sınıf `esdeger-mutant`, build'e devredildi) · `slice-3b-istemci` YEŞİL · `docs/ADR/0003` KIRMIZI (park, beklenen) |
-| **Git** | `origin/main`'e göre **ileride**, **PUSH ONUR'DA** |
+| **Git** | **PUSH DAİMA ONUR'DA** — Cowork ve Claude Code **asla push etmez**. İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR**: `git --no-optional-locks rev-list --left-right --count origin/main...HEAD` |
 
 **Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · .NET 9.0.316 · **Windows masaüstü ☠** (`%PROGRAMFILES(X86)%` yok) · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
 
@@ -42,7 +42,7 @@ Kanonik kök: `C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum
 
 ## 4. SIRADAKİ İŞ
 
-**Claude Code build eder:** `GOREV_CLAUDE_CODE\GOREV-slice-3b-istemci-iskeleti.md` (**KİLİTLİ, K52**) — Flutter iskeleti (Android+Web) + Drift + **tam çevrimdışı CRUD** + yedi kapı + mutantlar + `KANIT/slice-3b/`.
+**Claude Code build eder:** `GOREV_CLAUDE_CODE\GOREV-slice-3b-istemci-iskeleti.md` (**v4, KİLİTLİ, K54**) — Flutter iskeleti (Android+Web) + Drift + **tam çevrimdışı CRUD** + yedi kapı + 23 mutant + `KANIT/slice-3b/`. **T0·T1·T2 bitti ⇒ T3'ten devam.** Mutantlar §6'daki **maliyet sınıfı sırasıyla**: **A (statik) → B (widget) → C (koşan uygulama: M3·M9·M4)**.
 Claude Code **`Momentum` kökünden** açılır. Cowork **build etmez**; dönüşte artefaktı **bağımsız doğrular**.
 
 Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (SignalR `SyncHub`).
@@ -52,7 +52,8 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
 - **K53** — Verimlilik reformu: kâğıt denetim turu tavanı **1** · radar KIRMIZI'da varsayılan **DEVRET** · koşan-uygulama-mutant tavanı **3** · iki oturum 0 ürün kodu = **sert durak (R7)** · hafıza bölündü.
-- **K52** — `GOREV-slice-3b` spec'i **KİLİTLİ**. Kilitli kimlik: **34.821 b · `1AB02B73`**. Değişen her bayt kilidi bozar.
+- **K54** — `GOREV-slice-3b` spec'i **v4, KİLİTLİ**. Kilitli kimlik: **36.337 b · `BE4581BA`** (K52'nin `1AB02B73`'ü geçersizdir). Değişen her bayt kilidi bozar.
+- **K55** — Başka bir el çalışırken `git add -A` **YASAK**; `urun_kodu_satiri` = *"o oturumda repoya giren ürün kodu, **hangi el olursa olsun**"*.
 - **K46** — `DESIGN.md`'ye **tek bayt yazılmaz** (BD‑1…BD‑7 borçları açık).
 - **K42-d** — Taç mücevher dilimi dört adım, atlanmaz: (1)✅ Docker+verify → (2) Flutter+Drift+çevrimdışı CRUD → (3) senkron kuyruğu → (4) SignalR.
 - **K41** — ADR 0003 v7 **DONDURULDU**; açılması üç şartın BİRLİKTE sağlanmasına + Onur'un açık onayına bağlı.
