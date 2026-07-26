@@ -43,7 +43,7 @@ yalnız `mv` ile kenara alabilir; kalıcı silmeyi Onur yapar.
 > - **`--no-optional-locks` her git çağrısında ZORUNLU kalır** (okuma da yazma da).
 > - **PUSH hâlâ Onur'un işidir** — bu errata push'a izin VERMEZ.
 
-## Radar [26 Tem 2026 — K39, PAZARLIKSIZ]
+## Radar [26 Tem 2026 — K40, PAZARLIKSIZ]
 - **Her oturum açılışında ve her checkpoint'te** radar koşulur: `python araclar\radar.py --altin-kume`
   (çıkış **0** olmalı) → `python araclar\radar.py .`  ⇒ hüküm **YEŞİL/SARI/KIRMIZI** (çıkış 0/1/2).
 - **Her checkpoint'te `PROJE_RADAR.jsonl`'a BİR SATIR eklenir** — `uretilen` alanı (bu oturumun KENDİ
