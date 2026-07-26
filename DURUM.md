@@ -113,16 +113,22 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 
 `python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GOREV_CLAUDE_CODE\GOREV-slice-3b-istemci-iskeleti.md`
 
-| dosya | bayt | sha8 |
-|---|---|---|
-| `DESIGN.md` | 15.742 | `534DFF68` |
-| `CLAUDE.md` | 8.936 | `8DA5338E` |
-| `GOREV-slice-3b-istemci-iskeleti.md` | **36.337** | **`BE4581BA`** 🔒 **KİLİTLİ (K54)** |
-| `araclar/radar.py` **0.2.0** | 21.257 | `D0D2A845` |
-| `araclar/spec-kapi-kapsama.py` | 12.591 | `9A38BC62` |
-| `araclar/adr-kapi-taramasi.py` | 50.582 | `A22841F2` |
+🔴 **BURAYA YALNIZ *DONMUŞ* KİMLİKLER YAZILIR.** Sık değişen bir dosyanın sha'sını buraya yazmak `kanonik-kopya` kusurunu **garanti eder** — bu tabloda **üç kez** bayat kimlik oluştu (oturum 29). Değişken dosyaların kimliği **yazılmaz, ÖLÇÜLÜR**:
+
+```powershell
+python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GOREV_CLAUDE_CODE\GOREV-slice-3b-istemci-iskeleti.md
+```
+
+**DONMUŞ KİMLİKLER (bunlar SÖZLEŞMEDİR — değişirse bir kilit bozulmuş demektir):**
+
+| dosya | bayt | sha8 | neden donmuş |
+|---|---|---|---|
+| `DESIGN.md` | 15.742 | `534DFF68` | **K46** — tek bayt yazılamaz |
+| `GOREV-slice-3b-istemci-iskeleti.md` | **36.337** | **`BE4581BA`** | 🔒 **K54 kilidi** — değişen her bayt kilidi bozar |
+| `araclar/adr-kapi-taramasi.py` | 50.582 | `A22841F2` | **K34-f** tutuyor; ADR donduruldu |
 
 ⚠ **`Measure-Object -Line` boş satırları saymaz.** Kimlik `sha256`+bayttır, satır DEĞİL.
+⚠ **Kimlik ölçümü DAİMA son yazımdan SONRA alınır.**
 
 ---
 
