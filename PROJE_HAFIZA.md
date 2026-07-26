@@ -9,6 +9,109 @@
 > NOTLARINI GEÇERSİZ KILAR"* diyor. Yalnız tepeyi okuyan bir oturum **bayat durum alır.**
 > **KURAL (bundan sonra): en yeni checkpoint/devir notu DAİMA bu satırın hemen altına yazılır.**
 
+## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K50 — RED-TEAM v2'Yİ DE KIRDI; K49'UN ÖNGÖRDÜĞÜ GERİ DÜŞÜŞ TETİKLENDİ**)
+
+**K49 (Onur kilidi):** *"G1'in 4. ayağını `vm_service` ile GERÇEKTEN doldur"* — **açık şartıyla birlikte kilitlendi: *"`vm_service`'in ne döndürdüğü ölçülmedi; çıkmazsa (a)'ya [3 ayak + 1 ön koşul] düşülür."*** Spec v2 (36.513 b · `3AE01B04`) bu kilide göre yazıldı.
+
+**🔴 RED-TEAM (iş akışının EN SON kapısı) v2'yi de kırdı: 4 bloker · 6 majör · 4 minör.** Bu denetçi **beyan etmedi, KOŞTU**: `design-token-kapisi.py --altin-kume` koştu, `sqlite3.wasm`'ı indirip taradı, Flutter SDK kaynağında `focus_manager.dart`/`focus_scope.dart` aradı, üç a11y guideline testini gerçekten yazıp koştu.
+
+**🔴 K49'UN GERİ DÜŞÜŞÜ TETİKLENDİ — A4 AYAĞI DÜŞÜYOR.** Red-team ölçtü ve gösterdi: `vm_service → getVM` **bağımsız bilgi taşımıyor** — A1 (ekran çiziliyor), A2 (widget ağacı dönüyor), A3 (hata kanalı canlı) yeşilken `getVM`'in isolate döndürmemesini sağlayan **hiçbir uygulama kodu kusuru yoktur**; çizen bir Flutter uygulamasının tanımı gereği canlı isolate'i vardır. M14 (yanlış `appUri`) **uygulamayı değil koşum takımını** bozuyor ⇒ totoloji. **K49'un yazılı şartı gereği (a)'ya düşülüyor: G1 = "3 GERÇEK AYAK + 1 ÖN KOŞUL".** Bu, oturumun kendi başına aldığı bir karar DEĞİL, Onur'un kilidinin içine yazılmış geri düşüştür. `vm_service` teşhis aracı olarak kalır, **kapı ayağı sayılmaz**.
+
+**🔴 DİĞER ÜÇ BLOKER (v3'te kapatılıyor):**
+1. **G6'nın sürüm assert'i ÖLÇÜLEMEZ.** Red-team `sqlite3.wasm`'ı (748.424 b) taradı: içinde geçen tek sürüm dizgesi **`3.53.3`** (SQLite **C kütüphanesi** sürümü); **`3.5.0` literali sıfır kez geçiyor**. Yani wasm, Dart paket sürümünü **taşımıyor** ⇒ `lock >= wasm` assert'i ya daima FALSE verir ya sessizce sha256'ya indirgenir. ⇒ **Sürüm karşılaştırması KALDIRILIYOR**, yerine `araclar/web-varlik.sha256` **pinli sha256** + release tag'i metin olarak. **`sqlite3` pini de kalkıyor** (lock zaten tek sürüm taşır; pin ileride `drift`'in `^3.6.0` istemesini kilitler).
+2. **Sıkılaştırılmış D1, `DESIGN.md` §3.1 ile ÇELİŞİYOR — KENDİM SAYDIM VE DOĞRULADIM.** §3.1'in sekiz görsel bileşenine atanmış token'ların birleşimi **20** token; MUST listesi **24**. Hiçbir bileşene atanmamış dördü: **`renk.yuzey.ikincil` · `renk.metin` · `hareket.hizli` · `olcu.odak.kalinlik`**. Bunların meşru yeri `tema.dart`'tır ⇒ *"en az bir kullanım `lib/design/` dışında"* kuralı bu dördü için **sağlanamaz**; builder ya §8.7'yi ihlal eder ya süs kullanım yazar. ⇒ **Dördü D1 sıkılaştırmasından ADIYLA muaf**, gerekçesiyle; ayrıca **BD‑7**.
+3. **A11Y‑2'nin ölçümü UYGULANAMAZ.** `Focus`/`FocusNode`'da **dekorasyon yoktur** (red-team SDK kaynağında aradı: *"decoration" ikisinde de 0 kez*). Odak halkasını onu tüketen widget üretir. ⇒ Ölçüm somut widget'a bağlanıyor: `GorevEkleAlani`'nın `InputDecoration.focusedBorder.borderSide` `width`/`color` alanları.
+4. **v2'nin 7. "kapattık" maddesi KAPANMAMIŞ:** A11Y‑2/‑4/‑6/‑7 **ve kontrast** hâlâ **mutantsız** — v2 yalnız ölçüm yöntemini değiştirdi, mutant eklemedi. Kapsama cümlesi ("mutantsız kapı yok") körlüğü **kapı düzeyinde sayarak KURAL düzeyinde gizliyordu**. ⇒ **M15…M21 ekleniyor** (A11Y‑2 · A11Y‑4 kırpma · A11Y‑6 · A11Y‑7 · kontrast · D6 · sıkılaştırılmış D1).
+
+**✅ RED-TEAM KENDİ ELİYLE DÖRT ENDİŞEYİ ÇÜRÜTTÜ (ölçerek):** `sqlite3 3.5.0` pini **çakışma yaratmıyor** (`drift → ^3.4.0`, `drift_flutter → ^3.0.0`, `drift_dev → ^3.0.0`; üçünü de sağlar) · D5/D6 eklemek mevcut **altın kümeyi bozmuyor** (12 vakanın fixture'ları `lib/design/` dışında) · **Z11 doğru** (wasm gerçekten `sqlite3-3.5.0` release'inde, 748.424 b; `drift_worker.js` gerçekten `drift-2.34.0`'da) · kriter 15 doğru (`DESIGN.md` `534DFF68`).
+
+**🆕 BD‑6 (yeni, red-team ölçtü):** `DESIGN.md` §0 ve §10 *"altın küme **10/10**"* diyor; araç fiilen koşuldu ⇒ **12 vaka, 12/12, EXIT 0**. Belgedeki sayı **bayat** ve K46 onu sha256 ile donduruyor.
+**🆕 BD‑7 (yeni, yukarıda sayıldı):** §3.1 tablosu dört MUST token'ı **hiçbir bileşene atamıyor**.
+
+**🔴 ORTAM UYARISI DOĞRULANDI — `device_stage_files` BAYAT KOPYA SUNDU.** Red-team'e v2 (36.513 b) stage'lendi; ona **v1 (27.668 b)** göründü. Denetçi bunu fark edip bağlı klasördeki gerçek dosyayı okudu. **Devir notundaki *"device_stage_files BAYAT KOPYA sunabilir ⇒ gerçeği desktop-commander read_file ile oku"* uyarısı bu oturumda ÖLÇÜLEREK doğrulandı.** Bundan sonra denetçi ajanlara stage yolu değil, **kanonik yol + `read_file`** talimatı verilecek.
+
+**📏 ARTEFAKT BÜYÜMESİ ÖLÇÜLDÜ (R4 sınıfı, gizlenmiyor):** v1 27.668 b → v2 36.513 b = **+%32** (radar R4 eşiği tur başına ~%18). Red-team **ölçülmüş küçültme** önerdi: v1/v2 otopsi bloğu (2.317 b) · BD/B tabloları (1.606 b) · 14 adet "(v1'de…)" parantezi (818 b) · altı kez tekrarlanan kurallar (~1.200 b) ⇒ **~5.900 b (%16) kazanç, tek bayt uygulanabilir talimat kaybı olmadan.** İlke: *"build spec'i builder'ın YAPACAĞI şeyi taşır; kimin neyi neden yanlış yazdığı HAFIZAYA gider."* **v3 bu küçültmeyi uygular** — otopsi bu checkpoint'te yaşar.
+
+## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K48 — SPEC v1 ÜÇ BAĞIMSIZ DENETÇİ TARAFINDAN YIKILDI; SONRA DENETÇİLER DE DENETLENDİ VE DÖRT BLOKERİ ÖLÇÜMLE ÇÜRÜTÜLDÜ**)
+
+**`GOREV_CLAUDE_CODE/GOREV-slice-3b-istemci-iskeleti.md` v1 yazıldı** (27.668 b · `742FA114` · U+FFFD 0 · CRLF 0). **K46'nın pazarlıksız şartı TUTTU: `DESIGN.md` `534DFF68` — tek bayt değişmedi** (kapanışta yeniden ölçüldü).
+
+**ÜÇ BAĞIMSIZ DENETÇİ (K26: yazan el denetleyemez) — ham sayım: 18 bloker · 39 majör · 16 minör.** Üçü de birbirinden habersiz koştu ve **aynı çekirdek kusurları bağımsız olarak buldu** (bu, bulgunun gerçek olduğunun en güçlü işareti).
+
+**🔴 SONRA DENETÇİ DE DENETLENDİ — DÖRT BLOKER ÖLÇÜMLE ÇÜRÜTÜLDÜ [bu, doktrinin kendisine uygulanmasıdır]:**
+- **YANLIŞ BLOKER 1-2-3 (risk denetçisi): "`drift_flutter 0.3.1` YOK (0.3.0'dır) · `drift_dev 2.34.5` YOK (2.34.4'tür) · `sqlite3 3.5.0` YOK (3.4.0'dır)".** **ÇÜRÜTÜLDÜ.** `araclar/pub-surum-olc.py` pub.dev **resmî API'sine** sordu: `drift 2.34.2` (14 Tem) · **`drift_flutter 0.3.1` (11 Tem)** · **`drift_dev 2.34.5` (22 Tem)** · **`sqlite3 3.5.0` (18 Tem)** · `path_provider 2.1.6` · `build_runner 2.15.2`. **Hepsi VAR.** Denetçi pub.dev'in **HTML sayfalarını** okumuştu; o sayfalar bayat veri döndürüyor (aynı tuzağı ilk araştırmacı da yaşadı ve `.json` ucuna geçmişti). **DERS: pub.dev HTML'i kanıt değildir, `/api/` ucudur.**
+- **YANLIŞ BLOKER 4 (risk denetçisi): "Z6'nın alıntısı resmî Flutter dokümanında YOK, üçüncü taraf bir skill dosyasından alınmış".** **ÇÜRÜTÜLDÜ.** `docs.flutter.dev/ai/mcp-server` kendim çekildi; cümle **BİREBİR orada**: *"**Web**: the `flutter_driver` extension isn't supported on web builds, so finder-based commands like screenshots and taps aren't available there."* Aynı sayfa `flutter pub add "flutter_driver:{sdk: flutter}"`, bayrak korumalı `enableFlutterDriverExtension()` ve *"Enabling the Flutter Driver extension disables real keyboard input"* uyarısını da doğruluyor. **F1 kilidi SAĞLAM.** *(Tek düzeltme: `--print-dtd` o sayfada geçmiyor, başka kaynaktan geldi — Z8 atfı daraltılacak.)*
+
+**✅ DENETÇİ HAKLI ÇIKTI — ÖLÇÜLDÜ (`araclar/lisans-yokla.py`):** `GET /api/packages/drift` **LİSANS DÖNDÜRMÜYOR** (üst düzey alanlar: `latest · name · versions`; `latest` alanları: `archive_sha256 · archive_url · published · pubspec · version`; gövdede `licen` **geçmiyor**). Lisans yalnız `GET /api/packages/<ad>/metrics` → `scorecard.panaReport.licenses[0].spdxIdentifier` **= `MIT`** yolundan geliyor — **dokümantasyonsuz ve sürüm garantisiz** bir uç (dart-lang/pub-dev#4717). ⇒ **G3'ün v1'deki veri kaynağı (`dart pub deps --json` + `pubspec.lock`) FİZİKSEL OLARAK LİSANS TAŞIMIYOR; kapı ölçemediğini ölçüyormuş gibi sunuyordu.**
+
+**✅ İKİNCİ DOĞRULANAN DENETÇİ BULGUSU:** `dio`'nun **2 advisory'si** var: `GHSA-9324-jv53-9cc8` **ve** `GHSA-jwpw-q68h-r678` (**geri çekilmiş duplikat**). ⇒ G2 `withdrawn` alanını okumazsa **yanlış-pozitif** üretir; ayrıca hüküm `versions` dizisine değil **`ranges` (`introduced`/`fixed`)** olaylarına dayanmalı (`versions` OSV şemasında opsiyoneldir). Aynı çağrı `/advisories` ucunun **CANLI** olduğunu da kanıtladı ⇒ G2 inşa edilebilir.
+
+**🔴 AYAKTA KALAN BLOKERLER (v2'de kapatılacak, tekilleştirilmiş 13):**
+1. **G3 lisans kapısı:** veri kaynağı yanlış (yukarıda ölçüldü) **ve mutantı YOK**.
+2. **A11Y‑2/‑4/‑6/‑7'nin MUTANTI YOK** — dört kural "yeşil" sayılıyor ama kırmızı yakabildiği hiç gösterilmemiş (iki denetçi bağımsız buldu).
+3. **G5'in ARACI YOK:** dosya adı, altın küme, exit sözleşmesi tanımsız — K44-a en büyük kapıda hiç uygulanmamış.
+4. **Ekran görüntüsü bir ölçüm değildir:** A11Y‑2/‑4/‑6'nın tek dayanağı hiçbir assert'in okumadığı bir PNG; hükmü insan gözü veriyor. *(Çözüm ölçüldü: `flutter_test`'in `meetsGuideline(androidTapTargetGuideline / labeledTapTargetGuideline / textContrastGuideline)` matcher'ları tam bunun içindir.)*
+5. **M7 EŞDEĞER MUTANT:** `SenkronRozeti` etkileşimli **değil** (dokunulabilir olan `CakismaRozeti`) ve §4 gereği **görünür metin** taşıyor ⇒ `Semantics` silinse bile `Text`'ten etiket doğar, ısırmaz.
+6. **M8 FİZİKSEL OLARAK KOŞAMAZ:** `dio 4.0.6`'nın SDK kısıtı `<3.0.0`, ortam Dart 3.12.2 ⇒ `pub get` çözümlemede düşer, `pubspec.lock` hiç oluşmaz.
+7. **M4 EŞDEĞER MUTANT:** COOP/COEP kalkınca drift **belleğe düşmez**, kalıcı `sharedIndexedDb`'ye düşer ⇒ G6'nın `inMemory` eşiği hiç tetiklenmez, kapı yeşil kalır. **G6 eşiği `opfsShared|opfsLocks` beklentisine çevrilecek.**
+8. **DİLİMİN BAŞLIK TESLİMATI KAPISIZ:** *tam çevrimdışı CRUD* altı kapının hiçbirinin menzilinde değil, on mutantın hiçbiri veri katmanına dokunmuyor ⇒ **G7 (veri katmanı sözleşmesi) eklenecek**.
+9. **`Theme.of` KAÇAĞI:** `tema.dart` tek başına 24 MUST sembolüne dokunup **D1'i doyurur**; bileşenler `Theme.of(context).colorScheme.primary` yazarsa D1/D2/D3/D4 hepsi 0 verir ve DESIGN.md §8.7 sessizce ihlal edilir ⇒ **D5 (yasak `Theme.of` renk erişimi) + D6 (yasak `cupertino.dart` importu)** gerekli.
+10. **A11Y KAPISI VİTRİNDE KOŞUYOR:** ölçülen ekran, sürüm derlemesinde **bulunmayan** ekran; vitrinde 48dp ölçen satır gerçek `ListView` kısıtında 40dp olabilir ⇒ *"vitrinde yeşil, üründe kırmızı"*. G5 **gerçek `GorevListesiEkrani` üzerinde de** koşacak.
+11. **G1'in "dört ayağı" ŞİŞİRİLMİŞ:** ayak 4 (DTD) ayak 2 ve 3'ün **ön koşuludur** (Z3/Z5 kendi metnimizde yazıyor) ⇒ bağımsız ölçüm değil. Kapı **"3 ayak + 1 ön koşul"** diye yeniden adlandırılacak. *(Not: K44-b'nin "4/4" lafzı bu ölçümle çelişiyor — ONUR'un kilidi gerekecek.)*
+12. **Kriter 4 ↔ 11 ÇELİŞKİSİ:** kriter 4 adı yazılmamış "iki ayak için kasten bozma" istiyor, kriter 11 "on mutantın onu" diyor ⇒ builder'ın kendi tasarladığı kırmızı = üreten/denetleyen aynı el.
+13. **`flutter analyze` "0 uyarı" KAPISIZ:** `flutter_lints` kuralları **info** seviyesindedir; `--fatal-infos` verilmedikçe `print` içeren sürüm kriteri **geçer** ⇒ ban-list #5 kapısız.
+
+**🔴 K46'NIN BEDELİ ŞİMDİ ÖLÇÜLDÜ [DARALT kilidinin faturası, gizlenmiyor]:** Denetim, kusurların bir kısmının **`DESIGN.md`'nin kendisinde** olduğunu gösterdi ve o dosyaya bu turda **dokunulamaz**: (a) §1.1 koyu tema değerleri bir **TABLO**dur ⇒ `tokens` bloğunda olmadığı için G4 onları **hiç okumaz**, `tokens.dart` da D2'den muaftır ⇒ **koyu tema tamamen kapısız**; (b) `renk.ayirici`'nin *"hiçbir zaman bir kontrolün tek tanımlayıcısı olamaz"* kuralı **A11Y numarası taşımıyor** ⇒ G5'in kapsamı dışında, ölü kural — üstelik `GorevSatiri` onu satır ayırıcısı olarak kullanıyor; (c) **odak halkası / birincil buton** çifti §2.1'in 24 çiftinde **YOK** ⇒ ekle düğmesinde odak halkası 1,00:1 olabilir; (d) `MomentumTema` bir widget **değil** ⇒ "9 MUST bileşeni ağaçta adıyla görünmeli" ayağı 8/9'dan fazlasını veremez; (e) `tipo.baslik.l = 20/28` biçiminde 28'in mutlak mı oran mı olduğu yazılı değil ⇒ mutlak uygulanırsa 2.0× ölçekte **sessiz kırpma**. **Beşi de ADLANDIRILMIŞ BORÇ olarak `DESIGN.md` v2 turuna yazıldı; bu turda KAPATILMAZ.**
+
+## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K47 — SPEC'İN DÖRT ÇATALI KİLİTLENDİ; DEVİR NOTUNUN İKİ VARSAYIMI ÖLÇÜMLE YANLIŞLANDI; MCP 1.1.0 ÖLÇÜLDÜ**)
+
+**ÜÇ BAĞIMSIZ ARAŞTIRMA KOŞTU (web, kaynak URL'li). Spec yazılmadan ÖNCE koşuldu — K44-a'nın ruhu: iddiayı belgeye yazmadan önce ölç.**
+
+**🔴 YANLIŞLANAN VARSAYIM 1 — DÖRT AYAKLI KAPI WEB'DE FİZİKSEL OLARAK KURULAMAZ.** Flutter resmî dokümanı birebir: *"the `flutter_driver` extension isn't supported on web builds, so finder-based commands like screenshots and taps aren't available there."* ⇒ web'de yalnız **DTD'den geçen üç ayak** (widget ağacı · runtime hataları · dtd) koşar; **ekran görüntüsü ayağı YOK.** Kaynak: `docs.flutter.dev/ai/mcp-server`.
+
+**🔴 YANLIŞLANAN VARSAYIM 2 — `sqlite3_flutter_libs 0.6.0+eol` "ELENEMEZ", ÇÜNKÜ TRANSİTİF GELİYOR.** Devir notu (d) maddesi *"elenmesi"* diyordu; ölçüm gösterdi: `drift_flutter 0.3.1` onu **hâlâ bağımlılık olarak çekiyor** (`sqlite3_flutter_libs: ^0.6.0+eol` **ve** `sqlcipher_flutter_libs: ^0.7.0+eol`). Paket 0.6.0'dan beri **hiçbir şey yapmıyor** (pub.dev: *"Not used anymore, update to version 3.x of package:sqlite3"*); native `.so`'yu artık `sqlite3` 3.x **build hooks** ile getiriyor. Seçenek "elemek" değil, **kimin taşıyacağı**.
+
+**🆕 DEVİR NOTUNDA HİÇ YOKTU — SESSİZ KALICILIK KAYBI (kör-kapı sınıfı, ödevin taç mücevherini doğrudan vuruyor):** Flutter Web'de Drift için `sqlite3.wasm` + `drift_worker.js` **ELLE** indirilip `web/` altına konur; drift dokümanı wasm'ı **YANLIŞ YERDE** gösteriyor (gerçek kaynak `simolus3/sqlite3.dart` release'i `sqlite3-3.5.0`, drift release'i değil — `drift-2.34.0` asset listesi ölçüldü, içinde `sqlite3.wasm` **YOK**). Dahası **COOP/COEP başlıkları yoksa** drift **hata vermeden** OPFS → IndexedDB → in-memory'ye düşer ⇒ *"çevrimdışı-öncelikli"* iddiası **sessizce yalan olur**. Sürüm yönü kuralı (sürdürücünün ağzından): `sqlite3.wasm` sürümü pubspec'teki `sqlite3` sürümünden **BÜYÜK OLAMAZ** (ileri uyum var, geri uyum yok).
+
+**✅ CVE KAPISI YAZILABİLİR — ÖLÇÜLDÜ.** `GET pub.dev/api/packages/<ad>/advisories` **OSV formatında** advisory döndürüyor (canlı doğrulandı: `dio` → `GHSA-9324-jv53-9cc8` / `CVE-2021-31402`, `affected[].versions` tam liste). `osv-scanner` da `pubspec.lock`'u resmen destekliyor. **`dart pub audit` diye bir komut YOKTUR** (resmî alt-komut listesinde yok); `dart pub get` advisory **basıyor ama non-zero exit DÖNMÜYOR** (dart-lang/pub#4333 AÇIK) ⇒ tek başına CI kapısı olmaz. **DÜRÜST SINIR:** Pub havuzunda toplam **~11-13** advisory var (npm'de on binlerce) ⇒ bu kapı gerçek risk taraması **değil**, disiplin vitrinidir; README'de böyle yazılmazsa "yanlış güven satmak" olur.
+
+**✅ (a) ve (b) DOĞRULANDI:** `flutter_driver` **şart** — `flutter pub add "flutter_driver:{sdk: flutter}"` + `main()` içinde bayrak korumalı `enableFlutterDriverExtension()`; koşum `flutter run --dart-define=ENABLE_FLUTTER_DRIVER=true --print-dtd`. **`sdk: flutter` olduğu için üçüncü taraf bağımlılık DEĞİL** ⇒ lisans/CVE kapısı gerektirmez. **TUZAK:** `--print-dtd` + `--machine` birlikte kullanılırsa DTD URI JSON çıktısında **hiç görünmüyor** (flutter/flutter#176310) ⇒ CI'da `--machine` **YASAK**. Ayrıca driver uzantısı açıkken **gerçek klavye girişi devre dışı** kalır. `integration_test` bu işi **YAPMAZ** (test koşar, canlı uygulama sürmez) — ikisi birbirinin yerine geçmez.
+
+**🔴 DÖRT KİLİT (Onur, 26 Tem 2026) — K47:**
+1. **MCP KAPISI: Android emülatörde 4/4 + web'de aynı kapının 3 ayağı.** Web'in 4. ayağı **BEYAN EDİLMİŞ MUAFİYET**tir (fiziksel imkânsızlık, gizlenmiş sınır değil). *Reddedilen:* yalnız-Android (web'in hiçbir a11y/tasarım iddiası kanıtlanmaz, A-5 ölçülemez) · yalnız-web (K44-b'nin 4/4 şartını İHLAL ederdi + dart-lang/ai#356 `web-server`'da DTD URI'sinin hiç açılmadığını bildiriyor).
+2. **MCP 1.1.0'A YÜKSELTİLDİ, SONRA ÖLÇÜLDÜ.** *Reddedilen:* 0.1.4'te kalmak (bilerek ölü hat).
+3. **CVE KAPISI: SAF PYTHON + `pub.dev/.../advisories`.** *Reddedilen:* `osv-scanner` (yeni ikili = kuralın kendisine dönmesi, exit code dokümante değil) · çapraz-iki-araç (13 advisory'lik havuz için orantısız).
+4. **DRIFT: `drift_flutter` + BEYAN EDİLMİŞ MUAFİYET.** İki EOL paket **transitif** gelir, pubspec'e **ELLE YAZILMAZ**; lisans kapısı transitifleri de tarar. *Reddedilen:* elle kurulum (drift_flutter'ın çözdüğü platform ayrımları kendi kodumuza geçer = yeni kusur yüzeyi).
+
+**✅ MCP 1.1.0 — KENDİ PROBE'UMLA ÖLÇÜLDÜ (`--help`'e GÜVENİLMEDİ; K43'ün hatası tekrarlanmadı):**
+- `dart pub global activate dart_mcp_server` ⇒ **1.1.0** kuruldu (araştırma 1.0.1 demişti; **kurulan daha yeni**). ⚠ Pub `bin` dizini PATH'te değil: `C:\Users\gulci\AppData\Local\Pub\Cache\bin`.
+- **`tools/list` cevabı: 14 ARAÇ** = 0.1.4'teki 13'ün **TAMAMI** + yeni **`vm_service`**. **Kaybolan araç YOK.**
+- **K44-b'nin en kritik bilinmeyeni KAPANDI:** `flutter_driver_command.command` enum'unda **`screenshot` VAR**. Tam enum: `get_health · enter_text · send_text_input_action · get_text · scroll · scrollIntoView · set_frame_sync · set_semantics · set_text_entry_emulation · tap · waitFor · waitForAbsent · waitForTappable · get_offset · get_diagnostics_tree · screenshot`. Finder'lar: `ByType · ByValueKey · ByTooltipMessage · BySemanticsLabel · ByText · PageBack · Descendant · Ancestor`.
+- `widget_inspector.command` enum: **`get_widget_tree` · `get_selected_widget` · `set_widget_selection_mode`** (+`summaryOnly` bayrağı). Açıklaması birebir: *"Requires an active DTD connection."*
+- `dtd.command` enum: **`connect` · `disconnect` · `listConnectedApps` · `listDtdUris`**.
+- `get_runtime_errors` parametreleri: `appUri`, `clearRuntimeErrors`.
+- **Aracın kendi uyarısı (spec'e girer):** *"To specify a widget to interact with, you must FIRST use widget_inspector (get_widget_tree)... **Do not guess at how to select widgets**."*
+- **`.mcp.json` GÜNCELLENDİ:** `args` artık `["pub","global","run","dart_mcp_server"]` (eski: `["mcp-server"]` = SDK gömülü ölü hat). Yol-bağımsız; `cmd /c dart pub global run dart_mcp_server` ile probe'lanıp **1.1.0 döndüğü doğrulandı**.
+
+**🆕 ARAÇ: `araclar/mcp-arac-probe.py`** — bir MCP sunucusunun gerçek araç listesini `tools/list` ile ölçer, `--sema <arac>` ile tam JSON şemasını basar. Çıktı **saf ASCII** (cp1254 kalkanı). **🔴 ARAÇ BİR KUSURLA DOĞDU VE AYNI TURDA KAPANDI [gizlenmiyor]:** ilk sürümde baştaki `--` ayıklaması **yalnız `--sema` dalının içindeydi** ⇒ `--sema`'sız çağrıda Popen `--`'yi komut sanıp `[WinError 2]` verdi. Ayıklama **koşulsuz** hâle getirildi ve düzeltme dosyada yorumla **adlandırıldı**. *K33 örüntüsünün onuncu kanıtı: yine **koşulan araç** buldu, akıl yürütme değil.*
+
+## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29 açılış: **K46 — RADAR KIRMIZI'DA DÖRT ŞIK SUNULDU, ONUR `DARALT`I KİLİTLEDİ**)
+
+**AÇILIŞ ÖLÇÜMÜ (beyan değil, koşuldu):**
+- `PROJE_HAFIZA.md` (459.627 b · `7C62AC71`) + `CLAUDE.md` (5.651 b · `DBFF6727`) okundu; Onur'un yapıştırdığı devir notuyla **birebir tuttu**.
+- **Dosya kimlikleri 8/8 EŞLEŞTİ:** `DESIGN.md` 15.742 b `534DFF68` · `PROJE_RADAR.jsonl` 11.849 b `0B98FA3B` · `design-token-kapisi.py` 21.229 b `11667526` · **`adr-kapi-taramasi.py` 50.582 b `A22841F2` (K34-f TUTUYOR)** · `radar.py` 15.252 b `688B6D31` · `.mcp.json` 155 b `01EC4807`.
+- **GİT:** HEAD `237b9b5` · `origin/main` `2ee2c24` ⇒ **4 ileri, push yok** · ağaç **TEMİZ** · `.git/index.lock` **YOK** (`Test-Path` ⇒ `False`).
+- **RADAR:** altın küme **6/6 GEÇTİ** · hüküm **KIRMIZI** — `docs/ADR/0003` (R1·R5·R2b·R4, park, beklenen) · `slice-3b-istemci` (**R3**: son tur kapatılan 1 / üretilen 1, bloker eğrisi `[0,0,0,0]`, bayt 15.742 = `DESIGN.md`).
+- **[K21] 102.885 token = %10,3 🟢** (bulutta koşuldu; transcript konteynerde: `/root/.claude/projects/-home-claude/95da2669-….jsonl`).
+
+**🔴 K46 — KİLİT: `DARALT` (Onur, 26 Tem 2026).** K40 gereği dört şık ölçülmüş gerekçe ve **adlandırılmış bedelle** sunuldu; oturum kendi başına seçmedi.
+- **Kilidin PAZARLIKSIZ ŞARTI:** bu turda **`DESIGN.md`'ye TEK BAYT YAZILMAZ.** Spec ayrı dosyadır (`GOREV_CLAUDE_CODE\GOREV-slice-3b-*.md`), ayrı kusur yüzeyidir ve radara **AYRI artefakt satırı** (`GOREV-slice-3b-spec`) olarak açılır, sayacı sıfırdan başlar. **`DESIGN.md`'ye bir bayt yazılırsa bu kilit HÜKÜMSÜZDÜR** ve yapılan iş kırmızıdan kaçmak için sayaç sıfırlama (ölçümü sulandırma) sayılır.
+- **`slice-3b-istemci` satırı KIRMIZI KALIR**, uyarısı canlıdır; susturulmadı.
+- **KAPANMAYAN BORÇ [gizlenmiyor]:** `R3`'ün **asgari örneklem koruması yok** — `kapatılan=1` olan *her dürüst tur* kırmızı verir, üretilen kusur ölçümle bulunup **aynı turda kapansa bile** (K45'teki kontrast kusuru tam olarak buydu). Bu şık o borcu **KAPATMAZ**; onarım `radar.py` + altın küme vakasıyla **AYRI ELE** (K34-f) yazılı kalır.
+- *Reddedilenler ve bedelleri:* `MEKANİKLEŞTİR` (spec kayar; projeye kopyalanmış `radar.py` plugin sürümünden ayrışır ⇒ `kanonik-kopya` sınıfı) · `DEVRET` (dört ayaklı MCP kapısı ve CVE kapısı **yazılı olmadan** gider ⇒ kör-kapı riski geri gelir) · `DURDUR` (24 `MUST` vaadi ve A11Y‑1…7 ölçülemez kalır).
+
+**🆕 ORTAM UYARISI — BU OTURUMDA ÖLÇÜLDÜ (kanla yazılı listeye girer):** Cowork→Desktop Commander köprüsünde PowerShell'e giden komutlarda **`$` ile başlayan değişkenler SİLİNİYOR**: `$LASTEXITCODE` → boş, `$_.Name` → `.Name`, `$h` → boş. **İki komut bu yüzden `ParserError` ile düştü** (biri sessizce yanlış çıktı üretti: `--altin-kume` koştu ama zincirin kalanı literal metin olarak yazıldı). **Kural:** DC üzerinden PowerShell'e `$` gönderme — `$`'sız yazım (`Select-Object`/`Format-Table`) ya da Python betiği kullan. Çıkış kodu gerekiyorsa **ayrı çağrıda** ölç.
+
 ## ⏭ DEVİR NOTU (26 Tem 2026 — oturum 28 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR
 
 **CEPHE DEĞİŞTİ: ADR 0003 v7 DONDURULDU (K41), İŞ ARTIK `slice-3b` FLUTTER İSTEMCİSİDİR (K42).**

@@ -4,7 +4,10 @@
       "type": "stdio",
       "command": "dart",
       "args": [
-        "mcp-server"
+        "pub",
+        "global",
+        "run",
+        "dart_mcp_server"
       ],
       "env": {}
     }
