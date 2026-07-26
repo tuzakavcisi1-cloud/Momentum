@@ -129,3 +129,51 @@ PROTOKOL (bu oturumdan itibaren PAZARLIKSIZ):
 - git YALNIZ kanonik yoldan (...\MEMO ODEV PROGRAMLAR\TO DO LIST\Momentum) kosar.
 - Ikisi KARISTIRILMAZ (package_config.json mutlak yol sakladigindan, karisim
   tam da bu sinifin kendisini yeniden uretir).
+
+====================================================================
+7) UCUNCU BULGU (T7 sonrasi) -- JUNCTION, ANDROID GRADLE'I KURTARMIYOR
+====================================================================
+Kok: C:\momentum\src\client (junction uzerinden)
+Komut: flutter build apk --debug
+EXIT=1, ~4dk52sn sonra:
+
+FAILURE: Build failed with an exception.
+* Where:
+Build file 'C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum\src\client\android\app\build.gradle.kts' line: 1
+* What went wrong:
+An exception occurred applying plugin request [id: 'com.android.application']
+> Failed to apply plugin 'com.android.internal.application'.
+   > Your project path contains non-ASCII characters. This will most likely
+     cause the build to fail on Windows. Please move your project to a
+     different directory. See http://b.android.com/95744 for details. This
+     warning can be disabled by adding the line 'android.overridePathCheck=true'
+     to gradle.properties file in the project directory.
+
+ONEMLI FARK -- bu ONCEKI iki cokmeden (build_runner, flutter analyze) FARKLI
+bir mekanizma: hata mesajindaki yol GERCEK (Turkce karakterli) kanonik yoldur,
+"C:\momentum" DEGIL -- yani Gradle (Java/JVM), junction'i SEFFAFCE gecmiyor,
+reparse point'i CANONICALIZE EDEREK gercek yola COZUYOR (Java'nin
+File.getCanonicalPath()/Path.toRealPath() davranisi budur). Dart/Flutter
+araclarinin kendisi junction'i seffaf birakiyordu (bu yuzden pub get/
+build_runner/analyze duzeldi); Android Gradle Plugin (AGP) ise KENDI
+mesafeli path denetimini JVM'in cozumledigi GERCEK yol uzerinden yapiyor --
+junction bu spesifik denetimi ATLATAMIYOR.
+
+Bu, Android'in KENDI bilinen ve dokumante edilmis sinirlari (b.android.com/95744,
+uzun sureli acik bir AGP kisiti) -- ve AGP'nin KENDI saglinladigi resmi kacis
+yolu hata mesajinin ta kendisinde yaziyor: gradle.properties'e
+"android.overridePathCheck=true" eklemek.
+
+HENUZ UYGULANMADI -- Onur'un onayi bekleniyor (bu da bir build config
+degisikligi, sessizce yapilmaz).
+
+GENEL HUKUM (guncellendi): Junction, DART/FLUTTER SDK arac zincirindeki
+(build_runner, flutter analyze) sinifi tamamen cozuyor ama ANDROID GRADLE
+tarafinin KENDI path denetimini cozmuyor -- o ayri, AGP'ye ozgu bir bayrakla
+asilir.
+
+DOGRULANDI -- "flutter build web" (junction uzerinden) SORUNSUZ:
+Komut: flutter build web
+EXIT=0 -- "Compiling lib\main.dart for the Web... 92,9s -- Built build\web"
+HUKUM: sorun KANITLANMIS SEKILDE Android/Gradle'a (JVM path canonicalization)
+OZGUDUR; web derlemesi (dart2js/wasm, JVM YOK) bu sinifi hic GORMEZ.
