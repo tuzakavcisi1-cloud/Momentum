@@ -1,0 +1,32 @@
+[
+  {
+    "dosya": "DESIGN.md",
+    "desen": "altın kümesinde kendini kanıtlar",
+    "borc": "BD-6",
+    "gerekce": "DESIGN.md K46 ile DONDURULMUSTUR -- tek bayt yazilamaz. Bu satirdaki '10/10' BAYATTIR (design-token-kapisi.py fiilen 12 vaka tasiyor) ve bu, DURUM.md 8'de BD-6 olarak ZATEN BEYAN EDILMIS bir borctur. Muafiyet kusuru gizlemez; K46 kalkinca desen silinir ve kapi gercek olcumu yapar."
+  },
+  {
+    "dosya": "DESIGN.md",
+    "desen": "altın küme **10/10 GEÇTİ**",
+    "borc": "BD-6",
+    "gerekce": "Ayni borcun ikinci gecisi (DESIGN.md 10, olcum notu). K46 geregi duzeltilemez; BD-6 kapaninca bu kayit da silinir."
+  },
+  {
+    "dosya": "GOREV_CLAUDE_CODE/GOREV-slice-3b-istemci-iskeleti.md",
+    "desen": "**G2 altın küme 8/8**",
+    "borc": "T8-BEKLIYOR",
+    "gerekce": "pub-cve-kapisi.py HENUZ YAZILMADI (T8). 8/8 bir OLCUM degil HEDEFTIR; arac dogunca bu kayit silinir ve kapi sayiyi gercekten kosarak dogrular. Su an olcmek imkansiz, gizlemek degil."
+  },
+  {
+    "dosya": "GOREV_CLAUDE_CODE/GOREV-slice-3b-istemci-iskeleti.md",
+    "desen": "**G3 altın küme 4/4**",
+    "borc": "T8-BEKLIYOR",
+    "gerekce": "pub-lisans-kapisi.py HENUZ YAZILMADI (T8). 4/4 hedeftir, olcum degildir; arac dogunca kayit silinir."
+  },
+  {
+    "dosya": "GOREV_CLAUDE_CODE/GOREV-slice-3b-istemci-iskeleti.md",
+    "desen": "20/28",
+    "borc": "ARAC-YANLIS-POZITIFI",
+    "gerekce": "10 BD blogu TEK BIR uzun satirdir. Satir, BD-6'nin 'altin kume' alintisi yuzunden IMZALI gorunuyor; ama yakalanan 20/28 sayisi BD-5'in TIPOGRAFI oranidir (punto/satir yuksekligi), altin kume DEGILDIR. Bu, aracin OLCULMUS bir yanlis-pozitifidir: uzun paragraf satirlarinda imza ile sayi arasindaki YAKINLIK olculmuyor. Arac borcu olarak DURUM.md 8'e yazildi."
+  }
+]

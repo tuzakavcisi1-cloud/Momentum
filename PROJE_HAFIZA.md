@@ -11,6 +11,59 @@
 >
 > 🔴 **BU DOSYA ARTIK OTURUM AÇILIŞINDA OKUNMAZ [K53, 26 Tem 2026].** Canlı durum **`DURUM.md`**'dedir (≤12 KB). Burası **APPEND-ONLY KARAR ARŞİVİDİR**: yeni checkpoint üste eklenir, **hiçbir şey silinmez, hiçbir şey yerinde düzeltilmez** (bayat satır varsa **düzeltme notu** yazılır). Buraya yalnız *"bu karar neden alındı?"* diye sorulduğunda bakılır.
 
+## ⏭ CHECKPOINT-EK (26 Tem 2026 — oturum 30: **K57 KESİNLEŞTİ + `sayi-tazeligi.py` DOĞDU**)
+
+> Bu blok, hemen altındaki **K57 checkpoint'ini GÜNCELLER**. Orada verilen kilit kimliği
+> **`42.043 b · 79A53AA3` ARTIK GEÇERSİZDİR** (yerinde düzeltme yok; bu not onu geçersiz kılar).
+> **KESİN K57 KİMLİĞİ: `42.395 bayt · 6056A5BB` · U+FFFD 0 · CRLF 0.**
+
+### Ne oldu — oturumun en öğretici anı
+Onur `MEKANİKLEŞTİR` şıkkını kilitledi ve `araclar/sayi-tazeligi.py` yazıldı: belgelerdeki
+*"altın küme N/M"* iddialarını **aracı fiilen koşup** `[GECTI]`/`[KALDI]` satırlarını sayarak
+doğrulayan statik kapı. K44-a gereği **önce kendini kanıtladı: 16/16, EXIT 0.**
+
+🔴 **Kapı ilk gerçek koşumunda KENDİ YAZARINI yakaladı.** Bir saat önce **K57 ile kilitlenen**
+spec'in **kabul kriteri 12b**'sinde `9/9` buldu — o satırı aynı oturumda **Cowork yazmıştı**
+(tarihçe olarak, iyi niyetle). Yani **dokuz bayat çapraz-atıfı kesen el, onuncusunu kendisi üretti**
+ve onu bir denetim turu değil **bir araç** yakaladı. Deftere `uretilen: 1` diye yazıldı; gizlenmedi.
+
+**Kapı gevşetilmedi, belge düzeltildi** — K56'nın doktrini (*kapı susturmak yerine kök neden
+kaldırılır*) ikinci kez uygulandı. 12b'den tarihçe sayısı çıkarıldı ve **yeni kabul kriteri 12c**
+yazıldı: *"`sayi-tazeligi.py --altin-kume` EXIT 0 (16/16) ve aynı araç spec + `DURUM.md` +
+`DESIGN.md` üzerinde EXIT 0."* Böylece bu kusur sınıfı artık **spec'in kendi kabul ölçütüne**
+bağlı; bir daha göze değil **kapıya** takılır.
+
+### Araç 1.0.0 → 1.1.0: ölçülen üç kör nokta, üçü de kapatıldı
+- **(a) TABLO MODU.** `DURUM.md` §6 araç tablosunda imza **satırda değil TABLO BAŞLIĞINDA**;
+  1.0.0 o tablonun tamamını **hiç görmüyordu** — yani projenin *her aracının* altın küme sayısını
+  ilan ettiği tablo kapının kör noktasındaydı.
+- **(b) `T5` BAĞLANAMADI.** Satırda araç adı yoksa iddia mekanik olarak bağlanamaz. `DESIGN.md`'nin
+  **bilinen bayat `10/10`**'u (BD‑6) tam bu yoldan kaçıyordu. Artık SARI yanar: *"ölçülmedi, temiz değil."*
+- **(c) MUAFİYET KAYDI.** K46 gibi **düzeltilemez** belgeler için `araclar/tazelik-muafiyet.json`.
+  Muafiyet **sessiz değildir** (`T6` ile her koşumda gerekçesiyle basılır) ve **gerekçesiz muafiyet
+  KIRMIZI'dır** (`T7`) — `spec-kapi-kapsama.py`'nin `S4` kuralıyla aynı felsefe: *beyan etmek,
+  gerekçe vermek demektir.*
+
+### Aracın KENDİ yanlış-pozitifi — gizlenmedi, uydurma eşikle de kapatılmadı
+Uzun paragraf satırlarında **imza ile sayı arasındaki yakınlık ölçülmüyor**; spec §10'un BD bloğu
+tek satır olduğu için **BD‑5'in `20/28` tipografi oranı** "altın küme" sanıldı. Bunu bir *"80 karakter
+yakınlık"* sezgisiyle susturmak yerine — ki bu **altın küme vakası olmayan bir eşik** olurdu ve K40'ı
+ihlal ederdi — `ARAC-YANLIS-POZITIFI` borcuyla **gerekçeli muafiyet** açıldı ve `DURUM.md` §8'e yazıldı.
+
+### Gerçek koşum hükmü
+`EXIT 0 · TEMİZ`. Beş muafiyet (2 × **BD‑6** K46 dondurması · 2 × **T8-BEKLIYOR** henüz yazılmamış
+kapı araçları · 1 × **ARAC-YANLIS-POZITIFI**) ve bir alıntı (`T4`) **görünür** olarak basıldı.
+
+### Doğrulama zinciri (üreten ≠ denetleyen)
+`sayi-tazeligi --altin-kume` **16/16 EXIT 0** · gerçek koşum **EXIT 0** ·
+`spec-kapi-kapsama --altin-kume` **13/13 EXIT 0** ve spec üzerinde **EXIT 0** (yeni kriter kapsamayı
+**bozmadı**: 7 kapı · 16 kural · 24 mutant) · `radar --altin-kume` **18/18 EXIT 0** ·
+**`DESIGN.md` `534DFF68` DEĞİŞMEDİ** (K46) · `DURUM.md` **12 KB tavanının altında**.
+
+> **DERS (bu oturumun en pahalı cümlesi):** *"Kilitledim" demek "doğruladım" demek DEĞİLDİR.*
+> Bir kilit, o an **elindeki kapıların gördüğü kadarını** dondurur. Yeni bir kapı doğduğunda
+> kilit **yeniden ölçülür** — ve bu bir başarısızlık değil, kapının çalıştığının kanıtıdır.
+
 ## ⏭ CHECKPOINT (26 Tem 2026 — oturum 30: **K57 — BAYAT ÇAPRAZ-ATIF KESİMİ; ARAÇ SENKRONU**)
 
 > ⚠ **DÜZELTME NOTU (yerinde düzeltme YOK, append-only):** bu dosyanın en tepesindeki *"Kanonik konum:

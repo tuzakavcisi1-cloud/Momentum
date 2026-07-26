@@ -53,7 +53,7 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
 - **K53** — Verimlilik reformu: kâğıt denetim turu tavanı **1** · radar KIRMIZI'da varsayılan **DEVRET** · koşan-uygulama-mutant tavanı **3** · iki oturum 0 ürün kodu = **sert durak (`R8` — K57'de `R7`'den yeniden adlandırıldı)** · hafıza bölündü.
-- **K57** — Spec **v5, KİLİTLİ**: **42.043 b · `79A53AA3`** (`BE4581BA` ve `1AB02B73` **GEÇERSİZ**). Dokuz **bayat çapraz-atıf** düzeltildi; özü değişmedi. Dokuzunu da denetim turu değil, **iki araç koşumu + bir regex taraması** buldu. Ayrıntı: `PROJE_HAFIZA.md` K57.
+- **K57** — Spec **v5, KİLİTLİ**: **42.395 b · `6056A5BB`** (`BE4581BA`, `1AB02B73` ve ara ölçüm `79A53AA3` **GEÇERSİZ**). On **bayat çapraz-atıf** düzeltildi; özü değişmedi. Onuncuyu, kilitten **sonra** doğan `sayi-tazeligi.py` buldu. Ayrıntı: `PROJE_HAFIZA.md` K57.
 - **K57‑b** — `araclar/radar.py` **plugin 0.2.0 ile BAYT-ÖZDEŞ** (`46E3A8BC`); proje-yerel not **eklenmez** ⇒ sapma **tek sha ile** ölçülür.
 - **K55** — Başka bir el çalışırken `git add -A` **YASAK**; `urun_kodu_satiri` = *"o oturumda repoya giren ürün kodu, **hangi el olursa olsun**"*.
 - **K56** — Kanonik kök **saf ASCII** (`C:\dev\Momentum`); `android.overridePathCheck` **eklenmez**, junction **kullanılmaz**.
@@ -75,6 +75,7 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 |---|---|---|
 | `radar.py` **0.2.0** | kısır döngü + **R8 ürün kodu durgunluğu** + **defter dürüstlük kapısı D1‑D5** + `--olc-urun-kodu` (git'ten türetir) | **18/18** |
 | `spec-kapi-kapsama.py` | spec'te **mutantsız kapı/kural** arar; borç beyanı okur | **13/13** |
+| `sayi-tazeligi.py` **1.1.0** | belgedeki **"altın küme N/M"** iddiasını **aracı koşarak** doğrular; muafiyet `araclar/tazelik-muafiyet.json`'da ve **gerekçesiz olamaz** | **16/16** |
 | `design-token-kapisi.py` | `DESIGN.md` ↔ Dart token kapısı (`D0`–`D6`) | **12/12** |
 | `dosya-kimlik.py` | bayt + sha256 + U+FFFD + CRLF ölçer | — |
 | `mcp-arac-probe.py` | MCP sunucusunun **gerçek** araç listesi (`tools/list`) | — |
@@ -87,11 +88,11 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 
 ## 7. KANLA YAZILI ORTAM UYARILARI
 
-- **Claude Code DAİMA `Momentum` kökünden açılır** (üst klasörden açarsan `.mcp.json` görünmez, dart MCP yüklenmez).
+- **Claude Code DAİMA `Momentum` kökünden açılır** (üstten açarsan `.mcp.json` görünmez, dart MCP yüklenmez).
 - **Cowork→PowerShell köprüsü `$` değişkenlerini SİLİYOR** ve iç içe tırnakları bozuyor ⇒ `$` gönderme, **Python betiği yaz**.
 - **Commit mesajına ÇİFT TIRNAK yazma** (PowerShell argümanı böler, commit sessizce düşer). Her commit'ten sonra `git log --oneline -1` ile SHA'yı doğrula.
 - **git'te `--no-optional-locks` ZORUNLU.** Commit **yalnız Desktop Commander** ile; `device_bash`/mount ile **YASAK**. **PUSH ONUR'DA.**
-- **`device_stage_files` BAYAT KOPYA sunabiliyor** (oturum 28: v2 stage'lendi, v1 göründü). ⚠ **Oturum 30'da tekrarlanmadı** — stage edilen dosyanın sha'sı diskle **birebir** çıktı. ⇒ Kural: stage'lenen kopyanın **sha'sını `Get-FileHash` ile karşılaştır**; eşleşiyorsa güvenilir, eşleşmiyorsa `desktop-commander read_file` kullan.
+- **`device_stage_files` BAYAT KOPYA sunabiliyor** (oturum 28; oturum 30'da **tekrarlanmadı**) ⇒ stage'lenen kopyanın **sha'sını `Get-FileHash` ile karşılaştır**; tutmuyorsa `desktop-commander read_file` kullan.
 - 🔴 **YOL SAF ASCII KALMAK ZORUNDA [K56].** Türkçe karakter dört zinciri kırdı: `build_runner` · `flutter analyze` · **AGP** · `.ps1` yol literali. Boşluk **suçsuz**. **Junction çözmez.** Ayrıntı: `KANIT/slice-3b/ORTAM-YOL-KISITI.txt`.
 - **Git Bash/MSYS, `cmd /c`'deki `/c`'yi POSIX yol sanıp `C:/` diye YENİDEN YAZIYOR** ⇒ ham `cmd /c` içeren komutlar **PowerShell'den** koşulur.
 - **Başka bir el çalışırken `git add -A` YASAK** — commit'lenmemiş işini kör alır (ölçüldü: `dee6dbc`). Yol belirterek `git add <yol>` yap.
@@ -105,14 +106,14 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 
 ## 8. AÇIK BORÇLAR (adlandırılmış, gizlenmemiş)
 
-- **`DESIGN.md` BD‑1…BD‑7** — **K46 gereği kapatılmadı**; tam liste spec §10'da (koyu tema kapısız · ölü `renk.ayirici` kuralı · ölçülmemiş kontrast çifti · `MomentumTema` widget değil · `20/28` belirsiz · "10/10" bayat · 4 MUST token atanmamış).
+- **`DESIGN.md` BD‑1…BD‑7** — **K46 gereği kapatılmadı**; tam liste spec §10'da. BD‑6'nın bayat `10/10`'u artık `sayi-tazeligi.py`'de **gerekçeli muafiyet** olarak görünür.
 - ✅ **KAPANDI [K57]:** *"`radar.py` kopyası GERİDE"* · *"Spec T2/Z10 kilit düzeltmesi"*.
 - 🔴 **`pub-surum-olc.py`'ye ÇÖZÜMLENEBİLİRLİK AYAĞI [yeni, Z10b]** — araç **sürümü** ölçüyor, o sürümün bu SDK'yla **çözülüp çözülmediğini** ölçmüyor; `build_runner ^2.15.2` kusuru buradan çıktı. Kalkan gelene dek **her pin `pub get` ile doğrulanır**.
-- 🔴 **Defter dürüstlük kusurları [D-kapısı ilk koşumda buldu]** — `D3`: `docs/ADR/0003` tur 8 kaydında `bulgu`/`kapatilan`/`uretilen` eksik. `D2`: aynı defterde **tur 1 atlanmış**. Append-only ⇒ **düzeltme kaydı** yazılır.
-- 🟡 **`D1` bu defterde FİİLEN KÖR [beyan edilmiş sınır]** — artefakt adları çoğunlukla dosya **yolu** değil **etiket**. Yeni kayıtlarda mümkünse **gerçek yol** yazılır.
-- **`radar.config.json` YOK ve bu bir KARAR** — varsayılan ürün/hariç yolları bu repoya birebir uyuyor. Eşik değiştiren K40 gereği **altın kümeye vaka ekler**.
-- **`pub.dev` uçları** (`/advisories`, `/metrics`) dokümantasyonsuz ve sürüm garantisiz — kalkan: fixture altın kümeleri.
-- **Kontrast betiğinin kalıcı hâli** `araclar/` dışında; kod tarafı G5'in `textContrastGuideline` ayağına girdi.
+- 🔴 **Defter dürüstlük kusurları [D-kapısı ilk koşumda buldu]** — `D3`: `docs/ADR/0003` tur 8 kaydının zorunlu alanları eksik. `D2`: aynı defterde **tur 1 atlanmış**. Append-only ⇒ **düzeltme kaydı** yazılır.
+- 🟡 **`D1` bu defterde FİİLEN KÖR** — artefakt adları çoğunlukla **etiket**, yol değil. Yeni kayıtlarda **gerçek yol** yazılır.
+- 🟡 **`sayi-tazeligi.py` — İMZA↔SAYI YAKINLIĞI ÖLÇÜLMÜYOR [3 kez tetikledi]** — uzun satırlarda araçla ilgisiz bir oran iddia sanılıyor. **Eşik uydurulmadı** (K40); biri muafiyet, biri metin düzeltmesiyle kapandı. **Kalıcı onarım AYRI EL'e** (K34‑f).
+- **`radar.config.json` YOK ve bu bir KARAR** — varsayılan yollar repoya birebir uyuyor. Eşik değiştiren K40 gereği **altın kümeye vaka ekler**.
+- **`pub.dev` uçları** dokümantasyonsuz/sürüm garantisiz — kalkan: fixture altın kümeleri. · **Kontrast betiğinin kalıcı hâli** `araclar/` dışında.
 - **Açık `[DOĞRULANMADI]` (5):** flutter_secure_storage Windows şifrelemesi · WebKit `__Host-` · Isopoh lisans ailesi · NIST SP 800-38D · Web'de `textScaler`/tema farkı.
 - **Geçici artıklar (repo DIŞINDA, silme Onur'da):** `…\TO DO LİST\_cowork_*.ps1` · `%TEMP%\_cw_*` · `C:\dev\_cowork_tmp\`.
 
@@ -131,15 +132,14 @@ python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GO
 | dosya | bayt | sha8 | neden donmuş |
 |---|---|---|---|
 | `DESIGN.md` | 15.742 | `534DFF68` | **K46** — tek bayt yazılamaz |
-| `GOREV-slice-3b-istemci-iskeleti.md` | **42.043** | **`79A53AA3`** | 🔒 **K57 kilidi (v5)** — değişen her bayt kilidi bozar. K54'ün `BE4581BA`'sı **geçersizdir** |
+| `GOREV-slice-3b-istemci-iskeleti.md` | **42.395** | **`6056A5BB`** | 🔒 **K57 kilidi (v5)** — değişen her bayt kilidi bozar. `BE4581BA` ve ara ölçüm `79A53AA3` **geçersizdir** |
 | `araclar/radar.py` | 28.878 | `46E3A8BC` | **K57‑b** — plugin 0.2.0 ile bayt-özdeş; sapma tek sha ile ölçülür |
 | `araclar/adr-kapi-taramasi.py` | 50.582 | `A22841F2` | **K34-f** tutuyor; ADR donduruldu |
 
-⚠ **`Measure-Object -Line` boş satırları saymaz.** Kimlik `sha256`+bayttır, satır DEĞİL.
-⚠ **Kimlik ölçümü DAİMA son yazımdan SONRA alınır.**
+⚠ **Kimlik `sha256`+bayttır, satır DEĞİL** (`Measure-Object -Line` boş satırları saymaz) ve **DAİMA son yazımdan SONRA** ölçülür.
 
 ---
 
 ## 10. NEREDE NE VAR
 
-`DURUM.md` (bu dosya, **canlı durum**) · `CLAUDE.md` (kalıcı kurallar) · `PROJE_HAFIZA.md` (**append-only karar arşivi**, K1…K57) · `DESIGN.md` (tasarım sistemi) · `PROJE_RADAR.jsonl` (ölçüm defteri) · `docs/ADR/` · `GOREV_CLAUDE_CODE/` (build spec'leri) · `araclar/` (kapılar) · `KANIT/` (kanıt) · `src/`, `tests/` (backend).
+`DURUM.md` (**canlı durum**) · `CLAUDE.md` (kalıcı kurallar) · `PROJE_HAFIZA.md` (**append-only arşiv**, K1…K57) · `DESIGN.md` · `PROJE_RADAR.jsonl` (ölçüm defteri) · `docs/ADR/` · `GOREV_CLAUDE_CODE/` · `araclar/` (kapılar) · `KANIT/` · `src/`, `tests/`.
