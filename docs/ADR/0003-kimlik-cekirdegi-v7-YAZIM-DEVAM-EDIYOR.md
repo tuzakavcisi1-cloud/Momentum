@@ -62,10 +62,34 @@ Bugüne kadar Momentum'un backend'i **kimliksiz** çalıştı. Bu iki ADR'de ses
 | pin | ertelenmiş gereksinim | kaynak (birebir) | nerede kapanır |
 |---|---|---|---|
 | **K-D5** | `ICurrentUser` impl + owner query-filter | `0001` §D: *"`ICurrentUser` portu (Application) slice-1'de arayüz olarak tanımlanır; implementasyonu + owner query-filter kimlik dilimiyle kodlanır."* | **sözleşme + impl: 0003 (§2-D)** · filtre: **0004** |
-| **M-G** | push-authz | `0002` K2-E3: *"ingest, her op için 'actor bu entity'yi **yazabilir mi**' kontrolü yapmalı. Mekanizma auth diliminde."* | **0004** |
-| **K2-E3** | pull-authz | `0002` K2-E3: *"`changes` yalnız actor'ın görebildiği entity'lerle sınırlı"* + tombstone muafiyeti | **0004** |
-| **M-C** | `clientId → principal` | `0002` §6/7: *"`clientId` kimlik-doğrulaması ertelenmiş… auth diliminde aktive edilecek"* | **0004 (D-6 + D-7)** |
+| **M-G** | push-authz | **`0002:145` (K2-E3, Push) — birebir:** *"ingest, her op için «actor bu entity'yi **yazabilir mi**» kontrolü yapmalı. Mekanizma auth diliminde; o zamana dek **deny-by-default** + `entityId` bir yetki-token'ı **DEĞİLDİR**."* | **0004** |
+| **K2-E3** | pull-authz | **`0002:144` (K2-E3, Pull) — birebir:** *"`changes` yalnız actor'ın görebildiği **(owner/collaborator)** entity'lerle sınırlı"* + tombstone muafiyeti (`0002:144`'ün *"İstisna"* cümlesi, K2-C7) | **0004** |
+| **M-C** | `clientId → principal` | **`0002:244` (§6 "Riskler / açık noktalar", madde 7) — birebir:** *"clientId kimlik-doğrulaması ertelenmiş […] `clientId→principal` auth-bağı + **push-authz** (M-G) auth diliminde aktive edilecek ertelenmiş gereksinimlerdir"* | **0004 (D-6 + D-7)** |
 | **B4** | `outbox_messages.owner_id` doğrulanmamış | `PROJE_HAFIZA:145` AÇIK BULGU C | **0004** |
+
+> 🔴 **v7 DÜZELTMESİ [K35 — üç alıntı-hijyeni kalemi; YENİ ALINTI KURALI BURADA İLK KEZ UYGULANDI].**
+> Üçü de v6'da **kaynağı daraltıyordu** ve daraltma **işaretsizdi**:
+> 1. **M-G:** alıntı *"…auth diliminde**.**"* diye **noktayla** kapatılmıştı; kaynak orada **noktalı virgül**
+>    kullanıp devam ediyor. Düşen kısım süs değil, **bugünkü davranışın ta kendisiydi**: *"o zamana dek
+>    **deny-by-default**"*. ⇒ 0004 gelene kadar push yolunun ne yaptığı, ADR 0003'ü okuyan bir builder'a
+>    **görünmüyordu**.
+> 2. **K2-E3 (pull):** *"görebildiği entity'ler"* alınmış, **`(owner/collaborator)` parantezi düşürülmüştü**
+>    — yani **görünürlüğü TANIMLAYAN** kısım. Geri kondu.
+> 3. **M-C:** konum **"§6/7"** yazıyordu; kalem gerçekte **§6'nın 7. maddesidir** (`0002:244`). ADR 0002'nin
+>    **§7'sinin adı *"İlgili"*dir** ve `0002:249`'da başlar ⇒ *"§7"* okuması yanlış bölüme götürüyordu.
+>    Ayrıca kısaltma `…` yerine artık **`[…]`** ile, kaynağın kendi cümlesi bozulmadan işaretlendi.
+>
+> **Bu üçü ne kör kapı ne ölü tuzak üretiyordu** ⇒ sınıf **MİNÖR**. Ama üçü birlikte, K35'in
+> **MAJÖR** bulgusuyla (§2-C(4)'ün uydurulmuş alıntısı) **aynı kök nedeni** paylaşıyor: *kaynağı elde
+> tutmadan alıntılamak.* **Kök neden artık yapısal olarak kapatıldı:** ADR 0002 bu turda **ilk kez açıldı**
+> (K34-e) ve alıntı kuralı (**satır numarası + işaretli kısaltma**) yürürlüğe girdi.
+>
+> ⚠ **BU DÜZELTME KENDİ KUSURUNU DA ÜRETTİ VE YAKALADI [dürüstlük kaydı].** Bu not bloğu ilk yazıldığında
+> **tablonun ORTASINA**, `M-C` ile `B4` satırlarının arasına düştü ⇒ `B4` satırı GFM'de tablodan **kopuyordu**
+> — yani kapı-5'in **M31**'de ve kapı-6'nın **M56**'da saydığı **render kusuru sınıfının** ta kendisi,
+> bu kez **onu kapatan turun kendi elinden**. Aynı koşumda ölçülüp düzeltildi. **Ders (K33'ün dördüncü
+> turda adlandırdığı örüntünün beşinci kanıtı): bir kusur sınıfını kapatan tur, o sınıfın en olası
+> üreticisidir** ⇒ v7 kapanışında **kendi yeni satırları** eski bulgu sınıflarına karşı taranacaktır.
 
 **Bu dilim bir özellik değil, bir ŞEMA kararıdır.** Çevrimdışı-öncelikli Flutter istemcisinde dört soru Drift şemasını ve depo katmanını belirler: *"bu yerel satır kimin"* · *"token nerede duruyor"* · *"401 gelince kuyruktaki yazımlar ne oluyor"* · *"çıkışta yerel DB'ye ne oluyor"*. v1 yalnız birincisini karara bağlamıştı; v2 kalan üçünü §2-L'de kapattı; **v3 §2-L'ye bir beşinci soruyu ekledi: *"ağ yokken yerel DB hangi kimlikle açılır"*** — **v4 ise ALTINCISINI ekliyor: *"sunucu geçici olarak reddederse (`429`) istemci hangi duruma geçer"*** (B3; ODEV §4(b)-2'nin iki eşzamanlı kullanıcısı bunu demonun ortasında tetikliyordu) (bloker #10 — üç kararın birleşiminin ürettiği, hiçbirinin tek başına görünmediği bir şema sonucu).
 
