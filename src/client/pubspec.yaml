@@ -47,7 +47,10 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
   drift_dev: ^2.34.5
-  build_runner: ^2.15.2
+  # SAPMA (Onur onayli, KANIT/slice-3b/T2-SAPMA.txt): spec T2 ^2.15.2 kilitliyor
+  # ama o surum analyzer >=13.3.0 istiyor ve bu Flutter SDK'sinin meta 1.18.0
+  # pininde cozulemiyor. ^2.15.1 olculerek cozuldugu dogrulandi.
+  build_runner: ^2.15.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
