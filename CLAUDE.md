@@ -43,6 +43,16 @@ yalnız `mv` ile kenara alabilir; kalıcı silmeyi Onur yapar.
 > - **`--no-optional-locks` her git çağrısında ZORUNLU kalır** (okuma da yazma da).
 > - **PUSH hâlâ Onur'un işidir** — bu errata push'a izin VERMEZ.
 
+## Radar [26 Tem 2026 — K39, PAZARLIKSIZ]
+- **Her oturum açılışında ve her checkpoint'te** radar koşulur: `python araclar\radar.py --altin-kume`
+  (çıkış **0** olmalı) → `python araclar\radar.py .`  ⇒ hüküm **YEŞİL/SARI/KIRMIZI** (çıkış 0/1/2).
+- **Her checkpoint'te `PROJE_RADAR.jsonl`'a BİR SATIR eklenir** — `uretilen` alanı (bu oturumun KENDİ
+  ürettiği kusur sayısı) **dürüstçe** yazılır; ölçülmeyen sayı `[TAHMIN]` işaretlenir. **Tam-dosya rewrite YOK.**
+- **Radar KIRMIZI ise YENİ TUR YASAK.** Dört şık (**DARALT · DEVRET · MEKANİKLEŞTİR · DURDUR**) ölçülmüş
+  gerekçe ve adlandırılmış bedelle Onur'a sunulur; **kilit Onur'dan gelir**, oturum kendi başına seçmez.
+- Doktrin ve eşikler: `proje-radari` plugin'i (`doktrin.md`). Eşik değiştiren, **altın kümeye yeni vaka eklemek**
+  zorundadır — eşiği gevşetip altın kümeyi güncellememek ölçüm aracını kasten körleştirmektir.
+
 ## Kırmızı çizgiler (değişmez) [PAZARLIKSIZ]
 1. Sırlar repoya girmez (.env + .gitignore + secret yönetimi).
 2. PII minimumda; gizlilik-öncelikli.
