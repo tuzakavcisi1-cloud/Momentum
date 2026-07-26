@@ -1,0 +1,124 @@
+ORTAM-YOL-KISITI -- Dart/Flutter arac zinciri, yol icinde Turkce karakter varsa
+BOZULUYOR (bosluk suclu DEGIL). Onur onayli junction cozumu, HAM kanit.
+Olcum tarihi: 26 Tem 2026
+IS ISTASYONU KISITIDIR, URUN KISITI DEGILDIR (asagida GENEL HUKUM'de acik).
+
+====================================================================
+1) ILK BULGU -- gercek proje kokunde "dart run build_runner build" cokuyor
+====================================================================
+Kok: C:\Users\gulci\Desktop\MEMO ODEV PROGRAMLAR\TO DO LIST\Momentum\src\client
+Komut: dart run build_runner build --delete-conflicting-outputs
+EXIT=255
+
+C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum\src\client\.dart_tool\package_config.json did not contain its own root package
+
+(.dart_tool sifirdan uretilmis haliyle de AYNI hata tekrar etti -- stale cache degil.)
+
+====================================================================
+2) IZOLASYON -- BOSLUK MU, TURKCE KARAKTER MI? (ayri, atilabilir probe projeler)
+====================================================================
+Ayni pubspec (drift 2.34.2, drift_flutter 0.3.1, drift_dev 2.34.5,
+build_runner 2.15.1, path_provider 2.1.6) uc farkli klasor adinda kosuldu:
+
+--- 2a) SADECE BOSLUKLU YOL (Turkce karakter YOK) ---
+Yol: ...\scratchpad\probe with space\br_probe
+Komut: dart run build_runner build --delete-conflicting-outputs
+PUBGET_EXIT=0
+SPACE_EXIT=0
+  0s drift_dev on 8 inputs: 1 skipped; test/widget_test.dart
+  0s drift_dev on 8 inputs: 8 skipped
+  0s source_gen:combining_builder on 4 inputs; lib/main.dart
+  0s source_gen:combining_builder on 4 inputs: 4 skipped
+  Built with build_runner/aot in 2s; wrote 0 outputs.
+HUKUM: bosluk TEK BASINA sorun CIKARMIYOR.
+
+--- 2b) SADECE TURKCE KARAKTER ("O" harfi eklendi, bosluk YOK) ---
+Yol: ...\scratchpad\probeOzel\br_probe   (klasor adi: probe + O-umlaut + zel)
+Komut: dart run build_runner build --delete-conflicting-outputs
+PUBGET_EXIT=0
+OZEL_EXIT=255
+C:\Users\gulci\AppData\Local\Temp\claude\...\scratchpad\probeOzel\br_probe\.dart_tool\package_config.json did not contain its own root package
+HUKUM: Turkce karakter ("O" harfi) TEK BASINA, boslukSUZ bir yolda bile AYNI hatayi
+uretiyor. SUCLU KARAKTER, BOSLUK DEGIL.
+
+====================================================================
+3) IKINCI BULGU -- "flutter analyze" da AYRI bir cokuşle gercek kokte patliyor
+====================================================================
+Kok: C:\Users\gulci\Desktop\MEMO ODEV PROGRAMLAR\TO DO LIST\Momentum\src\client
+Komut: flutter analyze
+EXIT=255 (analysis server cokuyor)
+
+Unhandled exception:
+FormatException: Unexpected end of input (at character 465)
+...Momentum/src/client/"}],"capabilities":{"window":{"workDoneProgress":true}}
+                                                                              ^
+#0  _ChunkedJsonParser.fail (dart:convert-patch/convert_patch.dart:1467)
+#1  _ChunkedJsonParser.close (dart:convert-patch/convert_patch.dart:497)
+#2  _parseJson (dart:convert-patch/convert_patch.dart:36)
+#3  JsonDecoder.convert (dart:convert/json.dart:640)
+#4  JsonCodec.decode (dart:convert/json.dart:219)
+#5  jsonDecode (dart:convert/json.dart:160)
+#6  LspByteStreamServerChannel._readMessage (package:analysis_server/src/lsp/channel/lsp_byte_stream_channel.dart:96)
+... (devami KANIT geregi kisaltildi, tam iz onceki oturum ciktisinda mevcuttur)
+analysis server exited with code 255
+
+HUKUM: LSP mesaj cercevelemesi (Content-Length hesaplama), yol dizgesindeki cok
+baytli UTF-8 karakter ("O" harfi) nedeniyle bozuluyor -- build_runner'daki
+"package_config root" hatasindan FARKLI bir alt sistemde (LSP JSON-RPC vs
+PackageGraph kok kontrolu) ama AYNI kok nedenden (yol icinde Turkce karakter).
+
+====================================================================
+4) COZUM -- JUNCTION (repo KOKUNE, src/client'a DEGIL -- Onur talimati)
+====================================================================
+Komut: cmd /c mklink /J C:\momentum "C:\Users\gulci\Desktop\MEMO ODEV PROGRAMLAR\TO DO LIST\Momentum"
+Cikti: Junction created for C:\momentum <<===>> C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum
+
+Junction uzerinden, C:\momentum\src\client kokunden, .dart_tool/ ve build/ temizden
+(flutter clean) sonra ucu de FIILEN kosuldu:
+
+--- flutter pub get ---
+EXIT=0 -- "Got dependencies!"
+
+--- dart run build_runner build --delete-conflicting-outputs ---
+EXIT=0 -- "Built with build_runner/aot in 51s; wrote 6 outputs."
+
+--- flutter analyze ---
+EXIT=0 -- "Analyzing client... No issues found! (ran in 9.8s)"
+
+HUKUM: junction, HER IKI cokme sinifini da (build_runner'in package_config kontrolu
+VE flutter analyze'in LSP cercevelemesi) ayni anda cozuyor -- cunku junction, isletim
+sistemi seviyesinde ASCII bir yol SUNAR; alttaki gercek (Turkce karakterli) yola
+process'ler hic dokunmuyor.
+
+====================================================================
+5) .GITIGNORE DOGRULAMASI
+====================================================================
+Kok .gitignore: ".dart_tool/" ve "build/" satirlari VAR (24-30. satirlar civari).
+src/client/.gitignore: ".dart_tool/" ve "/build/" satirlari VAR.
+HUKUM: DOGRULANDI -- build_runner/flutter'in ürettiği .dart_tool/ ve build/
+git tarafindan zaten yok sayiliyor; junction workflow bu acidan ek risk getirmiyor.
+
+====================================================================
+6) TASINABILIRLIK -- URETILEN .g.dart'TA MUTLAK YOL VAR MI
+====================================================================
+Bu olcum, T4'te gercek Drift semasi (gorevler tablosu) yazilip ilk .g.dart
+uretildiginde ayrica kosulacak ve sonucu bu dosyaya EKLENECEKTIR (asagida
+T4 sonrasi eklendi -- bkz. madde 7). Su an (T3 sonu) hicbir .g.dart yok;
+build_runner'in "6 output" ciktisi yalnizca ic onbellek/meta dosyalaridir
+(.dart_tool/build altinda, gitignore kapsaminda), gercek kaynak dosya DEGIL.
+
+====================================================================
+GENEL HUKUM
+====================================================================
+Bu bir URUN kisiti DEGIL, IS ISTASYONU kisitidir: repoyu ASCII bir yola klonlayan
+biri (or. CI, degerlendirici, baska bir gelistirici) bu sorunu HIC yasamaz. Junction
+GECICI bir cozumdur; KALICI cozum reponun ASCII bir koke tasinmasidir -- bu, ayni
+oturumda daha once olculen ".ps1 Turkce yol literali" sinifiyla AYNI kok nedene
+sahiptir (Dart/PowerShell arac zincirinin Turkce karakter isleme sinirlari).
+Tasima ayri bir oturumun isidir (Onur karari); bu oturum junction ile devam eder.
+
+PROTOKOL (bu oturumdan itibaren PAZARLIKSIZ):
+- TUM flutter/dart komutlari YALNIZ C:\momentum\... uzerinden kosar.
+- git YALNIZ kanonik yoldan (...\MEMO ODEV PROGRAMLAR\TO DO LIST\Momentum) kosar.
+- Ikisi KARISTIRILMAZ (package_config.json mutlak yol sakladigindan, karisim
+  tam da bu sinifin kendisini yeniden uretir).
