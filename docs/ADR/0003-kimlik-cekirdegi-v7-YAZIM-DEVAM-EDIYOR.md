@@ -1302,4 +1302,81 @@ K14-a'nın replay-idempotency'si beş eksende v1'in zarafet penceresinden ayrıl
 
 ---
 
-*🟡 **TASLAK v6 — KİLİTLİ DEĞİL.** Kapı-5'in **12 blokeri ve 7 majörü** kapatıldı; Onur **sekiz çatal** kilitledi (**K28-a/b/c/d · K30-a/b/c/d**); **iki iddia daha açıkça geri çekildi** (§0.4 — replay penceresinin maliyet muhasebesi). **Bağımsız kapı KOŞMADI — 6. tur için AYRI ve TEMİZ bir oturum gerekir (K13-a) ve o oturum HEM BU BELGEYİ HEM ONARILMIŞ ÖLÇÜM ARACINI denetlemek zorundadır (K29-a).** Bu ADR'yi yazan el onu onaylayamaz.*  <!-- [KS-LITERAL: KAPI BULGU SAYIMI — kapı-5'in 12/7 sayımı; kanonik değer değildir] -->
+## 8. DEVREDİLEN SPEC-ERRATA VE BORÇ LİSTELERİ [K38-a · 26 Tem 2026]
+
+**Bu bölüm K38-a'nın doğrudan sonucudur.** Kilit ölçütü daraltıldı: **bloker = (1) kör kapı · (2) inşa edilemezlik · (3) kırmızı çizgi ihlali.** Kalan majörler bundan böyle **SPEC-ERRATA**'dır — kilidi **engellemezler**, `GOREV-slice-3c-auth` spec'ine **adlandırılmış kalem** olarak geçerler ve **build'de kapanırlar** (orada zaten KOŞULACAKLAR; kapı-6'nın ölçtüğü kök neden buydu: *test tasarımı okunarak değil koşularak doğrulanır*).
+
+**Bu liste neden ADR'de duruyor:** `GOREV-slice-3c-auth` spec'i **bugün YOKTUR.** Var olmayan bir artefakta çıpa atmak **K22-a sınıfı bir blokerdir** ve bu belge onu bir kez yedi. ⇒ Liste **burada** yaşar; spec yazıldığında bu bölümü **adıyla devralır**. **Bu bir güvence değil, adresli bir borçtur.**
+
+### 8.1 — Kapı-6'nın AÇIK majörleri → spec-errata (E-1 … E-26)
+
+> 🔴 **SAYIM ÖLÇÜLDÜ VE ÜÇ FARKLI SAYI ÇIKTI [26 Tem 2026, kaynaktan; kimse sormadı].** `KANIT/adr-0003/kapi-6-denetim-raporu.md` üzerinde mekanik sayım: **§3'ün manşeti *"31 MAJÖR"*** · **grup başlıklarının toplamı 35** (9+11+5+4+3+3) · **§3'teki numaralandırılmış kalem 37** (1–37, **boşluk YOK, çift kayıt YOK** — ölçüldü). **Üçü de birbirini üretmiyor.** Kapanmış olanlar: **#1–#10** (oturum 25 ve 26). Red-team **#17'yi minöre indirdi**. ⇒ **AÇIK MAJÖR = #11–#37 arası, #17 hariç = 26 kalem.** Devir notunun ve K38'in yazdığı ***"21 majör açık"* sayısı YANLIŞTIR** ve hiçbir ölçümden türetilemiyor; devir notunun **kendi grup sayılarının toplamı** da 11+5+4+6 = **26**'dır. Bu liste **26 kalem taşır.** *(Bu, kapı-6'nın kendi #37 bulgusunun — "adjudikasyonun aritmetiği tutmuyor" — rapora kendisine uygulanmış hâlidir ve **kapı-7'nin denetlemesi gereken bir kalemdir**.)*
+
+**§3.2 — mutant tablosu (11 kalem):**
+
+- **E-1 [#11 · M54 ayak 2] — ÖLMEYEN AYAK.** Mutasyon sabit bir salt dizisi kuruyor; ayağın yüklemi *"salt alanı `[KS-23]`'ün salt uzunluğundadır"* olduğu için **mutasyon altında da DOĞRU** kalıyor ⇒ ayak süs. Satır 833'ün PAZARLIKSIZ kuralının ihlali ve bu **v6'nın kendi yeni kalemidir**. *Build'in yapması gereken:* ayak **uzunluk** değil **TAZELİK** ölçer — aynı parola iki kez hash'lenince salt alanı **FARKLI** olmalıdır.
+- **E-2 [#12 · M31 ayak 2] — ÖLMEYEN AYAK.** *"Tam `[KS-17]` ⇒ kabul"* ayağı kendi mutasyonu altında ölmüyor. *Build:* ayak `[KS-17]`−1 ⇒ ret / `[KS-17]` ⇒ kabul **çiftini** ölçer (K30-b biçimiyle).
+- **E-3 [#13 · M16 · M21 · M36 · M48] — BİLEŞİK MUTASYON.** Dört mutant iki bağımsız mekanizmayı tek satırda *"veya"*lı taşıyor ⇒ her koşumda bir ayak süs. Belge doğru biçimi **kendi içinde** kurmuş (**M4** ve **M36b**: *"her form AYRI COMMIT'te koşulur"*) ve bu dört satıra uygulamamış. *Build:* dördü de ayrı-commit biçimine çevrilir.
+- **E-4 [#14 · M27] — ÖLMEYEN AYAK.** *"Aile iptal edilmez"* ayağı ölmüyor: ilgili yüklem kaldırılınca `UPDATE` bir satır döndürür ve **dal ayrıştırması hiç koşmaz**. *Build:* ayak, dalın **fiilen koştuğunu** gözleyen bir sinyale çıpalanır.
+- **E-5 [#15 · M34 ayak 2] — ÖLÜ TUZAK.** Ayak `traceId` muafiyeti taşımıyor ⇒ belgenin **kendi ölçümüyle** baseline kırmızı doğar. Aynı kusur **M37'de düzeltilmiş, M34'e taşınmamış**. *Build:* M37'nin muafiyeti M34'e birebir taşınır.
+- **E-6 [#16 · M33a] — SÜS AYAK.** Kök yol ayağı ölçmez: statik dosya ara katmanı yetkilendirmeden **ÖNCE** kurulu ⇒ kök yol fallback'e hiç gitmez. *Build:* ayak düşürülür ya da gerçekten korumalı bir yola çıpalanır.
+- **E-7 [#18 · M49] — AYIRT EDİCİLİK SIFIR.** Kill sinyali *"M32b'nin NetArchTest kuralı kırmızıya döner"* — yani **başka bir mutantın testi**. Yeni assert yok, yeni gözlem yok; bir mutant numarası tüketiyor **ve K18-a'yı ölçüm aracına *kapılı* gösteriyor**. *Build:* ya kendi assertini kazanır ya **VOID** edilir (**M13** emsali).
+- **E-8 [#19 · M40 ayak 2] — ÖLÜ TUZAK RİSKİ + PİNSİZ FAZ.** Ayak saati yalnız `[KS-6]` kadar ilerletiyor, süpürücünün yaş eşiği ise `[KS-4]`'tür ⇒ yüklem tutmaz. Ayrıca **süpürme fazı pinsiz** ve K3-C6(5)'in *"süpürücü doğrudan çağrılır"* gerekçesiyle çelişiyor.
+- **E-9 [#20 · §2-C ⟷ M40] — İKİ METİN İKİ BİÇİM.** §2-C, M40'ın **PİNLİ** mutasyon biçiminin *yasakladığı* biçimi öneriyor (*"süpürücü devre dışı bırakılır"* ⇒ servis kaydının kaldırılması; tablo bunu *"ayırt edici olmaz"* diye reddetmiş). *Build/spec:* iki metin tek biçimde hizalanır.
+- **E-10 [#21 · M42 ⟷ M42c] — ARTIK SATIR + SAYIM SAPMASI.** İki kill sinyali neredeyse özdeş; **M42 artık M42c'nin ölçmediği hiçbir şeyi ölçmüyor**. Ayrıca §3.2(7) `KON` mutantlarını *"(M8b, M42c)"* diye sayıyor, tabloda **üç** `KON` satırı var.
+- **E-11 [#22 · M43 ayak 3] — ONARILMAMIŞ ÖLMEYEN AYAK.** Kapı-4'te **adıyla** *"ölmüyor"* diye ölçülmüş; hâlâ kill sinyalinde ve **kendi mutasyonu yok**. Kardeşleri onarıldı (**M41→M41b · M31→M52 · M36→M36b**), bu onarılmadı — ve §3.1 onu **K3-L10'un TEK kapısı** ilan ediyor. *(Grubun en ağır kalemi: tek kapı, ölmeyen ayak.)*
+
+**§3.3 — karar metni ⟷ mutant tablosu sapmaları (5 kalem):**
+
+- **E-12 [#23] — §2-J, M41'i hâlâ *"iki ayaklı"* ilan ediyor** ve mutant tablosunun **ölçerek süs dediği** ikinci ayağı kill sinyali olarak diriltiyor. Dahası **M41b, §2 gövdesinin tamamında hiç geçmiyor** ⇒ kararı okuyan builder onun varlığını **öğrenemez**.
+- **E-13 [#24] — `Retry-After` için iki yerde iki karar** (K3-J3'ün akış şeması ⟷ K3-J4(b)'nin ölçülmüş gerekçesi). Hangisinin bağlayıcı olduğu **yazılmamış** ve **hiçbir mutant ısırmıyor**.
+- **E-14 [#25] — Uç × kontrol matrisi çelişik:** tablo kontrol 2'yi *"yalnız giriş ucu"* diye pinliyor; bağlayıcı sıra şeması **kayıt ucunu da** aynı akışa koyuyor.
+- **E-15 [#26] — M41'in önkoşul gerekçesi §3.2(9)'un kendi ölçümüyle çelişiyor;** ayrıca §3.2(9) *"negatif assert"* dediği mutantları **yanlış adlandırıyor** — gerçekten negatif olan tek mutant **M41b**'dir, o da §3.2(9)'a **atıf yapmıyor** ve **önkoşul taşımıyor**.
+- **E-16 [#27] — M55'in gerekçesi belgenin KENDİ M42b kill sinyaliyle yanlışlanıyor.** *"M42b de YEŞİL kalır"* deniyor; oysa M42b üç alt anahtarı **altın vektöre** pinliyor ⇒ etiketler eşitlenirse M42b **FAIL eder**. **Aynı yanlış iddia iki yerde yazılı.**
+
+**§3.4 — port envanteri, katman ve inşa boşlukları (4 kalem):**
+
+- **E-17 [#28] — Port envanteri TAM DEĞİL:** v6'nın kendi yeni mekanizması olan **sızmış-parola kara listesinin** (`[KS-31]`) ve **K3-I5'in şifreleme/nonce/AAD** mekanizmasının envanterde satırı **yok**. §2-M, kapı-4'ün B-4 blokerini kapatan bölümdür ve **kendi turunun mekanizmalarını atlamıştır**.
+- **E-18 [#29] — Aynı iki kontrol için İKİ FARKLI İNŞA:** §2-M portları (implementasyon **Infrastructure**) ⟷ gövdenin *"DI'dan alınan somut sınırlayıcı"* ifadesi (**Application'a somut çerçeve tipi** enjekte edilir). **Hangi kural ayırt eder? Hiçbiri** — ilgili çerçeve ad alanı **hiçbir NetArchTest kuralında geçmiyor**.
+- **E-19 [#30] — Pinli anahtar dosyasının `Momentum:MasterKey`'e NASIL bağlandığı hiçbir yerde yazılı değil** (ortam değişkeni / dosya-başına-anahtar / ini sağlayıcısı ⇒ üçü de sıfır eşleşme). Seçim **M8b ve M42c'nin koşum biçimini** ve **§3.2'nin üretim-eşdeğerliği maddesindeki iddiayı** doğrudan etkiler. <!-- atıf RAKAMSIZ yazıldı: rakamlı biçim (§3.2'nin ilgili madde numarası) aracın KS-4 zayıf-eşleşmesini tetikliyor ve K37'nin ölçtüğü "düzeltme kendi sınıfından kusur üretir" örüntüsüne YENİ bir yanlış-pozitif ekliyordu -->
+- **E-20 [#31] — `ICurrentUser`'ın yeri için aynı belgede İKİ NORMATİF HÜKÜM:** §2-M *"tercih değil, kuralın sonucu"* ⟷ §3.1 *"bir mimari tercihtir, ihlal-edilebilir bir kural değildir"*. Ve kural gerçekten Api'yi serbest bırakıyor (tablonun kendi sütunu).
+
+**§3.5 — aracın kapsamı ve dürüstlük muhasebesi (6 kalem):**
+
+- **E-21 [#32] — Aracın karar deseni, Onur çatal kilitleri ailesini (`K18-a` · `K28-c` · `K14-f` biçimi) görmüyor** ve **bu kapsam sınırı aracın altı beyanının hiçbirinde yazılı değil**. *(Red-team daralttı: o aile karar başlığı değil ⇒ desen genişletilse sıfır yeni başlık çıkardı; kalan kusur **beyanın yokluğu**dur.)*
+- **E-22 [#33] — Araç altı sınır beyan ediyor, §3.1 üçünü aktarıyor;** aktarılmayanlardan biri aracın **kendi deyimiyle en büyük tek sınırıdır**. *(v7 bunu kısmen kapattı — kalan kusur: aktarımın **TAM olduğunu ölçen bir kapı yok**.)*
+- **E-23 [#34] — Altın küme kontrol sayısı üç yerde üç farklı;** asıl kusur çelişki değil, ***"kontrol"* biriminin hiç tanımlanmamış olmasıdır**.
+- **E-24 [#35] — *"İki `[DOĞRULANMADI]` canlıdır"* beyanı yanlış: canlı etiket ÜÇTÜR.** Öz-denetim beyanı **tek bir aramayla** yanlışlanıyor.
+- **E-25 [#36] — §6 Risk #17 *"§7'nin devir listesine yazılmıştır"* diyor; §7'de o kalem geçmiyor.** **B5-5 kusurunun bir seviye aşağıda tekrarı** — ve **çapraz-atıf çözücüsü (K38-b'nin 1. kontrolü) bunu mekanik olarak yakalayacaktır.**
+- **E-26 [#37] — `K4` adjudikasyonunun aritmetiği tutmuyor** ve aracın *"ZAYIF EŞLEŞMELER"* ile *"KAPSAM DIŞI BIRAKTIKLARI"* sınıfları belgenin **hiçbir yerinde geçmiyor** — oysa bölümün başlığı ***"SESSİZ ELEME YOKTUR"*** diyor.
+
+### 8.2 — `slice-3b` (Flutter istemci) ADLANDIRILMIŞ BORÇ LİSTESİ [K34-g'nin yazım borcu — bugüne kadar YOKTU]
+
+**K34-g bu listeyi ZORUNLU kılmıştı ve dört turdur yazılmamıştı; burada yazılıyor.** Aşağıdaki mutantlar `[devir]` işaretlidir ve **bugün kapısızdır**. *Gerekçe (K34-g, ölçüldü):* Flutter istemci **hiç başlamadı** ⇒ Dart mutantları **var olmayan bir kod tabanına** çıpalanırdı; bu tam olarak **K22-a sınıfı bir blokerdir**. ⇒ **beyanlı sınır olarak kalırlar, ama adresleri buradadır.**
+
+> **Ölçüm notu:** §7'nin devir satırı **altı** M-L mutantı sayıyor (**M-L5 … M-L10**); ölçüm aracının *"devredilmiş 5"* sayacı **KARAR KİMLİĞİ** düzeyinde sayar, **mutant** düzeyinde değil (K37'de ölçüldü) ⇒ **iki sayı çelişmiyor, farklı şeyleri sayıyorlar.** `M-L10` v7'de doğdu.
+
+- **M-L5 — tek-uçuşlu (single-flight) yenileme** + **web ayağı: Web Locks** (K3-L9) · seviye `DART` + `DART-WEB`. *Kapısı 3b'de:* iki eşzamanlı yenileme çağrısı **tek** ağ isteğine indirgenmezse test KIRILMALI.
+- **M-L6 — 401'de kuyruk DÜŞÜRÜLMEZ** (K3-L8) · `DART`. *Kapısı:* 401 sonrası gönderilmemiş kuyruk **diskte kalmazsa** test KIRILMALI.
+- **M-L7 — kullanıcı-başına ayrı yerel DB dosyası** (K11-g) · `DART`. *Kapısı:* A çıkıp B girince A'nın satırları görünürse test KIRILMALI.
+- **M-L8 — ağ hatası ≠ 401 ayrımı** (K3-L8) · `DART`. *Kapısı:* ağ hatası *"kimlik yok"* dalına düşerse test KIRILMALI.
+- **M-L9 — `429`/`5xx` = GEÇİCİ dal** (K3-L8/3; **B3'ün istemci ayağı**) · `DART`. *Kapısı:* hız sınırı yanıtı kalıcı hata sayılıp oturum düşerse test KIRILMALI.
+- **M-L10 — çıkışta AKTİF PROFİL KAYDI temizlenir, DB dosyası SİLİNMEZ** (K3-L8(4); **B6-6'nın istemci ayağı; v7'de doğdu**) · `DART`. *Kapısı:* çıkış + çevrimdışı açılışta **önceki kullanıcının** verisi açılırsa test KIRILMALI; DB dosyası silinirse **kırmızı çizgi #4** ihlali olur ve test KIRILMALI.
+
+**Bağlayıcı hüküm:** `GOREV-slice-3b` spec'i bu altı kalemi **adıyla devralır**; her biri ya **ısıran bir kapı** olur ya da **beyan edilmiş sınır** olarak yazılır. **Üçüncü seçenek yoktur.**
+
+### 8.3 — `aspnetcore` DAVRANIŞ ÖLÇÜMLERİ → build'de KOŞULUR [K39-b(b) · 26 Tem 2026]
+
+Belgedeki **on `aspnetcore` kaynak atfı** bir **atıf değil, bir DAVRANIŞ ÖLÇÜMÜDÜR** (ara katman sırası · varsayılan durum kodları · kira meta verisi · claim eşlemesi · statik dosya fallback davranışı). **Okunarak doğrulanamazlar — KOŞULARAK doğrulanırlar.** ⇒ `GOREV-slice-3c-auth` build'ine **adlandırılmış kalem** olarak devredilir ve orada **gerçek çerçeve sürümüne karşı** ölçülür. **Beyan edilmiş sınır:** bu kalem **bu turda DOĞRULANMAMIŞTIR**; kapı-7 bunu görecektir ve **görmelidir**.
+
+### 8.4 — ARACIN 2. ONARIMINDAN SONRA YENİDEN ÖLÇÜLECEK KALEM [bu turda ölçüldü, telafisi burada]
+
+**§3.1'in araç-sınırları beyanı TARİHLİDİR ve aracın 2. onarımına kadar geçerlidir.** K38'in sırası §3.1'in yeniden ölçümünü **aracın onarımından ÖNCE** koyuyor ⇒ onarım koştuğu anda §3.1'in *"aracın bilinen sınırları"* beyanı **olgusal olarak bayatlar**. Bu **B5-5 / B6-8 ile aynı ailedir** (*"beyan edildiği söylenen ama artık doğru olmayan"*) — **ama K38-a'ya göre bloker DEĞİLDİR** (kör kapı yok · inşa edilemezlik yok · kırmızı çizgi yok) ⇒ **spec-errata**. **Telafi:** beyan **zamansız bir güvence olarak değil, tarihli bir sınır olarak** yazılır ve **aracın onarımını yapan el, §3.1'in o satırını yeniden ölçmekle YÜKÜMLÜDÜR.** *(Gizlenmiş sınır kabul edilmez; beyan edilmiş sınır edilir.)*
+
+---
+
+*🟡 **TASLAK v7 — KİLİTLİ DEĞİL; KAPI-7 = KİLİT KAPISINI BEKLİYOR** [altbilgi 26 Tem 2026'da yenilendi; **bir önceki altbilgi "TASLAK v6 … 6. tur AYRI oturum gerekir" diyordu ve BAYATTI — kapı-6 KOŞTU** (oturum 24) ve hükmü **KİLİTLENEMEZ** oldu].*
+
+*Bugünkü durum: **kapı-6'nın dokuz blokerinin dokuzu da KAPANDI** (oturum 25 ve 26) · **B6-A/B/C/D kapandı** · **majörlerin #1–#10'u kapandı**, kalan **26'sı K38-a gereği §8.1'de SPEC-ERRATA olarak devredildi** · **K34-g'nin `slice-3b` borç listesi §8.2'de yazıldı** · **`aspnetcore` davranış ölçümleri §8.3'te build'e devredildi**. **Kilit ölçütü K38-a ile daraltıldı:** bloker = kör kapı · inşa edilemezlik · kırmızı çizgi ihlali. **Mekanik kapı şartı DURUYOR:** `K1` = 0 · tablo kusuru = 0 · altın küme çıkış kodu 0.*
+
+*⚠ **Bu belgeyi YAZAN el onu ONAYLAYAMAZ (K26).** v7'yi oturum 25, 26 ve 27 yazdı ⇒ **üçü de denetleyemez.** **Kapı-7 artık bir "tur" DEĞİL, bir KİLİT KAPISIDIR** ve **dört nesneyi birden** denetlemek zorundadır: bu belge · **onarılmış ölçüm aracı** (K29-a, K34-f) · **kapı-6 raporunun kendisi** (§8.1'in ölçtüğü sayım sapması dâhil) · **K38-b'nin mutant verisi**. Bağlanması ZORUNLU: `ADR 0002` · `src/` · `tests/` · `docker-compose.yml`.*
