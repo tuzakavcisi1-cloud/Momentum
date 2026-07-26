@@ -1,0 +1,5 @@
+# TOFU (Trust On First Use) -- ilk kaynak ilk indirmedir; GUVEN VARSAYIMIDIR.
+# Surum karsilastirmasi YAPILMAZ (Z11) -- sqlite3.wasm paket surumunu tasimaz.
+# Bu dosya web-varlik-indir.py tarafindan uretilir; ELLE DUZENLEME onerilmez.
+drift_worker.js b8b9f88cdfa0582eedacf3b55f6133b7d9bea7c8e74d4dc019a380da9976a7a8 repo=simolus3/drift tag=drift-2.34.0
+sqlite3.wasm 41cf968998241465d8b1dfffb1eb60dd10c35de5022a3647e14174ea3af84143 repo=simolus3/sqlite3.dart tag=sqlite3-3.5.0
