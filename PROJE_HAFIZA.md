@@ -8,6 +8,40 @@
 > **oturum 23**'ündür; **en yeni devir notu (oturum 24) satır ~60'tadır** ve ikisi de *"ÖNCEKİ DEVİR
 > NOTLARINI GEÇERSİZ KILAR"* diyor. Yalnız tepeyi okuyan bir oturum **bayat durum alır.**
 > **KURAL (bundan sonra): en yeni checkpoint/devir notu DAİMA bu satırın hemen altına yazılır.**
+>
+> 🔴 **BU DOSYA ARTIK OTURUM AÇILIŞINDA OKUNMAZ [K53, 26 Tem 2026].** Canlı durum **`DURUM.md`**'dedir (≤12 KB). Burası **APPEND-ONLY KARAR ARŞİVİDİR**: yeni checkpoint üste eklenir, **hiçbir şey silinmez, hiçbir şey yerinde düzeltilmez** (bayat satır varsa **düzeltme notu** yazılır). Buraya yalnız *"bu karar neden alındı?"* diye sorulduğunda bakılır.
+
+## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K53 VERİMLİLİK REFORMU + K54 SPEC v4 (KİLİT GÜNCELLEMESİ)**)
+
+**🔴 TEŞHİS (Onur'un talebiyle masaya yatırıldı):** 29 oturumun sonunda **backend çalışıyordu** (slice-1→3a, `verify.ps1` **110/110**), ama **istemci 0 satırdı**. Bugün bulunan kusurların neredeyse hepsine bakıldığında ortak nokta şuydu: *hiçbiri ÜRÜN kusuru değildi* — `M4 eşdeğer mutant`, `G3 ölçemediğini ölçüyor`, `A11Y-2 mutantsız`, `D0/D4 mutantsız`… hepsi **DENETİM AYGITININ** kusuruydu. **Kök neden denetimin MİKTARI değil, ZAMANLAMASI: henüz koşamayan iddialar kâğıtta doğrulanmaya çalışılıyordu.** Radar bunu (R2b) ADR 0003'e dokuz turdur söylüyordu.
+**Kilit geçmişi bunu doğruluyor:** K41 DURDUR → K44 MEKANİKLEŞTİR → K46 DARALT → K51 MEKANİKLEŞTİR → K52 DEVRET. **Beş kilidin üçü işi kâğıtta tuttu.** *(Cowork kendi payını beyan eder: K51'de MEKANİKLEŞTİR'i Cowork önerdi; araç iki kusur buldu ama bir tur daha kâğıtta kalındı.)*
+**Cowork'ün kendi hatası da düzeltildi:** *"23 mutant ≈ 4-6 saat"* tahmini **YANLIŞTI** — her mutantın emülatörde yeniden derleme istediği varsayılmıştı. Ölçüm: **23'ün yalnız 3'ü koşan uygulama istiyor**; gerçekçi maliyet **~30-40 dakika**. Bu yüzden 3. önlem *sayı tavanı* yerine **maliyet sınıfı tavanı** olarak uygulandı.
+
+**🔒 K53 — BEŞ KURAL `CLAUDE.md`'YE YAZILDI (PAZARLIKSIZ):**
+1. **Kâğıt denetim turu tavanı = 1.** İkinci tur ancak birincisi **mimariyi değiştiren** bloker bulduysa. *(Ölçüldü: tur 1→13, tur 2→4, tur 3→0 bloker; ve üç turun hiçbirinin bulamadığı iki kusuru 100 satırlık bir betik **ilk koşumda** buldu. Ayrıca 18 blokerin **4'ü düpedüz yanlıştı**.)*
+2. **Radar KIRMIZI'da varsayılan cevap `DEVRET`.** `MEKANİKLEŞTİR` seçen el *"bu sınıf koşan kod olmadan ölçülebilir"* diye **yazılı gerekçe** vermek zorunda. **İspat yükü tersine çevrildi.**
+3. **Mutant tavanı maliyet sınıfına göre:** koşan-uygulama mutantı **3/dilim**; statik ve widget mutantları **tavansız**.
+4. **İki oturum üst üste 0 satır ürün kodu = SERT DURAK** (yeni **R7**).
+5. **Yürüyen iskelet önce, kapılar sonra.**
+**Ayrım:** ÜRÜN kapısı her kuruşu hak eder; SÜREÇ kapısının **tavanı vardır**.
+
+**🗂 HAFIZA BÖLÜNDÜ.** **`DURUM.md`** (8.301 b · `2586ED37`) = canlı durum, her oturumun **tek zorunlu okuması**, **≤12 KB tavan**, **yerinde güncellenir**. **`PROJE_HAFIZA.md`** (488 KB) = **append-only karar arşivi**, açılışta okunmaz. *Gerekçe: 488 KB'lik dosyayı her oturumun baştan okuması ölçülmüş bir bağlam vergisiydi ve dosya kendi sıralama kusurunu en tepesinde itiraf ediyordu.*
+
+**🛠 `radar.py` 0.2.0 — İKİ ÖLÇÜLMÜŞ ONARIM (K34-f uygun: yazan el plugin, onaran el Cowork):**
+- **R3 ASGARİ ÖRNEKLEM KORUMASI** (üç kez yanlış yandı): `kapatilan < 4` ise R3 **hüküm vermez**, `R3-ORNEKLEM` bilgisi basar. *Eski eşik, kusurunu ölçüp aynı turda kapatan dürüst bir eli, kusurunu gizleyen elden daha kötü gösteriyordu — yani **dürüstlüğü cezalandırıyordu**.* **Susturulmadı:** "ölçemedim" diye **beyan ediyor**, ve `kapatilan≥4`'te hâlâ ısırıyor (altın küme vaka 8 bunu kanıtlıyor).
+- **R7 — ÜRÜN KODU DURGUNLUĞU** (yeni): `urun_kodu_satiri` alanı (araç/betik/belge **sayılmaz**); son 2 oturum 0 ise **KIRMIZI**.
+- **Dört şık ağırlıklandırıldı:** çıktı artık `DEVRET`'i **VARSAYILAN** basıyor ve `MEKANİKLEŞTİR` için yazılı gerekçe şartını yazıyor.
+- **ALTIN KÜME 6 → 11 vaka, 11/11 GEÇTİ** (K40: eşik değiştiren altın kümeye vaka eklemek zorundadır).
+- ⚠ **KANONİK-KOPYA BORCU BEYAN EDİLDİ:** `proje-radari` plugin sürümü bu iki onarımı **taşımıyor**; plugin güncellenene kadar **kanonik sürüm proje içindekidir**.
+
+**🛠 `spec-kapi-kapsama.py` — MUTANT BORCU MEKANİZMASI.** Yeni kodlar: `S4` gerekçesiz borç · `S5` **kapı borçlanamaz** (yalnız kural) · `S6` gereksiz borç. **Altın küme 9 → 13 vaka, 13/13 GEÇTİ.** *Gerekçe: tavan koyarken aracın "her kuralın mutantı olacak" kuralıyla çelişiyorduk; çözüm susturmak değil, **beyan edilmiş ve gerekçeli borç** — projenin kendi ilkesi.*
+
+**✅ ÖLÇÜLEN ETKİ (iddia değil):** `slice-3b-istemci` artefaktı R3'ün yanlış-pozitifi yüzünden KIRMIZI'ydı ⇒ şimdi **YEŞİL**. Ve **R7 ilk işini kendi yaratıcısı üzerinde yaptı:** *"son 2 oturumda (28, 29) tek satır ÜRÜN kodu yazılmadı — SERT DURAK: bir sonraki oturum ÜRÜN KODU ile başlar."* **Bu doğrudur ve gizlenmiyor.** Oturum 28'in ölçümü, defter append-only olduğu için **geriye dönük satır düzeltilerek değil, yeni bir ölçüm kaydı eklenerek** yapıldı.
+
+**🔒 K54 — SPEC v4, KİLİT GÜNCELLENDİ.** v3 → v4 tek kalem: §6'ya **MALİYET SINIFI** (A statik / B widget / C koşan uygulama) ve **A → B → C koşum sırası** eklendi. **Mutant sayısı, kapılar, kurallar, kabul kriterleri DEĞİŞMEDİ.** Sınıf C tam üç: **M3 · M9 · M4** ⇒ K53 tavanı **karşılanıyor**, kesinti gerekmedi.
+**YENİ KİLİTLİ KİMLİK: 36.337 b · `sha256 BE4581BA`** (K52'nin `1AB02B73`'ü **artık geçersizdir**). `spec-kapi-kapsama` ⇒ **BULGU YOK / EXIT 0**.
+
+**GİT:** Claude Code Onur tarafından **durduruldu** (build başlamamıştı, kilit değişikliği güvenli).
 
 ## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K52 — SPEC KİLİTLENDİ; `esdeger-mutant` SINIFI BUILD'E DEVREDİLDİ**)
 

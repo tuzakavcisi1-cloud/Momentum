@@ -107,6 +107,32 @@ def mutantlar(mutant_govde):
     return sonuc
 
 
+def borclar(metin):
+    """'## 6b. MUTANT BORCU' bolumunden BEYAN EDILMIS kural borclarini okur.
+
+    Bicim (satir basi): '- KURAL: <ad> | GEREKCE: <en az 20 karakter>'
+    Gerekcesiz borc KABUL EDILMEZ (S4) -- beyan, gerekce demektir.
+    KAPI borclanamaz; yalniz KURAL borclanabilir (S5).
+    """
+    govde = bolum(metin, r"^##\s*6b\.")
+    if govde is None:
+        return {}, []
+    kabul, hata = {}, []
+    for s in govde.split("\n"):
+        m = re.match(r"^\s*-\s*KURAL:\s*([^|]+)\|\s*GEREKCE:\s*(.*)$", s)
+        if not m:
+            continue
+        ad = re.sub(r"[`*]", "", m.group(1)).strip()
+        gerekce = m.group(2).strip()
+        if re.match(r"^G\d+$", ad):
+            hata.append(("S5", "KAPI BORCLANAMAZ: " + ad + " -- yalniz KURAL borclanabilir"))
+        elif len(gerekce) < 20:
+            hata.append(("S4", "GEREKCESIZ BORC: " + ad + " -- gerekce en az 20 karakter olmali"))
+        else:
+            kabul[ad] = gerekce
+    return kabul, hata
+
+
 def denetle(metin):
     """(bulgular, ozet) dondurur. bulgular: [(kod, mesaj)]"""
     metin = normalize(metin)
@@ -125,19 +151,29 @@ def denetle(metin):
     for a in muts.values():
         kapsanan |= a
 
-    bulgular = []
+    borc, borc_hatasi = borclar(metin)
+    bulgular = list(borc_hatasi)
+    # KAPI borclanamaz: her kapinin mutanti PAZARLIKSIZ.
     for k in kapilar:
         if k not in kapsanan:
             bulgular.append(("S1", "MUTANTSIZ KAPI: " + k + " -- hicbir mutant bu kapiyi hedeflemiyor"))
     for r in kurallar:
-        if r not in kapsanan:
-            bulgular.append(("S2", "MUTANTSIZ KURAL: " + r + " -- kural adlandirilmis ama mutanti yok"))
+        if r in kapsanan:
+            continue
+        if r in borc:
+            continue  # BEYAN EDILMIS BORC -- ozet bolumunde SAYILIR, gizlenmez
+        bulgular.append(("S2", "MUTANTSIZ KURAL: " + r + " -- mutanti da yok, BEYAN EDILMIS BORCU da yok"))
+    for r in sorted(borc):
+        if r in kapsanan:
+            bulgular.append(("S6", "GEREKSIZ BORC: " + r + " -- mutanti VAR, borc beyani yaniltici"))
+        elif r not in kurallar:
+            bulgular.append(("S6", "GEREKSIZ BORC: " + r + " -- envanterde boyle bir kural yok"))
     envanter_kumesi = set(kapilar) | set(kurallar)
     for no in sorted(muts, key=lambda x: (len(x), x)):
         for a in sorted(muts[no]):
             if a not in envanter_kumesi:
                 bulgular.append(("S3", "HAYALET ATIF: " + no + " -> " + a + " (envanterde yok)"))
-    ozet = (kapilar, kurallar, muts)
+    ozet = (kapilar, kurallar, muts, borc)
     return bulgular, ozet
 
 
@@ -210,6 +246,26 @@ def altin_kume():
                        _TEMIZ.replace("| A11Y-1 | bir sey |", "| A11Y‑1 | bir sey |"), []))
     sonuc.append(_vaka("9) MUTANT TABLOSU BOS -- S0 isirmali",
                        _TEMIZ.split("## 6.")[0] + "## 6. MUTANTLAR\nbos\n## 7. son\n", ["S0"]))
+    # --- K53: BEYAN EDILMIS MUTANT BORCU mekanizmasi ---
+    _KONTRASTSIZ = _TEMIZ.replace("| **M3** | rengi boz | G2 / kontrast | kirmizi |\n", "")
+    _BORC = "## 6b. MUTANT BORCU\n- KURAL: kontrast | GEREKCE: ilk dilim tavani 8 mutant, kontrast risk sirasinda disarida kaldi\n"
+    sonuc.append(_vaka("10) BEYAN EDILMIS+GEREKCELI borc -- SUSMALI",
+                       _KONTRASTSIZ.replace("## 7. son", _BORC + "## 7. son"), []))
+    sonuc.append(_vaka("11) GEREKCESIZ borc -- S4 isirmali (beyan = gerekce demektir)",
+                       _KONTRASTSIZ.replace(
+                           "## 7. son",
+                           "## 6b. MUTANT BORCU\n- KURAL: kontrast | GEREKCE: sonra\n## 7. son"),
+                       ["S2", "S4"]))
+    sonuc.append(_vaka("12) KAPI borclanmaya calisilirsa -- S1+S5 isirmali",
+                       _TEMIZ.replace("| **M2** | baska sey boz | G2 / A11Y-1 | kirmizi |\n", "")
+                             .replace("| **M3** | rengi boz | G2 / kontrast | kirmizi |\n", "")
+                             .replace("## 7. son",
+                                      "## 6b. MUTANT BORCU\n- KURAL: G2 | GEREKCE: bu kapiyi simdilik erteliyoruz cunku pahali\n## 7. son"),
+                       ["S1", "S2", "S5"]))
+    sonuc.append(_vaka("13) MUTANTI OLAN kural icin borc beyani -- S6 isirmali",
+                       _TEMIZ.replace("## 7. son",
+                                      "## 6b. MUTANT BORCU\n- KURAL: kontrast | GEREKCE: gereksiz beyan, mutanti zaten var ve kosuyor\n## 7. son"),
+                       ["S6"]))
     _yaz("=" * 74)
     gecti = sum(1 for x in sonuc if x)
     _yaz("HUKUM: %d/%d GECTI -- %s" % (gecti, len(sonuc),
@@ -234,15 +290,20 @@ def main(argv):
     _yaz("SPEC KAPI KAPSAMA -- " + argv[0])
     _yaz("=" * 74)
     if ozet:
-        kapilar, kurallar, muts = ozet
+        kapilar, kurallar, muts, borc = ozet
         _yaz("KAPI  (%d): %s" % (len(kapilar), ", ".join(kapilar)))
         _yaz("KURAL (%d): %s" % (len(kurallar), ", ".join(kurallar)))
         _yaz("MUTANT(%d): %s" % (len(muts), ", ".join(sorted(muts, key=lambda x: (len(x), x)))))
+        if borc:
+            _yaz("BEYAN EDILMIS MUTANT BORCU (%d) -- gizlenmiyor, SAYILIYOR:" % len(borc))
+            for r in sorted(borc):
+                _yaz("   * " + r + " -- " + borc[r])
         _yaz("-" * 74)
     for k, m in bulgular:
         _yaz("[" + k + "] " + m)
     if not bulgular:
-        _yaz("BULGU YOK: her kapinin ve her adlandirilmis kuralin en az bir mutanti var.")
+        _yaz("BULGU YOK: her KAPI'nin mutanti var; mutantsiz her KURAL icin")
+        _yaz("BEYAN EDILMIS ve GEREKCELI bir borc kaydi var.")
     _yaz("-" * 74)
     _yaz("BEYAN EDILMIS SINIR: bu betik mutantin GERCEKTEN ISIRDIGINI olcmez;")
     _yaz("esdeger-mutant tespiti calisan kod ister. Yalnizca KAPSAMA olculur.")

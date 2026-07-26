@@ -1,6 +1,7 @@
-# GÖREV (Claude Code) — slice-3b: Flutter istemci iskeleti + TAM ÇEVRİMDIŞI CRUD (K42-d adım 2)  [v3]
+# GÖREV (Claude Code) — slice-3b: Flutter istemci iskeleti + TAM ÇEVRİMDIŞI CRUD (K42-d adım 2)  [v4]
 
-> 🔒 **KİLİTLİ — Onur, 26 Tem 2026 (K52).** Build başlayabilir.
+> 🔒 **KİLİTLİ — Onur, 26 Tem 2026 (K52 → K54 ile güncellendi).** Build başlayabilir.
+> **v3 → v4 DEĞİŞİKLİĞİ (K53 verimlilik reformu, tek kalem):** §6'ya **MALİYET SINIFI** eklendi ve koşum sırası **A → B → C** olarak pazarlıksızlaştırıldı. **Mutant sayısı, kapılar, kurallar, kabul kriterleri DEĞİŞMEDİ.** Ölçüldü: 23 mutantın yalnız **3'ü** koşan uygulama istiyor (M3 · M9 · M4); geri kalanı statik tarama veya widget testi ⇒ gerçekçi maliyet **~30-40 dakika**, saatler değil.
 > **DÖRT TUR BAĞIMSIZ DENETİMDEN GEÇTİ.** v1 → (üç denetçi: 18 bloker · 39 majör · 16 minör) → v2 → (red-team: 4 bloker · 6 majör · 4 minör) → v3 → (`spec-kapi-kapsama.py`: 2 mutantsız kural) → **v3 kilitli**.
 > **Denetim tarihçesi ve çürütülen bulgular `PROJE_HAFIZA.md` K48/K50/K51'dedir.** Bu belge yalnız **yapılacak işi** taşır.
 > 🔴 **KİLİDİN AÇIK ŞARTI [K52]:** radar bu artefaktı **KIRMIZI** bırakıyor; kalan sınıf **`esdeger-mutant`** ve **kâğıtta kapatılamaz** — bir mutantın gerçekten ısırıp ısırmadığı ancak **koşarak** görülür. Kilit, bu sınıfın **BUILD'e devredilmesi** kararıdır (R2b). ⇒ **§6'nın "her mutant için KIRMIZI çıktı" zorunluluğu bu kilidin bedelidir ve gevşetilemez.** Bir mutant ısırmıyorsa **DUR ve raporla** — o an eşdeğer-mutant bulunmuş demektir ve bu **başarıdır**, gizlenecek şey değil.
@@ -16,7 +17,8 @@
 
 ## 0. Önce oku
 
-`CLAUDE.md` **TAMAMI** · `PROJE_HAFIZA.md` tepesindeki **K50 → K48 → K47 → K46** · **`DESIGN.md` TAMAMI** · `araclar/design-token-kapisi.py` (**koddan** anla) · `araclar/mcp-arac-probe.py` · `dosya-kimlik.py` · `pub-surum-olc.py` · `lisans-yokla.py`.
+**`DURUM.md` TAMAMI** · `CLAUDE.md` **TAMAMI** (özellikle **⚡ VERİMLİLİK KURALLARI**) · **`DESIGN.md` TAMAMI**
+*(`PROJE_HAFIZA.md`'yi **AÇMA** — append-only arşivdir; bir kararın gerekçesini merak edersen o zaman bak.)* · `araclar/design-token-kapisi.py` (**koddan** anla) · `araclar/mcp-arac-probe.py` · `dosya-kimlik.py` · `pub-surum-olc.py` · `lisans-yokla.py`.
 
 **`DESIGN.md`'yi DEĞİŞTİRME** (K46). Belge ile kod çelişirse **kodu düzelt**; belge yanlışsa **DUR ve raporla**. §10'daki **BD** kalemleri `DESIGN.md`'nin ölçülmüş kusurlarıdır, bu dilimde **kapatılmaz**.
 
@@ -224,10 +226,17 @@ Sabit `saat`/`idUret` ile deterministik: ① beş işlem uçtan uca (ekle · dü
 
 ---
 
-## 6. MUTANTLAR — yirmi bir; KAPALI ve numaralı liste
+## 6. MUTANTLAR — yirmi üç; KAPALI ve numaralı liste
 
 > **Protokol:** mutantı uygula → kapıyı koş → **kırmızı çıktıyı kaydet** → geri al → yeşil. **Isırmıyorsa DUR ve raporla.**
 > **Liste KAPALIDIR.** Mutant **icat etme**. Her kapı **ve her kural** en az bir mutant taşır.
+>
+> 🔴 **MALİYET SINIFI [K53] — SIRALAMA BUNA GÖRE YAPILIR:**
+> - **Sınıf A — STATİK** (`design-token-kapisi.py` / betik koşumu, **derleme yok, emülatör yok**, saniyeler): **M1 · M2a · M2b · M8 · M11 · M12 · M14 · M20 · M21 · M22 · M23**
+> - **Sınıf B — WIDGET/BİRİM TESTİ** (`flutter test`, **emülatör yok**, saniyeler): **M5 · M6 · M7 · M10 · M13 · M15 · M16 · M17 · M18 · M19**
+> - **Sınıf C — KOŞAN UYGULAMA** (emülatör/tarayıcı + yeniden derleme, dakikalar): **M3 · M9 · M4** — **TAM ÜÇ. K53'ün tavanı 3'tür ve bu dilim tavandadır; DÖRDÜNCÜSÜ EKLENEMEZ.**
+>
+> **Koşum sırası PAZARLIKSIZ: önce A (hepsi tek oturumda), sonra B, EN SON C.** Gerekçe: A ve B sınıfı mutantlar ucuzdur ve C sınıfına geçmeden önce kodun büyük kısmını zaten doğrular; pahalı olanı sona bırakmak, ucuz bir kusur yüzünden emülatör turunu tekrarlamayı önler.
 
 | # | mutant | kapı / kural | beklenen kırmızı |
 |---|---|---|---|

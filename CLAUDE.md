@@ -1,6 +1,22 @@
 # CLAUDE.md — Momentum (kalıcı proje talimatı)
 
-> Her oturumda ÖNCE `PROJE_HAFIZA.md` + bu dosyayı TAM oku. Güncel durum ve devir notu orada.
+> **Her oturumda ÖNCE `DURUM.md` + bu dosyayı oku.** Güncel durum, sıradaki iş, yürürlükteki kilitler ve ortam uyarıları orada.
+> **`PROJE_HAFIZA.md` artık APPEND-ONLY KARAR ARŞİVİDİR** — oturum açılışında **OKUNMAZ**; yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır. *(K53, 26 Tem 2026: 488 KB'lik dosyayı her oturumun baştan okuması ölçülmüş bir bağlam vergisiydi.)*
+
+## ⚡ VERİMLİLİK KURALLARI [K53 — PAZARLIKSIZ]
+
+> **Ölçülmüş kök neden:** 29 oturumun sonunda backend çalışıyordu (110 test yeşil) ama **istemci 0 satırdı**. Sebep denetimin *miktarı* değil, **zamanlaması**: henüz koşamayan iddialar kâğıtta doğrulanmaya çalışıldı. Aşağıdaki beş kural bunu engeller.
+
+1. **KÂĞIT DENETİM TURU TAVANI = 1.** Bir spec/ADR **tek** bağımsız denetim turu görür → düzeltilir → kilitlenir. **İkinci tur ancak birincisi MİMARİYİ DEĞİŞTİREN bir bloker bulduysa** açılır. *(Ölçüldü: tur 1 → 13 bloker, tur 2 → 4, tur 3 → 0; ve üç turun hiçbirinin bulamadığı iki kusuru 100 satırlık bir betik ilk koşumda buldu. Prozayı LLM'e okutmak pahalı ve yüksek varyanslı; mekanik kontrol ucuz ve deterministik.)*
+2. **RADAR KIRMIZI'DA VARSAYILAN CEVAP `DEVRET`'TİR.** `MEKANİKLEŞTİR` seçen el, **yazılı gerekçe** vermek zorundadır: *"bu sınıf, koşan kod OLMADAN ölçülebilir."* Ölçülemiyorsa o şık **geçersizdir**. **İspat yükü tersine çevrilmiştir.**
+3. **MUTANT TAVANI MALİYET SINIFINA GÖREDİR, SAYIYA GÖRE DEĞİL.**
+   **Koşan uygulama** isteyen mutant (emülatör/tarayıcı + yeniden derleme) tavanı: **3 / dilim.**
+   **Statik** (linter/tarayıcı betiği) ve **widget testi** mutantları: **tavansız** — saniyeler sürerler ve portfolyonun en ikna edici parçasıdır.
+   Bir kural mutantsız kalacaksa `## 6b. MUTANT BORCU` altına **gerekçesiyle** yazılır; `spec-kapi-kapsama.py` gerekçesiz borcu **reddeder**. **KAPI borçlanamaz**, yalnız kural.
+4. **İKİ OTURUM ÜST ÜSTE 0 SATIR ÜRÜN KODU = SERT DURAK.** Radar `R7` bunu ölçer (`urun_kodu_satiri` alanı; **araç/betik/belge SAYILMAZ**). Kırmızı yanarsa **bir sonraki oturum ürün koduyla başlar**; yeni belge/ADR/spec/araç turu **açılmaz**.
+5. **YÜRÜYEN İSKELET ÖNCE, KAPILAR SONRA.** Koşan kod üzerindeki kapı kendini doğrular; kâğıt üzerindeki kapı doğrulanamaz. Yeni bir dikey dilimde önce **çalışan en küçük şey**, sonra kapılar.
+
+**Ayrım (her tasarımda uygulanır):** **ÜRÜN kapısı** (*"uygulama çevrimdışı kalıcı mı?"*) her kuruşu hak eder. **SÜREÇ kapısı** (*"her kuralın mutantı var mı?"*) faydalıdır ama **tavanı vardır**.
 
 ## Çalışma tarzı
 - Türkçe çalış. Dürüst ol, bilgi uydurma; emin değilsen söyle.
@@ -63,8 +79,13 @@ yalnız `mv` ile kenara alabilir; kalıcı silmeyi Onur yapar.
 ## Rol bölümü
 Cowork = tasarım/ADR/spec/orkestrasyon/hafıza/denetim; Claude Code = build. Cowork, Code'un beyanına güvenmez; her artefaktı bağımsız doğrular (Desktop Commander ile gerçek FS'ten).
 
-## Hafıza kuralı (checkpoint)
-`PROJE_HAFIZA.md` YERİNDE güncellenir — karar/kapı/kilit/devir anında, küçük ve anında. Oturum sonunda toplu yazma YOK. Onur "güncelle" demesini bekleme.
+## Hafıza kuralı (checkpoint) [K53'te BÖLÜNDÜ]
+**İki dosya, iki iş:**
+- **`DURUM.md` — CANLI DURUM.** Her oturumun okuduğu tek dosya. **≤ 12 KB kalmak ZORUNDA.** Durum değişince **YERİNDE değiştirilir** (eski satır silinir, yenisi yazılır — burada tarihçe **birikmez**). Aşarsa budanır.
+- **`PROJE_HAFIZA.md` — APPEND-ONLY KARAR ARŞİVİ.** Karar/kapı/kilit anında **üste** yeni checkpoint eklenir; **hiçbir şey silinmez**, hiçbir şey yerinde düzeltilmez (bayat bir satır varsa **düzeltme notu** yazılır). Oturum açılışında **okunmaz**.
+
+Checkpoint **anında** yazılır — karar/kapı/kilit anında, küçük ve hemen. Oturum sonunda toplu yazma YOK. Onur "güncelle" demesini bekleme.
+**Kimlik ölçümü DAİMA son yazımdan SONRA alınır** (iki kez bayat kimlik yazıldı; `python araclar\dosya-kimlik.py <dosya>`).
 
 ## Ortam
 Windows / PowerShell. Kanonik kök: `...\TO DO LİST\Momentum`. Mac yok → iOS CI-only. Build/kod bu klasörde (OneDrive'da değil, senkron derdi yok).
