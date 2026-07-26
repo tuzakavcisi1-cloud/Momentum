@@ -31,6 +31,18 @@ Cowork bağlı diskte **düz `git status` KOŞMAZ**: mount `unlink`'e izin verme
 Aynı kural `git log`/`git diff` için de geçerlidir. Kilit oluşursa sandbox onu **silemez**,
 yalnız `mv` ile kenara alabilir; kalıcı silmeyi Onur yapar.
 
+> ### ⏱ ERRATA (26 Tem 2026, oturum 26 — Onur onayıyla): *"sandbox'tan commit ETME"* KURALININ KAPSAMI ÖLÇÜLDÜ
+> Kural **KALDIRILMADI**; **kapsamı** daraltıldı ve gerekçesi yazıya geçti. Yasağın ölçülmüş sebebi **mount'a özgüdür:**
+> konteynerin mount'u `unlink`'e izin vermediği için git `.git/index.lock`'u silemez ve **bayat kilit** bırakır.
+> - **`device_bash` / mount yolu (`/sessions/.../mnt/...`) ile `git add`/`commit`/`push`: HÂLÂ YASAK.** Kuralın konusu budur.
+> - **Desktop Commander ile (Onur'un makinesinde YERLİ PowerShell) commit: İZİNLİ.** Mount yolu kullanılmaz.
+>   **Ölçüldü (26 Tem 2026, iki commit — `0c5fbc5` ve `7dcc863`):** ağaç temiz kaldı, `.git/index.lock` **oluşmadı**
+>   (`Test-Path .git\index.lock` ⇒ `False`).
+> - **PAZARLIKSIZ KOŞUL — her commit'ten SONRA:** `git --no-optional-locks status --porcelain` **ve**
+>   `Test-Path .git\index.lock` koşulur; kilit varsa Onur'a **hemen** bildirilir (sandbox onu **silemez**, yalnız `mv` ile kenara alabilir).
+> - **`--no-optional-locks` her git çağrısında ZORUNLU kalır** (okuma da yazma da).
+> - **PUSH hâlâ Onur'un işidir** — bu errata push'a izin VERMEZ.
+
 ## Kırmızı çizgiler (değişmez) [PAZARLIKSIZ]
 1. Sırlar repoya girmez (.env + .gitignore + secret yönetimi).
 2. PII minimumda; gizlilik-öncelikli.
