@@ -1,8 +1,11 @@
-# GÖREV (Claude Code) — slice-3b: Flutter istemci iskeleti + TAM ÇEVRİMDIŞI CRUD (K42-d adım 2)  [v4]
+# GÖREV (Claude Code) — slice-3b: Flutter istemci iskeleti + TAM ÇEVRİMDIŞI CRUD (K42-d adım 2)  [v5]
 
-> 🔒 **KİLİTLİ — Onur, 26 Tem 2026 (K52 → K54 ile güncellendi).** Build başlayabilir.
+> 🔒 **KİLİTLİ — Onur, 26 Tem 2026 (K52 → K54 → K57 ile güncellendi).** Build başlayabilir.
+> **v4 → v5 DEĞİŞİKLİĞİ (K57, oturum 30 — BAYAT ÇAPRAZ-ATIF DÜZELTMESİ):** dokuz kalem, hepsi **ölçülerek** bulundu (araç koşumu + mekanik tarama), hiçbiri yorum değil. **Kapı sayısı, mutant listesi, kurallar ve kabul ölçütlerinin ÖZÜ DEĞİŞMEDİ; değişen yalnız BAYAT SAYILAR ve onların yarattığı çelişkilerdir.**
+> ① **T2/Z10 `build_runner ^2.15.2 → ^2.15.1`** — bu SDK'yla **yapısal olarak çözülemiyor** (kanıt: `KANIT/slice-3b/T2-SAPMA.txt`, ham `pub get` çıktısı + pub.dev `/api` zinciri). ② **Z10'a adlandırılmış boşluk** eklendi: *sürüm ölçümü ≠ çözümlenebilirlik ölçümü.* ③ **T0** ve ④ **kriter 14** artık *"en güncel sürüm"* ile *"pinlenmiş sürüm"*ü ayırıyor — düzeltilmeseydi T0 **DUR** der ve build Z10 eşleşmesinde takılırdı (ölçüldü: `pub-surum-olc.py` bugün `build_runner 2.15.2` basıyor). ⑤ **§6 ve kriter 12b `9/9 → 13/13`** (`spec-kapi-kapsama.py` fiilen 13 vaka taşıyor, ölçüldü). ⑥ **§2 ve T9 "yirmi bir mutant" → "yirmi üç"** (belge KENDİ İÇİNDE çelişiyordu; araç 24 mutant etiketi saydı: M1–M23, M2 → M2a/M2b). ⑦ Başlık *"v3 kilitli"* bayattı. ⑧ **Z16/B‑6'ya ikinci chrome ölçümü** eklendi. ⑨ **§10 borç listesinden** `radar.py` R3 kalemi düşürüldü (bugün kapandı).
 > **v3 → v4 DEĞİŞİKLİĞİ (K53 verimlilik reformu, tek kalem):** §6'ya **MALİYET SINIFI** eklendi ve koşum sırası **A → B → C** olarak pazarlıksızlaştırıldı. **Mutant sayısı, kapılar, kurallar, kabul kriterleri DEĞİŞMEDİ.** Ölçüldü: 23 mutantın yalnız **3'ü** koşan uygulama istiyor (M3 · M9 · M4); geri kalanı statik tarama veya widget testi ⇒ gerçekçi maliyet **~30-40 dakika**, saatler değil.
-> **DÖRT TUR BAĞIMSIZ DENETİMDEN GEÇTİ.** v1 → (üç denetçi: 18 bloker · 39 majör · 16 minör) → v2 → (red-team: 4 bloker · 6 majör · 4 minör) → v3 → (`spec-kapi-kapsama.py`: 2 mutantsız kural) → **v3 kilitli**.
+> **DÖRT TUR BAĞIMSIZ DENETİMDEN GEÇTİ.** v1 → (üç denetçi: 18 bloker · 39 majör · 16 minör) → v2 → (red-team: 4 bloker · 6 majör · 4 minör) → v3 → (`spec-kapi-kapsama.py`: 2 mutantsız kural) → **v3 kilitli** → v4 (K53) → **v5 kilitli [K57]**.
+> ⚠ **v5'in ÖĞRETTİĞİ ŞEY:** bu dokuz kusurun **hiçbirini** dört bağımsız denetim turu bulamadı; dokuzu da **iki araç koşumu ve bir regex taraması** buldu. Bayat sayı, prozayı okuyan göze görünmez — ölçen betiğe görünür.
 > **Denetim tarihçesi ve çürütülen bulgular `PROJE_HAFIZA.md` K48/K50/K51'dedir.** Bu belge yalnız **yapılacak işi** taşır.
 > 🔴 **KİLİDİN AÇIK ŞARTI [K52]:** radar bu artefaktı **KIRMIZI** bırakıyor; kalan sınıf **`esdeger-mutant`** ve **kâğıtta kapatılamaz** — bir mutantın gerçekten ısırıp ısırmadığı ancak **koşarak** görülür. Kilit, bu sınıfın **BUILD'e devredilmesi** kararıdır (R2b). ⇒ **§6'nın "her mutant için KIRMIZI çıktı" zorunluluğu bu kilidin bedelidir ve gevşetilemez.** Bir mutant ısırmıyorsa **DUR ve raporla** — o an eşdeğer-mutant bulunmuş demektir ve bu **başarıdır**, gizlenecek şey değil.
 > **Yazan el denetleyemez (K26):** bu belgeyi Cowork yazdı; **artefaktı Cowork bağımsız doğrulayacak**, senin beyanına güvenmeyecek.
@@ -49,7 +52,12 @@ Aracın kendi kuralı **pazarlıksızdır**: *"you must first use the widget_ins
 
 **Z9 — `sqlite3_flutter_libs 0.6.0+eol` ELENEMEZ, transitif gelir.** `drift_flutter 0.3.1` → `drift · flutter · meta · path · path_provider · sqlcipher_flutter_libs ^0.7.0+eol · sqlite3 ^3.0.0 · sqlite3_flutter_libs ^0.6.0+eol`. İkisi de *"Not used anymore"*; native kütüphaneyi `sqlite3` 3.x **build hooks** getirir.
 
-**Z10 — SÜRÜMLER (pub.dev `/api/` ucundan):** `drift 2.34.2` · `drift_flutter 0.3.1` · `drift_dev 2.34.5` · `sqlite3 3.5.0` · `path_provider 2.1.6` · `build_runner 2.15.2`. Altısının da advisory sayısı **0**. Bağımlılık kısıtları: `drift → sqlite3 ^3.4.0`, `drift_flutter → ^3.0.0`, `drift_dev → ^3.0.0`. ⚠ **pub.dev HTML sayfaları BAYAT veri döndürür; kanıt yalnız `/api/` ucudur.**
+**Z10 — SÜRÜMLER (pub.dev `/api/` ucundan):** `drift 2.34.2` · `drift_flutter 0.3.1` · `drift_dev 2.34.5` · `sqlite3 3.5.0` · `path_provider 2.1.6` · **`build_runner 2.15.1` (PİN — en güncel DEĞİL, bkz. Z10b)**. Altısının da advisory sayısı **0**. Bağımlılık kısıtları: `drift → sqlite3 ^3.4.0`, `drift_flutter → ^3.0.0`, `drift_dev → ^3.0.0`. ⚠ **pub.dev HTML sayfaları BAYAT veri döndürür; kanıt yalnız `/api/` ucudur.**
+
+🔴 **Z10b — ADLANDIRILMIŞ BOŞLUK: SÜRÜM ÖLÇÜMÜ ≠ ÇÖZÜMLENEBİLİRLİK ÖLÇÜMÜ [K57, ÖLÇÜLDÜ].**
+`pub-surum-olc.py` bir paketin **en güncel sürümünü** ve **advisory sayısını** ölçer. **Ölçmediği şey:** o sürümün **bu Flutter SDK'sıyla birlikte fiilen çözülüp çözülmediği.** Z10 ilk yazıldığında `build_runner 2.15.2` **doğru ölçülmüştü** (en güncel sürüm oydu) ama pubspec'e yazılıp `pub get` koşulmadan kilitlendi.
+**Ölçülen çakışma:** `build_runner ≥2.15.2` → `analyzer ≥13.3.0` → `meta ^1.18.3`; Flutter 3.44.6'nın `flutter_test`'i `meta`'yı **tam 1.18.0**'a sabitliyor ⇒ `build_runner ^2.15.2` bu SDK ile **yapısal olarak çözülemez** (geçici değil, kalıcı). Çözülen küme: `build_runner 2.15.1` → `analyzer 13.0.0` → `meta 1.18.0`. Ham `pub get` çıktısı, `/api` zinciri ve `pub deps` sonucu: **`KANIT/slice-3b/T2-SAPMA.txt`**.
+⇒ **KURAL:** bir sürüm pinlenmeden önce `pub get` **fiilen koşulur**. Bir sayının pub.dev'de var olması, onun **bu ağaçta çözüldüğü anlamına gelmez.** Bu boşluk `pub-surum-olc.py`'nin **beyan edilmiş sınırıdır** — araca bir *çözümlenebilirlik ayağı* eklenene kadar **açık borçtur** ve `DURUM.md` §8'de yazılıdır.
 
 **Z11 — WEB VARLIKLARI ELLE İNDİRİLİR.** `sqlite3.wasm` → `simolus3/sqlite3.dart` release **`sqlite3-3.5.0`** (748.424 bayt); `drift_worker.js` → `simolus3/drift` release **`drift-2.34.0`**. Drift dokümanı wasm'ı yanlış yerde gösteriyor.
 ⚠ **`sqlite3.wasm` DART PAKET SÜRÜMÜNÜ TAŞIMAZ** — içindeki tek sürüm dizgesi `3.53.3`'tür (SQLite **C kütüphanesi**). ⇒ *"wasm sürümü ≤ paket sürümü"* diye bir assert **YAZILAMAZ**; kimlik **pinli sha256**'dır (T5).
@@ -63,7 +71,7 @@ Aracın kendi kuralı **pazarlıksızdır**: *"you must first use the widget_ins
 **Z15 — OSV HÜKMÜ `versions` DEĞİL `ranges` ÜZERİNDEN VERİLİR.** `versions` opsiyoneldir. `dio`'nun **iki** advisory'si var, biri (`GHSA-jwpw-q68h-r678`) **geri çekilmiş duplikat** ⇒ `withdrawn` okunmazsa yanlış-pozitif.
 
 **Z16 — `flutter_test`'in HAZIR a11y guideline'ları:** `androidTapTargetGuideline` (48×48) · `labeledTapTargetGuideline` (tap eylemi olan her düğümde etiket) · `textContrastGuideline` (WCAG). Kullanım: `tester.ensureSemantics()` → `await expectLater(tester, meetsGuideline(...))` → `handle.dispose()`.
-⚠ **`textContrastGuideline` GÖRÜNTÜ YAKALAR** (`layer.toImage`) ve `flutter_test`'te bunun `kIsWeb` koruması **yoktur**; aynı pakette *"captureImage is not supported on the web"* yazılıdır ⇒ **kontrast ölçümü `@TestOn('vm')`'dir.** VM'de üç guideline testi fiilen koşuldu ve **3/3 geçti**; `--platform chrome` koşumu 7 dakikada sonuç üretmedi ⇒ web durumu **`[DOĞRULANMADI]`**.
+⚠ **`textContrastGuideline` GÖRÜNTÜ YAKALAR** (`layer.toImage`) ve `flutter_test`'te bunun `kIsWeb` koruması **yoktur**; aynı pakette *"captureImage is not supported on the web"* yazılıdır ⇒ **kontrast ölçümü `@TestOn('vm')`'dir.** VM'de üç guideline testi fiilen koşuldu ve **3/3 geçti**; `--platform chrome` koşumu **İKİ BAĞIMSIZ ÖLÇÜMDE DE** sonuç üretmedi — **ölçüm 1: 7 dakika** (red-team turu) · **ölçüm 2: 589 saniye ≈ 9,8 dakika** (oturum 30 [K57] itibarıyla en son, boş bir testle, ikinci ve **daha kötü** tekrar) ⇒ web durumu **`[DOĞRULANMADI]`**. *Tekrarlanmış ölçüm tek ölçümden güçlüdür; ikisi de burada bilerek duruyor.*
 
 **Z17 — DÜRÜST SINIR:** Pub advisory havuzunda toplam **~11-13** kayıt var. G2'nin yeşil yanması **güvenlik garantisi değildir**; kapı bir **disiplin vitrinidir**. Bu cümle README'ye ve kapı çıktısına **aynen** girer.
 
@@ -71,7 +79,7 @@ Aracın kendi kuralı **pazarlıksızdır**: *"you must first use the widget_ins
 
 ## 2. Kapsam — NE VAR / NE YOK
 
-**VAR:** `src/client/` Flutter projesi (`android` + `web`; `ios/` **korunur**, derlenmez) · `lib/design/` token+tema+metin katmanı · Drift ile yerel `gorevler` tablosu ve **TAM ÇEVRİMDIŞI CRUD** · `DESIGN.md` §3.1'in **8 görsel MUST bileşeni** + `MomentumTema` · §4'ün **8 durumu** · **durum vitrini** (F5) · **yedi kapı** G1…G7 · **yirmi bir mutant** (§6) · `KANIT/`.
+**VAR:** `src/client/` Flutter projesi (`android` + `web`; `ios/` **korunur**, derlenmez) · `lib/design/` token+tema+metin katmanı · Drift ile yerel `gorevler` tablosu ve **TAM ÇEVRİMDIŞI CRUD** · `DESIGN.md` §3.1'in **8 görsel MUST bileşeni** + `MomentumTema` · §4'ün **8 durumu** · **durum vitrini** (F5) · **yedi kapı** G1…G7 · **yirmi üç mutant** (§6; `M2` → `M2a`/`M2b` ayrıldığı için **24 etiket**) · `KANIT/`.
 
 **YOK — adlandırılmış erteleme:**
 - **Sunucu ile hiçbir iletişim** (K42-d adım 3‑4). `http`/`dio`/`signalr_*` **eklenmez**.
@@ -123,13 +131,16 @@ integration_test/    <- cihaz/tarayıcı gerektirenler
 
 ## 4. Teslimat adımları
 
-**T0 — ZEMİNİ DOĞRULA (kod yazmadan).** `python araclar\mcp-arac-probe.py -- cmd /c dart pub global run dart_mcp_server` → **1.1.0 · 14 araç**. `python araclar\pub-surum-olc.py drift drift_flutter drift_dev sqlite3 path_provider build_runner` → Z10 ile eşleşmeli. **`flutter test --platform chrome`'un boş bir testle fiilen sonuç ürettiğini ÖLÇ** (Z16); üretmiyorsa kriter 2'nin web ayağı `[DOĞRULANMADI]` yazılır. Eşleşmezse **DUR ve raporla**.
+**T0 — ZEMİNİ DOĞRULA (kod yazmadan).** `python araclar\mcp-arac-probe.py -- cmd /c dart pub global run dart_mcp_server` → **1.1.0 · 14 araç**. `python araclar\pub-surum-olc.py drift drift_flutter drift_dev sqlite3 path_provider build_runner`.
+🔴 **BU KARŞILAŞTIRMA İKİ AYRI ŞEYDİR — KARIŞTIRMA [K57/Z10b]:** araç **EN GÜNCEL** sürümü basar; Z10 **PİNLENMİŞ** sürümü yazar. **Beş paket** (`drift · drift_flutter · drift_dev · sqlite3 · path_provider`) için ikisi **eşleşmeli**; eşleşmezse **DUR ve raporla**. **`build_runner` BİLEREK AYRIKTIR:** araç `2.15.2` (en güncel) basacaktır, pin ise **`^2.15.1`**'dir — bu bir **sapma değil, ölçülmüş ve gerekçelendirilmiş pindir** (Z10b, `KANIT/slice-3b/T2-SAPMA.txt`). `build_runner` için **eşleşmemesi BEKLENEN davranıştır; DUR deme.** Bunun yerine **`flutter pub get`'in EXIT 0 döndüğünü ÖLÇ** — `build_runner` için gerçek kabul ölçütü **sayı eşleşmesi değil, ÇÖZÜLEBİLİRLİKTİR**.
+**`flutter test --platform chrome`'un boş bir testle fiilen sonuç ürettiğini ÖLÇ** (Z16); üretmiyorsa kriter 2'nin web ayağı `[DOĞRULANMADI]` yazılır.
 
 **T1 — İSKELET.** `flutter create --platforms=android,web --org com.momentum src/client`. `windows/`, `linux/`, `macos/` varsa silinir; **`ios/` SİLİNMEZ**. `flutter_lints` etkin. Build artefaktları `.gitignore`'da.
 
 **T2 — BAĞIMLILIKLAR.**
 `dependencies:` `flutter (sdk)` · `flutter_driver (sdk)` · `drift ^2.34.2` · `drift_flutter ^0.3.1` · `path_provider ^2.1.6`
-`dev_dependencies:` `flutter_test (sdk)` · `drift_dev ^2.34.5` · `build_runner ^2.15.2` · `flutter_lints`
+`dev_dependencies:` `flutter_test (sdk)` · `drift_dev ^2.34.5` · **`build_runner ^2.15.1`** · `flutter_lints`
+🔴 **`build_runner` PİNİ ^2.15.1'DİR VE YÜKSELTİLEMEZ [K57].** `^2.15.2` bu Flutter SDK'sıyla **yapısal olarak çözülemez** (`meta 1.18.0` ↔ `meta ^1.18.3` çakışması; tam zincir **Z10b** ve `KANIT/slice-3b/T2-SAPMA.txt`). `pub get` bir yükseltme önerirse **uygulama; DUR ve raporla.**
 `sqlite3` **elle yazılmaz** (transitif gelir, `pubspec.lock` tek sürüme çözer). `sqlite3_flutter_libs` / `sqlcipher_flutter_libs` **elle eklenmez**. Başka paket **eklenmez**; ihtiyaç doğarsa **DUR ve sor**.
 
 **T3 — TOKEN KATMANI.** `tokens.dart` — §1 `tokens` bloğundaki **tüm** semboller.
@@ -148,7 +159,7 @@ NICE token'lar da yazılır (tema tam olsun) — bu, `DESIGN.md` §0 KULLANIM KI
 
 **T8 — KAPI ARAÇLARI.** `araclar/pub-cve-kapisi.py` (G2) · `araclar/pub-lisans-kapisi.py` (G3) · `design-token-kapisi.py`'ye **D5 + D6 eklenir** (K34-f: aracı Cowork yazdı, **onaran el sensin** — meşru). **Her araç ÖNCE kendi altın kümesinde kanıtlanır** (K44-a), sonra gerçek koşum. Mevcut altın küme **12 vakadır** ve bozulmamalıdır.
 
-**T9 — KAPILAR VE MUTANTLAR.** Yedi kapı, yirmi bir mutant; çıktılar `KANIT/slice-3b/` altına.
+**T9 — KAPILAR VE MUTANTLAR.** Yedi kapı, **yirmi üç mutant** (24 etiket: `M2` → `M2a`/`M2b`); çıktılar `KANIT/slice-3b/` altına.
 
 ---
 
@@ -267,7 +278,7 @@ Sabit `saat`/`idUret` ile deterministik: ① beş işlem uçtan uca (ekle · dü
 
 **Kapı ↔ mutant:** G1 → M3·M9 · G2 → M8 · G3 → M11·M14 · G4 → M1·M2a·M2b·M12·M20·M21·M22·M23 · G5 → M5·M6·M7·M10·M15·M16·M17·M18·M19 · G6 → M4 · G7 → M13.
 **Mutantsız kapı YOK; mutantsız KURAL da yok.**
-🔴 **BU KAPSAMA İDDİA DEĞİL, ÖLÇÜLÜR:** `python araclar\spec-kapi-kapsama.py --altin-kume` (**9/9, EXIT 0**) → `python araclar\spec-kapi-kapsama.py GOREV_CLAUDE_CODE\GOREV-slice-3b-istemci-iskeleti.md` (**EXIT 0**). *Bu araç ilk koşumunda `D0` ve `D4`'ün mutantsız olduğunu buldu — üç denetim turunun hiçbiri bulmamıştı. Aracın beyan edilmiş sınırı: mutantın **gerçekten ısırdığını** ölçmez, yalnız **kapsamayı** ölçer.*
+🔴 **BU KAPSAMA İDDİA DEĞİL, ÖLÇÜLÜR:** `python araclar\spec-kapi-kapsama.py --altin-kume` (**13/13, EXIT 0** — K57'de yeniden ölçüldü; eski *"9/9"* rakamı **bayattı**, araç K53'te 9 → 13 vakaya çıkmıştı) → `python araclar\spec-kapi-kapsama.py GOREV_CLAUDE_CODE\GOREV-slice-3b-istemci-iskeleti.md` (**EXIT 0**; K57 sonrası yeniden ölçüldü: **7 kapı · 16 kural · 24 mutant etiketi**, bulgu yok). *Bu araç ilk koşumunda `D0` ve `D4`'ün mutantsız olduğunu buldu — üç denetim turunun hiçbiri bulmamıştı. Aracın beyan edilmiş sınırı: mutantın **gerçekten ısırdığını** ölçmez, yalnız **kapsamayı** ölçer.*
 ⚠ **M22'ye dikkat:** `DESIGN.md`'nin **kendisi değiştirilmez** (K46). Mutant, `araclar/fixture/` altındaki bir **kopya** üzerinde koşar ve kapı o kopyaya yöneltilir.
 ⚠ **M11 için:** GPL‑3.0 lisanslı ve pub.dev'de var olan bir paket **ÖLÇÜLEREK** bulunur (`/metrics` ile doğrula) ve adı `KANIT/04-G3/`'e yazılır. Bulunamazsa mutant **fixture ayağıyla sınırlı kalır** ve bu **beyan edilir** — sessizce atlanmaz.
 
@@ -287,9 +298,9 @@ Sabit `saat`/`idUret` ile deterministik: ① beş işlem uçtan uca (ekle · dü
 10. **G6**: web'de `opfsShared|opfsLocks` ölçülmüş; Android'de dosya fiilen oluşmuş; sha256 pinleri doğrulanmış.
 11. **G7**: altı maddenin hepsi yeşil.
 12. **Yirmi üç mutantın hepsi koşulmuş**; M2b hariç hepsi ısırmış, M2b'nin sonucu yazılmış; M11 fixture'a düştüyse beyan edilmiş.
-12b. **`python araclar\spec-kapi-kapsama.py --altin-kume` EXIT 0 (9/9)** ve aynı araç bu spec üzerinde **EXIT 0** — mutantsız kapı/kural **YOK**, hayalet atıf **YOK**.
+12b. **`python araclar\spec-kapi-kapsama.py --altin-kume` EXIT 0 (13/13)** ve aynı araç bu spec üzerinde **EXIT 0** — mutantsız kapı/kural **YOK**, hayalet atıf **YOK**. ⚠ **Sayı ezberden yazılmaz, çıktıdan okunur:** araç yeni vaka kazandıysa buradaki rakam da güncellenir (K57'de tam olarak bu bayatlık düzeltildi: `9/9` → `13/13`).
 13. **Sürüm derlemesi:** `flutter build apk --release` sonrası vitrine yol **yok**; `enableFlutterDriverExtension` sembolünün düştüğü **ÖLÇÜLÜR** — ölçülemezse `[DOĞRULANMADI]`.
-14. **T0 çıktısı** `KANIT/00-ortam.txt`'te: MCP **1.1.0 · 14 araç**, altı paket sürümü Z10 ile eşleşmiş, chrome test koşumunun durumu yazılmış.
+14. **T0 çıktısı** `KANIT/00-ortam.txt`'te: MCP **1.1.0 · 14 araç**; **beş paket** (`drift · drift_flutter · drift_dev · sqlite3 · path_provider`) Z10 ile eşleşmiş; **`build_runner` için sayı eşleşmesi ARANMAZ** — bunun yerine **pin `^2.15.1`** ve **`flutter pub get` EXIT 0** yazılmış (Z10b); chrome test koşumunun durumu yazılmış.
 15. `git --no-optional-locks status --porcelain` **temiz**; build artefaktı repoda yok; **`DESIGN.md` sha256 `534DFF68` DEĞİŞMEMİŞ** (`python araclar\dosya-kimlik.py DESIGN.md`).
 
 ---
@@ -327,12 +338,13 @@ Sabit `saat`/`idUret` ile deterministik: ① beş işlem uçtan uca (ekle · dü
 | **B‑3** | `-d chrome` ile DTD'nin gerçekten bağlandığı — bağlanmazsa **DUR** |
 | **B‑4** | `--print-dtd`'nin fiilen çıktı verdiği (Z8'in atıf sınırı) |
 | **B‑5** | Web'de semantics (aria) davranışının Android'den farkı — fark varsa `[DOĞRULANMADI]` |
-| **B‑6** | `flutter test --platform chrome`'un fiilen sonuç ürettiği (Z16; ölçüm 7 dakikada sonuç vermedi) |
+| **B‑6** | `flutter test --platform chrome`'un fiilen sonuç ürettiği (Z16). **İki bağımsız ölçüm de sonuç vermedi: 7 dk (ölçüm 1) ve 589 sn ≈ 9,8 dk (ölçüm 2, daha kötü tekrar).** Üçüncü kez denenecekse **süre sınırı önceden yazılır**; sınırsız bekleme ölçüm değildir |
 
 **`DESIGN.md`'NİN ÖLÇÜLMÜŞ KUSURLARI — K46 gereği bu dilimde KAPATILMAZ (Onur: "borç kalsın"):**
 **BD‑1** §1.1 koyu tema değerleri **tablodur**, `tokens` bloğunda değil ⇒ G4 okuyamaz, **koyu tema kapısız**. · **BD‑2** `renk.ayirici`'nin *"bir kontrolün tek tanımlayıcısı olamaz"* kuralı **A11Y numarası taşımıyor** ⇒ G5 kapsamı dışında, **ölü kural**; üstelik `GorevSatiri` onu satır ayırıcısı olarak kullanıyor. · **BD‑3** **odak halkası / birincil buton** kontrast çifti §2.1'de **yok** ⇒ ekle düğmesinde halka **1,00:1** olabilir. · **BD‑4** `MomentumTema` widget **değil**, "9 MUST bileşeni" sayımı yanlış (gerçek görsel sayı **8**). · **BD‑5** `tipo.baslik.l = 20/28`'de 28'in mutlak mı oran mı olduğu yazılı değil ⇒ mutlak uygulanırsa 2.0× ölçekte **sessiz kırpma**. · **BD‑6** §0 ve §10 *"altın küme 10/10"* diyor; araç fiilen **12 vaka** taşıyor ⇒ sayı bayat. · **BD‑7** §3.1 tablosu dört MUST token'ı (`renk.yuzey.ikincil` · `renk.metin` · `hareket.hizli` · `olcu.odak.kalinlik`) **hiçbir bileşene atamıyor**.
 
-**DİĞER AÇIK BORÇLAR:** `pub.dev` uçlarının (`/advisories`, `/metrics`) dokümantasyonsuz ve sürüm garantisiz olması — kalkan fixture altın kümeleridir · `radar.py`'nin R3 asgari örneklem koruması (ayrı el) · kontrast betiğinin kalıcı hâli (kod tarafı G5'in `textContrastGuideline` ayağıyla **kısmen** kapandı, web tarafı `[DOĞRULANMADI]`).
+**DİĞER AÇIK BORÇLAR:** `pub.dev` uçlarının (`/advisories`, `/metrics`) dokümantasyonsuz ve sürüm garantisiz olması — kalkan fixture altın kümeleridir · **`pub-surum-olc.py`'ye ÇÖZÜMLENEBİLİRLİK AYAĞI** (Z10b'nin adlandırılmış boşluğu: araç sürümü ölçüyor, çözülebilirliği ölçmüyor — bu dilimin **en pahalı** kusuru buradan çıktı) · kontrast betiğinin kalıcı hâli (kod tarafı G5'in `textContrastGuideline` ayağıyla **kısmen** kapandı, web tarafı `[DOĞRULANMADI]`).
+> ✅ **KAPANDI [K57]:** *"`radar.py`'nin R3 asgari örneklem koruması (ayrı el)"* kalemi bu listeden **düşürüldü** — `araclar/radar.py` 26 Tem 2026'da `proje-radari` plugin **0.2.0** ile bayt-bayt eşitlendi; R3 asgari örneklem koruması **VAR** ve altın kümesi **18/18, EXIT 0**. Ayrıca ürün-kodu kuralının adı `R7` → **`R8`** oldu (`R7` doktrinde *kapı granülerliği*ne aittir).
 
 ---
 

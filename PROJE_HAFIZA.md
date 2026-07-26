@@ -11,6 +11,121 @@
 >
 > 🔴 **BU DOSYA ARTIK OTURUM AÇILIŞINDA OKUNMAZ [K53, 26 Tem 2026].** Canlı durum **`DURUM.md`**'dedir (≤12 KB). Burası **APPEND-ONLY KARAR ARŞİVİDİR**: yeni checkpoint üste eklenir, **hiçbir şey silinmez, hiçbir şey yerinde düzeltilmez** (bayat satır varsa **düzeltme notu** yazılır). Buraya yalnız *"bu karar neden alındı?"* diye sorulduğunda bakılır.
 
+## ⏭ CHECKPOINT (26 Tem 2026 — oturum 30: **K57 — BAYAT ÇAPRAZ-ATIF KESİMİ; ARAÇ SENKRONU**)
+
+> ⚠ **DÜZELTME NOTU (yerinde düzeltme YOK, append-only):** bu dosyanın en tepesindeki *"Kanonik konum:
+> `C:\Users\gulci\Desktop\MEMO ÖDEV PROGRAMLAR\TO DO LİST\Momentum`"* satırı **BAYATTIR**. Kanonik kök
+> **K56 ile `C:\dev\Momentum`** oldu (oturum 30'da doğrulandı: `C:\momentum` junction'ı **YOK**, ağaç temiz,
+> `.git/index.lock` **YOK**). Satır silinmedi; bu not onu geçersiz kılar.
+
+**OTURUM 30'UN TEK CÜMLELİK ÖZETİ:** Üç açık borç kapandı, **dokuz bayat çapraz-atıf** kesildi — ve
+**hiçbirini bir denetim turu bulmadı: iki araç koşumu ve bir regex taraması buldu.**
+
+### 1) AÇILIŞ ÖLÇÜMÜ
+`radar.py --altin-kume` **11/11 EXIT 0** (senkron öncesi) · `radar.py .` **KIRMIZI, EXIT 2** ·
+`git status --porcelain` **boş** · `origin/main...HEAD` = **0 0** · `.git/index.lock` **YOK** ·
+`C:\momentum` **YOK** · son commit `8c97309`.
+**K53 kural 2 gereği YAZILI GEREKÇE (radar KIRMIZI'da neden çalışıldı):** verilen üç işin **hiçbiri
+"yeni tur" değildi** — (a) araçtaki **ad çakışması** düzeltmesi, (b) **MEKANİKLEŞTİR** (D1–D5 statik
+kontrollerdir, koşan kod istemez ⇒ şık geçerli), (c) **DEVRET'in geri dönüşü** (build koştu, ölçüm
+üretti, kâğıt ölçüme uyduruldu). Kâğıt denetim turu tavanı (1) **tüketilmedi**.
+
+### 2) BORÇ (a)+(b) — `araclar/radar.py` PLUGIN 0.2.0 İLE **BAYT-ÖZDEŞ** [K57-b]
+Proje kopyası (21.257 b · 455 satır) plugin kopyasıyla (28.878 b · 609 satır) **mekanik olarak
+diff'lendi**; proje-yerel 59 satırın tamamı ya `R7` adlandırması ya da *"plugin bu düzeltmeleri
+TAŞIMIYOR, kanonik sürüm PROJE İÇİNDEDİR"* diyen — **artık YANLIŞ olan** — bir yorum bloğuydu.
+Plugin **kesin üst kümedir** ⇒ üzerine yazıldı.
+
+**🔴 TASARIM KARARI — PROJE-YEREL NOT EKLENMEDİ.** Dosya bilerek **bayt-özdeş** tutuldu
+(`sha256 46E3A8BC`, 28.878 b, U+FFFD 0, CRLF 0). *Gerekçe: `kanonik-kopya` bu defterde **tekrar eden**
+bir kusur sınıfı; bayt-özdeşlik onu **tek bir sha karşılaştırmasına** indirger. Bir "sadece bizde olan
+küçük not" eklemek, sapmayı yeniden **göze** bağımlı kılardı.*
+
+- **(a) `R7` → `R8`.** Ölçülmüş gerekçe: plugin doktrininde (`doktrin.md` §R7) `R7` zaten **kapı
+  granülerliği** kuralıdır ve **`radar.py` onu ÖLÇMEZ** (insan denetimi). Aynı kodu iki farklı kavramın
+  taşıması, hükmü okuyan eli yanıltıyordu.
+- **(b) 0.2.0'ın tamamı geldi:** **defter dürüstlük kapısı D1–D5** · **`--olc-urun-kodu`** (sayıyı
+  `git diff --numstat`'tan türetir — *kendi karnesini kimse dolduramasın*) · **`radar.config.json`**
+  okuma desteği · **altın küme 11 → 18 vaka**.
+- **KANIT:** `python araclar\radar.py --altin-kume` ⇒ **18/18 GEÇTİ, EXIT 0** (kör kapı yok).
+
+**🔴 KAPI İLK KOŞUMDA ISIRDI — İKİ GERÇEK DEFTER KUSURU:**
+`D3` → kayıt 7 (`docs/ADR/0003` tur 8) zorunlu alanları **eksik** (`bulgu`, `kapatilan`, `uretilen`).
+`D2` → aynı artefaktın defterinde **tur 1 ATLANMIŞ**. Bunlar **yeni üretilmiş kusur değil**, 19 kayıttır
+görülmeyen kusurun **görünür olmasıdır** (bu yüzden `uretilen: 0`, `bulgu.minor: 2`). Defter append-only
+⇒ eski satırlar **düzeltilmedi**; borç `DURUM.md` §8'e yazıldı.
+
+**BEYAN EDİLMİŞ SINIR — `D1` BU DEFTERDE FİİLEN KÖRDÜR.** `D1` (bayt beyanı ↔ disk) yalnız **yol
+benzeri** artefakt adlarında koşar; bu defterdeki adların çoğu (`slice-3b-istemci`,
+`GOREV-slice-3b-spec`, `K53-verimlilik-reformu`) **etikettir, yol değildir**. Bu yüzden oturum 30'un
+kaydı bilerek **`araclar/radar.py` gerçek yoluyla** yazıldı: kaydı yazan el, kendi bayt beyanını
+**diske karşı doğrulatmak zorunda** kaldı.
+
+**`radar.config.json` OLUŞTURULMADI — bu bir eksiklik değil, ölçülmüş bir karardır.** Varsayılan ürün
+yolları `['src/','lib/','app/']` ve hariç `['test/','tests/','docs/','scripts/','tools/','araclar/']` bu
+repoya **birebir** uyuyor (backend `src/`, Flutter `src/client/lib/`, araçlar `araclar/`). Eşikleri
+değiştirmeden config yazmak **bayt ekler, ölçüm eklemez**; K40 zaten eşik değiştiren elden **altın kümeye
+vaka eklemesini** ister.
+
+**ÜRÜN KODU — ELLE YAZILMADI, GİT'TEN TÜRETİLDİ:**
+`python araclar\radar.py --olc-urun-kodu 8c97309 .` ⇒ **`urun_kodu_satiri = 0`**.
+Bu checkpoint anında oturum 30 **araç ve belge** işi yaptı, **ürün kodu yazmadı** — ve bu **dürüstçe**
+yazılıyor. `R8` şu an **susuyor**, çünkü oturum 29 = **135 satır** (Claude Code'un `flutter create`
+çıktısı). **Oturum 30 kapanışında hâlâ 0 ise `R8` SERT DURAĞI YANACAK ve bu DOĞRU olacaktır.**
+
+### 3) BORÇ (c) — SPEC **v4 → v5**, KİLİT **K54 → K57**
+**Onur'un verdiği kapsam iki kalemdi (T2 + Z10); mekanik tarama YEDİ tane daha buldu.** Kapsam kararı
+**Onur'a soruldu** (K40: kilit Onur'dan gelir) ve *"①–⑨ hepsi, tek kilitte"* seçildi.
+**Yeni kilitli kimlik: `42.043 bayt · 79A53AA3` · U+FFFD 0 · CRLF 0.**
+**`BE4581BA` (K54) ve `1AB02B73` (K52) ARTIK GEÇERSİZDİR.**
+
+| # | kalem | nasıl bulundu | ne yapıldı |
+|---|---|---|---|
+| ① | `build_runner ^2.15.2` bu SDK'yla **çözülemiyor** | Claude Code'un `pub get` koşumu (`T2-SAPMA.txt`) | T2 → **`^2.15.1`**, "yükseltilemez" uyarısıyla |
+| ② | *sürüm ölçümü ≠ çözümlenebilirlik ölçümü* | aynı kanıt | **Z10b** olarak yazıldı (aşağıda) |
+| ③ | **T0 tuzağı** | `pub-surum-olc.py` koşumu | "en güncel ≠ pinli" ayrımı; `build_runner` için ölçüt **`pub get` EXIT 0** |
+| ④ | kriter 14 aynı tuzak | aynı | beş paket eşleşir, `build_runner` **ayrık** |
+| ⑤ | `spec-kapi-kapsama.py` **"9/9"** | aracın koşumu: **13/13** | ⑤ iki yerde `13/13` |
+| ⑥ | §2 ve T9 **"yirmi bir mutant"**, §6 **"yirmi üç"** | aracın saydığı: **24 etiket** | ikisi de **yirmi üç (24 etiket)** |
+| ⑦ | başlık *"v3 kilitli"*, belge v4 | okuma + tarama | **v5 kilitli [K57]** |
+| ⑧ | Z16/B‑6 **"7 dakika"** | oturum 29'un ikinci ölçümü: **589 sn** | **iki ölçüm de** yazıldı (Onur'un seçimi) |
+| ⑨ | §10 borcu *"radar.py R3 asgari örneklem"* | bugün kapandı | listeden **düşürüldü** |
+
+**🔴 ③ OLMASAYDI BUILD DURURDU — bu bir tahmin değil, ölçüm:** T0 *"`pub-surum-olc.py` çıktısı Z10 ile
+eşleşmeli, eşleşmezse **DUR ve raporla**"* diyordu. Araç bugün **`build_runner 2.15.2`** basıyor
+(ölçüldü). Z10'u tek başına `2.15.1` yapmak, **kilidi düzeltirken kapıyı kilitlemek** olurdu.
+Sadece ① + ② yapılsaydı ortaya **kendi kendini durduran bir spec** çıkacaktı.
+
+**Z10b'nin özü (spec'e yazıldı):** `build_runner ≥2.15.2` → `analyzer ≥13.3.0` → `meta ^1.18.3`;
+Flutter 3.44.6'nın `flutter_test`'i `meta`'yı **tam 1.18.0**'a sabitliyor ⇒ çakışma **yapısaldır,
+geçici değildir**. Çözülen küme: `build_runner 2.15.1` → `analyzer 13.0.0` → `meta 1.18.0`.
+⇒ **KURAL: bir sürüm pinlenmeden önce `pub get` FİİLEN koşulur.** Bir sayının pub.dev'de var olması,
+onun **bu ağaçta çözüldüğü anlamına gelmez.** Bu, `pub-surum-olc.py`'nin **beyan edilmiş sınırı** ve
+`DURUM.md` §8'de **açık borçtur**.
+
+**DOĞRULAMA (üreten ≠ denetleyen — kendi işimi kendim onaylamadım, araçlar onayladı):**
+`spec-kapi-kapsama.py --altin-kume` ⇒ **13/13, EXIT 0** · aynı araç yeni spec üzerinde ⇒ **EXIT 0**,
+bulgu yok (**7 kapı · 16 kural · 24 mutant etiketi**) · `dosya-kimlik.py` ⇒ **42.043 b · `79A53AA3` ·
+U+FFFD 0 · CRLF 0** · **`DESIGN.md` `534DFF68` DEĞİŞMEDİ** (K46 korundu) · `radar.py --altin-kume` ⇒
+**18/18 EXIT 0** · `git status` temiz, `.git/index.lock` **YOK** · gerçek `pubspec.yaml` ölçüldü:
+**`build_runner: ^2.15.1`** — yani spec artık **gerçekle uyuşuyor**, öncesinde **uyuşmuyordu**.
+
+### 4) OTURUM 30'UN ASIL DERSİ (K53'ün doğrulanması)
+Bu spec **dört bağımsız denetim turundan** geçmişti (üç denetçi → red-team → `spec-kapi-kapsama` →
+kilit). O dört tur bu dokuz kusurun **hiçbirini** bulmadı. Dokuzunu da **iki araç koşumu ve bir regex
+taraması** buldu — dakikalar içinde. **Bayat sayı, prozayı okuyan göze görünmez; ölçen betiğe görünür.**
+Bu, K53'ün *"kâğıt denetim turu tavanı 1"* kuralının **beşinci bağımsız kanıtıdır** ve doğrudan bir
+öneriye işaret ediyor (Onur'un kilidine sunuldu, kendiliğinden yazılmadı): **`sayi-tazeligi.py`** —
+belgelerdeki *"altın küme N/M"* ve sürüm iddialarını **aracı koşup** doğrulayan statik kapı. Bu sınıf
+(`kanonik-kopya`) `DESIGN.md` BD‑6'da, bu spec'te ⑤'te ve `DURUM.md` §6'da **üç kez** tekrarladı ⇒ R1'in
+mekanikleştirme eşiğinin **üstündedir** ve **koşan kod olmadan ölçülebilir** (K53 kural 2'nin aradığı
+yazılı gerekçe budur).
+
+### 5) OTURUM SAĞLIĞI [K21] — **ÖLÇÜLEMEDİ, VARSAYILMADI**
+Bu oturum **Cowork bulut sandbox'ında** koştu; K21'in ölçüm kaynağı `~/.claude/projects/*/<oturum-id>.jsonl`
+**Claude Code'un yerel dosyasıdır ve bu makinede yoktur.** **Ne yeşil ne kırmızı varsayıldı** — ölçülemediği
+Onur'a **açıkça bildirildi**. (Alternatif ayak: Cowork'ün `explain-usage` skill'i; Onur'un onayına sunuldu.)
+
 ## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K56 — REPO ASCII KÖKE TAŞINIYOR; KAPI SUSTURULMADI**)
 
 **🔴 K56 — KİLİT (Onur, 26 Tem 2026): kanonik kök `C:\dev\Momentum`. `android.overridePathCheck` EKLENMEYECEK; junction KALDIRILACAK.**

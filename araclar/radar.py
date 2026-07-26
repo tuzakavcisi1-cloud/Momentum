@@ -26,32 +26,41 @@ E = {
     "tur_esigi": 3,               # bu turdan sonra egim aranir
     "egim_orani": 0.80,           # son iki turun ortalamasi, onceki ikinin %80'inin ustundeyse "dusmuyor"
     "uretim_orani": 0.50,         # uretilen >= kapatilan * bu  => churn
-    "r3_asgari_ornek": 4,         # [0.2.0] kapatilan bunun ALTINDAysa R3 HUKUM VERMEZ (bkz. asagi)
+    "r3_asgari_ornek": 4,         # [0.2.0] kapatilan bunun ALTINDAysa R3 HUKUM VERMEZ
     "odak_oturum": 3,             # gorunen cikti %0 iken tek artefakta bu kadar oturum = KIRMIZI
     "kalan_kusur_esigi": 5,       # capture-recapture tahmini bunun ustundeyse "kilitleme"
     "bayt_buyume_orani": 0.05,    # tur basina %5+ buyume = SARI sinyali
-    "urun_kodu_durgunluk": 2,     # [0.2.0] ust uste bu kadar oturum 0 urun kodu = KIRMIZI (R7)
+    "urun_kodu_durgunluk": 2,     # [0.2.0] ust uste bu kadar oturum 0 urun kodu = KIRMIZI (R8)
 }
 
-# ---------------------------------------------------------------- 0.2.0 NOTU
-# Bu, proje-radari plugin'inden KOPYALANMIS surumun PROJE-YEREL onarimidir
-# (oturum 29, K53). Iki degisiklik OLCULMUS kusura dayanir:
-#
-# 1) R3'UN ASGARI ORNEKLEM KORUMASI [uc kez yanlis yandi, oturum 28-29].
-#    kapatilan=1 / uretilen=1 olan her DURUST tur R3'u tetikliyordu: 1 >= 1*0.50.
-#    Kusurunu olcup AYNI TURDA kapatan bir el, kusurunu gizleyen elden daha
-#    kotu gorunuyordu -- yani esik DURUSTLUGU CEZALANDIRIYORDU.
-#    Duzeltme: kapatilan < r3_asgari_ornek ise R3 HUKUM VERMEZ; bunun yerine
-#    BILGI satiri basar (SUSTURMA DEGIL, OLCEMEDIGINI BEYAN).
-#
-# 2) R7 -- URUN KODU DURGUNLUGU [yeni].
-#    Radar tur/artefakt sayardi ama "iki oturumdur tek satir urun kodu yok"u
-#    olcmezdi. Momentum'da 29 oturumun sonunda istemci tarafi 0 satirdi ve
-#    hicbir kural bunu KIRMIZI yakmiyordu. Kayitlara `urun_kodu_satiri` alani
-#    eklendi (o oturumda yazilan URUN kodu satiri; ARAC/betik/belge SAYILMAZ).
-#
-# KANONIK-KOPYA BORCU [beyan ediliyor]: plugin surumu bu iki duzeltmeyi
-# TASIMIYOR. Plugin guncellenene kadar KANONIK surum PROJE ICINDEKIDIR.
+# Proje kokunde radar.config.json varsa esikler ORADAN gelir (her proje kendi ritmine
+# gore kalibre eder). Ornek:
+#   {"esikler": {"odak_oturum": 5, "urun_kodu_durgunluk": 3},
+#    "urun_kodu_yollari": ["src/", "app/"],
+#    "urun_kodu_haric": ["scripts/", "tools/", "docs/", "*.md"]}
+VARSAYILAN_URUN_YOLLARI = ["src/", "lib/", "app/"]
+VARSAYILAN_URUN_HARIC = ["test/", "tests/", "docs/", "scripts/", "tools/", "araclar/"]
+
+
+def _config_yukle(kok):
+    """radar.config.json varsa esikleri EZER ve ayarlari dondurur. Yoksa varsayilan."""
+    cfg = {"urun_kodu_yollari": VARSAYILAN_URUN_YOLLARI,
+           "urun_kodu_haric": VARSAYILAN_URUN_HARIC,
+           "_kaynak": "varsayilan (radar.config.json yok)"}
+    p = os.path.join(kok or ".", "radar.config.json")
+    if not os.path.exists(p):
+        return cfg
+    try:
+        d = json.load(open(p, encoding="utf-8"))
+    except Exception as ex:
+        raise SystemExit(f"[DUR] radar.config.json bozuk: {ex}")
+    for k, v in (d.get("esikler") or {}).items():
+        if k not in E:
+            raise SystemExit(f"[DUR] radar.config.json'da BILINMEYEN esik: {k}")
+        E[k] = v
+    cfg.update({k: v for k, v in d.items() if k != "esikler"})
+    cfg["_kaynak"] = p
+    return cfg
 
 
 def _oku(kok):
@@ -158,7 +167,7 @@ def teshis(kayitlar):
                                  f"CHURN OLCULEMEDI: son turda kapatilan={kap} "
                                  f"(asgari ornek {E['r3_asgari_ornek']}). uretilen={ure}. "
                                  "Bu orneklemde R3 hukum VERMEZ -- kusurunu olcup ayni turda "
-                                 "kapatan durust bir el aksi halde cezalandirilirdi. "
+                                 "kapatan DURUST bir el aksi halde cezalandirilirdi. "
                                  "OLCULMEDI demek, TEMIZ demek DEGILDIR."))
             else:
                 bulgular.append(("KIRMIZI", "R3",
@@ -222,11 +231,76 @@ def teshis(kayitlar):
     return sonuc
 
 
-def proje_teshis(kayitlar):
-    """[0.2.0] ARTEFAKTTAN BAGIMSIZ, PROJE GENELI kurallar.
+ZORUNLU_ALANLAR = ("tarih", "oturum", "artefakt", "tur", "bulgu", "kapatilan", "uretilen")
 
-    R7 -- URUN KODU DURGUNLUGU: son N OTURUMun hepsinde `urun_kodu_satiri` 0 ise
-    KIRMIZI. Alan hic yoksa hukum verilmez (OLCULMEDI, temiz DEGIL).
+
+def defter_denetle(kayitlar, kok):
+    """[0.2.0] DEFTER DURUSTLUK KAPISI -- radarin EN ZAYIF halkasini kapatir.
+
+    Radar GERCEGI degil DEFTERI olcer. Defter dolduran el kendi karnesini yaziyorsa,
+    "iyi gidiyoruz" demek bedavadir. Bu kapi, defterin KENDI ICINDE ve DISARIDAKI
+    gercekle CELISIP celismedigini arar. "Durust ol" demez; celiskiyi GOSTERIR.
+
+    D1 bayt beyani diskteki gercekle uyusmuyor · D2 tur tekrari/atlamasi ·
+    D3 zorunlu alan eksik · D4 beyan/olcum celiskisi · D5 hic kusur uretmemis defter
+    """
+    b = []
+    if not kayitlar:
+        return b
+    for i, k in enumerate(kayitlar, 1):
+        eksik = [a for a in ZORUNLU_ALANLAR if k.get(a) is None]
+        if eksik:
+            b.append(("SARI", "D3", f"kayit {i} ({k.get('artefakt','?')} tur {k.get('tur','?')}): "
+                                    f"zorunlu alan EKSIK: {', '.join(eksik)}"))
+        yol = k.get("artefakt") or ""
+        beyan = k.get("bayt")
+        if beyan and kok and ("/" in yol or "\\" in yol or "." in yol):
+            tam = os.path.join(kok, yol.replace("/", os.sep))
+            if os.path.isfile(tam):
+                gercek = os.path.getsize(tam)
+                # yalniz SON kayit icin anlamli: onceki turlarin bayti dogal olarak eskidir
+                if k is kayitlar[-1] or all(x.get("artefakt") != yol for x in kayitlar[kayitlar.index(k) + 1:]):
+                    if beyan != gercek:
+                        b.append(("SARI", "D1",
+                                  f"{yol}: defter {beyan} bayt diyor, DISKTE {gercek} bayt. "
+                                  "Beyan bayatlamis ya da olculmeden yazilmis."))
+    for ad in sorted({k.get("artefakt") for k in kayitlar if k.get("artefakt")}):
+        turlar = [int(k.get("tur", 0) or 0) for k in kayitlar if k.get("artefakt") == ad]
+        yinelenen = sorted({t for t in turlar if turlar.count(t) > 1})
+        if yinelenen:
+            b.append(("SARI", "D2", f"{ad}: ayni tur numarasi birden cok kayitta: {yinelenen} "
+                                    "(duzeltme kaydiysa `asama` alanina 'olcum-duzeltme' yaz)."))
+        bek = list(range(1, max(turlar) + 1)) if turlar else []
+        eksik_tur = [t for t in bek if t not in turlar]
+        if eksik_tur:
+            b.append(("SARI", "D2", f"{ad}: tur ATLAMIS, eksik tur(lar): {eksik_tur}."))
+    gc = [int(k.get("gorunen_cikti_yuzde") or 0) for k in kayitlar
+          if k.get("gorunen_cikti_yuzde") is not None]
+    uk = [int(k.get("urun_kodu_satiri") or 0) for k in kayitlar
+          if k.get("urun_kodu_satiri") is not None]
+    if gc and max(gc) > 0 and uk and max(uk) == 0:
+        b.append(("KIRMIZI", "D4",
+                  f"BEYAN/OLCUM CELISKISI: defter gorunen ciktiyi %{max(gc)} diyor ama OLCULEN "
+                  "urun kodu her oturumda 0. Ikisinden biri yanlis; radar hangisi oldugunu "
+                  "SOYLEYEMEZ -- duzeltmek defteri tutan elin isidir."))
+    ureti = [int(k.get("uretilen") or 0) for k in kayitlar if k.get("uretilen") is not None]
+    if len(ureti) >= 5 and max(ureti) == 0:
+        b.append(("SARI", "D5",
+                  f"BU DEFTER {len(ureti)} TURDUR HIC KUSUR URETMEDIGINI IDDIA EDIYOR. "
+                  "`uretilen` bu defterin EN DEGERLI ve EN COK ATLANAN alanidir. Surekli 0 ise "
+                  "ya olculmuyor ya yazilmiyor; her iki halde de R3 KORDUR."))
+    return b
+
+
+def proje_teshis(kayitlar):
+    """[0.2.0] ARTEFAKTTAN BAGIMSIZ, PROJE GENELI kural.
+
+    R8 -- URUN KODU DURGUNLUGU: son N OTURUMun hepsinde `urun_kodu_satiri` 0 ise KIRMIZI.
+    Alan hic yoksa hukum VERILMEZ (OLCULMEDI; TEMIZ DEGIL).
+
+    TANIM (kritik): `urun_kodu_satiri` = o oturum penceresinde projeye giren URUN kodu,
+    HANGI EL yazarsa yazsin (insan, ajan, build aracı). ARAC/betik/belge SAYILMAZ.
+    Yanlis tanim ("benim yazdigim kod") baska bir el insa ederken YANLIS-POZITIF verir.
     """
     bulgular = []
     oturumlar = {}
@@ -239,20 +313,68 @@ def proje_teshis(kayitlar):
             continue
         oturumlar[o] = max(int(oturumlar.get(o, 0)), int(v))
     if not oturumlar:
-        bulgular.append(("BILGI", "R7-OLCULMEDI",
+        bulgular.append(("BILGI", "R8-OLCULMEDI",
                          "URUN KODU DURGUNLUGU OLCULEMEDI: hicbir kayitta `urun_kodu_satiri` "
-                         "alani yok. Bu alan, o oturumda yazilan URUN kodu satiridir "
-                         "(arac/betik/belge SAYILMAZ). OLCULMEDI, TEMIZ DEGIL."))
+                         "alani yok. Otomatik olcum: radar.py --olc-urun-kodu <kok> <git-ref>. "
+                         "OLCULMEDI, TEMIZ DEGIL."))
         return bulgular
-    son_oturumlar = sorted(oturumlar)[-E["urun_kodu_durgunluk"]:]
-    if (len(son_oturumlar) >= E["urun_kodu_durgunluk"]
-            and all(oturumlar[o] == 0 for o in son_oturumlar)):
-        bulgular.append(("KIRMIZI", "R7",
-                         f"URUN KODU DURGUNLUGU: son {len(son_oturumlar)} oturumda "
-                         f"(oturum {son_oturumlar}) tek satir URUN kodu yazilmadi. "
-                         "SERT DURAK: bir sonraki oturum URUN KODU ile baslar; "
-                         "yeni belge/ADR/spec/arac turu ACILMAZ."))
+    son = sorted(oturumlar)[-E["urun_kodu_durgunluk"]:]
+    if len(son) >= E["urun_kodu_durgunluk"] and all(oturumlar[o] == 0 for o in son):
+        bulgular.append(("KIRMIZI", "R8",
+                         f"URUN KODU DURGUNLUGU: son {len(son)} oturumda (oturum {son}) "
+                         "tek satir URUN kodu projeye girmedi. SERT DURAK: bir sonraki oturum "
+                         "URUN KODU ile baslar; yeni belge/ADR/spec/arac turu ACILMAZ. "
+                         "Kalite disiplini, degerlendiricinin acacagi seyin var olmamasini telafi etmez."))
     return bulgular
+
+
+def olc_urun_kodu(kok, ref, cfg):
+    """[0.2.0] `urun_kodu_satiri`ni GIT'TEN turetir -- kendi karnesini kimse dolduramasin.
+
+    git diff --numstat <ref>..HEAD  ile eklenen satirlar sayilir; yalniz urun yollari
+    icindekiler, haric listesindekiler DUSULEREK.
+    """
+    import subprocess
+    try:
+        cikti = subprocess.run(
+            ["git", "--no-optional-locks", "-C", kok, "diff", "--numstat", f"{ref}..HEAD"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
+    except Exception as ex:
+        print(f"[DUR] git kosulamadi: {ex}")
+        return 3
+    if cikti.returncode != 0:
+        print(f"[DUR] git hata verdi: {(cikti.stderr or '').strip()}")
+        return 3
+    yollar = cfg.get("urun_kodu_yollari") or VARSAYILAN_URUN_YOLLARI
+    haric = cfg.get("urun_kodu_haric") or []
+    toplam, sayilan, atlanan = 0, [], []
+    for satir in cikti.stdout.splitlines():
+        parca = satir.split("\t")
+        if len(parca) != 3 or parca[0] == "-":
+            continue
+        eklenen, yol = int(parca[0]), parca[2].replace("\\", "/")
+        if not any(yol.startswith(y.replace("\\", "/")) for y in yollar):
+            continue
+        if any(h.replace("\\", "/").strip("*") in yol for h in haric):
+            atlanan.append(yol)
+            continue
+        toplam += eklenen
+        sayilan.append((yol, eklenen))
+    print("=" * 78)
+    print(f"URUN KODU OLCUMU (git) — {ref}..HEAD")
+    print(f"kok: {kok} · ayar kaynagi: {cfg.get('_kaynak')}")
+    print(f"urun yollari: {yollar}")
+    print(f"haric: {haric}")
+    print("-" * 78)
+    for yol, n in sorted(sayilan, key=lambda x: -x[1])[:20]:
+        print(f"  +{n:<7} {yol}")
+    if atlanan:
+        print(f"  ({len(atlanan)} dosya HARIC listesi geregi sayilmadi)")
+    print("-" * 78)
+    print(f"urun_kodu_satiri = {toplam}")
+    print("Bu sayiyi deftere OLDUGU GIBI yaz. Elle degistirirsen R8 korlesir.")
+    print("=" * 78)
+    return 0
 
 
 def rapor(sonuc, kaynak, proje_bulgulari=()):
@@ -273,7 +395,7 @@ def rapor(sonuc, kaynak, proje_bulgulari=()):
         if {"KIRMIZI": 0, "SARI": 1, "YESIL": 2}[s["seviye"]] < {"KIRMIZI": 0, "SARI": 1, "YESIL": 2}[en_kotu]:
             en_kotu = s["seviye"]
     if proje_bulgulari:
-        print("\n[PROJE GENELI]")
+        print("\n[PROJE GENELI / DEFTER]")
         for sev, kod, msg in proje_bulgulari:
             print(f"   [{sev}] {kod}: {msg}")
             if sev == "KIRMIZI":
@@ -284,7 +406,7 @@ def rapor(sonuc, kaynak, proje_bulgulari=()):
     print("\n" + "=" * 78)
     print(f"HUKUM: {K[en_kotu]}")
     if en_kotu == "KIRMIZI":
-        print("DEVRE KESICI: yeni tur YASAK. Onur'a dort sik sunulur.")
+        print("DEVRE KESICI: yeni tur YASAK. Kullaniciya dort sik sunulur.")
         print("[0.2.0 — SIKLAR ESIT AGIRLIKTA DEGILDIR; ISPAT YUKU TERSINE CEVRILDI]")
         print("  VARSAYILAN >> (1) DEVRET — kosulamayan iddialari KODA/BUILD'e tasi.")
         print("       Olculmus gerekce: kagitta dogrulanan bir kapi, dogrulandigini")
@@ -370,39 +492,65 @@ def altin_kume():
             [_kayit(tur=i, oturum=i, butce={"oturum": 2}, kapatilan=5, uretilen=0) for i in range(1, 5)],
             "KIRMIZI", ("R6",))
 
-    # ---- [0.2.0] R3 ASGARI ORNEKLEM (K40: esik degistiren altin kumeye vaka EKLER)
-    # 7) kapatilan=1 / uretilen=1 => R3 HUKUM VERMEZ, R3-ORNEKLEM bilgisi cikar
+    # ---- [0.2.0] R3 ASGARI ORNEKLEM (K40: esik degistiren altin kumeye VAKA EKLER)
     kontrol("7) R3 ASGARI ORNEKLEM — kapatilan=1'de R3 TETIKLENMEMELI",
             [_kayit(tur=1, oturum=1, kapatilan=1, uretilen=1)],
             "YESIL", ("R3-ORNEKLEM",))
-
-    # 8) kapatilan=4 / uretilen=2 => esik ustunde, R3 HALA ISIRIR (esik susturulmadi)
     kontrol("8) R3 ESIK USTUNDE — hala ISIRMALI (susturma kontrolu)",
             [_kayit(tur=1, oturum=1, kapatilan=4, uretilen=2)],
             "KIRMIZI", ("R3",))
 
-    # ---- [0.2.0] R7 URUN KODU DURGUNLUGU (proje geneli)
-    def kontrol_proje(ad, kayitlar, beklenen_kodlar, olmamasi=()):
+    def kp(ad, kayitlar, bekle, olmamasi=(), kok=None, fn=None):
         nonlocal gecti
-        b = proje_teshis(kayitlar)
+        b = (fn or proje_teshis)(kayitlar) if fn is not defter_denetle else defter_denetle(kayitlar, kok)
         kodlar = {k for _, k, _ in b}
-        ok = all(k in kodlar for k in beklenen_kodlar) and not any(k in kodlar for k in olmamasi)
+        ok = all(k in kodlar for k in bekle) and not any(k in kodlar for k in olmamasi)
         print(f"\n[{'GECTI' if ok else 'BASARISIZ'}] {ad}")
-        print(f"    beklenen: {list(beklenen_kodlar)} · olmamali: {list(olmamasi)} · olculen: {sorted(kodlar)}")
+        print(f"    beklenen: {list(bekle)} · olmamali: {list(olmamasi)} · olculen: {sorted(kodlar)}")
         if not ok:
             gecti = False
 
-    kontrol_proje("9) R7 — iki oturum 0 urun kodu ISIRMALI",
-                  [_kayit(tur=1, oturum=1, urun_kodu_satiri=0),
-                   _kayit(tur=2, oturum=2, urun_kodu_satiri=0)],
-                  ("R7",))
-    kontrol_proje("10) R7 YANLIS-POZITIF — son oturumda kod yazildiysa SUSMALI",
-                  [_kayit(tur=1, oturum=1, urun_kodu_satiri=0),
-                   _kayit(tur=2, oturum=2, urun_kodu_satiri=120)],
-                  (), ("R7",))
-    kontrol_proje("11) R7 OLCULMEDI — alan yoksa hukum VERMEZ ama SUSMAZ",
-                  [_kayit(tur=1, oturum=1), _kayit(tur=2, oturum=2)],
-                  ("R7-OLCULMEDI",), ("R7",))
+    # ---- [0.2.0] R8 URUN KODU DURGUNLUGU
+    kp("9) R8 — iki oturum 0 urun kodu ISIRMALI",
+       [_kayit(tur=1, oturum=1, urun_kodu_satiri=0), _kayit(tur=2, oturum=2, urun_kodu_satiri=0)],
+       ("R8",))
+    kp("10) R8 YANLIS-POZITIF — son oturumda kod yazildiysa SUSMALI",
+       [_kayit(tur=1, oturum=1, urun_kodu_satiri=0), _kayit(tur=2, oturum=2, urun_kodu_satiri=120)],
+       (), ("R8",))
+    kp("11) R8 OLCULMEDI — alan yoksa hukum VERMEZ ama SUSMAZ",
+       [_kayit(tur=1, oturum=1), _kayit(tur=2, oturum=2)], ("R8-OLCULMEDI",), ("R8",))
+
+    # ---- [0.2.0] DEFTER DURUSTLUK KAPISI
+    kp("12) DEFTER TEMIZ — yanlis-pozitif kontrolu",
+       [_kayit(tur=1, oturum=1, artefakt="A", kapatilan=3, uretilen=1),
+        _kayit(tur=2, oturum=2, artefakt="A", kapatilan=3, uretilen=1)],
+       (), ("D1", "D2", "D3", "D4", "D5"), fn=defter_denetle)
+    kp("13) D2 — TUR ATLAMASI isirmali",
+       [_kayit(tur=1, oturum=1, artefakt="A"), _kayit(tur=3, oturum=2, artefakt="A")],
+       ("D2",), (), fn=defter_denetle)
+    kp("14) D3 — ZORUNLU ALAN EKSIK isirmali",
+       [{"artefakt": "A", "tur": 1, "oturum": 1, "tarih": "2026-01-01"}],
+       ("D3",), (), fn=defter_denetle)
+    kp("15) D4 — BEYAN/OLCUM CELISKISI isirmali (gorunen cikti >0 ama olculen kod 0)",
+       [_kayit(tur=1, oturum=1, gorunen_cikti_yuzde=60, urun_kodu_satiri=0),
+        _kayit(tur=2, oturum=2, gorunen_cikti_yuzde=60, urun_kodu_satiri=0)],
+       ("D4",), (), fn=defter_denetle)
+    # D1 GERCEK DOSYA ISTER: gecici bir kok kurulur (deterministik, ag yok)
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "docs"), exist_ok=True)
+        hedef = os.path.join(td, "docs", "karar.md")
+        open(hedef, "w", encoding="utf-8").write("x" * 500)
+        kp("16) D1 — BAYT BEYANI DISKLE UYUSMUYORSA isirmali",
+           [_kayit(tur=1, oturum=1, artefakt="docs/karar.md", bayt=999999)],
+           ("D1",), (), kok=td, fn=defter_denetle)
+        kp("17) D1 YANLIS-POZITIF — bayt DOGRUysa susmali",
+           [_kayit(tur=1, oturum=1, artefakt="docs/karar.md", bayt=500)],
+           (), ("D1",), kok=td, fn=defter_denetle)
+
+    kp("18) D5 — 'hic kusur uretmedim' diyen defter isirmali",
+       [_kayit(tur=i, oturum=i, artefakt="A", kapatilan=5, uretilen=0) for i in range(1, 6)],
+       ("D5",), (), fn=defter_denetle)
 
     print("\n" + "=" * 78)
     print("HUKUM: " + ("RADAR KULLANILABILIR — temizde susuyor, kirlide isiriyor."
@@ -419,6 +567,8 @@ def main():
     ap = argparse.ArgumentParser(description="Proje Radari — kisir dongu dedektoru")
     ap.add_argument("kok", nargs="?", help="proje kok dizini (PROJE_RADAR.jsonl burada aranir)")
     ap.add_argument("--altin-kume", action="store_true", help="aracin kendi kanitini kos")
+    ap.add_argument("--olc-urun-kodu", metavar="GIT_REF",
+                    help="urun_kodu_satiri'ni GIT'TEN turet (elle yazma): --olc-urun-kodu <ref>")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--artefakt", help="yalniz bu artefakti raporla")
     a = ap.parse_args()
@@ -428,6 +578,10 @@ def main():
     if not a.kok:
         ap.print_help()
         return 2
+
+    cfg = _config_yukle(a.kok)
+    if a.olc_urun_kodu:
+        return olc_urun_kodu(a.kok, a.olc_urun_kodu, cfg)
 
     kayitlar, yol = _oku(a.kok)
     if kayitlar is None:
@@ -448,7 +602,7 @@ def main():
         return {"KIRMIZI": 2, "SARI": 1, "YESIL": 0}[
             "KIRMIZI" if any(x["seviye"] == "KIRMIZI" for x in s) else
             ("SARI" if any(x["seviye"] == "SARI" for x in s) else "YESIL")]
-    return rapor(s, yol, proje_teshis(kayitlar))
+    return rapor(s, yol, list(defter_denetle(kayitlar, a.kok)) + list(proje_teshis(kayitlar)))
 
 
 if __name__ == "__main__":
