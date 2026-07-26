@@ -1,30 +1,41 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:client/design/tema.dart';
+import 'package:client/vitrin/durum_vitrini.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:client/main.dart';
-
+/// T7 -- durum vitrininin 8 durumu `ByValueKey('vitrin_durum')` ile
+/// bulunabilmeli (F5). main.dart'in gercek (--dart-define olmadan) yolu
+/// path_provider/sqlite gerektiren gercek bir Veritabani baglantisi actigi
+/// icin burada degil, entegrasyon dogrulamasinda kosulur.
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  const durumlar = [
+    'vitrin_bos',
+    'vitrin_yukleniyor',
+    'vitrin_yerel',
+    'vitrin_kuyrukta',
+    'vitrin_senkronize',
+    'vitrin_cevrimdisi',
+    'vitrin_cakisma',
+    'vitrin_hata',
+  ];
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  testWidgets('durum vitrininin 8 durumu da ByValueKey ile bulunur', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MomentumTema.olustur(Brightness.light),
+        home: const DurumVitrini(),
+      ),
+    );
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    for (final durum in durumlar) {
+      expect(
+        find.byKey(ValueKey(durum)),
+        findsOneWidget,
+        reason: '$durum anahtarli widget vitrinde bulunamadi',
+      );
+    }
   });
 }
