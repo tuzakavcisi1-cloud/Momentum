@@ -164,9 +164,6 @@ uzun sureli acik bir AGP kisiti) -- ve AGP'nin KENDI saglinladigi resmi kacis
 yolu hata mesajinin ta kendisinde yaziyor: gradle.properties'e
 "android.overridePathCheck=true" eklemek.
 
-HENUZ UYGULANMADI -- Onur'un onayi bekleniyor (bu da bir build config
-degisikligi, sessizce yapilmaz).
-
 GENEL HUKUM (guncellendi): Junction, DART/FLUTTER SDK arac zincirindeki
 (build_runner, flutter analyze) sinifi tamamen cozuyor ama ANDROID GRADLE
 tarafinin KENDI path denetimini cozmuyor -- o ayri, AGP'ye ozgu bir bayrakla
@@ -177,3 +174,31 @@ Komut: flutter build web
 EXIT=0 -- "Compiling lib\main.dart for the Web... 92,9s -- Built build\web"
 HUKUM: sorun KANITLANMIS SEKILDE Android/Gradle'a (JVM path canonicalization)
 OZGUDUR; web derlemesi (dart2js/wasm, JVM YOK) bu sinifi hic GORMEZ.
+
+====================================================================
+8) KILIT KARARI (Onur, 26 Tem 2026) -- BAYRAK EKLENMEDI, ASCII KOKE TASINIYOR
+====================================================================
+"android.overridePathCheck=true" gradle.properties'e EKLENMEYECEK.
+
+GEREKCE (Onur):
+- Bu bayrak bir KAPIYI SUSTURUR, sebebi COZMEZ -- AGP bu kontrolu keyfi
+  koymadi; aapt2/NDK'nin ASCII-disi yollarda GERCEK kirilma gecmisi var.
+- Junction repo DISINDAYDI (C:\momentum); bu bayrak ise REPOYA commit'lenirdi
+  ve degerlendirici "bu proje neden Android'in yol kontrolunu devre disi
+  birakmis?" diye sorardi -- kalici, gorunur bir iz birakirdi.
+- Bu, AYNI kok nedenin (yol icinde Turkce karakter) DORDUNCU olculmus
+  kusuruydu: (1) build_runner package_config kontrolu, (2) flutter analyze
+  LSP mesaj cercevelemesi, (3) AGP path denetimi, (4) ".ps1 Turkce yol
+  literali" (daha once, ayri bir sinif olarak kayitli). Dorden biri gecici
+  bayrakla, biri junction'la asilabiliyordu ama DORDU BIRDEN ayni kaynaktan
+  (proje kokunun Turkce karakter tasimasi) dogdugu icin GECICIYI BIRIKTIRMEK
+  yerine KOK NEDEN KALDIRILIYOR.
+
+KARAR: Repo ASCII bir koke TASINACAK (Onur yapacak, bu oturumun isi degil).
+Junction (C:\momentum) KALDIRILACAK. Tasima ONCESI .dart_tool/ ve build/
+dizinleri SILINECEK (mutlak yol iceren build onbellekleri tasiyinca gecersiz
+kalir; zaten .gitignore kapsaminda, kalici bir kayip degil, sadece yeniden
+uretilecek).
+
+BU OTURUM ARTIK YOL DEGISTIRMEZ -- ASCII koke tasima Onur'un isidir; sonraki
+oturum yeni yoldan TEMIZ acilir.
