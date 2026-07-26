@@ -1,0 +1,20 @@
+{
+  "_not": "F6 kilidi -- lib/design/metinler.dart ile G5'te birebir karsilastirilir. DESIGN.md ayristirilmaz.",
+  "gorunur": {
+    "yalnizcaBuCihazda": "Yalnızca bu cihazda",
+    "gonderiliyor": "Gönderiliyor",
+    "cevrimdisiKaydedildi": "Çevrimdışısınız. Değişiklikler kaydedildi.",
+    "cakismaVar": "Bu görev başka bir cihazda da değişti.",
+    "bosDurum": "Henüz görev yok. Aşağıdan ekleyin.",
+    "birSeylerTersGitti": "Bir şeyler ters gitti.",
+    "yenidenDene": "Yeniden dene",
+    "yukleniyor": "Yükleniyor"
+  },
+  "semanticsDuyurusu": {
+    "duyuruGorevlerYukleniyor": "Görevler yükleniyor",
+    "duyuruSenkronizeEdildi": "Senkronize edildi",
+    "duyuruCevrimdisi": "Çevrimdışı",
+    "duyuruCakismaVar": "Çakışma var",
+    "duyuruHata": "Hata"
+  }
+}

@@ -8,39 +8,63 @@ import 'package:flutter/material.dart';
 class MRenk {
   MRenk._();
 
-  static Color _coz(BuildContext context, Color acik, Color koyu) {
-    return Theme.of(context).brightness == Brightness.dark ? koyu : acik;
-  }
+  static Color _coz(Brightness parlaklik, Color acik, Color koyu) =>
+      parlaklik == Brightness.dark ? koyu : acik;
 
+  // "Icin" ekli sürümler Brightness'i DOGRUDAN alir -- MomentumTema'nin
+  // (tema.dart) ThemeData insa ederken henuz bir BuildContext'i YOKTUR,
+  // bu yuzden context-tabanli erisim ORADA fiziksel olarak imkansizdir.
+  // Context alan sürümler bunlarin ustune ince bir katmandir.
+
+  static Color yuzeyIcin(Brightness p) =>
+      _coz(p, const Color(0xFFFFFFFF), const Color(0xFF0F1319));
   static Color yuzey(BuildContext context) =>
-      _coz(context, const Color(0xFFFFFFFF), const Color(0xFF0F1319));
+      yuzeyIcin(Theme.of(context).brightness);
 
+  static Color yuzeyIkincilIcin(Brightness p) =>
+      _coz(p, const Color(0xFFF3F4F6), const Color(0xFF181D25));
   static Color yuzeyIkincil(BuildContext context) =>
-      _coz(context, const Color(0xFFF3F4F6), const Color(0xFF181D25));
+      yuzeyIkincilIcin(Theme.of(context).brightness);
 
+  static Color metinIcin(Brightness p) =>
+      _coz(p, const Color(0xFF14181F), const Color(0xFFE8EBF0));
   static Color metin(BuildContext context) =>
-      _coz(context, const Color(0xFF14181F), const Color(0xFFE8EBF0));
+      metinIcin(Theme.of(context).brightness);
 
+  static Color metinIkincilIcin(Brightness p) =>
+      _coz(p, const Color(0xFF525C6B), const Color(0xFFA2ADBC));
   static Color metinIkincil(BuildContext context) =>
-      _coz(context, const Color(0xFF525C6B), const Color(0xFFA2ADBC));
+      metinIkincilIcin(Theme.of(context).brightness);
 
+  static Color birincilIcin(Brightness p) =>
+      _coz(p, const Color(0xFF1B4FC4), const Color(0xFF8FB4FF));
   static Color birincil(BuildContext context) =>
-      _coz(context, const Color(0xFF1B4FC4), const Color(0xFF8FB4FF));
+      birincilIcin(Theme.of(context).brightness);
 
+  static Color uzeriBirincilIcin(Brightness p) =>
+      _coz(p, const Color(0xFFFFFFFF), const Color(0xFF0F1319));
   static Color uzeriBirincil(BuildContext context) =>
-      _coz(context, const Color(0xFFFFFFFF), const Color(0xFF0F1319));
+      uzeriBirincilIcin(Theme.of(context).brightness);
 
+  static Color tehlikeIcin(Brightness p) =>
+      _coz(p, const Color(0xFFA4231C), const Color(0xFFFF8F87));
   static Color tehlike(BuildContext context) =>
-      _coz(context, const Color(0xFFA4231C), const Color(0xFFFF8F87));
+      tehlikeIcin(Theme.of(context).brightness);
 
+  static Color cevrimdisiIcin(Brightness p) =>
+      _coz(p, const Color(0xFF7A5200), const Color(0xFFF0C24B));
   static Color cevrimdisi(BuildContext context) =>
-      _coz(context, const Color(0xFF7A5200), const Color(0xFFF0C24B));
+      cevrimdisiIcin(Theme.of(context).brightness);
 
+  static Color ayiriciIcin(Brightness p) =>
+      _coz(p, const Color(0xFFDDE1E7), const Color(0xFF2A313B));
   static Color ayirici(BuildContext context) =>
-      _coz(context, const Color(0xFFDDE1E7), const Color(0xFF2A313B));
+      ayiriciIcin(Theme.of(context).brightness);
 
+  static Color kenarlikEtkilesimIcin(Brightness p) =>
+      _coz(p, const Color(0xFF6E7783), const Color(0xFF8B94A2));
   static Color kenarlikEtkilesim(BuildContext context) =>
-      _coz(context, const Color(0xFF6E7783), const Color(0xFF8B94A2));
+      kenarlikEtkilesimIcin(Theme.of(context).brightness);
 
   // NICE -- DESIGN.md SS1.1 koyu tema tablosu bu ikisini icermiyor (olculmedi);
   // ilk dilimde kullanilmadiklari icin uydurulmus koyu deger yazilmaz.
