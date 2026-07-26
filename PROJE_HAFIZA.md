@@ -9,9 +9,46 @@
 > NOTLARINI GEÇERSİZ KILAR"* diyor. Yalnız tepeyi okuyan bir oturum **bayat durum alır.**
 > **KURAL (bundan sonra): en yeni checkpoint/devir notu DAİMA bu satırın hemen altına yazılır.**
 
+## ⏭ DEVİR NOTU (26 Tem 2026 — oturum 28 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR
+
+**CEPHE DEĞİŞTİ: ADR 0003 v7 DONDURULDU (K41), İŞ ARTIK `slice-3b` FLUTTER İSTEMCİSİDİR (K42).**
+
+**GİT (kapanışta ölçüldü):** HEAD **`1b1b505`** · `origin/main` **`2ee2c24`** ⇒ **3 İLERİ, PUSH YOK** · ağaç **TEMİZ** · `.git/index.lock` **YOK**. Push borcu: `ab1ee61` (K43) · `648da7b` (araç) · `1b1b505` (DESIGN.md). **PUSH ONUR'DA.**
+
+**DOSYA KİMLİKLERİ (`sha256` ilk 8, kapanış ölçümü):**
+`PROJE_HAFIZA.md` 453.863 b · `F001E102` — `DESIGN.md` 15.742 b · `534DFF68` — `CLAUDE.md` 5.651 b · `DBFF6727` — `PROJE_RADAR.jsonl` 11.849 b · `0B98FA3B` (12 kayıt) — `araclar/design-token-kapisi.py` 21.229 b · `11667526` — **`araclar/adr-kapi-taramasi.py` 50.582 b · `A22841F2` (K34-f TUTUYOR)** — `araclar/radar.py` 15.252 b · `688B6D31` — `.mcp.json` 155 b · `01EC4807` — **v7 300.930 b · `2AE2FB29` (K41: DONDURULDU)** — **kanonik v6 241.689 b · `6F6BE71A` (DOKUNULMADI)**.
+⚠ **SATIR SAYISI TUZAĞI:** PowerShell `Measure-Object -Line` **boş satırları saymaz** (hafıza 1117 der, gerçek 1257). **Kimlik `sha256`+bayttır**, satır değil.
+
+**ÜÇ PAZARLIKSIZ KİLİT (ihlal eden el K41/K42/K44'ü çiğner):**
+1. **K41 — v7 DONDURULDU.** Yeniden açılması üçünün BİRLİKTE sağlanmasına bağlı: ADR aracının 2. onarımı koşmuş olmalı (AYRI EL, K34-f) · `slice-3b` görünen çıktısı > %0 · **Onur açıkça açmalı.**
+2. **K42-d — TAÇ MÜCEVHER DİLİMİ, DÖRT ADIM, ATLANMAZ:** (1) ✅ **BİTTİ** — Docker/Postgres + verify **ÖLÇÜLDÜ ve GEÇTİ** → (2) Flutter iskelet (Android+Web) + Drift + **tam çevrimdışı CRUD** ⇒ **R5 burada düşer** → (3) senkron kuyruğu + `POST /v1/sync` → (4) SignalR `SyncHub`.
+3. **K44-a — ÖNCE ARAÇ, SONRA BELGE.** Uygulandı: `design-token-kapisi.py` **12/12** altın küme ile doğdu, `DESIGN.md` sonra yazıldı.
+
+**SONRAKİ İŞ — `GOREV-slice-3b` SPEC'İ (temiz oturum önerildi; %47'de yazmak 🟡 riski taşıyordu).** Spec'e **adıyla** girecek altı kalem:
+**(a)** **K44-b'nin dört ayaklı MCP kapısı** — `flutter_driver_command` ekran görüntüsü · `widget_inspector` widget ağacı · **kasten bozuk widget'la `get_runtime_errors` ISIRTILIR** · `dtd` bağlantısı. **Dördü de kırmızı vermeden kapı geçmiş SAYILMAZ.**
+**(b)** **`flutter_driver` paketi `pubspec` ZORUNLULUĞU** — yoksa (a) fiziksel olarak imkânsız (resmî doküman).
+**(c)** **Paket CVE kapısı** — `pub_dev_search` **CVE döndürmüyor**; lisans ayağı geçti, **CVE ayağı GEÇMEDİ** (kırmızı çizgi #3'ün açık yarısı).
+**(d)** **`sqlite3_flutter_libs 0.6.0+eol` ELENMESİ** (EOL, Claude Code ölçtü).
+**(e)** `DESIGN.md` §11'in **A‑1…A‑6** açık kalemleri.
+**(f)** **A11Y‑1…A11Y‑7 mutantla ısırtılır** (bugün hiçbiri koşulmadı, 0 `.dart`).
+
+**PAKET ADAYLARI (ham `pub_dev_search`, SEÇİM YAPILMADI):** `drift 2.34.2` MIT · `sqlite3 3.5.0` MIT · `drift_flutter 0.3.1` MIT · SignalR: `signalr_netcore 1.4.4` MIT (lider, 230 like/74k indirme) · `signalr_core 1.1.2` MIT · `signalr_flutter 0.2.1` MIT.
+
+**ORTAM (26 Tem ölçümü — 18 Tem tarihli ORTAM bloğunun ÜSTÜNDEDİR):** Flutter **3.44.6** · Dart **3.12.2** · **Android SDK 36.1.0 ✓** · Chrome/web ✓ · Windows masaüstü **☠** (`%PROGRAMFILES(X86)%` yok) · .NET **9.0.316** · Docker **29.6.1 AYAKTA**, `momentum-postgres` **Up (healthy)** · `dart` MCP **project scope, ✔ Connected, 13 araç (v0.1.4, DENEYSEL)**.
+
+**KANLA YAZILI ORTAM UYARILARI:** Claude Code **DAİMA `Momentum` kökünden** açılır (üst klasörden açmak `.mcp.json`'u görünmez kılar; oradaki `npx dart-mcp-server` mayını temizlendi) · `kasif` skill'ini **Cowork ÇAĞIRAMAZ**, Onur `/kasif` yazar · commit mesajına **çift tırnak YAZMA** (PowerShell argümanı böler, commit sessizce düşer) · `.ps1`'e **Türkçe yol literali YAZMA** (ANSI okunur, `Test-Path` sessizce `False`) · git'te **`--no-optional-locks` ZORUNLU**, commit yalnız **Desktop Commander** ile, `device_bash`/mount ile **YASAK** · **PUSH ONUR'DA**.
+
+**RADAR:** `docs/ADR/0003` **KIRMIZI** (R1·R5·R2b·R4 — **PARK EDİLDİ, beklenen**) · `slice-3b-istemci` **KIRMIZI (R3)**. ⚠ **Genel hüküm KIRMIZI ama ÇALIŞILACAK ARTEFAKTIN KENDİ SATIRI okunur** — park edilmiş artefakt genel hükmü kirletiyor, bu **aracın sınırıdır**. ⚠ **R3'ün asgari örneklem koruması YOK**: `kapatılan=1/üretilen=1` olan her dürüst tur KIRMIZI verir (bu oturumda 2 kez). **Eşik SUSTURULMADI**; borç **AYRI ELE** yazıldı.
+
+**AÇIK `[DOĞRULANMADI]` (5):** flutter_secure_storage Windows şifrelemesi · WebKit `http://localhost` `__Host-` · Isopoh lisans ailesi · NIST SP 800-38D · 🆕 Web'de `textScaler`/tema davranışının Android'den farkı.
+
+**GEÇİCİ ARTIKLAR (repo DIŞINDA, silme Onur'da — kırmızı çizgi #4):** `…\TO DO LİST\` altında 11 × `_cowork_*.ps1` · `%TEMP%\_cw_*.ps1|py` · `%TEMP%\_cw_probeproj\`.
+
+**[K21 KAPANIŞ] 474.084 token = %47,4 🟢.** Eğri: 149k → 191k → 287k → 373k → 426k → **474k**. ⚠ **Ölçüm kaynağı bu oturumda DEĞİŞTİ:** bulutta koşuldu ⇒ transcript **Onur'un makinesinde değil**, konteynerde (`/root/.claude/projects/-home-claude/<id>.jsonl`). **Devir bağlam yüzünden DEĞİL, DİSİPLİN gereği verildi:** spec bu cephenin en kritik artefaktıdır ve %47'den başlarsa 🟡'nin içinde biter.
+
 ## ⏭ CHECKPOINT (26 Tem 2026 — oturum 28: **K45 — MEKANİK KAPI YAZILDI VE KENDİNİ KANITLADI (12/12); `DESIGN.md` v1 YAZILDI; KONTRAST ÖLÇÜLDÜ VE BİR KUSUR BELGE YAZILMADAN KAPANDI**)
 
-- **✅ ARAÇ: `araclar/design-token-kapisi.py` v0.1.0** — **18.647 bayt · 524 satır · `U+FFFD` 0 · CRLF 0.** K44-a gereği **belgeden ÖNCE** yazıldı.
+- **✅ ARAÇ: `araclar/design-token-kapisi.py` v0.1.0** — **21.229 bayt · `sha256 11667526…` · `U+FFFD` 0 · CRLF 0.** K44-a gereği **belgeden ÖNCE** yazıldı. *(⚠ Bu satır ilk yazımında **18.647 bayt · 524 satır** diyordu ve **erteleme düzeltmesinden sonra BAYATLADI**; kapanış ölçümünde yakalanıp düzeltildi — `kanonik-kopya` sınıfının bu belgedeki canlı örneği.)*
   **ALTIN KÜME 12/12 GEÇTİ · `EXIT=0`:** boş girdide susar · temiz projede susar · kullanılmayan `MUST`'ta **D1** ısırır · ham renk literalinde **D2** ısırır · kullanılmayan `NICE`'a susar (yanlış-pozitif kontrolü) · tanımsız sembolde **D3** ısırır · **YORUM içindeki** literale susar (yanlış-pozitif kontrolü) · gerekçesiz muafiyette **D4** ısırır · gerekçeli muafiyete susar · bozuk `tokens` satırında **D0** ısırır · **belge var/0 dart'ta D1+D3 ERTELENİR ve susar** · **mutant: kod yokken bile bozuk blokta D0 YİNE ISIRIR.**
   **ÜÇ ÖLÇÜLMÜŞ DERS UYGULANDI:** (1) makine-okunur veri **prozaya değil** `DESIGN.md` içindeki **TEK `\`\`\`tokens` bloğuna** yazılır — K38-b'nin doğrudan uygulaması; araç çevresindeki metni **okumaz**. (2) çıktı **saf ASCII** ⇒ **`cp1254` kalkanı ÖLÇÜLDÜ: hiçbir `PYTHONUTF8`/`PYTHONIOENCODING` ayarı olmadan koştu ve çökmedi** — ADR aracının bilinen çökme sınıfı burada **doğmadı**. (3) bozuk UTF-8 girdi ⇒ **exit 3** (bulgu değil, ortam hatası).
   **BEYAN EDİLMİŞ SINIR:** `yorum_disi()` tam bir Dart ayrıştırıcısı **değildir** ⇒ **çok satırlı `/* */` içindeki ham literal KAÇABİLİR**; altın kümede bu vaka **YOKTUR** — adlandırılmış borç (A-4).
