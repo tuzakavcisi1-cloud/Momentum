@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı şu an **hiçbir kapı zorlamıyor** (beyan edilmiş zayıf kontrol, ilk ısırışta araç yazılır).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 27 Tem 2026, oturum 31 (K58).
+> **Son güncelleme:** 27 Tem 2026, oturum 31 (K60).
 
 ---
 
@@ -30,10 +30,10 @@
 |---|---|
 | **Backend** | ✅ slice-1 → 3a bitti. `araclar\verify.ps1` ⇒ build 0 uyarı/0 hata · **test 110/110** · CVE 0 · EXIT 0 |
 | **Veritabanı** | ✅ Docker 29.6.1, `momentum-postgres` Up (healthy) |
-| **İstemci (Flutter)** | 🟢 **T0→T9 BİTTİ.** 8 bileşen + `MomentumTema` · durum vitrini · Drift çevrimdışı CRUD · **yedi kapı G1–G7 koştu** · **24 mutant etiketinin hepsi ısırdı** (A 11 → B 10 → C 3). **Cowork'ün KENDİ koşumu: `analyze --fatal-infos` 0 bulgu · `flutter test` 36/36 · EXIT 0.** Kriter 13 yöntem sağlamasıyla ölçüldü (release `libapp.so` ×3 mimari: vitrin/driver sembolü **0**; debug'da 4/2/10 ⇒ yanlış-negatif değil). **Sıradaki: K42-d adım 3.** |
+| **İstemci (Flutter)** | 🟢 **T0→T9 BİTTİ.** 8 bileşen + `MomentumTema` · durum vitrini · Drift çevrimdışı CRUD · **yedi kapı G1–G7 koştu** · **24 mutant etiketinin hepsi ısırdı** (A 11 → B 10 → C 3). **Cowork'ün KENDİ koşumu: `analyze --fatal-infos` 0 bulgu · `flutter test` 36/36 · EXIT 0.** Kriter 13 yöntem sağlamasıyla ölçüldü (release `libapp.so` ×3 mimari: vitrin/driver sembolü **0**; debug'da 4/2/10 ⇒ yanlış-negatif değil). **A2 = 8/8** — iki ham ağaç, birleşimi **Cowork kendi ayrıştırdı**. ✅ **slice-3b KAPANDI — commit `5df3caf`** (72 dosya, 91.005 satır). **Sıradaki: K42-d adım 3.** |
 | **Tasarım sistemi** | ✅ `DESIGN.md` v1 (15.742 b · `534DFF68`) — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7 |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
-| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** — R8 · D1‑D5 · `--olc-urun-kodu` · altın küme **18/18**. Hüküm **KIRMIZI**: `GOREV-slice-3b-spec` (`esdeger-mutant`, build'e devredildi) · `docs/ADR/0003` (park) · diğer ikisi YEŞİL |
+| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** — R8 · D1‑D5 · `--olc-urun-kodu` · altın küme **18/18**. Hüküm **KIRMIZI** ve bu **beklenen**: kâğıt artefaktlar (`docs/ADR/0003` park · `GOREV-slice-3b-spec` build'e devredildi) hâlâ defterde duruyor. `slice-3b-istemci` kapanış kaydı: bloker 0 · **`urun_kodu_satiri` = 61** ⇒ **R8 SUSTU** · `gorunen_cikti_yuzde` **ilk kez 0'ın üstünde (35, TAHMİN)**. Varsayılan cevap **DEVRET** — zaten yapılan bu |
 | **Git** | **PUSH DAİMA ONUR'DA.** İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR**: `git --no-optional-locks rev-list --left-right --count origin/main...HEAD` |
 
 **Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · .NET 9.0.316 · **Windows masaüstü ☠** · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
@@ -42,14 +42,14 @@
 
 ## 4. SIRADAKİ İŞ
 
-**slice-3b (K42-d adım 2) BİTTİ** — spec v5/K57 tamamlandı, Cowork bağımsız doğruladı. **Commit ATILMADI** (Claude Code'un işi çalışma ağacında; commit Onur'un kilidini bekliyor).
+✅ **slice-3b (K42-d adım 2) KAPANDI.** A2 K59'a göre yeniden ölçüldü (iki ham ağaç), Cowork **her iki JSON'u kendi ayrıştırıp** birleşimi çıkardı: **8/8, eksik yok**. Commit **`5df3caf`** — 72 yol **tek tek** eklendi (K55).
 
-**KAPANMADAN ÖNCE İKİ İŞ:**
-1. 🔴 **Claude Code — A2'yi K59'a göre yeniden ölç.** **İKİ** ham ağaç JSON'u (**vitrin** + **gerçek `GorevListesiEkrani`**) `01-G1-android/` altına **olduğu gibi** yazılır; birleşim **8 sınıf adını** kapsamalı. Ölçülen kök neden: `CakismaRozeti` yalnız `cakismaVarMi=true` iken doğar ve bunu **sadece vitrin** yapar (spec §2: çakışma bu dilimde gerçek hayatta doğmaz); `GorevEkleAlani`/`GorevListesiEkrani` ise **vitrinde yok**. Mevcut `widget-tree.json` **JSON değil prozadır** ve kendine atıf yapar — değiştirilecek.
-2. **Cowork:** dönüşte bağımsız doğrula → commit → **push Onur'da**.
-✅ **Spec kilit turu BİTTİ (K59)** — kriter 6·7·8 araç adlı ve ölçülen rakamlarla; `sayi-tazeligi.py` **EXIT 0, muafiyetsiz**.
+**AÇILIŞTA İLK İŞ:** `git --no-optional-locks rev-list --left-right --count origin/main...HEAD` ile **push edilip edilmediğini ÖLÇ** (oturum 31 sonunda 3 commit ileriydi; **push Onur'dadır**).
 
-Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (SignalR `SyncHub`).
+**SIRADAKİ: K42-d adım 3 — senkron kuyruğu + `POST /v1/sync`** → sonra **adım 4** (SignalR `SyncHub`).
+Bu adım **kod işidir**: spec tasarımı Cowork'te şıklarla kilitlenir, yazımı Claude Code yapar, dönüşte Cowork **bağımsız** doğrular (K26).
+
+🟡 **Elde kalan tek artık:** `KANIT/slice-3b/01-G1-android/widget-tree.json` (345 b, JSON değil proza) — takipsiz, **tarihe hiç girmedi**. Kalıcı silme **Onur'un yetkisinde**; Cowork silmez.
 
 ---
 
@@ -58,6 +58,7 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 - **K53** — Verimlilik reformu: kâğıt denetim turu tavanı **1** · radar KIRMIZI'da varsayılan **DEVRET** · koşan-uygulama-mutant tavanı **3** · iki oturum 0 ürün kodu = **sert durak (`R8` — K57'de `R7`'den yeniden adlandırıldı)** · hafıza bölündü.
 - **K59** — Spec **v6, KİLİTLİ**: **44.560 b · `F0C3A75A`**. **`6056A5BB`, `79A53AA3`, `BE4581BA`, `1AB02B73` GEÇERSİZ.** ① **A2 iki yakalama** ister (vitrin + gerçek ekran, ham JSON, birleşimde 8 ad) — gevşetme **değil**, sağlanamaz şartın sağlanabilir ve **daha pahalı** hâli; gerekçe §5/G1'de ölçümle yazılı. ② Kriter **6·7·8**'e araç adı + ölçülen rakamlar (`8/8`, `6/6`, `18/18`) ⇒ `sayi-tazeligi.py` artık bu satırları **mekanik** doğruluyor, **muafiyet kalmadı**.
 - **K57** — Spec v5 (`6056A5BB`): on **bayat çapraz-atıf** düzeltildi; özü değişmedi. Onuncuyu, kilitten **sonra** doğan `sayi-tazeligi.py` buldu. Ayrıntı: `PROJE_HAFIZA.md` K57.
+- **K60** — **Tek kopya dosyaya yazan her betik ATOMİK yazar:** önce `metin.encode("utf-8")` (hata dosyaya **dokunmadan** patlar), sonra `.tmp`, en son `os.replace` ile takas. Gerekçe ucuz değil: oturum 31'de `io.open(yol,"w")` `PROJE_HAFIZA.md`'yi **önce boşalttı**, sonra encode hatası aldı ⇒ **542 KB arşiv 0 bayta düştü**; kurtaran şey kural değil **şanstı** (dosya 30 dk önce commit'liydi, `git restore` ile tam geri geldi). 🔴 Bunu zorlayan bir kapı **yok** — beyan edilmiş **zayıf kontrol**; tek koruma disiplin + **commit sıklığı**.
 - **K57‑b** — `araclar/radar.py` **plugin 0.2.0 ile BAYT-ÖZDEŞ** (`46E3A8BC`); proje-yerel not **eklenmez** ⇒ sapma **tek sha ile** ölçülür.
 - **K58** — `DURUM.md` tavanı **12 → 32 KB**. Gerekçe okuma kapasitesi **değil**: ① R4 freni, ② dikkat (3,5k token okunur, 40k *göz gezdirilir*). Gevşetmenin dayanağı: bayat-atıf sınıfı **mekanikleşti**. 🔴 Tavanı **hiçbir kapı zorlamıyor** — beyan edilmiş **zayıf kontrol**; ilk ısırışta `belge-tavan-kapisi.py` yazılır. Ayrıca `PROJE_HAFIZA.md`'ye **mekanik dizin** (`hafiza-dizin.py`); **yeni checkpoint `<!-- DIZIN:SON -->` ALTINA** eklenir.
 - **K55** — Başka bir el çalışırken `git add -A` **YASAK**; `urun_kodu_satiri` = *"o oturumda repoya giren ürün kodu, **hangi el olursa olsun**"*.
@@ -106,6 +107,7 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 - **Başka bir el çalışırken `git add -A` YASAK** — commit'lenmemiş işini kör alır (ölçüldü: `dee6dbc`). Yol belirterek `git add <yol>` yap.
 - **`flutter test --platform chrome` bu ortamda SONUÇ ÜRETMİYOR** (iki ölçüm: 7 dk ve 9,8 dk) ⇒ web test ayağı `[DOĞRULANMADI]`.
 - **pub.dev HTML sayfaları BAYAT** — kanıt yalnız `/api/` ucudur (spec Z10). · `.ps1`'e Türkçe yol literali yazma. · `kasif` skill'ini **Cowork çağıramaz**; Onur `/kasif` yazar.
+- 🔴 **`io.open(yol,"w")` DOSYAYI ÖNCE BOŞALTIR** — encode hatası gelirse dosya **0 bayt** kalır (oturum 31: 542 KB arşiv gitti, `git restore` kurtardı). **Python'da `"\ud83d\udd3b"` iki `\u` kaçışı olarak yazılırsa BİRLEŞMEZ**, yalnız vekil karakter olur ve `encode` patlar; emoji için `\U0001F53B` yaz. Kural: **K60 atomik yazım**.
 - **`flutter test` Desktop Commander kabuğunda ÇÖKÜYOR** — `%PROGRAMFILES(X86)% environment variable not found` (ölçüldü: değişken `os.environ`'da **yok**, dizin diskte **var**). ⇒ alt sürece `PROGRAMFILES(X86)=C:\Program Files (x86)` **enjekte et**; kalkanla test 36/36 geçti. Bu bir **ortam** kusurudur, ürün kusuru değil.
 
 ---
@@ -117,7 +119,8 @@ Sonra: **K42-d adım 3** (senkron kuyruğu + `POST /v1/sync`) → **adım 4** (S
 - 🔴 **`pub-surum-olc.py`'ye ÇÖZÜMLENEBİLİRLİK AYAĞI [Z10b]** — araç **sürümü** ölçüyor, **çözülebilirliği** ölçmüyor. Kalkan gelene dek **her pin `pub get` ile doğrulanır**.
 - 🔴 **Defter dürüstlük kusurları [D-kapısı buldu]** — `D3`: `docs/ADR/0003` tur 8 kaydının zorunlu alanları eksik. `D2`: aynı defterde **tur 1 atlanmış**. Append-only ⇒ **düzeltme kaydı**.
 - ✅ **KAPANDI [K59]:** *"Spec kriter 6/7 ölçülmedi"* — araç adları yazıldı, rakamlar ölçüldü, muafiyet **silindi**.
-- 🔴 **A2 KANITI EKSİK (Claude Code'da)** — kanıt **6** ad taşıyor, **8** gerekiyor. Kök neden **ölçüldü**: tek yakalama 8'i **gösteremez** (çakışma rozeti yalnız vitrinde, giriş alanı/ekran yalnız gerçek ekranda) ⇒ K59 **iki yakalama** şart koştu. Ayrıca `widget-tree.json` **JSON değil prozadır**.
+- ✅ **KAPANDI [oturum 31]:** *A2 kanıtı eksik* — iki ham ağaç yazıldı (`widget-tree-vitrin.json` `574223D0` · `widget-tree-gercek-ekran.json` `6C5D431A`), **Cowork ikisini de `json.loads` ile ayrıştırdı**, birleşim **8/8**. `HUKUM.md` (`D6AC8377`) artık **düğüm kimliklerine** atıf yapıyor — beyan değil **çıktı**.
+- 🟡 **`radar.py` R5'in CÜMLESİ KAPSAMINI AŞIYOR [ölçüldü, oturum 31]** — R5 artefaktın **kendi son kaydındaki** `gorunen_cikti_yuzde` alanını okur ama *"**projenin** GÖRÜNEN ÇIKTISI hâlâ %0"* diye yazar. Yeni kayıt %35 derken park edilmiş eski artefaktlar hâlâ %0 bağırıyor. Kusur **metinde**, ölçümde değil. Onarım **üst akış plugin'inde** (K57‑b bayt-özdeşliği bozulmasın); ayrı el (K34‑f).
 - 🟡 **`radar --olc-urun-kodu` ÇALIŞMA AĞACINI GÖRMEZ** — yalnız commit'lenmiş farkı sayar. İki elin eşzamanlı çalıştığı bu projede **R8'i yanlış-pozitif yapar** (oturum 31'de fiilen yaktı; gerçek ölçüm **61 satır**). R8 KIRMIZI yandığında **önce çalışma ağacı ölçülür**. Onarım ayrı ele (K34‑f); üst akış plugin'de de aynı boşluk var.
 - 🟡 **`KANIT/slice-3b/04-G3/gercek-tarama.txt` 1,9 MB** — portfolyo reposuna 2 MB ham JSON kanıt değil **yüktür**; ilgili kesit + sha yeterdi.
 - 🟡 **M2b beyanının tersi ölçüldü** — spec/DESIGN A‑4 *"çok satırlı `/* */` içindeki literal KAÇABİLİR"* diyordu; kapı onu **yakaladı** ⇒ `yorum_disi()` yorumu soymuyor, yani **yorum içindeki literali de kod sayıyor** (kaçırma değil, yanlış-pozitif yönü). A‑4 beyanı bu ölçüme göre yeniden okunmalı.
