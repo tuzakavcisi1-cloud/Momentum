@@ -74,7 +74,9 @@ Ayrıca: `RejectedInvalid` dedup'a **kaydedilmiyor** (kodda ERRATA) ⇒ yeniden 
 
 **SIRADAKİ İŞ (bir sonraki oturum ÜRÜN KODUYLA başlar — R8):** ✅ Spec **onaylandı ve kilitlendi (K64)** → **Claude Code build** (spec'i kökten aç: `GOREV_CLAUDE_CODE\GOREV-slice-3c-senkron.md`) → dönüşte Cowork **bağımsız** doğrular (K26): sekiz kapı tek tek koşulur, **36 mutantın ısırdığı** ölçülür, KANIT sökülür. **Kâğıt turu KAPANDI** (K53 madde 1 tavanı: bir tur koştu, bulguları kapatıldı).
 
-🟡 **Elde kalan tek artık:** `KANIT/slice-3b/01-G1-android/widget-tree.json` (345 b, JSON değil proza) — takipsiz, tarihe hiç girmedi. **Onur silecek** (oturum 32 kararı); Cowork dokunmaz.
+✅ **ARTIK TEMİZLENDİ + PUSH EDİLDİ (oturum 32 kapanışı, ÖLÇÜLDÜ):** `KANIT/slice-3b/01-G1-android/widget-tree.json` **Onur tarafından silindi** (`os.path.exists` ⇒ `False`) · `git status --porcelain` ⇒ **tamamen boş** · `rev-list --left-right --count origin/main...HEAD` ⇒ **`0	0`** (iki commit `978d2c5`, `1c29908` uzakta).
+🔵 **ŞU AN:** spec **Claude Code'a verildi**, kod yazımı **devam ediyor**. Cowork **beklemede** — K55 gereği başka el çalışırken `git add -A` **yasak**; Cowork yalnız kendi yollarını commit'ler.
+**Dönüşte Cowork'ün işi (K26, pazarlıksız):** builder'ın *"hepsi yeşil"* beyanına **güvenilmez**; sekiz kapı **Cowork tarafından yeniden koşulur**, **36 mutantın ısırdığı** tek tek ölçülür, KANIT artefaktları **sökülür** (özellikle `G6` ayak 3'ün içerik SQL çıktısı ve ayak 4'ün `processed_operations` sayımı — bu ikisi v1'in kör noktalarıydı).
 
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
