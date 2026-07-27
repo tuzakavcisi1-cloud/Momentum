@@ -46,6 +46,7 @@ VARSAYILAN_KAPSAM = [
     ("CLAUDE.md", "canli"),
     ("DESIGN.md", "kilitli"),
     ("GOREV_CLAUDE_CODE/GOREV-slice-3b-istemci-iskeleti.md", "kilitli"),
+    ("GOREV_CLAUDE_CODE/GOREV-slice-3c-senkron.md", "kilitli"),  # K64 -- v2 onaylandi
     ("araclar/radar.py", "kilitli"),
     ("araclar/adr-kapi-taramasi.py", "kilitli"),
 ]

@@ -58,7 +58,7 @@ Bağımsız doğrulandı (K26): `src/backend/Momentum.Api/Program.cs` **satır 4
 
 **Ölçülen istemci yüzeyi:** Drift'te tek tablo `Gorevler` (`src/client/lib/veri/veritabani.dart`) — **kuyruk tablosu YOK**, slice-3c'de doğacak.
 
-✅ **SPEC v2 YAZILDI (oturum 32) — İKİ BAĞIMSIZ DENETÇİ v1'İ KIRDI.** `GOREV_CLAUDE_CODE/GOREV-slice-3c-senkron.md` — **41.692 b · `537D0579`** · **v2, Onur'un onayı bekleniyor** (onaylanınca §9'daki donmuş tabloya girer). **v1 (`5899A220`) GEÇERSİZDİR.**
+🔒 **SPEC v2 KİLİTLENDİ (K64 — Onur onayladı, 27 Tem 2026).** `GOREV_CLAUDE_CODE/GOREV-slice-3c-senkron.md` — **41.692 b · `537D0579`**. **v1 (`5899A220`) GEÇERSİZDİR.** Artık `tek-kopya-kapisi.py` kapsamında **`kilitli`** sınıfındadır ⇒ tek baytlık sapma **her açılışta ölçülür**. **İKİ BAĞIMSIZ DENETÇİ v1'İ KIRDI:**
 **Ölçüldü:** 8 kapı (`G1`–`G8`) · 10 kural (`D0`–`D9`) · **36 mutant** (`M1`–`M36`) · `spec-kapi-kapsama.py` **EXIT 0**. Koşan-uygulama mutantı **tam üç** (`M34` idempotens · `M35` içerik · `M36` clamp) — K53 madde 3 tavanı üç.
 **Denetim ölçümü: 10 bloker · 12 önemli · 8 not; 30'u kapatıldı, 3 sınır beyan edilerek açık bırakıldı.** Altı bulguyu **iki denetçi birden** buldu.
 🔴 **Dördü "tüm kapılardan yeşil geçen" veri kaybıydı:** ① `actorId` kilitsizdi (`SyncIngest` dört zarf alanını boş-GUID olamaz diye şart koşuyor ⇒ atlanırsa **kuyruğun tamamı kalıcı karantinaya** düşer; rastgele GUID konursa outbox **yanlış aktöre** etiketlenir) · ② alan/grup yazımlarının **kendi HLC'si** spec'te yoktu (`hlc` atlanırsa **500**, ve `D5` 5xx'i hiç sınıflandırmıyordu) · ③ `durum='gonderildi'`in **çıkışı yoktu** (yanıt gelmeden çökme ⇒ satır bir daha **asla seçilmez**) · ④ **sunucu HLC clamp'i hiç anılmamıştı** (saat 6 dk ileriyken iki ardışık düzenleme aynı tavana kırpılır ⇒ damgalar eşitlenir ⇒ tie-break rastgele `opId` ⇒ **%50 olasılıkla son yazılan değer kaybolur, hiçbir kapı yanmaz**).
@@ -72,7 +72,7 @@ Bağımsız doğrulandı (K26): `src/backend/Momentum.Api/Program.cs` **satır 4
 ③ **Grup yazımı REPLACE'tir** — `completion` yazılırken `status` **ve** `completedAt` daima birlikte yazılır, yoksa yazılmayan üye kaybolur.
 Ayrıca: `RejectedInvalid` dedup'a **kaydedilmiyor** (kodda ERRATA) ⇒ yeniden deneme çözmez, karantina zorunlu · `MaterializeAsync`/`SnapshotAsync` **actorId'ye bağlı** ⇒ dev kimliğin `UserId`'si oturumlar arası **kararlı** olmak zorunda.
 
-**SIRADAKİ İŞ (bir sonraki oturum ÜRÜN KODUYLA başlar — R8):** Onur spec v2'yi onaylar → **Claude Code build** → dönüşte Cowork **bağımsız** doğrular (K26): sekiz kapı tek tek koşulur, **36 mutantın ısırdığı** ölçülür, KANIT sökülür. **Kâğıt turu KAPANDI** (K53 madde 1 tavanı: bir tur koştu, bulguları kapatıldı).
+**SIRADAKİ İŞ (bir sonraki oturum ÜRÜN KODUYLA başlar — R8):** ✅ Spec **onaylandı ve kilitlendi (K64)** → **Claude Code build** (spec'i kökten aç: `GOREV_CLAUDE_CODE\GOREV-slice-3c-senkron.md`) → dönüşte Cowork **bağımsız** doğrular (K26): sekiz kapı tek tek koşulur, **36 mutantın ısırdığı** ölçülür, KANIT sökülür. **Kâğıt turu KAPANDI** (K53 madde 1 tavanı: bir tur koştu, bulguları kapatıldı).
 
 🟡 **Elde kalan tek artık:** `KANIT/slice-3b/01-G1-android/widget-tree.json` (345 b, JSON değil proza) — takipsiz, tarihe hiç girmedi. **Onur silecek** (oturum 32 kararı); Cowork dokunmaz.
 
@@ -80,6 +80,7 @@ Ayrıca: `RejectedInvalid` dedup'a **kaydedilmiyor** (kodda ERRATA) ⇒ yeniden 
 
 - **K61** — **Dev-kimlik kalkanı (şık 1) KİLİTLİ:** yalnız `Development`'ta `DevCurrentUser` (**`X-Momentum-Dev-User`** → `UserId`; başlık yok/bozuk ⇒ 401, sessiz varsayılan kullanıcı YOK); **üretimde `NullCurrentUser` korunur ve bunu bir MUTANT kanıtlar** (`Production` ⇒ 401). `UserId` ⟂ `ClientId`. ADR 0003 **donmuş kalır** (K41). Beyan edilen sınır: bu bir kimlik **çözümü değil**, ölçüm **iskelesidir**.
 - **K62** — **slice-3c tasarım kilitleri (`D0`–`D9`), spec v2:** kanal eşlemesi (`tamamlandi` → `Groups["completion"]`, `isDeleted` = tam `"true"`, `status` ∈ {`done`,`open`}, grup yazımı **REPLACE**) · kuyruk gövdesi **üretim anında donar**, sıra `(wall, counter, opId)` · HLC **monoton + KALICI + TAVANLI** (`now+300000`) ve sunucu damgasıyla **birleşir** · batch **≤ 100** + **tek uçuş** · zehirli op **karantina**, `cakisma` **kilitlenir** · **`D7`** zarf (`operationId`/`clientId`/`entityId`/`actorId` boş-GUID olamaz; her yazımın **kendi HLC'si**) · **`D8`** `Gorevler`+kuyruk **tek transaction**, `gonderildi → bekliyor` **kurtarma** · **`D9`** HTTP sınıflandırma (400 ⇒ tur durur; deneme tavanı 8) · **yalnız push**, çekme **uygulanmaz**.
+- **K64** — **Spec v2 KİLİTLİ: 41.692 b · `537D0579`** (Onur onayladı, 27 Tem 2026). Değişen her bayt kilidi bozar; dosya `tek-kopya-kapisi.py` kapsamında **`kilitli`** sınıfına alındı ⇒ sapma **açılış protokolü adım 2'de** ölçülür. **`5899A220` (v1) GEÇERSİZDİR.**
 - **K63** — **Spec v1 (`5899A220`) GEÇERSİZ; v2 geçerlidir.** İki bağımsız denetçi v1'i kırdı: 10 bloker · 12 önemli · 8 not (30 kapatıldı, 3 sınır beyan edildi). **Kendi mutantlarımdan `M13` eşdeğerdi (iptal), `M14`'ün beklenen sonucu olgusal olarak yanlıştı** (`tasks` upsert'tir). Kural: **ısırmayan mutant kapıyı gevşetmez — önce kapı düzeltilir** (K60'ın M2b emsali).
 - **K53** — Verimlilik reformu: kâğıt denetim turu tavanı **1** · radar KIRMIZI'da varsayılan **DEVRET** · koşan-uygulama-mutant tavanı **3** · iki oturum 0 ürün kodu = **sert durak (`R8` — K57'de `R7`'den yeniden adlandırıldı)** · hafıza bölündü.
 - **K59** — Spec **v6, KİLİTLİ**: **44.560 b · `F0C3A75A`**. **`6056A5BB`, `79A53AA3`, `BE4581BA`, `1AB02B73` GEÇERSİZ.** ① **A2 iki yakalama** ister (vitrin + gerçek ekran, ham JSON, birleşimde 8 ad) — gevşetme **değil**, sağlanamaz şartın sağlanabilir ve **daha pahalı** hâli; gerekçe §5/G1'de ölçümle yazılı. ② Kriter **6·7·8**'e araç adı + ölçülen rakamlar (`8/8`, `6/6`, `18/18`) ⇒ `sayi-tazeligi.py` artık bu satırları **mekanik** doğruluyor, **muafiyet kalmadı**.
@@ -180,6 +181,7 @@ python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GO
 |---|---|---|---|
 | `DESIGN.md` | 15.742 | `534DFF68` | **K46** — tek bayt yazılamaz |
 | `GOREV-slice-3b-istemci-iskeleti.md` | **44.560** | **`F0C3A75A`** | 🔒 **K59 kilidi (v6)** — değişen her bayt kilidi bozar. `6056A5BB` · `79A53AA3` · `BE4581BA` · `1AB02B73` **geçersizdir** |
+| `GOREV-slice-3c-senkron.md` | **41.692** | **`537D0579`** | 🔒 **K64 kilidi (v2, Onur onayladı 27 Tem 2026)** — `5899A220` (v1) **GEÇERSİZDİR**. `tek-kopya-kapisi.py` kapsamında **`kilitli`** sınıfındadır ⇒ sapma **her açılışta ölçülür** |
 | `araclar/radar.py` | 28.878 | `46E3A8BC` | **K57‑b** — plugin 0.2.0 ile bayt-özdeş; sapma tek sha ile ölçülür |
 | `araclar/adr-kapi-taramasi.py` | 50.582 | `A22841F2` | **K34-f** tutuyor; ADR donduruldu |
 
