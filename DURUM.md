@@ -43,30 +43,44 @@
 
 ## 4. SIRADAKİ İŞ
 
-✅ **slice-3b (K42-d adım 2) KAPANDI.** A2 K59'a göre yeniden ölçüldü (iki ham ağaç), Cowork **her iki JSON'u kendi ayrıştırıp** birleşimi çıkardı: **8/8, eksik yok**. Commit **`5df3caf`** — 72 yol **tek tek** eklendi (K55).
+✅ **slice-3b (K42-d adım 2) KAPANDI** — commit `5df3caf`, A2 8/8 (iki ham ağaç, birleşimi Cowork ayrıştırdı).
 
-**AÇILIŞTA İLK İŞ:** `git --no-optional-locks rev-list --left-right --count origin/main...HEAD` ile **push edilip edilmediğini ÖLÇ** (oturum 31 sonunda 3 commit ileriydi; **push Onur'dadır**).
+✅ **PUSH ÖLÇÜLDÜ (oturum 32 açılışı):** `git --no-optional-locks rev-list --left-right --count origin/main...HEAD` ⇒ **`0	0`**. `origin/main` HEAD ile **aynı commit'te** — oturum 31'in *"2 commit ileride, push edilmedi"* satırı **bayattı**. Bu satır bir daha **yazılmaz, her açılışta ÖLÇÜLÜR** (§3 git satırı zaten böyle diyordu).
 
-**SIRADAKİ: K42-d adım 3 — senkron kuyruğu + `POST /v1/sync`.**
+**SIRADAKİ: K42-d adım 3 → `slice-3c` — senkron kuyruğu + `POST /v1/sync`.**
 
-🔴 **ÖNCE ONUR'UN KARARI — ÖLÇÜLMÜŞ ENGEL (oturum 31):** Backend senkron yüzeyi **zaten tam**: `SyncEndpoints.cs` (`MapPost /v{version}/sync`), `SyncCommandHandler`, `SyncStore/SyncPuller/SyncTransaction`, `SyncCursor`, `SyncIngest`, `ResyncPolicy`, `InitialSync` migration, `SyncRoundTripTests` + `ClampAndResyncProperties`. Sözleşme tipleri: `SyncRequest/SyncResponse`, `WireOp`, `WireHlc(WallMs, Counter, ClientId)`, `WireCursor(Xid, Seq)`, `WireFieldWrite`, `WireSetAdd/Remove/Delta`, `WireGroupWrite`, `WireSnapshot*`, `SignalEnvelope`.
-**AMA:** `Program.cs` → `AddScoped<ICurrentUser, NullCurrentUser>()` (deny-by-default, K-D5 / K2-E3) ⇒ uçta `currentUser.UserId is not { } → Results.Unauthorized()`. **Her istek 401.** Kimlik çekirdeği ADR 0003 ise **K41 ile DONDURULMUŞ**. Yani istemci kuyruğu **uçtan uca kanıtlanamaz**; kanıtsız kapı bu projede kapı sayılmaz.
+🔒 **ENGEL ÇÖZÜLDÜ — K61 (Onur kilitledi, 27 Tem 2026, oturum 32): ŞIK 1, geçici dev-kimlik kalkanı.**
+Bağımsız doğrulandı (K26): `src/backend/Momentum.Api/Program.cs` **satır 45** `AddScoped<ICurrentUser, NullCurrentUser>()` (deny-by-default, K-D5), **satır 121** uçta `GetRequiredService<ICurrentUser>()` ⇒ `POST /v1/sync` bugün **her istekte 401**.
+**Kilitlenen çözüm:** yalnız `Development`'ta **`X-Momentum-Dev-User`** başlığındaki GUID'den `UserId` okuyan `DevCurrentUser` (başlık yok/bozuksa `UserId = null` ⇒ 401; **sessiz varsayılan kullanıcı YOK**); **üretimde `NullCurrentUser` KORUNUR** ve bunu bir **mutant** kanıtlar (ortamı `Production` yap ⇒ istek **401 dönmeli**; dönmezse kapı kördür). **ADR 0003 DONMUŞ kalır (K41 açılmadı).**
+🟡 **Beyan edilen sınır:** `DevCurrentUser` kimlik çözümü **değildir**, ölçüm iskelesidir. Gerçek kimlik hâlâ ADR 0003'ün borcu; slice-3c bu borcu **kapatmaz**, etrafından **ölçer**.
 
-**ŞIKLAR (Cowork seçmedi — kilit Onur'dan):**
-1. **Geçici dev-kimlik kalkanı** — yalnız `Development` ortamında `X-Momentum-Client` başlığından `UserId` üreten `DevCurrentUser`; **üretimde `NullCurrentUser` korunur** ve bunu bir test **mutantla** kanıtlar. ADR 0003 donmuş kalır, adım 3 uçtan uca ölçülebilir. *(Cowork'ün önerisi — en az kilit bozar, en çok kanıt üretir.)*
-2. **ADR 0003'ü çöz** — K41'in üç şartı + açık onay. Doğru ama sırayı bozar, en pahalı yol.
-3. **Adım 3'ü ikiye böl** — istemci tarafı kuyruk + `WireOp` üretimi + **401'i doğru ele alma** (çevrimdışı biriktir, kimlik yokken `SenkronRozeti` "kimlik yok" durumuna düşsün). Ağ ayağı kanıtlanır, uçtan uca akış **kanıtlanmaz** ve bu **beyan edilir**.
+**Backend senkron yüzeyi zaten TAM** (yeniden yazılmayacak): `SyncEndpoints.cs` (`MapPost /v{version}/sync`), `SyncCommandHandler`, `SyncStore/SyncPuller/SyncTransaction`, `SyncCursor`, `SyncIngest`, `ResyncPolicy`, `InitialSync` migration, `SyncRoundTripTests` + `ClampAndResyncProperties`. Sözleşme: `SyncRequest/SyncResponse`, `WireOp`, `WireHlc(WallMs, Counter, ClientId)`, `WireCursor(Xid, Seq)`, `WireFieldWrite`, `WireSetAdd/Remove/Delta`, `WireGroupWrite`, `WireSnapshot*`, `SignalEnvelope`.
 
-Şık kilitlenince: spec `GOREV_CLAUDE_CODE/GOREV-slice-3c-senkron.md` olarak yazılır (kapılar + mutantlar + `spec-kapi-kapsama.py` EXIT 0 + `sayi-tazeligi.py` EXIT 0), yazımı Claude Code yapar, dönüşte Cowork **bağımsız** doğrular (K26).
+**Ölçülen istemci yüzeyi:** Drift'te tek tablo `Gorevler` (`src/client/lib/veri/veritabani.dart`) — **kuyruk tablosu YOK**, slice-3c'de doğacak.
 
-**Ölçülen istemci yüzeyi:** Drift'te tek tablo `Gorevler` (`src/client/lib/veri/veritabani.dart`) — **kuyruk tablosu YOK**, adım 3'te doğacak.
+✅ **SPEC v2 YAZILDI (oturum 32) — İKİ BAĞIMSIZ DENETÇİ v1'İ KIRDI.** `GOREV_CLAUDE_CODE/GOREV-slice-3c-senkron.md` — **41.692 b · `537D0579`** · **v2, Onur'un onayı bekleniyor** (onaylanınca §9'daki donmuş tabloya girer). **v1 (`5899A220`) GEÇERSİZDİR.**
+**Ölçüldü:** 8 kapı (`G1`–`G8`) · 10 kural (`D0`–`D9`) · **36 mutant** (`M1`–`M36`) · `spec-kapi-kapsama.py` **EXIT 0**. Koşan-uygulama mutantı **tam üç** (`M34` idempotens · `M35` içerik · `M36` clamp) — K53 madde 3 tavanı üç.
+**Denetim ölçümü: 10 bloker · 12 önemli · 8 not; 30'u kapatıldı, 3 sınır beyan edilerek açık bırakıldı.** Altı bulguyu **iki denetçi birden** buldu.
+🔴 **Dördü "tüm kapılardan yeşil geçen" veri kaybıydı:** ① `actorId` kilitsizdi (`SyncIngest` dört zarf alanını boş-GUID olamaz diye şart koşuyor ⇒ atlanırsa **kuyruğun tamamı kalıcı karantinaya** düşer; rastgele GUID konursa outbox **yanlış aktöre** etiketlenir) · ② alan/grup yazımlarının **kendi HLC'si** spec'te yoktu (`hlc` atlanırsa **500**, ve `D5` 5xx'i hiç sınıflandırmıyordu) · ③ `durum='gonderildi'`in **çıkışı yoktu** (yanıt gelmeden çökme ⇒ satır bir daha **asla seçilmez**) · ④ **sunucu HLC clamp'i hiç anılmamıştı** (saat 6 dk ileriyken iki ardışık düzenleme aynı tavana kırpılır ⇒ damgalar eşitlenir ⇒ tie-break rastgele `opId` ⇒ **%50 olasılıkla son yazılan değer kaybolur, hiçbir kapı yanmaz**).
+🔴 **`G6` sunucudaki İÇERİĞİ hiç ölçmüyordu** — `title` boş dize yazan bir teslim **on kabul kriterini de yeşil geçiyordu**. v2'de içerik ayağı (`SELECT title, status, completed_at, is_deleted`) **pazarlıksızdır**.
+🔴 **Kendi mutantlarımdan ikisi çürütüldü:** `M13` **eşdeğer mutanttı** (iptal) · `M14`'ün *"DB'de kopya doğar"* iddiası **olgusal olarak yanlıştı** (`EntityMaterializer` `ON CONFLICT (entity_id) DO UPDATE` ⇒ `tasks`'ta kopya **doğamaz**); hüküm dayanağı `processed_operations` sayımına taşındı.
+**Kilitlenen dört tasarım kararı (Onur, oturum 32):** ① ayrı `X-Momentum-Dev-User` başlığı (UserId ⟂ ClientId) · ② alan kapsamı `title` + `isDeleted` + **`completion` grubu** · ③ zehirli op **karantina** + çakışma rozeti (silme YOK) · ④ **yalnız push**; çekme yanıtı okunur, **uygulanmaz**.
 
-🟡 **Elde kalan tek artık:** `KANIT/slice-3b/01-G1-android/widget-tree.json` (345 b, JSON değil proza) — takipsiz, **tarihe hiç girmedi**. Kalıcı silme **Onur'un yetkisinde**; Cowork silmez.
+🔴 **SPEC'İN OMURGASI OLAN ÜÇ ÖLÇÜM (devir notunda yoktu, gerçek koddan okundu):**
+① `tamamlandi` **`Groups["completion"]`**'a gider — `Fields`'e konursa `RejectedRegistryViolation` ve **op BÜTÜN olarak** reddedilir (remap yok, ADR H11).
+② `isDeleted` değeri **tam olarak `"true"`** dizesi (`EntityState.cs` `DeletedValue` + Ordinal) — `"True"` **reddedilmez**, sessizce *silinmemiş* sayılır. Bu dilimin en pahalı sessiz kusuru.
+③ **Grup yazımı REPLACE'tir** — `completion` yazılırken `status` **ve** `completedAt` daima birlikte yazılır, yoksa yazılmayan üye kaybolur.
+Ayrıca: `RejectedInvalid` dedup'a **kaydedilmiyor** (kodda ERRATA) ⇒ yeniden deneme çözmez, karantina zorunlu · `MaterializeAsync`/`SnapshotAsync` **actorId'ye bağlı** ⇒ dev kimliğin `UserId`'si oturumlar arası **kararlı** olmak zorunda.
 
----
+**SIRADAKİ İŞ (bir sonraki oturum ÜRÜN KODUYLA başlar — R8):** Onur spec v2'yi onaylar → **Claude Code build** → dönüşte Cowork **bağımsız** doğrular (K26): sekiz kapı tek tek koşulur, **36 mutantın ısırdığı** ölçülür, KANIT sökülür. **Kâğıt turu KAPANDI** (K53 madde 1 tavanı: bir tur koştu, bulguları kapatıldı).
+
+🟡 **Elde kalan tek artık:** `KANIT/slice-3b/01-G1-android/widget-tree.json` (345 b, JSON değil proza) — takipsiz, tarihe hiç girmedi. **Onur silecek** (oturum 32 kararı); Cowork dokunmaz.
 
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
+- **K61** — **Dev-kimlik kalkanı (şık 1) KİLİTLİ:** yalnız `Development`'ta `DevCurrentUser` (**`X-Momentum-Dev-User`** → `UserId`; başlık yok/bozuk ⇒ 401, sessiz varsayılan kullanıcı YOK); **üretimde `NullCurrentUser` korunur ve bunu bir MUTANT kanıtlar** (`Production` ⇒ 401). `UserId` ⟂ `ClientId`. ADR 0003 **donmuş kalır** (K41). Beyan edilen sınır: bu bir kimlik **çözümü değil**, ölçüm **iskelesidir**.
+- **K62** — **slice-3c tasarım kilitleri (`D0`–`D9`), spec v2:** kanal eşlemesi (`tamamlandi` → `Groups["completion"]`, `isDeleted` = tam `"true"`, `status` ∈ {`done`,`open`}, grup yazımı **REPLACE**) · kuyruk gövdesi **üretim anında donar**, sıra `(wall, counter, opId)` · HLC **monoton + KALICI + TAVANLI** (`now+300000`) ve sunucu damgasıyla **birleşir** · batch **≤ 100** + **tek uçuş** · zehirli op **karantina**, `cakisma` **kilitlenir** · **`D7`** zarf (`operationId`/`clientId`/`entityId`/`actorId` boş-GUID olamaz; her yazımın **kendi HLC'si**) · **`D8`** `Gorevler`+kuyruk **tek transaction**, `gonderildi → bekliyor` **kurtarma** · **`D9`** HTTP sınıflandırma (400 ⇒ tur durur; deneme tavanı 8) · **yalnız push**, çekme **uygulanmaz**.
+- **K63** — **Spec v1 (`5899A220`) GEÇERSİZ; v2 geçerlidir.** İki bağımsız denetçi v1'i kırdı: 10 bloker · 12 önemli · 8 not (30 kapatıldı, 3 sınır beyan edildi). **Kendi mutantlarımdan `M13` eşdeğerdi (iptal), `M14`'ün beklenen sonucu olgusal olarak yanlıştı** (`tasks` upsert'tir). Kural: **ısırmayan mutant kapıyı gevşetmez — önce kapı düzeltilir** (K60'ın M2b emsali).
 - **K53** — Verimlilik reformu: kâğıt denetim turu tavanı **1** · radar KIRMIZI'da varsayılan **DEVRET** · koşan-uygulama-mutant tavanı **3** · iki oturum 0 ürün kodu = **sert durak (`R8` — K57'de `R7`'den yeniden adlandırıldı)** · hafıza bölündü.
 - **K59** — Spec **v6, KİLİTLİ**: **44.560 b · `F0C3A75A`**. **`6056A5BB`, `79A53AA3`, `BE4581BA`, `1AB02B73` GEÇERSİZ.** ① **A2 iki yakalama** ister (vitrin + gerçek ekran, ham JSON, birleşimde 8 ad) — gevşetme **değil**, sağlanamaz şartın sağlanabilir ve **daha pahalı** hâli; gerekçe §5/G1'de ölçümle yazılı. ② Kriter **6·7·8**'e araç adı + ölçülen rakamlar (`8/8`, `6/6`, `18/18`) ⇒ `sayi-tazeligi.py` artık bu satırları **mekanik** doğruluyor, **muafiyet kalmadı**.
 - **K57** — Spec v5 (`6056A5BB`): on **bayat çapraz-atıf** düzeltildi; özü değişmedi. Onuncuyu, kilitten **sonra** doğan `sayi-tazeligi.py` buldu. Ayrıntı: `PROJE_HAFIZA.md` K57.
@@ -129,6 +143,9 @@
 
 ## 8. AÇIK BORÇLAR (adlandırılmış, gizlenmemiş)
 
+- ✅ **KAPANDI [K63]:** *"slice-3c spec'i bağımsız denetimden geçmedi"* — Onur yanlış anlamayı düzeltti, **denetim koştu ve spec v1'i KIRDI** (10 bloker · 12 önemli · 8 not; 30 kapatıldı). **K26 SAĞLANDI.** Ders kayda geçti: *beyan edilmiş bir eksik, kapatılmamış bir eksiktir* — beyan onu ucuzlatmaz, yalnız görünür kılar.
+- 🔴 **SAYI ↔ LİSTE TUTARSIZLIĞI: Cowork'ün TEKRAR EDEN kusuru, mekanik kapısı YOK [oturum 32, iki kez ölçüldü]** — v1'de *"on altı mutant · `M1`–`M16`"* denirken tabloda **17** satır vardı (denetçi buldu); v2'yi yazarken **aynı kusuru tekrar ürettim** (*"otuz iki"* ⇄ 36 satır) ve kapıyı koşmadan önce kendim yakaladım. `spec-kapi-kapsama.py` mutantları **sayar** ama belgenin **kendi sayı iddiasıyla** karşılaştırmaz; `sayi-tazeligi.py` yalnız `"altın küme N/M"` imzalı satırlara bakar ⇒ **ikisi de bu sınıfa kördür**. İlk ısırışta araç yazılır (K44-a: **önce araç, sonra belge**). Bu ısırış **ikinci**dir.
+- 🟡 **Çekme (pull) yakınsaması slice-3c'de KANITLANMAYACAK** — `D6` beyan edilmiş sınırı: `changes`/`snapshot` Drift'e uygulanmaz, yalnız `nextCursor` saklanır. İki cihazın yakınsaması **slice-3d borcudur**.
 - **`DESIGN.md` BD‑1…BD‑7** — **K46 gereği kapatılmadı**; liste spec §10'da. BD‑6'nın bayat sayısı `sayi-tazeligi.py`'de **gerekçeli muafiyet** olarak görünür.
 - ✅ **KAPANDI [K57]:** `radar.py` kopyası GERİDE · Spec T2/Z10 kilit düzeltmesi.
 - 🔴 **`pub-surum-olc.py`'ye ÇÖZÜMLENEBİLİRLİK AYAĞI [Z10b]** — araç **sürümü** ölçüyor, **çözülebilirliği** ölçmüyor. Kalkan gelene dek **her pin `pub get` ile doğrulanır**.
