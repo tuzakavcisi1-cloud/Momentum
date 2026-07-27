@@ -47,8 +47,19 @@
 
 **AÇILIŞTA İLK İŞ:** `git --no-optional-locks rev-list --left-right --count origin/main...HEAD` ile **push edilip edilmediğini ÖLÇ** (oturum 31 sonunda 3 commit ileriydi; **push Onur'dadır**).
 
-**SIRADAKİ: K42-d adım 3 — senkron kuyruğu + `POST /v1/sync`** → sonra **adım 4** (SignalR `SyncHub`).
-Bu adım **kod işidir**: spec tasarımı Cowork'te şıklarla kilitlenir, yazımı Claude Code yapar, dönüşte Cowork **bağımsız** doğrular (K26).
+**SIRADAKİ: K42-d adım 3 — senkron kuyruğu + `POST /v1/sync`.**
+
+🔴 **ÖNCE ONUR'UN KARARI — ÖLÇÜLMÜŞ ENGEL (oturum 31):** Backend senkron yüzeyi **zaten tam**: `SyncEndpoints.cs` (`MapPost /v{version}/sync`), `SyncCommandHandler`, `SyncStore/SyncPuller/SyncTransaction`, `SyncCursor`, `SyncIngest`, `ResyncPolicy`, `InitialSync` migration, `SyncRoundTripTests` + `ClampAndResyncProperties`. Sözleşme tipleri: `SyncRequest/SyncResponse`, `WireOp`, `WireHlc(WallMs, Counter, ClientId)`, `WireCursor(Xid, Seq)`, `WireFieldWrite`, `WireSetAdd/Remove/Delta`, `WireGroupWrite`, `WireSnapshot*`, `SignalEnvelope`.
+**AMA:** `Program.cs` → `AddScoped<ICurrentUser, NullCurrentUser>()` (deny-by-default, K-D5 / K2-E3) ⇒ uçta `currentUser.UserId is not { } → Results.Unauthorized()`. **Her istek 401.** Kimlik çekirdeği ADR 0003 ise **K41 ile DONDURULMUŞ**. Yani istemci kuyruğu **uçtan uca kanıtlanamaz**; kanıtsız kapı bu projede kapı sayılmaz.
+
+**ŞIKLAR (Cowork seçmedi — kilit Onur'dan):**
+1. **Geçici dev-kimlik kalkanı** — yalnız `Development` ortamında `X-Momentum-Client` başlığından `UserId` üreten `DevCurrentUser`; **üretimde `NullCurrentUser` korunur** ve bunu bir test **mutantla** kanıtlar. ADR 0003 donmuş kalır, adım 3 uçtan uca ölçülebilir. *(Cowork'ün önerisi — en az kilit bozar, en çok kanıt üretir.)*
+2. **ADR 0003'ü çöz** — K41'in üç şartı + açık onay. Doğru ama sırayı bozar, en pahalı yol.
+3. **Adım 3'ü ikiye böl** — istemci tarafı kuyruk + `WireOp` üretimi + **401'i doğru ele alma** (çevrimdışı biriktir, kimlik yokken `SenkronRozeti` "kimlik yok" durumuna düşsün). Ağ ayağı kanıtlanır, uçtan uca akış **kanıtlanmaz** ve bu **beyan edilir**.
+
+Şık kilitlenince: spec `GOREV_CLAUDE_CODE/GOREV-slice-3c-senkron.md` olarak yazılır (kapılar + mutantlar + `spec-kapi-kapsama.py` EXIT 0 + `sayi-tazeligi.py` EXIT 0), yazımı Claude Code yapar, dönüşte Cowork **bağımsız** doğrular (K26).
+
+**Ölçülen istemci yüzeyi:** Drift'te tek tablo `Gorevler` (`src/client/lib/veri/veritabani.dart`) — **kuyruk tablosu YOK**, adım 3'te doğacak.
 
 🟡 **Elde kalan tek artık:** `KANIT/slice-3b/01-G1-android/widget-tree.json` (345 b, JSON değil proza) — takipsiz, **tarihe hiç girmedi**. Kalıcı silme **Onur'un yetkisinde**; Cowork silmez.
 
