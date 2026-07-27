@@ -42,6 +42,7 @@ class _YuklenmeDurumuState extends State<YuklenmeDurumu> {
             SizedBox(height: MBosluk.m),
             Text(
               Metinler.yukleniyor,
+              overflow: TextOverflow.ellipsis,
               style: MTipo.govdeM.copyWith(color: MRenk.metinIkincil(context)),
             ),
           ],

@@ -1,6 +1,7 @@
-# GÖREV (Claude Code) — slice-3b: Flutter istemci iskeleti + TAM ÇEVRİMDIŞI CRUD (K42-d adım 2)  [v5]
+# GÖREV (Claude Code) — slice-3b: Flutter istemci iskeleti + TAM ÇEVRİMDIŞI CRUD (K42-d adım 2)  [v6]
 
-> 🔒 **KİLİTLİ — Onur, 26 Tem 2026 (K52 → K54 → K57 ile güncellendi).** Build başlayabilir.
+> 🔒 **KİLİTLİ — Onur, 27 Tem 2026 (K52 → K54 → K57 → K59 ile güncellendi).** Build başlayabilir.
+> **v5 → v6 DEĞİŞİKLİĞİ (K59, oturum 31 — T9 KAPANIŞININ TEK KİLİT TURU):** ① **A2 artık İKİ yakalama ister** (vitrin + gerçek ekran, **ham JSON**, birleşimde 8 ad) — bu bir **gevşetme değil**, sağlanamaz bir şartın sağlanabilir ve **daha pahalı** hale getirilmesidir; gerekçe §5/G1'de **ölçümle** yazılıdır. ② Kabul kriteri **6·7·8**'e **araç adı** eklendi ve rakamlar ölçülen değerlere çekildi (`8/8`, `4/4 → 6/6`, `12 → 18/18`) — böylece `sayi-tazeligi.py` bu satırları artık **mekanik olarak** doğrulayabiliyor. **Kapı, mutant ve kural sayıları DEĞİŞMEDİ.**
 > **v4 → v5 DEĞİŞİKLİĞİ (K57, oturum 30 — BAYAT ÇAPRAZ-ATIF DÜZELTMESİ):** dokuz kalem, hepsi **ölçülerek** bulundu (araç koşumu + mekanik tarama), hiçbiri yorum değil. **Kapı sayısı, mutant listesi, kurallar ve kabul ölçütlerinin ÖZÜ DEĞİŞMEDİ; değişen yalnız BAYAT SAYILAR ve onların yarattığı çelişkilerdir.**
 > ① **T2/Z10 `build_runner ^2.15.2 → ^2.15.1`** — bu SDK'yla **yapısal olarak çözülemiyor** (kanıt: `KANIT/slice-3b/T2-SAPMA.txt`, ham `pub get` çıktısı + pub.dev `/api` zinciri). ② **Z10'a adlandırılmış boşluk** eklendi: *sürüm ölçümü ≠ çözümlenebilirlik ölçümü.* ③ **T0** ve ④ **kriter 14** artık *"en güncel sürüm"* ile *"pinlenmiş sürüm"*ü ayırıyor — düzeltilmeseydi T0 **DUR** der ve build Z10 eşleşmesinde takılırdı (ölçüldü: `pub-surum-olc.py` bugün `build_runner 2.15.2` basıyor). ⑤ **§6 ve kriter 12b `9/9 → 13/13`** (`spec-kapi-kapsama.py` fiilen 13 vaka taşıyor, ölçüldü). ⑥ **§2 ve T9 "yirmi bir mutant" → "yirmi üç"** (belge KENDİ İÇİNDE çelişiyordu; araç 24 mutant etiketi saydı: M1–M23, M2 → M2a/M2b). ⑦ Başlık *"v3 kilitli"* bayattı. ⑧ **Z16/B‑6'ya ikinci chrome ölçümü** eklendi. ⑨ **§10 borç listesinden** `radar.py` R3 kalemi düşürüldü (bugün kapandı).
 > **v3 → v4 DEĞİŞİKLİĞİ (K53 verimlilik reformu, tek kalem):** §6'ya **MALİYET SINIFI** eklendi ve koşum sırası **A → B → C** olarak pazarlıksızlaştırıldı. **Mutant sayısı, kapılar, kurallar, kabul kriterleri DEĞİŞMEDİ.** Ölçüldü: 23 mutantın yalnız **3'ü** koşan uygulama istiyor (M3 · M9 · M4); geri kalanı statik tarama veya widget testi ⇒ gerçekçi maliyet **~30-40 dakika**, saatler değil.
@@ -172,9 +173,11 @@ NICE token'lar da yazılır (tema tam olsun) — bu, `DESIGN.md` §0 KULLANIM KI
 | ayak | araç | ölçtüğü |
 |---|---|---|
 | **A1** | `flutter_driver_command` → `command: screenshot` | uygulama çiziyor |
-| **A2** | `widget_inspector` → `get_widget_tree` (`summaryOnly: true`) | ağaçta **8 görsel bileşen adıyla** var |
+| **A2** | `widget_inspector` → `get_widget_tree` (`summaryOnly: true`), **İKİ yakalama** | iki ağacın **BİRLEŞİMİNDE 8 görsel bileşen adıyla** var |
 | **A3** | `get_runtime_errors` | temizde **boş**, M3 altında **dolu** |
 
+🔴 **A2 NEDEN İKİ YAKALAMA — ÖLÇÜLDÜ, gevşetme DEĞİL [K59]:** hiçbir **tek** yakalama 8 bileşeni gösteremez ve bunun sebebi **bu spec'in kendi §2 kapsam kararıdır**. Ölçüm: `GorevSatiri` içinde `SenkronRozeti` **koşulsuz**, `CakismaRozeti` ise **yalnız `cakismaVarMi == true`** iken doğar; `cakismaVarMi`'yi **sadece durum vitrini** `true` yapar, çünkü §2 *"'çakışma' bu dilimde gerçek hayatta doğmaz; vitrinde ve testlerde görünür"* diyor. Buna karşılık `GorevEkleAlani` ve `GorevListesiEkrani` **vitrinde yoktur**, yalnız gerçek ekranda vardır.
+⇒ **ZORUNLU:** ① **durum vitrini** ağacı, ② **gerçek `GorevListesiEkrani`** ağacı. **HER İKİSİNİN HAM JSON'u** `KANIT/02.../01-G1-android/` altına **olduğu gibi** yazılır (özet değil — *"ham JSON şu dosyada"* deyip aynı dosyada prozayla anlatmak **kanıt değildir**). Birleşim **8 sınıf adını** kapsamıyorsa **kapı KIRMIZI'dır**. *Bu şart tek yakalamadan **daha pahalıdır**; kapı gevşetilmemiş, sağlanamaz olan sağlanabilir hale getirilmiştir.*
 **A1 sahte-yeşil koruması:** *"PNG oluştu"* **yetmez**; ayrıca ağaçta `ErrorWidget` **bulunmayacak** ve görüntü boyutu cihaz çözünürlüğüyle uyuşacak.
 **Widget seçimi:** önce `get_widget_tree`, sonra ağaçta **gerçekten görülen** metin/tip ile finder. **Tahmin YASAK** (Z2).
 **Web:** `flutter run -d chrome --web-header=Cross-Origin-Opener-Policy=same-origin --web-header=Cross-Origin-Embedder-Policy=require-corp --dart-define=DURUM_VITRINI=true --print-dtd`. A2 ve A3 koşar.
@@ -289,11 +292,11 @@ Sabit `saat`/`idUret` ile deterministik: ① beş işlem uçtan uca (ekle · dü
 1. `flutter analyze --fatal-infos --fatal-warnings` — **0 bulgu**.
 2. `flutter test` (VM) **ve** `flutter test --platform chrome` **ayrı ayrı** yeşil. Koşulsuz atlanan test **YOK**; `@TestOn` yalnız karşı platformda fiilen koşuyorsa meşrudur. Chrome koşumu T0'da çalışmadıysa bu ayak `[DOĞRULANMADI]` yazılır ve **gizlenmez**.
 3. `flutter build apk --debug` ve `flutter build web` başarılı.
-4. **G1 Android: A1·A2·A3 yeşil**, üçünün kırmızısı `KANIT/`'ta.
+4. **G1 Android: A1·A2·A3 yeşil**, üçünün kırmızısı `KANIT/`'ta. **A2 için İKİ ham ağaç JSON'u** (vitrin + gerçek ekran) dosyada **olduğu gibi** durur ve **birleşimleri 8 sınıf adını kapsar** — kapsamıyorsa kapı **KIRMIZI**.
 5. **G1 Web: A2·A3 yeşil + A1 muafiyeti `MUAF-kanit.txt` ile ÖLÇÜLMÜŞ** (hata metni yoksa FAIL).
-6. **G2 altın küme 8/8**, EXIT 0; gerçek tarama + **ham JSON yanıtları ve sorgu zaman damgası** `KANIT/`'ta.
-7. **G3 altın küme 4/4**; izinsiz lisans **0**; SDK paketleri ayrı listelenmiş; vendored ikililer kapsamda ve `sqlite3.wasm` iki satır hâlinde yazılmış.
-8. **G4**: `--altin-kume` EXIT 0 (**12 mevcut + D5/D6/D1 vakaları**); gerçek koşumda `D0`–`D6` **hepsi 0**.
+6. **`python araclar\pub-cve-kapisi.py --altin-kume` EXIT 0 (8/8)**; gerçek tarama + **ham JSON yanıtları ve sorgu zaman damgası** `KANIT/`'ta.
+7. **`python araclar\pub-lisans-kapisi.py --altin-kume` EXIT 0 (6/6)**; izinsiz lisans **0**; SDK paketleri ayrı listelenmiş; vendored ikililer kapsamda ve `sqlite3.wasm` iki satır hâlinde yazılmış; **metin-kanıtlı eşleşmelerin hepsi `ESLENDI` satırıyla basılmış** (kanıtsız eşleşme KIRMIZI).
+8. **`python araclar\design-token-kapisi.py --altin-kume` EXIT 0 (18/18)** (12 mevcut + D1/D5/D6'nın 6 yeni vakası); gerçek koşumda `D0`–`D6` **hepsi 0**.
 9. **G5**: dokuz ölçüm Android'de yeşil, **vitrinde VE gerçek ekranda**; web koşumu ayrı raporlanmış.
 10. **G6**: web'de `opfsShared|opfsLocks` ölçülmüş; Android'de dosya fiilen oluşmuş; sha256 pinleri doğrulanmış.
 11. **G7**: altı maddenin hepsi yeşil.

@@ -44,6 +44,16 @@ QueryExecutor _uretimBaglantisi() {
     web: DriftWebOptions(
       sqlite3Wasm: Uri.parse('sqlite3.wasm'),
       driftWorker: Uri.parse('drift_worker.js'),
+      // G6 KANITI: chosenImplementation/missingFeatures HER ZAMAN basilir --
+      // drift_flutter'in varsayilan isleyicisi yalniz missingFeatures doluyken
+      // basar; G6'nin pozitif olcumu (opfs* secildi) icin bu yetersizdir.
+      onResult: (sonuc) {
+        // ignore: avoid_print
+        print(
+          'MOMENTUM-G6-KANIT chosenImplementation=${sonuc.chosenImplementation} '
+          'missingFeatures=${sonuc.missingFeatures}',
+        );
+      },
     ),
   );
 }

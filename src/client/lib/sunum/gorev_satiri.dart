@@ -36,9 +36,12 @@ class GorevSatiri extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: MBosluk.xs),
       child: Row(
         children: [
-          Checkbox(
-            value: gorev.tamamlandi,
-            onChanged: (deger) => onTamamlaDegisti(deger ?? false),
+          Semantics(
+            label: gorev.baslik,
+            child: Checkbox(
+              value: gorev.tamamlandi,
+              onChanged: (deger) => onTamamlaDegisti(deger ?? false),
+            ),
           ),
           SizedBox(width: MBosluk.s),
           Expanded(
@@ -57,7 +60,7 @@ class GorevSatiri extends StatelessWidget {
           if (cakismaVarMi)
             const CakismaRozeti()
           else
-            SenkronRozeti(durum: senkronDurumu),
+            Flexible(child: SenkronRozeti(durum: senkronDurumu)),
         ],
       ),
     );

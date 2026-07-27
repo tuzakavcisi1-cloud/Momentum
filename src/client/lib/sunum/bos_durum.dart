@@ -15,6 +15,7 @@ class BosDurum extends StatelessWidget {
         child: Text(
           Metinler.bosDurum,
           textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
           style: MTipo.baslikL.copyWith(color: MRenk.metinIkincil(context)),
         ),
       ),

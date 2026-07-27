@@ -47,12 +47,13 @@ class _HataDurumuState extends State<HataDurumu> {
             Text(
               Metinler.birSeylerTersGitti,
               textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
               style: MTipo.govdeM.copyWith(color: MRenk.tehlike(context)),
             ),
             SizedBox(height: MBosluk.m),
             TextButton(
               onPressed: widget.onYenidenDene,
-              child: Text(Metinler.yenidenDene),
+              child: Text(Metinler.yenidenDene, overflow: TextOverflow.ellipsis),
             ),
           ],
         ),

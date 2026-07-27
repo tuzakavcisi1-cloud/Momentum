@@ -13,18 +13,6 @@
   },
   {
     "dosya": "GOREV_CLAUDE_CODE/GOREV-slice-3b-istemci-iskeleti.md",
-    "desen": "**G2 altın küme 8/8**",
-    "borc": "T9-KAPANISI",
-    "gerekce": "ARAC ARTIK VAR: pub-cve-kapisi.py dogdu ve BEN kostum -- 8 vaka, 8 gecti, EXIT 0 (yani sayi BUGUN DOGRU). Ama satirda ARAC ADI yazmadigi icin kapi bunu MEKANIK olarak baglayamiyor. Duzeltme (satira arac adini yazmak) spec'i degistirir; spec KILITLI (6056A5BB) ve Claude Code su an T9'da onu okuyarak calisiyor -- ortasinda degistirmek builder'i bayat kopyayla birakir. Bu yuzden duzeltme T9 KAPANISINDAKI TEK kilit turuna ERTELENDI. O ana kadar bu satir OLCULMEDI sayilir; OLCULMEDI, TEMIZ DEGILDIR."
-  },
-  {
-    "dosya": "GOREV_CLAUDE_CODE/GOREV-slice-3b-istemci-iskeleti.md",
-    "desen": "**G3 altın küme 4/4**",
-    "borc": "T9-KAPANISI",
-    "gerekce": "ARAC ARTIK VAR: pub-lisans-kapisi.py dogdu ve BEN kostum -- 4 vaka, 4 gecti, EXIT 0. Satirda arac adi yok (yukaridaki G2 kaydiyla ayni sebep). AYRICA bu sayi YAKINDA DEGISECEK: lisans-eslesme kanit mekanizmasi G3 altin kumesine 2 vaka ekleyecek (4 -> 6). Iki degisiklik T9 kapanisinda TEK kilit turunda yapilacak. OLCULMEDI, TEMIZ DEGILDIR."
-  },
-  {
-    "dosya": "GOREV_CLAUDE_CODE/GOREV-slice-3b-istemci-iskeleti.md",
     "desen": "20/28",
     "borc": "ARAC-YANLIS-POZITIFI",
     "gerekce": "10 BD blogu TEK BIR uzun satirdir. Satir, BD-6'nin 'altin kume' alintisi yuzunden IMZALI gorunuyor; ama yakalanan sayi BD-5'in TIPOGRAFI oranidir (punto/satir yuksekligi), altin kume DEGILDIR. Bu, aracin OLCULMUS yanlis-pozitifidir: uzun paragraf satirlarinda imza ile sayi arasindaki YAKINLIK olculmuyor. Esik UYDURULMADI (K40); borc DURUM.md 8'de acik, kalici onarim AYRI EL'e (K34-f). T8-BEKLIYOR kayitlari 27 Tem 2026'da SILINDI: pub-cve-kapisi.py (8 vaka) ve pub-lisans-kapisi.py (4 vaka) DOGDU, kapi artik o iki sayiyi GERCEKTEN kosarak dogruluyor."

@@ -1,0 +1,22 @@
+[
+  {
+    "paket": "sqlcipher_flutter_libs",
+    "surum": "0.7.0+eol",
+    "pana_spdx": "Pixar",
+    "gercek_aile": "Apache-2.0",
+    "kanit_dosya": "KANIT/slice-3b/04-G3/COWORK-ham-LICENSE-sqlcipher_flutter_libs-0.7.0+eol.txt",
+    "kanit_satir": 29,
+    "kanit_olcum": "dosyada 'Pixar' dizgesi YOK, 'Modified Apache' dizgesi YOK; satir 29 'Apache License' basligi, satir 204 'END OF TERMS AND CONDITIONS' ile duz Apache-2.0 govdesi tamamlaniyor. SPDX 'Pixar' zaten 'Modified Apache 2.0 License'tir -- sablon eslestirici duz Apache-2.0 metnini bu sablona oturtmus.",
+    "gerekce": "Cowork BAGIMSIZ olcum (27 Tem 2026, oturum 30): pub cache'teki gercek LICENSE dosyasi (12929 bayt, sha256 1052710c769806debc27128a04dd1819fffb0585828acb7816a3a1f485b6998a) uc ayri lisans metni tasiyor (MIT + Apache-2.0 + BSD-3-Clause). Pana'nin bulanik sablon eslestiricisi duz Apache-2.0 metnini 'Pixar' (Modified Apache 2.0 varyanti) sablonuna yanlis oturtmus. Kusur pakette degil pana'nin etiketinde. Bu eslesme YALNIZ bu paket+surum icin gecerlidir, genel beyaz liste DEGILDIR."
+  },
+  {
+    "paket": "sqlcipher_flutter_libs",
+    "surum": "0.7.0+eol",
+    "pana_spdx": "BSD-3-Clause-HP",
+    "gercek_aile": "BSD-3-Clause",
+    "kanit_dosya": "KANIT/slice-3b/04-G3/COWORK-ham-LICENSE-sqlcipher_flutter_libs-0.7.0+eol.txt",
+    "kanit_satir": 209,
+    "kanit_olcum": "satir 209 'Copyright (c) 2008-2020 Zetetic LLC' ile baslayan bolge (yaklasik bayt 11442-12860) duz uc-maddeli BSD-3-Clause metnidir: retain copyright / reproduce in binary / no endorsement. HP varyantinin patent feragat cumlesi bu metinde YOKTUR.",
+    "gerekce": "Cowork BAGIMSIZ olcum (27 Tem 2026, oturum 30): ayni LICENSE dosyasinin SQLCipher (Zetetic LLC) bolumu duz BSD-3-Clause'dur; pana'nin 'BSD-3-Clause-HP' (Hewlett-Packard varyanti) etiketi metinde karsiligi olmayan bir sablon eslesmesidir. Bu eslesme YALNIZ bu paket+surum icin gecerlidir, genel beyaz liste DEGILDIR."
+  }
+]

@@ -18,14 +18,20 @@ TASARIM DERSLERI (bu projede olculmus, tekrar edilmiyor):
      Altin kume gecmeden normal tarama HUKUM VERMEZ (kor kapi yok).
 
 KONTROLLER:
-  D1  MUST token kodda hic kullanilmamis            -> KUSUR
+  D1  MUST token kodda hic kullanilmamis, YA DA yalniz lib/design/ icinde
+      kullaniliyor (adiyla MUAF olanlar haric)      -> KUSUR  [K57: sikilastirildi]
   D2  Kodda ham tasarim literali (token kacagi)     -> KUSUR
   D3  MUST token'in Dart sembolu token dosyasinda tanimli degil -> KUSUR
   D4  Muafiyet isareti gerekcesiz                   -> KUSUR
+  D5  tokens.dart/tema.dart DISINDA Theme.of( ile renk/tipografi erisimi -> KUSUR  [K57]
+  D6  lib/ altinda package:flutter/cupertino.dart importu -> KUSUR  [K57]
 
 MUAFIYET:
-  Ayni satirda ya da BIR ONCEKI satirda:  // [DESIGN-LITERAL: gerekce]
-  Gerekcesiz "// [DESIGN-LITERAL]" KABUL EDILMEZ (D4).
+  D2/D4: Ayni satirda ya da BIR ONCEKI satirda:  // [DESIGN-LITERAL: gerekce]
+         Gerekcesiz "// [DESIGN-LITERAL]" KABUL EDILMEZ (D4).
+  D1:    renk.yuzey.ikincil, renk.metin, hareket.hizli, olcu.odak.kalinlik --
+         DESIGN.md'nin sekiz bilesenine atanmamis (BD-7), ADIYLA muaf.
+  D5:    tokens.dart ve tema.dart (lib/design/) -- muafiyet YAPISALDIR, isaretle degil.
 
 CIKIS KODLARI:
   0 = temiz | 1 = kusur var | 2 = kullanim/girdi hatasi | 3 = bozuk kodlama (UTF-8 degil)
@@ -43,7 +49,7 @@ import sys
 import tempfile
 import shutil
 
-SURUM = "0.1.0"
+SURUM = "0.2.0"
 
 # --- cp1254 kalkani: cikti daima UTF-8, icerik daima ASCII ---------------------
 try:
@@ -76,6 +82,20 @@ HAM_LITERAL = [
     ("SizedBox", re.compile(r"SizedBox\s*\(\s*(width|height)\s*:\s*[\d.]")),
     ("Duration", re.compile(r"Duration\s*\(\s*milliseconds\s*:\s*\d")),
 ]
+
+# --- K57/T8: D1 sikilastirmasi + D5 + D6 (GOREV-slice-3b SS5 G4) ------------
+
+# DESIGN.md'nin sekiz gorsel bilesenine ATANMAMIS dort MUST token (BD-7);
+# mesru yerleri tema.dart'tir ve "lib/design/ disinda kullanim" sartindan
+# ADIYLA muaftir. Bu liste spec'te KAPALIDIR -- yeni ad eklemek spec degisikligi
+# ister (K57 kilidi).
+MUAF_D1_ADLARI = {"renk.yuzey.ikincil", "renk.metin", "hareket.hizli", "olcu.odak.kalinlik"}
+
+# D5/D6: tokens.dart ile AYNI dizinde (lib/design/) yasayan tema.dart, tokens.dart
+# ile birlikte Theme.of( erisiminden muaftir (D5 imza sozlesmesi, T3).
+TEMA_DOSYASI_ADI = "tema.dart"
+D5_DESEN = re.compile(r"Theme\.of\s*\(")
+D6_DESEN = re.compile(r"""import\s+['"]package:flutter/cupertino\.dart['"]""")
 
 
 # ============================== OKUMA ========================================
@@ -205,26 +225,54 @@ def tara(kok, design_yolu, kod_kok, token_dosyasi):
     token_dosyasi_tam = os.path.join(kod_kok, token_dosyasi) if not os.path.isabs(token_dosyasi) else token_dosyasi
     token_govdesi = _oku(token_dosyasi_tam) if os.path.exists(token_dosyasi_tam) else ""
 
-    # kullanim govdesi = token dosyasi HARIC butun dart kodu, yorumlar atilmis
-    kullanim_parcalari = []
+    # tema.dart, token dosyasiyla AYNI dizinde yasar (lib/design/) -- D5 ikisini
+    # birlikte muaf tutar. lib_dizin, D5/D6'nin "lib/ altinda" sinirini olcer.
+    ic_tasarim_dizin = os.path.abspath(os.path.dirname(token_dosyasi_tam))
+    tema_dosyasi_tam = os.path.join(ic_tasarim_dizin, TEMA_DOSYASI_ADI)
+    lib_dizin = os.path.abspath(os.path.join(kod_kok, "lib"))
+
+    def _ic_tasarimda_mi(yol):
+        return os.path.abspath(os.path.dirname(yol)) == ic_tasarim_dizin
+
+    def _lib_altinda_mi(yol):
+        ap = os.path.abspath(yol)
+        return ap == lib_dizin or ap.startswith(lib_dizin + os.sep)
+
+    # kullanim govdesi = token dosyasi HARIC butun dart kodu, yorumlar atilmis.
+    # kullanim govdesi (DIS) = lib/design/'in TAMAMI HARIC -- D1 sikilastirmasi
+    # (yalniz lib/design/ icinde kullanim D1'i doyurmaz) BUNUNLA olculur.
+    kullanim_parcalari, kullanim_parcalari_dis = [], []
     for d in dosyalar:
         if os.path.abspath(d) == os.path.abspath(token_dosyasi_tam):
             continue
-        for s in _oku(d).split("\n"):
-            kullanim_parcalari.append(yorum_disi(s))
+        govde = [yorum_disi(s) for s in _oku(d).split("\n")]
+        kullanim_parcalari.extend(govde)
+        if not _ic_tasarimda_mi(d):
+            kullanim_parcalari_dis.extend(govde)
     kullanim_govdesi = "\n".join(kullanim_parcalari)
+    kullanim_govdesi_dis = "\n".join(kullanim_parcalari_dis)
 
     must = [t for t in tokenlar if t["seviye"] == "MUST"]
     nice = [t for t in tokenlar if t["seviye"] == "NICE"]
 
-    # --- D1: MUST token kodda hic kullanilmamis ---
+    # --- D1: MUST token kodda hic kullanilmamis / yalniz lib/design/ icinde ---
     for t in must:
+        if t["ad"] in MUAF_D1_ADLARI:
+            continue  # TAM MUAFIYET: DESIGN.md'nin BD-7 kusuru, hicbir bilesene
+                       # atanmamis (mesru yeri tema.dart'tir; kullanim ZORUNLU degil)
         son = t["sembol"].split(".")[-1]
-        desen = re.compile(r"\b" + re.escape(t["sembol"].replace(".", r".")) + r"\b") \
+        desen = re.compile(r"\b" + re.escape(t["sembol"]) + r"\b") \
             if "." in t["sembol"] else re.compile(r"\b" + re.escape(son) + r"\b")
-        if not desen.search(kullanim_govdesi):
+        herhangi = bool(desen.search(kullanim_govdesi))
+        disinda = bool(desen.search(kullanim_govdesi_dis))
+        if not herhangi:
             bulgular.append(("D1", os.path.relpath(design_yolu, kok), t["satir"],
                              "MUST token '%s' (%s) Flutter kodunda HIC KULLANILMIYOR"
+                             % (t["ad"], t["sembol"])))
+        elif not disinda:
+            bulgular.append(("D1", os.path.relpath(design_yolu, kok), t["satir"],
+                             "MUST token '%s' (%s) YALNIZ lib/design/ icinde kullaniliyor -- "
+                             "D1 sikilastirmasi: en az bir kullanim DISARIDA olmali (MUAF degil)"
                              % (t["ad"], t["sembol"])))
 
     # --- D3: MUST token'in Dart sembolu token dosyasinda tanimli degil ---
@@ -241,19 +289,34 @@ def tara(kok, design_yolu, kod_kok, token_dosyasi):
                                      "MUST token '%s' icin '%s' sembolu %s icinde TANIMLI DEGIL"
                                      % (t["ad"], t["sembol"], token_dosyasi)))
 
-    # --- D2 + D4: ham tasarim literali / gerekcesiz muafiyet ---
+    # --- D2 + D4 + D5 + D6: kod taramasi ---
     for d in dosyalar:
-        if os.path.abspath(d) == os.path.abspath(token_dosyasi_tam):
-            continue  # token TANIMI ham deger tasimak ZORUNDA
+        token_dosyasi_mi = os.path.abspath(d) == os.path.abspath(token_dosyasi_tam)
+        tema_dosyasi_mi = os.path.abspath(d) == os.path.abspath(tema_dosyasi_tam)
         satirlar = _oku(d).split("\n")
         for i, ham in enumerate(satirlar, 1):
+            kod = yorum_disi(ham)
+
+            # D6: lib/ altinda cupertino.dart importu -- yapisal kural, muafiyet YOK.
+            if _lib_altinda_mi(d) and D6_DESEN.search(kod):
+                bulgular.append(("D6", os.path.relpath(d, kok), i,
+                                 "lib/ altinda cupertino.dart importu yasak: %r" % kod.strip()))
+
+            if token_dosyasi_mi:
+                continue  # token TANIMI ham deger tasimak ZORUNDA, D2/D4/D5'ten muaf
+
+            # D5: tokens.dart ve tema.dart DISINDA Theme.of( ile erisim.
+            if _lib_altinda_mi(d) and not tema_dosyasi_mi and D5_DESEN.search(kod):
+                bulgular.append(("D5", os.path.relpath(d, kok), i,
+                                 "tokens.dart/tema.dart DISINDA Theme.of( kullanimi: %r"
+                                 % kod.strip()))
+
             m = MUAFIYET.search(ham)
             if m:
                 g = (m.group("gerekce") or "").lstrip(":").strip()
                 if not g:
                     bulgular.append(("D4", os.path.relpath(d, kok), i,
                                      "gerekcesiz muafiyet: [DESIGN-LITERAL] gerekce ZORUNLU"))
-            kod = yorum_disi(ham)
             if not kod.strip():
                 continue
             onceki = satirlar[i - 2] if i >= 2 else ""
@@ -277,7 +340,7 @@ def tara(kok, design_yolu, kod_kok, token_dosyasi):
 # ============================== ALTIN KUME ===================================
 # Arac ONCE kendini kanitlar: temizde SUSAR, mutasyonda ISIRIR. Kor kapi yok.
 
-def _proje_kur(kok, design_metni, tokens_dart, main_dart):
+def _proje_kur(kok, design_metni, tokens_dart, main_dart, tema_dart=None):
     os.makedirs(os.path.join(kok, "src", "client", "lib", "design"), exist_ok=True)
     if design_metni is not None:
         with open(os.path.join(kok, "DESIGN.md"), "w", encoding="utf-8", newline="\n") as f:
@@ -290,6 +353,10 @@ def _proje_kur(kok, design_metni, tokens_dart, main_dart):
         with open(os.path.join(kok, "src", "client", "lib", "main.dart"),
                   "w", encoding="utf-8", newline="\n") as f:
             f.write(main_dart)
+    if tema_dart is not None:
+        with open(os.path.join(kok, "src", "client", "lib", "design", "tema.dart"),
+                  "w", encoding="utf-8", newline="\n") as f:
+            f.write(tema_dart)
 
 
 DESIGN_TEMIZ = """# DESIGN.md (altin kume ornegi)
@@ -314,14 +381,40 @@ MAIN_TEMIZ = """import 'design/tokens.dart';
 Widget yap() => Container(color: MRenk.yuzey, padding: EdgeInsets.all(MBosluk.m));
 """
 
+# D1 sikilastirmasi + D5 vakalari icin: MUST tokenlarin YALNIZ lib/design/
+# icinde (tema.dart) kullanildigi durumu simule eden govde -- main.dart YOK.
+TEMA_KULLANIM_ICERDE = """import 'tokens.dart';
+final a = MRenk.yuzey;
+final b = MBosluk.m;
+"""
+
+# MUAF token (renk.metin) icin izole tek-token fixture'i.
+DESIGN_MUAF = """# DESIGN.md (D1 muafiyet ornegi)
+
+```tokens
+# seviye: MUST
+renk.metin = #000000  -> MRenk.metin
+```
+"""
+
+TOKENS_MUAF = "class MRenk { static const metin = Color(0xFF000000); }\n"
+
+TEMA_MUAF = "import 'tokens.dart';\nfinal x = MRenk.metin;\n"
+
+# D5 muafiyet vakasi: tema.dart'in KENDISI Theme.of( cagirir -- ISIRMAMALI.
+TEMA_THEME_OF_MUAF = """import 'package:flutter/material.dart';
+import 'tokens.dart';
+Color renkAl(BuildContext context) => Theme.of(context).colorScheme.primary;
+"""
+
 
 def altin_kume():
     vakalar = []
 
-    def vaka(ad, beklenen_kodlar, design, tokens, main):
+    def vaka(ad, beklenen_kodlar, design, tokens, main, tema=None):
         gecici = tempfile.mkdtemp(prefix="dtk_")
         try:
-            _proje_kur(gecici, design, tokens, main)
+            _proje_kur(gecici, design, tokens, main, tema_dart=tema)
             bulgular, ozet = tara(
                 gecici,
                 os.path.join(gecici, VARSAYILAN_DESIGN),
@@ -389,6 +482,37 @@ def altin_kume():
                               "bosluk.m 16 MBosluk.m"),
          None, None)
 
+    # --- K57/T8: D1 sikilastirmasi + D5 + D6 (G4 -- 12 mevcut + yeni vakalar) ---
+
+    # 13) MUST token YALNIZ lib/design/ (tema.dart) icinde kullaniliyor,
+    #     MUAF degil -- D1 sikilastirmasi ISIRMALI.
+    vaka("MUST token YALNIZ tema.dart icinde (MUAF DEGIL) -- D1 sikilastirmasi", ["D1"],
+         DESIGN_TEMIZ, TOKENS_TEMIZ, None, tema=TEMA_KULLANIM_ICERDE)
+
+    # 14) MUAF token (renk.metin) YALNIZ lib/design/ icinde kullaniliyor -- SUSMALI.
+    vaka("MUAF token (renk.metin) YALNIZ tema.dart icinde -- SUSMALI", [],
+         DESIGN_MUAF, TOKENS_MUAF, None, tema=TEMA_MUAF)
+
+    # 14b) MUAF token HIC KULLANILMIYOR (gercek renk.yuzey.ikincil/hareket.hizli
+    #      durumu) -- TAM MUAFIYET, SUSMALI. main/tema YOK.
+    vaka("MUAF token HIC KULLANILMIYOR -- TAM MUAFIYET, SUSMALI", [],
+         DESIGN_MUAF, TOKENS_MUAF, "final _bilinmez = 1;\n")
+
+    # 15) Theme.of( DISINDA (main.dart) kullanim -- D5 ISIRMALI.
+    vaka("Theme.of( main.dart'ta (tokens/tema DISINDA) -- D5", ["D5"],
+         DESIGN_TEMIZ, TOKENS_TEMIZ,
+         MAIN_TEMIZ + "Widget kacak2(BuildContext context) => "
+                      "Container(color: Theme.of(context).colorScheme.primary);\n")
+
+    # 16) Theme.of( tema.dart'IN KENDISINDE -- MUAF, SUSMALI.
+    vaka("Theme.of( tema.dart'ta -- MUAF, SUSMALI", [],
+         DESIGN_TEMIZ, TOKENS_TEMIZ, MAIN_TEMIZ, tema=TEMA_THEME_OF_MUAF)
+
+    # 17) lib/ altinda cupertino.dart importu -- D6 ISIRMALI.
+    vaka("cupertino.dart importu (lib/ altinda) -- D6", ["D6"],
+         DESIGN_TEMIZ, TOKENS_TEMIZ,
+         MAIN_TEMIZ + "import 'package:flutter/cupertino.dart';\n")
+
     cizgi = "=" * 78
     print(cizgi)
     print("ALTIN KUME -- DESIGN TOKEN KAPISININ KENDI KANITI (kor kapi yok)")
@@ -415,10 +539,12 @@ def altin_kume():
 
 ACIKLAMA = {
     "D0": "DESIGN.md tokens blogu bicim hatasi",
-    "D1": "MUST token kodda kullanilmiyor",
+    "D1": "MUST token kullanilmiyor / yalniz lib/design/ icinde (MUAF degil)",
     "D2": "kodda ham tasarim literali (token kacagi)",
     "D3": "MUST token'in Dart sembolu token dosyasinda tanimsiz",
     "D4": "gerekcesiz muafiyet",
+    "D5": "tokens.dart/tema.dart DISINDA Theme.of( erisimi",
+    "D6": "lib/ altinda cupertino.dart importu",
 }
 
 

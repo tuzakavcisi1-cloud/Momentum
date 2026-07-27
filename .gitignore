@@ -64,6 +64,10 @@ doctor.log
 # Flutter/genel üretilen
 **/generated_plugin_registrant.dart
 
+# ---- Python (araclar/ betikleri) ----
+__pycache__/
+*.pyc
+
 # ---- Node (tooling varsa) ----
 node_modules/
 npm-debug.log*
