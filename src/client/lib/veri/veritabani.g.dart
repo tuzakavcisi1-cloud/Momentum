@@ -71,7 +71,13 @@ class $GorevlerTable extends Gorevler with TableInfo<$GorevlerTable, GorevRow> {
     'senkron_durumu',
     aliasedName,
     false,
-    check: () => senkronDurumu.equals('yerel'),
+    check: () => senkronDurumu.isIn([
+      'yerel',
+      'kuyrukta',
+      'senkronize',
+      'cakisma',
+      'cevrimdisi',
+    ]),
     type: DriftSqlType.string,
     requiredDuringInsert: false,
     defaultValue: const Constant('yerel'),
@@ -482,15 +488,1098 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
   }
 }
 
+class $SenkronKuyruguTable extends SenkronKuyrugu
+    with TableInfo<$SenkronKuyruguTable, SenkronKuyruguRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SenkronKuyruguTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _opIdMeta = const VerificationMeta('opId');
+  @override
+  late final GeneratedColumn<String> opId = GeneratedColumn<String>(
+    'op_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _clientIdMeta = const VerificationMeta(
+    'clientId',
+  );
+  @override
+  late final GeneratedColumn<String> clientId = GeneratedColumn<String>(
+    'client_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityTypeMeta = const VerificationMeta(
+    'entityType',
+  );
+  @override
+  late final GeneratedColumn<String> entityType = GeneratedColumn<String>(
+    'entity_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityIdMeta = const VerificationMeta(
+    'entityId',
+  );
+  @override
+  late final GeneratedColumn<String> entityId = GeneratedColumn<String>(
+    'entity_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _govdeJsonMeta = const VerificationMeta(
+    'govdeJson',
+  );
+  @override
+  late final GeneratedColumn<String> govdeJson = GeneratedColumn<String>(
+    'govde_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hlcWallMsMeta = const VerificationMeta(
+    'hlcWallMs',
+  );
+  @override
+  late final GeneratedColumn<int> hlcWallMs = GeneratedColumn<int>(
+    'hlc_wall_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hlcCounterMeta = const VerificationMeta(
+    'hlcCounter',
+  );
+  @override
+  late final GeneratedColumn<int> hlcCounter = GeneratedColumn<int>(
+    'hlc_counter',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durumMeta = const VerificationMeta('durum');
+  @override
+  late final GeneratedColumn<String> durum = GeneratedColumn<String>(
+    'durum',
+    aliasedName,
+    false,
+    check: () => durum.isIn(['bekliyor', 'gonderildi', 'zehirli']),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('bekliyor'),
+  );
+  static const VerificationMeta _denemeSayisiMeta = const VerificationMeta(
+    'denemeSayisi',
+  );
+  @override
+  late final GeneratedColumn<int> denemeSayisi = GeneratedColumn<int>(
+    'deneme_sayisi',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _sonHataKoduMeta = const VerificationMeta(
+    'sonHataKodu',
+  );
+  @override
+  late final GeneratedColumn<String> sonHataKodu = GeneratedColumn<String>(
+    'son_hata_kodu',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _olusturulduMeta = const VerificationMeta(
+    'olusturuldu',
+  );
+  @override
+  late final GeneratedColumn<DateTime> olusturuldu = GeneratedColumn<DateTime>(
+    'olusturuldu',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    opId,
+    clientId,
+    entityType,
+    entityId,
+    govdeJson,
+    hlcWallMs,
+    hlcCounter,
+    durum,
+    denemeSayisi,
+    sonHataKodu,
+    olusturuldu,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'senkron_kuyrugu';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SenkronKuyruguRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('op_id')) {
+      context.handle(
+        _opIdMeta,
+        opId.isAcceptableOrUnknown(data['op_id']!, _opIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_opIdMeta);
+    }
+    if (data.containsKey('client_id')) {
+      context.handle(
+        _clientIdMeta,
+        clientId.isAcceptableOrUnknown(data['client_id']!, _clientIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_clientIdMeta);
+    }
+    if (data.containsKey('entity_type')) {
+      context.handle(
+        _entityTypeMeta,
+        entityType.isAcceptableOrUnknown(data['entity_type']!, _entityTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityTypeMeta);
+    }
+    if (data.containsKey('entity_id')) {
+      context.handle(
+        _entityIdMeta,
+        entityId.isAcceptableOrUnknown(data['entity_id']!, _entityIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityIdMeta);
+    }
+    if (data.containsKey('govde_json')) {
+      context.handle(
+        _govdeJsonMeta,
+        govdeJson.isAcceptableOrUnknown(data['govde_json']!, _govdeJsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_govdeJsonMeta);
+    }
+    if (data.containsKey('hlc_wall_ms')) {
+      context.handle(
+        _hlcWallMsMeta,
+        hlcWallMs.isAcceptableOrUnknown(data['hlc_wall_ms']!, _hlcWallMsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hlcWallMsMeta);
+    }
+    if (data.containsKey('hlc_counter')) {
+      context.handle(
+        _hlcCounterMeta,
+        hlcCounter.isAcceptableOrUnknown(data['hlc_counter']!, _hlcCounterMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hlcCounterMeta);
+    }
+    if (data.containsKey('durum')) {
+      context.handle(
+        _durumMeta,
+        durum.isAcceptableOrUnknown(data['durum']!, _durumMeta),
+      );
+    }
+    if (data.containsKey('deneme_sayisi')) {
+      context.handle(
+        _denemeSayisiMeta,
+        denemeSayisi.isAcceptableOrUnknown(
+          data['deneme_sayisi']!,
+          _denemeSayisiMeta,
+        ),
+      );
+    }
+    if (data.containsKey('son_hata_kodu')) {
+      context.handle(
+        _sonHataKoduMeta,
+        sonHataKodu.isAcceptableOrUnknown(
+          data['son_hata_kodu']!,
+          _sonHataKoduMeta,
+        ),
+      );
+    }
+    if (data.containsKey('olusturuldu')) {
+      context.handle(
+        _olusturulduMeta,
+        olusturuldu.isAcceptableOrUnknown(
+          data['olusturuldu']!,
+          _olusturulduMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_olusturulduMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {opId};
+  @override
+  SenkronKuyruguRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SenkronKuyruguRow(
+      opId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}op_id'],
+      )!,
+      clientId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_id'],
+      )!,
+      entityType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_type'],
+      )!,
+      entityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_id'],
+      )!,
+      govdeJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}govde_json'],
+      )!,
+      hlcWallMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hlc_wall_ms'],
+      )!,
+      hlcCounter: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hlc_counter'],
+      )!,
+      durum: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}durum'],
+      )!,
+      denemeSayisi: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}deneme_sayisi'],
+      )!,
+      sonHataKodu: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}son_hata_kodu'],
+      ),
+      olusturuldu: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}olusturuldu'],
+      )!,
+    );
+  }
+
+  @override
+  $SenkronKuyruguTable createAlias(String alias) {
+    return $SenkronKuyruguTable(attachedDatabase, alias);
+  }
+}
+
+class SenkronKuyruguRow extends DataClass
+    implements Insertable<SenkronKuyruguRow> {
+  final String opId;
+  final String clientId;
+  final String entityType;
+  final String entityId;
+  final String govdeJson;
+  final int hlcWallMs;
+  final int hlcCounter;
+  final String durum;
+  final int denemeSayisi;
+  final String? sonHataKodu;
+  final DateTime olusturuldu;
+  const SenkronKuyruguRow({
+    required this.opId,
+    required this.clientId,
+    required this.entityType,
+    required this.entityId,
+    required this.govdeJson,
+    required this.hlcWallMs,
+    required this.hlcCounter,
+    required this.durum,
+    required this.denemeSayisi,
+    this.sonHataKodu,
+    required this.olusturuldu,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['op_id'] = Variable<String>(opId);
+    map['client_id'] = Variable<String>(clientId);
+    map['entity_type'] = Variable<String>(entityType);
+    map['entity_id'] = Variable<String>(entityId);
+    map['govde_json'] = Variable<String>(govdeJson);
+    map['hlc_wall_ms'] = Variable<int>(hlcWallMs);
+    map['hlc_counter'] = Variable<int>(hlcCounter);
+    map['durum'] = Variable<String>(durum);
+    map['deneme_sayisi'] = Variable<int>(denemeSayisi);
+    if (!nullToAbsent || sonHataKodu != null) {
+      map['son_hata_kodu'] = Variable<String>(sonHataKodu);
+    }
+    map['olusturuldu'] = Variable<DateTime>(olusturuldu);
+    return map;
+  }
+
+  SenkronKuyruguCompanion toCompanion(bool nullToAbsent) {
+    return SenkronKuyruguCompanion(
+      opId: Value(opId),
+      clientId: Value(clientId),
+      entityType: Value(entityType),
+      entityId: Value(entityId),
+      govdeJson: Value(govdeJson),
+      hlcWallMs: Value(hlcWallMs),
+      hlcCounter: Value(hlcCounter),
+      durum: Value(durum),
+      denemeSayisi: Value(denemeSayisi),
+      sonHataKodu: sonHataKodu == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sonHataKodu),
+      olusturuldu: Value(olusturuldu),
+    );
+  }
+
+  factory SenkronKuyruguRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SenkronKuyruguRow(
+      opId: serializer.fromJson<String>(json['opId']),
+      clientId: serializer.fromJson<String>(json['clientId']),
+      entityType: serializer.fromJson<String>(json['entityType']),
+      entityId: serializer.fromJson<String>(json['entityId']),
+      govdeJson: serializer.fromJson<String>(json['govdeJson']),
+      hlcWallMs: serializer.fromJson<int>(json['hlcWallMs']),
+      hlcCounter: serializer.fromJson<int>(json['hlcCounter']),
+      durum: serializer.fromJson<String>(json['durum']),
+      denemeSayisi: serializer.fromJson<int>(json['denemeSayisi']),
+      sonHataKodu: serializer.fromJson<String?>(json['sonHataKodu']),
+      olusturuldu: serializer.fromJson<DateTime>(json['olusturuldu']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'opId': serializer.toJson<String>(opId),
+      'clientId': serializer.toJson<String>(clientId),
+      'entityType': serializer.toJson<String>(entityType),
+      'entityId': serializer.toJson<String>(entityId),
+      'govdeJson': serializer.toJson<String>(govdeJson),
+      'hlcWallMs': serializer.toJson<int>(hlcWallMs),
+      'hlcCounter': serializer.toJson<int>(hlcCounter),
+      'durum': serializer.toJson<String>(durum),
+      'denemeSayisi': serializer.toJson<int>(denemeSayisi),
+      'sonHataKodu': serializer.toJson<String?>(sonHataKodu),
+      'olusturuldu': serializer.toJson<DateTime>(olusturuldu),
+    };
+  }
+
+  SenkronKuyruguRow copyWith({
+    String? opId,
+    String? clientId,
+    String? entityType,
+    String? entityId,
+    String? govdeJson,
+    int? hlcWallMs,
+    int? hlcCounter,
+    String? durum,
+    int? denemeSayisi,
+    Value<String?> sonHataKodu = const Value.absent(),
+    DateTime? olusturuldu,
+  }) => SenkronKuyruguRow(
+    opId: opId ?? this.opId,
+    clientId: clientId ?? this.clientId,
+    entityType: entityType ?? this.entityType,
+    entityId: entityId ?? this.entityId,
+    govdeJson: govdeJson ?? this.govdeJson,
+    hlcWallMs: hlcWallMs ?? this.hlcWallMs,
+    hlcCounter: hlcCounter ?? this.hlcCounter,
+    durum: durum ?? this.durum,
+    denemeSayisi: denemeSayisi ?? this.denemeSayisi,
+    sonHataKodu: sonHataKodu.present ? sonHataKodu.value : this.sonHataKodu,
+    olusturuldu: olusturuldu ?? this.olusturuldu,
+  );
+  SenkronKuyruguRow copyWithCompanion(SenkronKuyruguCompanion data) {
+    return SenkronKuyruguRow(
+      opId: data.opId.present ? data.opId.value : this.opId,
+      clientId: data.clientId.present ? data.clientId.value : this.clientId,
+      entityType: data.entityType.present
+          ? data.entityType.value
+          : this.entityType,
+      entityId: data.entityId.present ? data.entityId.value : this.entityId,
+      govdeJson: data.govdeJson.present ? data.govdeJson.value : this.govdeJson,
+      hlcWallMs: data.hlcWallMs.present ? data.hlcWallMs.value : this.hlcWallMs,
+      hlcCounter: data.hlcCounter.present
+          ? data.hlcCounter.value
+          : this.hlcCounter,
+      durum: data.durum.present ? data.durum.value : this.durum,
+      denemeSayisi: data.denemeSayisi.present
+          ? data.denemeSayisi.value
+          : this.denemeSayisi,
+      sonHataKodu: data.sonHataKodu.present
+          ? data.sonHataKodu.value
+          : this.sonHataKodu,
+      olusturuldu: data.olusturuldu.present
+          ? data.olusturuldu.value
+          : this.olusturuldu,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SenkronKuyruguRow(')
+          ..write('opId: $opId, ')
+          ..write('clientId: $clientId, ')
+          ..write('entityType: $entityType, ')
+          ..write('entityId: $entityId, ')
+          ..write('govdeJson: $govdeJson, ')
+          ..write('hlcWallMs: $hlcWallMs, ')
+          ..write('hlcCounter: $hlcCounter, ')
+          ..write('durum: $durum, ')
+          ..write('denemeSayisi: $denemeSayisi, ')
+          ..write('sonHataKodu: $sonHataKodu, ')
+          ..write('olusturuldu: $olusturuldu')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    opId,
+    clientId,
+    entityType,
+    entityId,
+    govdeJson,
+    hlcWallMs,
+    hlcCounter,
+    durum,
+    denemeSayisi,
+    sonHataKodu,
+    olusturuldu,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SenkronKuyruguRow &&
+          other.opId == this.opId &&
+          other.clientId == this.clientId &&
+          other.entityType == this.entityType &&
+          other.entityId == this.entityId &&
+          other.govdeJson == this.govdeJson &&
+          other.hlcWallMs == this.hlcWallMs &&
+          other.hlcCounter == this.hlcCounter &&
+          other.durum == this.durum &&
+          other.denemeSayisi == this.denemeSayisi &&
+          other.sonHataKodu == this.sonHataKodu &&
+          other.olusturuldu == this.olusturuldu);
+}
+
+class SenkronKuyruguCompanion extends UpdateCompanion<SenkronKuyruguRow> {
+  final Value<String> opId;
+  final Value<String> clientId;
+  final Value<String> entityType;
+  final Value<String> entityId;
+  final Value<String> govdeJson;
+  final Value<int> hlcWallMs;
+  final Value<int> hlcCounter;
+  final Value<String> durum;
+  final Value<int> denemeSayisi;
+  final Value<String?> sonHataKodu;
+  final Value<DateTime> olusturuldu;
+  final Value<int> rowid;
+  const SenkronKuyruguCompanion({
+    this.opId = const Value.absent(),
+    this.clientId = const Value.absent(),
+    this.entityType = const Value.absent(),
+    this.entityId = const Value.absent(),
+    this.govdeJson = const Value.absent(),
+    this.hlcWallMs = const Value.absent(),
+    this.hlcCounter = const Value.absent(),
+    this.durum = const Value.absent(),
+    this.denemeSayisi = const Value.absent(),
+    this.sonHataKodu = const Value.absent(),
+    this.olusturuldu = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SenkronKuyruguCompanion.insert({
+    required String opId,
+    required String clientId,
+    required String entityType,
+    required String entityId,
+    required String govdeJson,
+    required int hlcWallMs,
+    required int hlcCounter,
+    this.durum = const Value.absent(),
+    this.denemeSayisi = const Value.absent(),
+    this.sonHataKodu = const Value.absent(),
+    required DateTime olusturuldu,
+    this.rowid = const Value.absent(),
+  }) : opId = Value(opId),
+       clientId = Value(clientId),
+       entityType = Value(entityType),
+       entityId = Value(entityId),
+       govdeJson = Value(govdeJson),
+       hlcWallMs = Value(hlcWallMs),
+       hlcCounter = Value(hlcCounter),
+       olusturuldu = Value(olusturuldu);
+  static Insertable<SenkronKuyruguRow> custom({
+    Expression<String>? opId,
+    Expression<String>? clientId,
+    Expression<String>? entityType,
+    Expression<String>? entityId,
+    Expression<String>? govdeJson,
+    Expression<int>? hlcWallMs,
+    Expression<int>? hlcCounter,
+    Expression<String>? durum,
+    Expression<int>? denemeSayisi,
+    Expression<String>? sonHataKodu,
+    Expression<DateTime>? olusturuldu,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (opId != null) 'op_id': opId,
+      if (clientId != null) 'client_id': clientId,
+      if (entityType != null) 'entity_type': entityType,
+      if (entityId != null) 'entity_id': entityId,
+      if (govdeJson != null) 'govde_json': govdeJson,
+      if (hlcWallMs != null) 'hlc_wall_ms': hlcWallMs,
+      if (hlcCounter != null) 'hlc_counter': hlcCounter,
+      if (durum != null) 'durum': durum,
+      if (denemeSayisi != null) 'deneme_sayisi': denemeSayisi,
+      if (sonHataKodu != null) 'son_hata_kodu': sonHataKodu,
+      if (olusturuldu != null) 'olusturuldu': olusturuldu,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SenkronKuyruguCompanion copyWith({
+    Value<String>? opId,
+    Value<String>? clientId,
+    Value<String>? entityType,
+    Value<String>? entityId,
+    Value<String>? govdeJson,
+    Value<int>? hlcWallMs,
+    Value<int>? hlcCounter,
+    Value<String>? durum,
+    Value<int>? denemeSayisi,
+    Value<String?>? sonHataKodu,
+    Value<DateTime>? olusturuldu,
+    Value<int>? rowid,
+  }) {
+    return SenkronKuyruguCompanion(
+      opId: opId ?? this.opId,
+      clientId: clientId ?? this.clientId,
+      entityType: entityType ?? this.entityType,
+      entityId: entityId ?? this.entityId,
+      govdeJson: govdeJson ?? this.govdeJson,
+      hlcWallMs: hlcWallMs ?? this.hlcWallMs,
+      hlcCounter: hlcCounter ?? this.hlcCounter,
+      durum: durum ?? this.durum,
+      denemeSayisi: denemeSayisi ?? this.denemeSayisi,
+      sonHataKodu: sonHataKodu ?? this.sonHataKodu,
+      olusturuldu: olusturuldu ?? this.olusturuldu,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (opId.present) {
+      map['op_id'] = Variable<String>(opId.value);
+    }
+    if (clientId.present) {
+      map['client_id'] = Variable<String>(clientId.value);
+    }
+    if (entityType.present) {
+      map['entity_type'] = Variable<String>(entityType.value);
+    }
+    if (entityId.present) {
+      map['entity_id'] = Variable<String>(entityId.value);
+    }
+    if (govdeJson.present) {
+      map['govde_json'] = Variable<String>(govdeJson.value);
+    }
+    if (hlcWallMs.present) {
+      map['hlc_wall_ms'] = Variable<int>(hlcWallMs.value);
+    }
+    if (hlcCounter.present) {
+      map['hlc_counter'] = Variable<int>(hlcCounter.value);
+    }
+    if (durum.present) {
+      map['durum'] = Variable<String>(durum.value);
+    }
+    if (denemeSayisi.present) {
+      map['deneme_sayisi'] = Variable<int>(denemeSayisi.value);
+    }
+    if (sonHataKodu.present) {
+      map['son_hata_kodu'] = Variable<String>(sonHataKodu.value);
+    }
+    if (olusturuldu.present) {
+      map['olusturuldu'] = Variable<DateTime>(olusturuldu.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SenkronKuyruguCompanion(')
+          ..write('opId: $opId, ')
+          ..write('clientId: $clientId, ')
+          ..write('entityType: $entityType, ')
+          ..write('entityId: $entityId, ')
+          ..write('govdeJson: $govdeJson, ')
+          ..write('hlcWallMs: $hlcWallMs, ')
+          ..write('hlcCounter: $hlcCounter, ')
+          ..write('durum: $durum, ')
+          ..write('denemeSayisi: $denemeSayisi, ')
+          ..write('sonHataKodu: $sonHataKodu, ')
+          ..write('olusturuldu: $olusturuldu, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AyarlarTable extends Ayarlar with TableInfo<$AyarlarTable, AyarRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AyarlarTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _clientIdMeta = const VerificationMeta(
+    'clientId',
+  );
+  @override
+  late final GeneratedColumn<String> clientId = GeneratedColumn<String>(
+    'client_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sonWallMeta = const VerificationMeta(
+    'sonWall',
+  );
+  @override
+  late final GeneratedColumn<int> sonWall = GeneratedColumn<int>(
+    'son_wall',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _sonCounterMeta = const VerificationMeta(
+    'sonCounter',
+  );
+  @override
+  late final GeneratedColumn<int> sonCounter = GeneratedColumn<int>(
+    'son_counter',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _nextCursorJsonMeta = const VerificationMeta(
+    'nextCursorJson',
+  );
+  @override
+  late final GeneratedColumn<String> nextCursorJson = GeneratedColumn<String>(
+    'next_cursor_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _devUserIdMeta = const VerificationMeta(
+    'devUserId',
+  );
+  @override
+  late final GeneratedColumn<String> devUserId = GeneratedColumn<String>(
+    'dev_user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    clientId,
+    sonWall,
+    sonCounter,
+    nextCursorJson,
+    devUserId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ayarlar';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AyarRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('client_id')) {
+      context.handle(
+        _clientIdMeta,
+        clientId.isAcceptableOrUnknown(data['client_id']!, _clientIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_clientIdMeta);
+    }
+    if (data.containsKey('son_wall')) {
+      context.handle(
+        _sonWallMeta,
+        sonWall.isAcceptableOrUnknown(data['son_wall']!, _sonWallMeta),
+      );
+    }
+    if (data.containsKey('son_counter')) {
+      context.handle(
+        _sonCounterMeta,
+        sonCounter.isAcceptableOrUnknown(data['son_counter']!, _sonCounterMeta),
+      );
+    }
+    if (data.containsKey('next_cursor_json')) {
+      context.handle(
+        _nextCursorJsonMeta,
+        nextCursorJson.isAcceptableOrUnknown(
+          data['next_cursor_json']!,
+          _nextCursorJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dev_user_id')) {
+      context.handle(
+        _devUserIdMeta,
+        devUserId.isAcceptableOrUnknown(data['dev_user_id']!, _devUserIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_devUserIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AyarRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AyarRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      clientId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_id'],
+      )!,
+      sonWall: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}son_wall'],
+      )!,
+      sonCounter: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}son_counter'],
+      )!,
+      nextCursorJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}next_cursor_json'],
+      ),
+      devUserId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dev_user_id'],
+      )!,
+    );
+  }
+
+  @override
+  $AyarlarTable createAlias(String alias) {
+    return $AyarlarTable(attachedDatabase, alias);
+  }
+}
+
+class AyarRow extends DataClass implements Insertable<AyarRow> {
+  final int id;
+  final String clientId;
+  final int sonWall;
+  final int sonCounter;
+  final String? nextCursorJson;
+  final String devUserId;
+  const AyarRow({
+    required this.id,
+    required this.clientId,
+    required this.sonWall,
+    required this.sonCounter,
+    this.nextCursorJson,
+    required this.devUserId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['client_id'] = Variable<String>(clientId);
+    map['son_wall'] = Variable<int>(sonWall);
+    map['son_counter'] = Variable<int>(sonCounter);
+    if (!nullToAbsent || nextCursorJson != null) {
+      map['next_cursor_json'] = Variable<String>(nextCursorJson);
+    }
+    map['dev_user_id'] = Variable<String>(devUserId);
+    return map;
+  }
+
+  AyarlarCompanion toCompanion(bool nullToAbsent) {
+    return AyarlarCompanion(
+      id: Value(id),
+      clientId: Value(clientId),
+      sonWall: Value(sonWall),
+      sonCounter: Value(sonCounter),
+      nextCursorJson: nextCursorJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextCursorJson),
+      devUserId: Value(devUserId),
+    );
+  }
+
+  factory AyarRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AyarRow(
+      id: serializer.fromJson<int>(json['id']),
+      clientId: serializer.fromJson<String>(json['clientId']),
+      sonWall: serializer.fromJson<int>(json['sonWall']),
+      sonCounter: serializer.fromJson<int>(json['sonCounter']),
+      nextCursorJson: serializer.fromJson<String?>(json['nextCursorJson']),
+      devUserId: serializer.fromJson<String>(json['devUserId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'clientId': serializer.toJson<String>(clientId),
+      'sonWall': serializer.toJson<int>(sonWall),
+      'sonCounter': serializer.toJson<int>(sonCounter),
+      'nextCursorJson': serializer.toJson<String?>(nextCursorJson),
+      'devUserId': serializer.toJson<String>(devUserId),
+    };
+  }
+
+  AyarRow copyWith({
+    int? id,
+    String? clientId,
+    int? sonWall,
+    int? sonCounter,
+    Value<String?> nextCursorJson = const Value.absent(),
+    String? devUserId,
+  }) => AyarRow(
+    id: id ?? this.id,
+    clientId: clientId ?? this.clientId,
+    sonWall: sonWall ?? this.sonWall,
+    sonCounter: sonCounter ?? this.sonCounter,
+    nextCursorJson: nextCursorJson.present
+        ? nextCursorJson.value
+        : this.nextCursorJson,
+    devUserId: devUserId ?? this.devUserId,
+  );
+  AyarRow copyWithCompanion(AyarlarCompanion data) {
+    return AyarRow(
+      id: data.id.present ? data.id.value : this.id,
+      clientId: data.clientId.present ? data.clientId.value : this.clientId,
+      sonWall: data.sonWall.present ? data.sonWall.value : this.sonWall,
+      sonCounter: data.sonCounter.present
+          ? data.sonCounter.value
+          : this.sonCounter,
+      nextCursorJson: data.nextCursorJson.present
+          ? data.nextCursorJson.value
+          : this.nextCursorJson,
+      devUserId: data.devUserId.present ? data.devUserId.value : this.devUserId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AyarRow(')
+          ..write('id: $id, ')
+          ..write('clientId: $clientId, ')
+          ..write('sonWall: $sonWall, ')
+          ..write('sonCounter: $sonCounter, ')
+          ..write('nextCursorJson: $nextCursorJson, ')
+          ..write('devUserId: $devUserId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, clientId, sonWall, sonCounter, nextCursorJson, devUserId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AyarRow &&
+          other.id == this.id &&
+          other.clientId == this.clientId &&
+          other.sonWall == this.sonWall &&
+          other.sonCounter == this.sonCounter &&
+          other.nextCursorJson == this.nextCursorJson &&
+          other.devUserId == this.devUserId);
+}
+
+class AyarlarCompanion extends UpdateCompanion<AyarRow> {
+  final Value<int> id;
+  final Value<String> clientId;
+  final Value<int> sonWall;
+  final Value<int> sonCounter;
+  final Value<String?> nextCursorJson;
+  final Value<String> devUserId;
+  const AyarlarCompanion({
+    this.id = const Value.absent(),
+    this.clientId = const Value.absent(),
+    this.sonWall = const Value.absent(),
+    this.sonCounter = const Value.absent(),
+    this.nextCursorJson = const Value.absent(),
+    this.devUserId = const Value.absent(),
+  });
+  AyarlarCompanion.insert({
+    this.id = const Value.absent(),
+    required String clientId,
+    this.sonWall = const Value.absent(),
+    this.sonCounter = const Value.absent(),
+    this.nextCursorJson = const Value.absent(),
+    required String devUserId,
+  }) : clientId = Value(clientId),
+       devUserId = Value(devUserId);
+  static Insertable<AyarRow> custom({
+    Expression<int>? id,
+    Expression<String>? clientId,
+    Expression<int>? sonWall,
+    Expression<int>? sonCounter,
+    Expression<String>? nextCursorJson,
+    Expression<String>? devUserId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (clientId != null) 'client_id': clientId,
+      if (sonWall != null) 'son_wall': sonWall,
+      if (sonCounter != null) 'son_counter': sonCounter,
+      if (nextCursorJson != null) 'next_cursor_json': nextCursorJson,
+      if (devUserId != null) 'dev_user_id': devUserId,
+    });
+  }
+
+  AyarlarCompanion copyWith({
+    Value<int>? id,
+    Value<String>? clientId,
+    Value<int>? sonWall,
+    Value<int>? sonCounter,
+    Value<String?>? nextCursorJson,
+    Value<String>? devUserId,
+  }) {
+    return AyarlarCompanion(
+      id: id ?? this.id,
+      clientId: clientId ?? this.clientId,
+      sonWall: sonWall ?? this.sonWall,
+      sonCounter: sonCounter ?? this.sonCounter,
+      nextCursorJson: nextCursorJson ?? this.nextCursorJson,
+      devUserId: devUserId ?? this.devUserId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (clientId.present) {
+      map['client_id'] = Variable<String>(clientId.value);
+    }
+    if (sonWall.present) {
+      map['son_wall'] = Variable<int>(sonWall.value);
+    }
+    if (sonCounter.present) {
+      map['son_counter'] = Variable<int>(sonCounter.value);
+    }
+    if (nextCursorJson.present) {
+      map['next_cursor_json'] = Variable<String>(nextCursorJson.value);
+    }
+    if (devUserId.present) {
+      map['dev_user_id'] = Variable<String>(devUserId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AyarlarCompanion(')
+          ..write('id: $id, ')
+          ..write('clientId: $clientId, ')
+          ..write('sonWall: $sonWall, ')
+          ..write('sonCounter: $sonCounter, ')
+          ..write('nextCursorJson: $nextCursorJson, ')
+          ..write('devUserId: $devUserId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$Veritabani extends GeneratedDatabase {
   _$Veritabani(QueryExecutor e) : super(e);
   $VeritabaniManager get managers => $VeritabaniManager(this);
   late final $GorevlerTable gorevler = $GorevlerTable(this);
+  late final $SenkronKuyruguTable senkronKuyrugu = $SenkronKuyruguTable(this);
+  late final $AyarlarTable ayarlar = $AyarlarTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [gorevler];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    gorevler,
+    senkronKuyrugu,
+    ayarlar,
+  ];
 }
 
 typedef $$GorevlerTableCreateCompanionBuilder =
@@ -733,10 +1822,553 @@ typedef $$GorevlerTableProcessedTableManager =
       GorevRow,
       PrefetchHooks Function()
     >;
+typedef $$SenkronKuyruguTableCreateCompanionBuilder =
+    SenkronKuyruguCompanion Function({
+      required String opId,
+      required String clientId,
+      required String entityType,
+      required String entityId,
+      required String govdeJson,
+      required int hlcWallMs,
+      required int hlcCounter,
+      Value<String> durum,
+      Value<int> denemeSayisi,
+      Value<String?> sonHataKodu,
+      required DateTime olusturuldu,
+      Value<int> rowid,
+    });
+typedef $$SenkronKuyruguTableUpdateCompanionBuilder =
+    SenkronKuyruguCompanion Function({
+      Value<String> opId,
+      Value<String> clientId,
+      Value<String> entityType,
+      Value<String> entityId,
+      Value<String> govdeJson,
+      Value<int> hlcWallMs,
+      Value<int> hlcCounter,
+      Value<String> durum,
+      Value<int> denemeSayisi,
+      Value<String?> sonHataKodu,
+      Value<DateTime> olusturuldu,
+      Value<int> rowid,
+    });
+
+class $$SenkronKuyruguTableFilterComposer
+    extends Composer<_$Veritabani, $SenkronKuyruguTable> {
+  $$SenkronKuyruguTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get opId => $composableBuilder(
+    column: $table.opId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientId => $composableBuilder(
+    column: $table.clientId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get govdeJson => $composableBuilder(
+    column: $table.govdeJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get hlcWallMs => $composableBuilder(
+    column: $table.hlcWallMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get hlcCounter => $composableBuilder(
+    column: $table.hlcCounter,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get durum => $composableBuilder(
+    column: $table.durum,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get denemeSayisi => $composableBuilder(
+    column: $table.denemeSayisi,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sonHataKodu => $composableBuilder(
+    column: $table.sonHataKodu,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get olusturuldu => $composableBuilder(
+    column: $table.olusturuldu,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SenkronKuyruguTableOrderingComposer
+    extends Composer<_$Veritabani, $SenkronKuyruguTable> {
+  $$SenkronKuyruguTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get opId => $composableBuilder(
+    column: $table.opId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientId => $composableBuilder(
+    column: $table.clientId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get govdeJson => $composableBuilder(
+    column: $table.govdeJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get hlcWallMs => $composableBuilder(
+    column: $table.hlcWallMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get hlcCounter => $composableBuilder(
+    column: $table.hlcCounter,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get durum => $composableBuilder(
+    column: $table.durum,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get denemeSayisi => $composableBuilder(
+    column: $table.denemeSayisi,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sonHataKodu => $composableBuilder(
+    column: $table.sonHataKodu,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get olusturuldu => $composableBuilder(
+    column: $table.olusturuldu,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SenkronKuyruguTableAnnotationComposer
+    extends Composer<_$Veritabani, $SenkronKuyruguTable> {
+  $$SenkronKuyruguTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get opId =>
+      $composableBuilder(column: $table.opId, builder: (column) => column);
+
+  GeneratedColumn<String> get clientId =>
+      $composableBuilder(column: $table.clientId, builder: (column) => column);
+
+  GeneratedColumn<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entityId =>
+      $composableBuilder(column: $table.entityId, builder: (column) => column);
+
+  GeneratedColumn<String> get govdeJson =>
+      $composableBuilder(column: $table.govdeJson, builder: (column) => column);
+
+  GeneratedColumn<int> get hlcWallMs =>
+      $composableBuilder(column: $table.hlcWallMs, builder: (column) => column);
+
+  GeneratedColumn<int> get hlcCounter => $composableBuilder(
+    column: $table.hlcCounter,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get durum =>
+      $composableBuilder(column: $table.durum, builder: (column) => column);
+
+  GeneratedColumn<int> get denemeSayisi => $composableBuilder(
+    column: $table.denemeSayisi,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sonHataKodu => $composableBuilder(
+    column: $table.sonHataKodu,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get olusturuldu => $composableBuilder(
+    column: $table.olusturuldu,
+    builder: (column) => column,
+  );
+}
+
+class $$SenkronKuyruguTableTableManager
+    extends
+        RootTableManager<
+          _$Veritabani,
+          $SenkronKuyruguTable,
+          SenkronKuyruguRow,
+          $$SenkronKuyruguTableFilterComposer,
+          $$SenkronKuyruguTableOrderingComposer,
+          $$SenkronKuyruguTableAnnotationComposer,
+          $$SenkronKuyruguTableCreateCompanionBuilder,
+          $$SenkronKuyruguTableUpdateCompanionBuilder,
+          (
+            SenkronKuyruguRow,
+            BaseReferences<
+              _$Veritabani,
+              $SenkronKuyruguTable,
+              SenkronKuyruguRow
+            >,
+          ),
+          SenkronKuyruguRow,
+          PrefetchHooks Function()
+        > {
+  $$SenkronKuyruguTableTableManager(_$Veritabani db, $SenkronKuyruguTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SenkronKuyruguTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SenkronKuyruguTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SenkronKuyruguTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> opId = const Value.absent(),
+                Value<String> clientId = const Value.absent(),
+                Value<String> entityType = const Value.absent(),
+                Value<String> entityId = const Value.absent(),
+                Value<String> govdeJson = const Value.absent(),
+                Value<int> hlcWallMs = const Value.absent(),
+                Value<int> hlcCounter = const Value.absent(),
+                Value<String> durum = const Value.absent(),
+                Value<int> denemeSayisi = const Value.absent(),
+                Value<String?> sonHataKodu = const Value.absent(),
+                Value<DateTime> olusturuldu = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SenkronKuyruguCompanion(
+                opId: opId,
+                clientId: clientId,
+                entityType: entityType,
+                entityId: entityId,
+                govdeJson: govdeJson,
+                hlcWallMs: hlcWallMs,
+                hlcCounter: hlcCounter,
+                durum: durum,
+                denemeSayisi: denemeSayisi,
+                sonHataKodu: sonHataKodu,
+                olusturuldu: olusturuldu,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String opId,
+                required String clientId,
+                required String entityType,
+                required String entityId,
+                required String govdeJson,
+                required int hlcWallMs,
+                required int hlcCounter,
+                Value<String> durum = const Value.absent(),
+                Value<int> denemeSayisi = const Value.absent(),
+                Value<String?> sonHataKodu = const Value.absent(),
+                required DateTime olusturuldu,
+                Value<int> rowid = const Value.absent(),
+              }) => SenkronKuyruguCompanion.insert(
+                opId: opId,
+                clientId: clientId,
+                entityType: entityType,
+                entityId: entityId,
+                govdeJson: govdeJson,
+                hlcWallMs: hlcWallMs,
+                hlcCounter: hlcCounter,
+                durum: durum,
+                denemeSayisi: denemeSayisi,
+                sonHataKodu: sonHataKodu,
+                olusturuldu: olusturuldu,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SenkronKuyruguTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Veritabani,
+      $SenkronKuyruguTable,
+      SenkronKuyruguRow,
+      $$SenkronKuyruguTableFilterComposer,
+      $$SenkronKuyruguTableOrderingComposer,
+      $$SenkronKuyruguTableAnnotationComposer,
+      $$SenkronKuyruguTableCreateCompanionBuilder,
+      $$SenkronKuyruguTableUpdateCompanionBuilder,
+      (
+        SenkronKuyruguRow,
+        BaseReferences<_$Veritabani, $SenkronKuyruguTable, SenkronKuyruguRow>,
+      ),
+      SenkronKuyruguRow,
+      PrefetchHooks Function()
+    >;
+typedef $$AyarlarTableCreateCompanionBuilder =
+    AyarlarCompanion Function({
+      Value<int> id,
+      required String clientId,
+      Value<int> sonWall,
+      Value<int> sonCounter,
+      Value<String?> nextCursorJson,
+      required String devUserId,
+    });
+typedef $$AyarlarTableUpdateCompanionBuilder =
+    AyarlarCompanion Function({
+      Value<int> id,
+      Value<String> clientId,
+      Value<int> sonWall,
+      Value<int> sonCounter,
+      Value<String?> nextCursorJson,
+      Value<String> devUserId,
+    });
+
+class $$AyarlarTableFilterComposer
+    extends Composer<_$Veritabani, $AyarlarTable> {
+  $$AyarlarTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientId => $composableBuilder(
+    column: $table.clientId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sonWall => $composableBuilder(
+    column: $table.sonWall,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sonCounter => $composableBuilder(
+    column: $table.sonCounter,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nextCursorJson => $composableBuilder(
+    column: $table.nextCursorJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get devUserId => $composableBuilder(
+    column: $table.devUserId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AyarlarTableOrderingComposer
+    extends Composer<_$Veritabani, $AyarlarTable> {
+  $$AyarlarTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientId => $composableBuilder(
+    column: $table.clientId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sonWall => $composableBuilder(
+    column: $table.sonWall,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sonCounter => $composableBuilder(
+    column: $table.sonCounter,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nextCursorJson => $composableBuilder(
+    column: $table.nextCursorJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get devUserId => $composableBuilder(
+    column: $table.devUserId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AyarlarTableAnnotationComposer
+    extends Composer<_$Veritabani, $AyarlarTable> {
+  $$AyarlarTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get clientId =>
+      $composableBuilder(column: $table.clientId, builder: (column) => column);
+
+  GeneratedColumn<int> get sonWall =>
+      $composableBuilder(column: $table.sonWall, builder: (column) => column);
+
+  GeneratedColumn<int> get sonCounter => $composableBuilder(
+    column: $table.sonCounter,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get nextCursorJson => $composableBuilder(
+    column: $table.nextCursorJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get devUserId =>
+      $composableBuilder(column: $table.devUserId, builder: (column) => column);
+}
+
+class $$AyarlarTableTableManager
+    extends
+        RootTableManager<
+          _$Veritabani,
+          $AyarlarTable,
+          AyarRow,
+          $$AyarlarTableFilterComposer,
+          $$AyarlarTableOrderingComposer,
+          $$AyarlarTableAnnotationComposer,
+          $$AyarlarTableCreateCompanionBuilder,
+          $$AyarlarTableUpdateCompanionBuilder,
+          (AyarRow, BaseReferences<_$Veritabani, $AyarlarTable, AyarRow>),
+          AyarRow,
+          PrefetchHooks Function()
+        > {
+  $$AyarlarTableTableManager(_$Veritabani db, $AyarlarTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AyarlarTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AyarlarTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AyarlarTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> clientId = const Value.absent(),
+                Value<int> sonWall = const Value.absent(),
+                Value<int> sonCounter = const Value.absent(),
+                Value<String?> nextCursorJson = const Value.absent(),
+                Value<String> devUserId = const Value.absent(),
+              }) => AyarlarCompanion(
+                id: id,
+                clientId: clientId,
+                sonWall: sonWall,
+                sonCounter: sonCounter,
+                nextCursorJson: nextCursorJson,
+                devUserId: devUserId,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String clientId,
+                Value<int> sonWall = const Value.absent(),
+                Value<int> sonCounter = const Value.absent(),
+                Value<String?> nextCursorJson = const Value.absent(),
+                required String devUserId,
+              }) => AyarlarCompanion.insert(
+                id: id,
+                clientId: clientId,
+                sonWall: sonWall,
+                sonCounter: sonCounter,
+                nextCursorJson: nextCursorJson,
+                devUserId: devUserId,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AyarlarTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Veritabani,
+      $AyarlarTable,
+      AyarRow,
+      $$AyarlarTableFilterComposer,
+      $$AyarlarTableOrderingComposer,
+      $$AyarlarTableAnnotationComposer,
+      $$AyarlarTableCreateCompanionBuilder,
+      $$AyarlarTableUpdateCompanionBuilder,
+      (AyarRow, BaseReferences<_$Veritabani, $AyarlarTable, AyarRow>),
+      AyarRow,
+      PrefetchHooks Function()
+    >;
 
 class $VeritabaniManager {
   final _$Veritabani _db;
   $VeritabaniManager(this._db);
   $$GorevlerTableTableManager get gorevler =>
       $$GorevlerTableTableManager(_db, _db.gorevler);
+  $$SenkronKuyruguTableTableManager get senkronKuyrugu =>
+      $$SenkronKuyruguTableTableManager(_db, _db.senkronKuyrugu);
+  $$AyarlarTableTableManager get ayarlar =>
+      $$AyarlarTableTableManager(_db, _db.ayarlar);
 }

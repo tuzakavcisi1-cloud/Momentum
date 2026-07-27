@@ -42,7 +42,18 @@ builder.Services.AddMediator();
 builder.Services.AddSyncInfrastructure(hasDatabase
     ? connectionString!
     : "Host=localhost;Port=5432;Database=momentum;Username=momentum;Password=not_configured");
-builder.Services.AddScoped<ICurrentUser, NullCurrentUser>();          // deny-by-default (K-D5)
+// GOREV slice-3c D0: dev-identity shield, hard-scoped to Development; every other environment keeps
+// the deny-by-default NullCurrentUser (K-D5). AddHttpContextAccessor is D0's required companion --
+// DevCurrentUser reads the ambient request header through it.
+builder.Services.AddHttpContextAccessor();
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddScoped<ICurrentUser, DevCurrentUser>();
+}
+else
+{
+    builder.Services.AddScoped<ICurrentUser, NullCurrentUser>();      // deny-by-default (K-D5)
+}
 builder.Services.AddScoped<IValidator<SyncRequest>, SyncRequestValidator>();
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>)); // K-G1
 

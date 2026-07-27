@@ -6,15 +6,37 @@ import 'bos_durum.dart';
 import 'gorev_ekle_alani.dart';
 import 'gorev_satiri.dart';
 import 'hata_durumu.dart';
+import 'senkron_rozeti.dart';
 import 'yukleme_durumu.dart';
 
 /// SS3.1 -- tek vitrin ekrani (gercek, akis-tabanli ekran; durum_vitrini.dart
 /// ile KARISTIRILMAZ, o statik/deterministik bir gosterimdir).
 ///
 /// F5 PAZARLIKSIZ: G5 bu ekranin uzerinde de kosar (bos * yerel * hata).
-/// Bu dilimde gercek veri hicbir zaman kuyrukta/senkronize/cevrimdisi/cakisma
-/// uretemez (T4'un CHECK kisiti yalniz 'yerel'), bu yuzden bu ekran yalniz
-/// o uc alt durumu gosterir; digerleri vitrindedir.
+/// GOREV-slice-3c T6 ile birlikte gercek veri artik kuyrukta/senkronize/
+/// cevrimdisi/cakisma da uretebilir (senkron dongusu); [rozetDikisi] (D5)
+/// `Gorevler.senkronDurumu` dizesini `GorevSatiri`nin iki parametresine
+/// cevirir.
+///
+/// GOREV-slice-3c D5: `senkronDurumu` -> `(SenkronDurumTuru, cakismaVarMi)`.
+/// Taninmayan dize CHECK kisitinin anlamini yok eder (sessizce 'yerel'e
+/// dusmek YASAK) -- bu yuzden FIRLATIR.
+(SenkronDurumTuru, bool) rozetDikisi(String senkronDurumu) {
+  switch (senkronDurumu) {
+    case 'yerel':
+      return (SenkronDurumTuru.yerel, false);
+    case 'kuyrukta':
+      return (SenkronDurumTuru.kuyrukta, false);
+    case 'senkronize':
+      return (SenkronDurumTuru.senkronize, false);
+    case 'cevrimdisi':
+      return (SenkronDurumTuru.cevrimdisi, false);
+    case 'cakisma':
+      return (SenkronDurumTuru.yerel, true);
+    default:
+      throw ArgumentError('Taninmayan senkronDurumu: $senkronDurumu');
+  }
+}
 class GorevListesiEkrani extends StatefulWidget {
   final GorevDeposu depo;
 
@@ -65,11 +87,16 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
                     itemCount: gorevler.length,
                     itemBuilder: (context, i) {
                       final gorev = gorevler[i];
+                      final (senkronDurumu, cakismaVarMi) = rozetDikisi(
+                        gorev.senkronDurumu,
+                      );
                       return GorevSatiri(
                         key: ValueKey('gorev_satiri_${gorev.id}'),
                         gorev: gorev,
                         onTamamlaDegisti: (deger) => widget.depo
                             .tamamlaGeriAl(gorev.id, tamamlandi: deger),
+                        senkronDurumu: senkronDurumu,
+                        cakismaVarMi: cakismaVarMi,
                       );
                     },
                   );

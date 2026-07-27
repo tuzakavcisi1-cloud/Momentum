@@ -1,4 +1,6 @@
+import 'package:client/veri/ayarlar_deposu.dart';
 import 'package:client/veri/gorev_deposu.dart';
+import 'package:client/veri/hlc.dart';
 import 'package:client/veri/veritabani.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,14 +12,23 @@ void main() {
   late DateTime sabitSaat;
   var idSayaci = 0;
 
-  setUp(() {
+  setUp(() async {
     db = Veritabani(NativeDatabase.memory());
     sabitSaat = DateTime.utc(2026, 7, 26, 12);
     idSayaci = 0;
+    String idUret() => 'test-id-${idSayaci++}';
+    final ayarlarDeposu = AyarlarDeposu(db, idUret: idUret);
+    final ayarlar = await ayarlarDeposu.yukleVeyaOlustur();
     depo = DriftGorevDeposu(
       db,
       saat: () => sabitSaat,
-      idUret: () => 'test-id-${idSayaci++}',
+      idUret: idUret,
+      hlc: HlcUretici(
+        simdiMs: () => sabitSaat.millisecondsSinceEpoch,
+        clientId: ayarlar.clientId,
+      ),
+      ayarlarDeposu: ayarlarDeposu,
+      actorId: ayarlar.devUserId,
     );
   });
 
@@ -93,14 +104,35 @@ void main() {
     expect(ikinciSatir.guncellendi.isAfter(ilkGuncellendi), isTrue);
   });
 
-  test('senkronDurumu yerel disi yazma DB kisitindan duser', () async {
+  test(
+    'senkronDurumu bes gecerli degerin hepsini kabul eder (GOREV-slice-3c D1)',
+    () async {
+      await depo.ekle('Kisit kontrolu');
+      final satir = (await db.select(db.gorevler).get()).single;
+
+      for (final gecerli in [
+        'yerel',
+        'kuyrukta',
+        'senkronize',
+        'cakisma',
+        'cevrimdisi',
+      ]) {
+        await db.customStatement(
+          'UPDATE gorevler SET senkron_durumu = ? WHERE id = ?',
+          [gecerli, satir.id],
+        );
+      }
+    },
+  );
+
+  test('senkronDurumu taninmayan deger DB kisitindan duser', () async {
     await depo.ekle('Kisit kontrolu');
     final satir = (await db.select(db.gorevler).get()).single;
 
     await expectLater(
       db.customStatement(
         'UPDATE gorevler SET senkron_durumu = ? WHERE id = ?',
-        ['kuyrukta', satir.id],
+        ['bilinmeyen-deger', satir.id],
       ),
       throwsA(isA<Exception>()),
     );
