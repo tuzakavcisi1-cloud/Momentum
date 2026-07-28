@@ -159,7 +159,7 @@ void main() {
     await db.close();
   });
 
-  test('D4: yerelde OLMAYAN entityId -- Gorevlere INSERT edildi; baslik telden, senkronDurumu==yerel (varsayilan)', () async {
+  test('D4: yerelde OLMAYAN entityId -- Gorevlere INSERT edildi; baslik telden, senkronDurumu==senkronize (R9/T1)', () async {
     final db = dosyaDbAc();
     final uygulayici = UzakDegisiklikUygulayici(db);
 
@@ -167,7 +167,7 @@ void main() {
 
     final yeni = await (db.select(db.gorevler)..where((t) => t.id.equals('e-yeni-1'))).getSingle();
     expect(yeni.baslik, 'Yeni entity basligi');
-    expect(yeni.senkronDurumu, 'yerel', reason: 'D4 BEYAN: yeni entity yerel ile dogar');
+    expect(yeni.senkronDurumu, 'senkronize', reason: 'K72/R9-T1: INSERT-from-pull senkronize ile dogar -- bekleyen yerel yazim yok, P6/P7 kapsami disi');
     await db.close();
   });
 

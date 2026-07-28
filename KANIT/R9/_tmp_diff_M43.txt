@@ -1,0 +1,11 @@
+--- KANIT/R9/_baseline/uzak_degisiklik_uygulayici.dart.orig	2026-07-28 20:00:55.304417100 +0300
++++ src/client/lib/senkron/uzak_degisiklik_uygulayici.dart	2026-07-28 20:08:21.158281700 +0300
+@@ -225,7 +225,7 @@
+                 // ile dogar -- bu satirda bekleyen yerel yazim YOKTUR (henuz
+                 // kuyrukta hic op yok), P6/P7'nin korudugu senaryo bu DEGILDIR.
+                 // UPDATE dali (asagida) rozete DOKUNMAZ, kilit orada AYNEN durur.
+-                senkronDurumu: const Value('senkronize'),
++                senkronDurumu: const Value('yerel'), // M43 mutant
+               ),
+             );
+       } else {
