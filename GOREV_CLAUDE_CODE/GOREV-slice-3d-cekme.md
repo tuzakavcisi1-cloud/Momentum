@@ -166,7 +166,8 @@ aynı değişkenden gelir (§1.5). Bu bir **istemci kusuru değil, backend'de ZO
 4. **Yerel LWW karşılaştırıcı** (sunucunun anahtarını BİREBİR taklit eder) — `D3`.
 5. **Bekleyen yerel yazımın korunması** — `D5`. **Echo uygulanır** — `D6`.
 6. **Backend `opId` v7 zorlaması** — `D8`. **Backend `owner_id` düzeltmesi** — `D9`.
-7. Dokuz kapı `G1`-`G9` + otuz iki mutant `M1`-`M32`, hepsi KANIT'lı.
+7. **İtme turu da yanıtı uygular** (K2) + **yutulan tetikleyici bir kez yeniden koşar** (K3) — `D0`.
+8. Dokuz kapı `G1`-`G9` + kırk mutant `M1`-`M40`, hepsi KANIT'lı.
 
 ### YOK — bu dilimde YASAK
 - [YASAK] **SignalR / gerçek zamanlı itme** → slice-3e. Çekme **tetiklenerek** koşar, sürekli değil.
@@ -187,8 +188,24 @@ aynı değişkenden gelir (§1.5). Bu bir **istemci kusuru değil, backend'de ZO
 ### `D0` — YALNIZ-ÇEKME KOD YOLU ve TETİKLEYİCİLER
 
 **Yeni kod yolu:** `SenkronDongusu.cekmeTuruCalistir()` — kuyrukta bekleyen satır olup olmadığına
-**bakmaz**, gövdeyi `"ops":[]` ile kurar ve gönderir. Mevcut `turCalistir()` **değişmez**; ikisi de
-**AYNI tek-uçuş kilidini** (`_devamEdenTur`) paylaşır (slice-3c `D4`).
+**bakmaz**, gövdeyi `"ops":[]` ile kurar ve gönderir. İkisi de **AYNI tek-uçuş kilidini**
+(`_devamEdenTur`) paylaşır (slice-3c `D4`).
+
+[KIRMIZI] **`turCalistir()` (İTME TURU) DA YANITI UYGULAR — K2 (Onur, kilitli).** *"Mevcut
+`turCalistir()` değişmez"* cümlesi **DÜŞTÜ**. Ölçülmüş sebep: `SyncCommandHandler.Handle` **her**
+yanıtta çekme yapar (`SyncCommandHandler.cs:74-95`) ve `_basariliYanitIsle` `nextCursor`'ı
+**koşulsuz** kalıcılaştırır (`senkron_dongusu.dart:158-162`) ama `changes`/`snapshot`'a **hiç bakmaz**.
+Yani itme turu bugün gelen veriyi **atar, imleci ilerletir** ⇒ o aralık bir daha **hiç** gelmez:
+**sessiz ve KALICI veri kaybı**. İlk itme turunda `sinceCursor == null` ise atılan şey **tüm
+snapshot**tur. Bu yüzden: **her iki tur da** dönen `changes`/`snapshot`'ı **aynı**
+`UzakDegisiklikUygulayici`'ya verir ve **imleç ancak veri uygulandıktan SONRA** ilerler (`D7`/1).
+
+[KIRMIZI] **YUTULAN ÇEKME TETİKLEYİCİSİ BİR KEZ YENİDEN KOŞAR — K3 (Onur, kilitli).** Tek-uçuş kilidi
+devam eden turu döndürdüğünde çekme tetikleyicisi **kaybolur**: kullanıcı yenilemeye bastığı anda bir
+itme turu koşuyorsa hiçbir şey çekilmez ve kullanıcıya **hiçbir geri bildirim gitmez**. Kural:
+tetikleyici yutulduğunda `_cekmeBekliyor = true` bayrağı kurulur; devam eden tur bittiğinde
+(`whenComplete`) bayrak doğruysa **bir kez** (ve yalnız bir kez) `cekmeTuruCalistir()` koşar ve bayrak
+temizlenir. Bayrak **sayaç değildir** — yutulan on tetikleyici tek bir ek tur üretir.
 
 [KIRMIZI] **`_turCalistirIc()`'in erken `return`'ü çekme yolunu ÖLDÜRÜR.** Bugün bekleyen satır yoksa
 hiç istek atılmıyor (`senkron_dongusu.dart:73-75`); çekme bu dala **eklenemez**, **ayrı bir kod yolu**
@@ -198,10 +215,12 @@ gerektirir. Aksi hâlde uygulama, kuyruğu boş olan (yani normal) her açılı�
 (`SyncRequestValidator.cs:14`) ⇒ alanı düşürmek **400** demektir ve slice-3c `D9`'a göre
 *"tur DURUR, `denemeSayisi` artmaz"* — yani hata **sessizdir**, kuyruk temizdir, kimse bir şey görmez.
 
-**Tetikleyiciler — KAPALI LİSTE (üç tanedir, dördüncüsü yoktur):**
+**Tetikleyiciler — KAPALI LİSTE (dört tanedir, beşincisi yoktur):**
 1. **Uygulama açılışı:** `gonderildiKurtar()`'dan sonra **bir** çekme turu.
 2. **Kullanıcı elle yenilediğinde:** bir çekme turu (mevcut listede yenileme eylemi).
-3. **`hasMore == true` olduğu sürece boşaltma döngüsü** (`D7`).
+3. **`hasMore == true` ve gelen sayfa BOŞ DEĞİLKEN boşaltma döngüsü** (`D7`).
+4. **Yutulan tetikleyicinin ertelenmiş tekrarı (K3)** — yeni bir kaynak değil, 1 ya da 2'nin
+   tek-uçuş kilidine takılmış hâlinin telafisidir; devam eden tur bittiğinde **bir kez** koşar.
 
 [KIRMIZI] **PERİYODİK YOKLAMA YASAK.** `Timer.periodic` ile çekmek bu dilimin maliyet modelini bozar
 (mobil pil + sunucu yükü) **ve** gerçek zamanlı ihtiyacı 3e'den önce sahte biçimde karşılamış gibi
@@ -230,8 +249,12 @@ grubu iki bağımsız alana böler ve REPLACE anlamını yok eder.
 ```dart
 if (from < 4) {
   await m.createTable(uzakAlanDurumu);
+  await m.addColumn(ayarlar, ayarlar.imlecSahibi);   // D7/4 -- AYNI migration, atlanamaz
 }
 ```
+[KIRMIZI] **`addColumn` satırı bu bloğun PARÇASIDIR.** `D7`/4, `T2` ve `G2` aynı `v3 -> v4`
+migration'ının `imlecSahibi` sütununu da eklemesini şart koşar; bloğu eksik kopyalayan build `G2`'de
+kırmızı yanar. `addColumn` **salt-eklemedir**, tablo yeniden yaratmaz — `D1`'in kilidini bozmaz.
 [KIRMIZI] **`Gorevler`'e DOKUNULMAZ, `alterTable` ÇAĞRILMAZ, CHECK/tip DEĞİŞTİRİLMEZ.** Gerekçe ölçüldü:
 SQLite bir CHECK kısıtını `ALTER TABLE` ile değiştiremez ⇒ `TableMigration` tabloyu **yeniden yaratır**;
 bu, "salt-ekleme" kilidini bozar, veri kopyalama riski doğurur ve `v1 -> v2`'deki (slice-3c) pahalı
@@ -263,6 +286,17 @@ istemcinin elinde o alanın **hiç HLC'si olmaz** ⇒ ilk yazım kör overwrite'
 [KIRMIZI] **İKİ DAL DA UYGULANIR.** `sinceCursor == null` ⇒ `snapshot`, aksi hâlde `changes`. Bir dalı
 "sonra" bırakmak = uygulamanın ilk açılışında hiçbir şey çekmemesi (§1.2).
 
+[KIRMIZI] **SNAPSHOT BİRLEŞTİRİLİR, SIFIRLAMAZ.** `snapshotUygula` gelen her yazımı `D3`'ün **aynı
+karşılaştırma yolundan** geçirir; `UzakAlanDurumu` **temizlenmez**, `Gorevler` **boşaltılmaz**. Sebep:
+snapshot, `resyncRequired` sonrasında da gelir (`D7`/3) ve o anda cihazda **kuyrukta bekleyen yerel
+yazımlar** olabilir; tabloyu silmek `D5`'in koruduğu tabanı yok eder ve kullanıcının gönderilmemiş
+düzenlemesini geri alır.
+
+[SINIR] **Sunucuda artık olmayan yerel satır bu dilimde SİLİNMEZ.** Snapshot bir *"tam durum"*
+bildirimidir; teorik olarak yerelde olup snapshot'ta olmayan bir `entityId` **artık yok** demektir. Bu
+dilimde böyle bir kesişim-farkı silme **uygulanmaz** — yanlış silmenin bedeli (veri kaybı) fazlalık
+satırın bedelinden büyüktür ve GC ufku/sahiplik semantiği bu dilimde **ölçülmemiştir**. slice-3e borcu.
+
 ### `D3` — YEREL LWW: sunucunun anahtarını BİREBİR taklit et
 
 ```
@@ -292,14 +326,47 @@ kazandiMi(gelen, mevcut):
 
 [KIRMIZI] **`>` DEĞİL `>=` yazmak sessiz bozulmadır** — §1.3.
 
-**Karşılaştırma tabanı** (`D5` ile birlikte okunur): `mevcut = enBuyuk(UzakAlanDurumu'ndaki satır,
-kuyruktaki bekleyen yerel yazımın alan-HLC'si)`.
+[KIRMIZI] **İKİ AYRI KARAR VARDIR — KARIŞTIRMAK `D6`'YI ÖLDÜRÜR (Ö1, pinlendi).**
+
+| karar | taban | sonuç |
+|---|---|---|
+| **Meta kararı** | **yalnız** `UzakAlanDurumu` satırı | kazanırsa `UzakAlanDurumu` **her hâlükârda** güncellenir |
+| **Projeksiyon kararı** | `enBuyuk(UzakAlanDurumu satırı, kuyruk tabanı)` (`D5`) | kazanırsa `Gorevler` güncellenir |
+
+**Kuyruk tabanı YALNIZ projeksiyon yazımını kapılar.** Ölçülmüş sebep: kuyruk satırı yalnız
+`Applied`/`Duplicate`'te silinir (`senkron_dongusu.dart:171-173`); echo geldiğinde aynı alanın
+**kırpılmamış (daha büyük)** damgası hâlâ kuyruktadır. Tek birleşik taban kullanılırsa echo **kaybeder**
+ve sunucunun **kırpılmış** damgası `UzakAlanDurumu`'na **hiç yazılmaz** ⇒ `D6`'nın tek gerekçesi çöker
+ve `G5`'in iki echo ayağı doğru kodda kırmızı yanar.
 
 ### `D4` — PROJEKSİYON EŞLEMESİ ve ROZET DOKUNULMAZLIĞI
 
-Bir yazım kazandığında **her zaman** `UzakAlanDurumu` güncellenir; **projeksiyona** yalnız şu üç eşleme
-yazılır (§1.4): `fields:title -> baslik` · `groups:completion -> tamamlandi (status == "done", Ordinal)` ·
+Bir yazım **meta kararını** kazandığında `UzakAlanDurumu` **her zaman** güncellenir (`D3`);
+**projeksiyona** yalnız **projeksiyon kararını** da kazanmışsa ve yalnız şu üç eşleme yazılır (§1.4):
+`fields:title -> baslik` · `groups:completion -> tamamlandi (status == "done", Ordinal)` ·
 `fields:isDeleted -> silindi (value == "true", Ordinal)`.
+
+**YENİ ENTITY — `Gorevler` satırı YOKSA (B3; bu olmadan `G8` ayak 2 imkânsızdır):**
+`Gorevler` yedi sütunludur ve `olusturuldu`/`guncellendi` **NOT NULL**'dır (`veritabani.dart:10-32`);
+telde `createdAt` **yoktur** (`olusturuldu` Task scalar listesinde yok, `FieldStrategyRegistry.cs:170`).
+Bu yüzden INSERT sütun kümesi **kurala bağlanır**:
+
+| sütun | değer |
+|---|---|
+| `id` | `entityId` (telden) |
+| `baslik` | kazanan `fields:title` değeri; henüz yoksa **boş dize** |
+| `tamamlandi` / `silindi` | kazanan eşleme; yoksa `false` |
+| `olusturuldu` | **o entity için görülen EN KÜÇÜK op-HLC'sinin `wallMs`'i** (UTC) |
+| `guncellendi` | **kazanan alan-HLC'sinin `wallMs`'i** (UTC) |
+| `senkronDurumu` | **yazılmaz — sütun varsayılanıyla (`'yerel'`) doğar** |
+
+[KIRMIZI] **`olusturuldu` CİHAZ SAATİNDEN YAZILAMAZ.** `saat()` kullanılırsa aynı entity iki cihazda
+**iki farklı** `olusturuldu` alır; `gorevlerGorunur()` bu sütuna göre sıraladığı için **liste sırası
+cihazdan cihaza değişir** ve hiçbir kapı bunu görmez. Veriden türetilen `wallMs` **deterministiktir**.
+
+[BEYAN] Yeni entity `senkronDurumu = 'yerel'` ile doğar; bu **yanlış görünen ama bilinçli** bir
+sonuçtur: `D4` rozete dokunmayı yasaklar ve CHECK sözlüğünde *"uzaktan geldi"* diye bir değer yoktur.
+`olusturuldu`, `guncellendi` ve `senkronDurumu` **K1 gereği yakınsama dökümünde YER ALMAZ** (§`G6`).
 
 [KIRMIZI] **`"True"`/`"TRUE"`/`" true"` SİLİNMİŞ SAYILMAZ.** Sunucu `status`'ü ve `isDeleted`'ı
 **yorumlamaz** (slice-3c §1.3); değerler istemci sözleşmesidir. Karşılaştırma **Ordinal ve tam dize**
@@ -320,20 +387,24 @@ sözlüğünün genişletilmesi slice-3e borcudur (§10).
 
 ### `D5` — BEKLEYEN YEREL YAZIM KORUNUR (K69)
 
-Projeksiyona yazmadan önce karşılaştırma tabanı şudur:
+[KIRMIZI] **BU TABAN YALNIZ PROJEKSİYON YAZIMINI KAPILAR** (`D3`'ün iki-karar tablosu). `UzakAlanDurumu`
+kararı **asla** kuyruk tabanına bakmaz; aksi hâlde `D6` (echo) çalışmaz.
 
 ```
-mevcutAnahtar(entityId, alan):
+projeksiyonTabani(entityId, alan):
   a = UzakAlanDurumu[(Task, entityId, alan)]                  // olabilir null
   b = kuyrukEnBuyuk(entityId, alan)                           // olabilir null
   return enBuyuk(a, b)                                        // D3'un karsilastirmasiyla
+
+metaTabani(entityId, alan):
+  return UzakAlanDurumu[(Task, entityId, alan)]               // KUYRUK YOK
 
 kuyrukEnBuyuk(entityId, alan):
   satirlar = SELECT opId, govdeJson FROM senkronKuyrugu
              WHERE entityId = ? AND durum IN ('bekliyor','gonderildi')
   en = null
   for s in satirlar:
-     h = hamAlanHlcCikar(s.govdeJson, alan)                   // null olabilir: op o alani yazmiyor
+     h = hamAlanHlcCikar(s.govdeJson, alan)   // null = op o alani YAZMIYOR (cipa yok)
      if h != null: en = enBuyuk(en, anahtar(h, s.opId))
   return en
 ```
@@ -349,15 +420,31 @@ silinip geri geldiğini** görür — P7'nin bütün gerekçesi budur.
 `toJson()` tarafından **sabittir** (`wire_op.dart`: `value` sonra `hlc`; grupta `fields` sonra `hlc`):
 
 ```dart
-// kanal 'fields:<ad>' ve 'order:<ad>' icin:
+// kanal 'fields:<ad>' icin:
 r'"<ad>":\{"value":(?:null|"(?:[^"\\]|\\.)*"),"hlc":\{"wallMs":(\d+),"counter":(\d+),"clientId":"([^"]+)"\}'
 // kanal 'groups:<ad>' icin:
 r'"<ad>":\{"fields":\{(?:"(?:[^"\\]|\\.)*"|[^{}])*\},"hlc":\{"wallMs":(\d+),"counter":(\d+),"clientId":"([^"]+)"\}'
 ```
 
+[BEYAN] **`order` kanalı için kuyruk deseni YOKTUR** ve yazılmaz: istemcinin `WireOp.toJson()`'unda
+`order` anahtarı **hiç üretilmiyor** (`wire_op.dart`) ⇒ kuyrukta böyle bir alan **asla** bulunmaz. Ölü
+deseni spec'te tutmak uygulayıcıyı olmayan şeyi aramaya iter. (Gelen `changes` payload'ındaki `order`
+kanalı **ayrı** bir şeydir; o `D2` yolundan okunur ve `UzakAlanDurumu`'na kaydedilir.)
+
 [KIRMIZI] **`(?:[^"\\]|\\.)*` KAÇIŞ-DUYARLI ALTERNATİFİ SADELEŞTİRİLEMEZ.** `[^"]*` yazılırsa, başlığına
 `"hlc":{"wallMs":99…` yazan bir kullanıcı deseni **kendi lehine yanıltır** ve kendi bekleyen yazımını
 ezdirir. Kaçış-duyarlı alternatif JSON dizesini doğru tüketir; bu `M21` ile ölçülür.
+
+[KIRMIZI] **FAIL-LOUD: SESSİZ `null` YALNIZ ÇIPA YOKKEN MEŞRUDUR (Ö5).** `hamAlanHlcCikar` iki farklı
+olayı **aynı `null`'a** çeviremez. Kural:
+```
+cipa = '"<ad>":'                      // alan adinin govdede gecmesi
+if (!govdeJson.contains(cipa)) return null;             // MESRU: op o alani yazmiyor
+if (desen tutmadi)  throw StateError('hamAlanHlcCikar: cipa VAR, desen TUTMADI -- <ad>');
+```
+Sebep: desen tutmazsa (ör. grup deseninin `[^{}]` alternatifi süslü parantez içeren bir değere takılır)
+sonuç sessiz `null` olur, kuyruk tabanı **boş** görünür ve **bekleyen yerel yazım sessizce ezilir** —
+yani `P7` kör kalır ve `M21` bile bunu göremez. Fail-loud, bu kör noktayı **teste görünür** kılar.
 
 ### `D6` — ECHO UYGULANIR, ATILMAZ
 
@@ -374,16 +461,27 @@ istemci kendi **yerel** damgasını, karşı taraf ise **kırpılmış** damgay�
 **farklı kazanan** seçilir ve yakınsama sessizce bozulur. Kırpma gerçek bir olaydır: `HlcClamp`
 her HLC'yi `serverReceiveWall + 5dk` tavanına çeker (slice-3c §1.1).
 
-Echo `D3`'ün normal yolundan geçer: kendi yazımı **eşit** anahtarla gelirse `<=` kuralı gereği
-mevcudu korur (bu yüzden `>` şarttır, `D3`), kırpılmışsa **küçük** gelir ve yine mevcudu korur; ama
-`UzakAlanDurumu` **kırpılmış** değerle yazılır — çünkü sunucunun gördüğü gerçeklik odur.
+Echo `D3`'ün normal yolundan geçer ve **meta kararı yalnız `UzakAlanDurumu`'na karşı** verildiği için
+(`D3` iki-karar tablosu, `D5`) kuyruktaki **kırpılmamış** damga onu **engellemez**: satır yoksa ya da
+gelen anahtar büyükse `UzakAlanDurumu` **kırpılmış** değerle yazılır — çünkü sunucunun gördüğü
+gerçeklik odur. Projeksiyon ise kuyruk tabanıyla kapılıdır, yani kullanıcı ekranında bir şey oynamaz.
 
 ### `D7` — İMLEÇ, BOŞALTMA DÖNGÜSÜ, KULLANICI DEĞİŞİMİ
 
 1. `nextCursor` **ham metin** olarak `ayarlar.nextCursorJson`'a yazılır (mevcut mekanizma); `Xid`
    **ayrıştırılmaz** (§1.1).
-2. **Boşaltma döngüsü:** `hasMore == true` iken tur **kendini yeniden çağırır** (aynı tek-uçuş kilidi
-   içinde, `while` ile) — ta ki `hasMore == false` olana kadar. Tavan: **20 tur** (`_bosaltmaTavani`);
+   [KIRMIZI] **BİR SAYFA ATOMİKTİR (B4).** Bir sayfanın `changes`/`snapshot` uygulaması ve o sayfanın
+   `nextCursor` yazımı **TEK `_db.transaction()`** içindedir ve **imleç EN SON yazılır**. İki ayrı
+   transaction'a bölünürse şu senaryo sessiz kalıcı veri kaybı üretir: 300 değişikliğin 120'si
+   uygulanır, işlem çöker/uygulama kapanır, ama imleç **zaten ilerlemiştir** ⇒ kalan 180 değişiklik
+   **bir daha hiç gelmez**. Sıra da pazarlıksızdır: önce veri, sonra imleç. Ters sıra aynı kaybı
+   **her** çökmede üretir. (slice-3c `D8`/1'in *"tek transaction"* kuralının çekme tarafındaki eşi.)
+2. **Boşaltma döngüsü:** `hasMore == true` **ve gelen sayfa boş değilken** tur **kendini yeniden
+   çağırır** (aynı tek-uçuş kilidi içinde, `while` ile) — ta ki `hasMore == false` olana kadar.
+   [KIRMIZI] **`changes` (ya da `snapshot`) BOŞ gelirse `hasMore`'a BAKILMAKSIZIN döngü DURUR.** Aksi
+   hâlde sunucu tarafındaki bir tutarsızlık ya da `hasMore` yanlış-pozitifi (§1.1) **20 boş tur**
+   koşturur: imleç ilerlemez, veri gelmez, istek sayısı yirmiye çıkar. Tavan: **20 tur**
+   (`_bosaltmaTavani`);
    tavana çarpılırsa döngü **durur** ve `sonHataKodu` yerine bir günlük satırı bırakılır.
    [BEYAN] Tavan uydurulmadı: `PageSize = 500` ile 20 tur = 10.000 değişiklik; bu dilimde bundan büyük
    bir veri kümesi **ölçülmedi** ⇒ tavanın yeterliliği `[DOGRULANMADI]`, ama **sonsuz döngü riski
@@ -391,6 +489,11 @@ mevcudu korur (bu yüzden `>` şarttır, `D3`), kırpılmışsa **küçük** gel
 3. **`resyncRequired == true` ⇒ saklanan imleç SİLİNİR** (slice-3c `D6`, mevcut davranış korunur) ⇒
    sonraki tur `sinceCursor` olmadan gider ve **snapshot** dalına düşer. `D2` bu yüzden iki dalı da
    uygulamak zorundadır.
+   [KIRMIZI] **`UzakAlanDurumu` bu dalda KORUNUR — silinmez (Ö7).** `resyncRequired` *"imlecin GC
+   ufkunun altında kaldı"* demektir, *"yerel bilgin çöp"* demek **değildir**. Meta tablosu silinirse
+   gelen snapshot kör overwrite'a döner ve kuyrukta bekleyen yerel yazımların tabanı yok olur. Bu,
+   `D7`/4'ün (kullanıcı değişimi) tabloyu **boşaltmasıyla** kasten asimetriktir: orada **sahip**
+   değişir (veri artık bu kullanıcının değildir), burada yalnız **imleç** bayatlamıştır.
 
 4. [KIRMIZI] **`devUserId` DEĞİŞİRSE İMLEÇ SİLİNİR.** `ayarlar` tablosunda **tek** `nextCursorJson` ve
    **tek** `devUserId` vardır. slice-3c §10 bunu *"bu dilimde pull olmadığı için gizli kalır, slice-3d'de
@@ -400,6 +503,23 @@ mevcudu korur (bu yüzden `>` şarttır, `D3`), kırpılmışsa **küçük** gel
    istemci, hiç görmediği bir aralığı **görmüş sayarak** kalıcı olarak eksik veriyle çalışır.
    Uygulama: `ayarlar`a `imlecSahibi` (TEXT, nullable) sütunu **eklenir** — bu da `D1`'in aynı
    `v3 -> v4` salt-ekleme migration'ının parçasıdır (`m.addColumn(ayarlar, ayarlar.imlecSahibi)`).
+
+   **KİM, NE ZAMAN yazar (Ö4 — pinlendi):**
+   - **Yazan:** `AyarlarDeposu.nextCursorKalicilastir(...)` — imleç **her** yazıldığında
+     `imlecSahibi = devUserId` **AYNI transaction'da** (`D7`/1'in sayfa transaction'ı) yazılır. Ayrı
+     yazım YASAK: imleç yeni sahiple, sahip alanı eski değerle kalırsa karşılaştırma **kalıcı olarak
+     yanlış** cevap verir.
+   - **Karşılaştıran:** `AyarlarDeposu.yukleVeyaOlustur()` — açılışta, `SenkronDongusu` kurulmadan
+     **önce** koşar; `imlecSahibi != devUserId` ise `nextCursorJson = null` **ve**
+     `DELETE FROM uzak_alan_durumu` **tek transaction'da** yapılır, sonra `imlecSahibi = devUserId`.
+   - `imlecSahibi == null` (migration'dan gelen eski satır) **sahipsiz** sayılır: imleç **silinir**
+     (temkinli yön; eski imlecin hangi kullanıcıya ait olduğu **ölçülemez**).
+   [KIRMIZI] **`devUserId`'yi DEĞİŞTİREN BİR API BUGÜN YOK.** `G1`'in kullanıcı-değişimi ayağı bunu
+   uydurmadan ölçemez. Zorunlu iş: `AyarlarDeposu`'na **test-görünür** bir yol açılır
+   (`Future<void> devUserIdDegistir(String yeni)` — yalnız `devUserId` sütununu yazar, imlece
+   **dokunmaz**); ayak DB'yi kapatıp yeniden açarak `yukleVeyaOlustur()`'u koşturur. Bu yol
+   üretimde çağrılmaz ama **gizli test kancası değildir**: `AyarlarDeposu`'nun genel API'sidir ve
+   slice-3e'de gerçek kimlik geldiğinde kullanılacaktır.
 
 ### `D8` — BACKEND: `opId` v7 ZORLAMASI (op bazında, isteğin geri kalanı İŞLENİR)
 
@@ -443,8 +563,13 @@ onu görmüyor ⇒ **imza değişir**:
 private OutboxRecord BuildOutbox(WireOp wireOp, ChangeOperation op, EntityState entity, Hlc effective,
                                  string? preProjectId, long receiveWall, Guid authenticatedActorId)
 ```
-ve tek çağrı yeri (`:187` civarı, `_outbox.WriteAsync(BuildOutbox(...))`) `authenticatedActorId` ile
-güncellenir.
+ve tek çağrı yeri — **`SyncCommandHandler.cs:159`**, `_outbox.WriteAsync(BuildOutbox(...), …)` —
+`authenticatedActorId` ile güncellenir.
+
+[KIRMIZI] **ATIF TUZAĞI (Ö2'de düzeltildi):** `:187` **çağrı yeri DEĞİLDİR**; `:187`
+`OutboxRecord`'un **`ActorId: op.ActorId`** satırıdır — yani birkaç satır aşağıda *"DEĞİŞMEZ"* dediğimiz
+alan. Çağrıyı `:187`'de arayan bir el, düzeltmesi gereken satırın yerine **dokunmaması gereken** satırı
+bulur. Değişecek üç yer **tam olarak**: imza (`BuildOutbox`), çağrı (`:159`), `OwnerId` (`:184`).
 
 [KIRMIZI] **Bu bir tasarım tercihi DEĞİL, KUSUR düzeltmesidir** — aynı dosyanın `:156` yorumu
 *"ownerId is the AUTHENTICATED actor -- NEVER op.ActorId"* diyor, `:157` materialize'de öyle yapıyor,
@@ -470,43 +595,82 @@ gerçek API'ye gönderilir, ham yanıt `stdout`'a basılır. Drift'e **hiçbir �
 metni `KANIT\slice-3d\01-G1-yalniz-cekme\t1-iskelet.txt`'e yazılır.
 
 **T2 — Şema `v3 -> v4` (`D1`, `D7/4`).** `UzakAlanDurumu` tablosu + `ayarlar.imlecSahibi` sütunu +
-`onUpgrade`'e `if (from < 4)` dalı + `schemaVersion => 4`. `dart run drift_dev schema dump` ile
-`test/generated_migrations/schema_v4.dart` üretilir (`build_runner` yeniden koşar).
-*Kabul:* `G2` yeşil; `Gorevler`'in `CREATE TABLE` metni v3 ve v4'te **bayt bayt aynı**.
+`onUpgrade`'e `if (from < 4)` dalı (**createTable + addColumn, ikisi birden**) + `schemaVersion => 4`.
+[KIRMIZI] **İKİ AYRI KOMUT GEREKİR (Ö6; slice-3c'de doğru yazılmıştı, burada gerileme oldu):**
+```powershell
+dart run drift_dev schema dump lib\veri\veritabani.dart drift_schemas\      # JSON: drift_schema_v4.json
+dart run drift_dev schema generate drift_schemas\ test\generated_migrations\ # DART: schema_v4.dart
+```
+`dump` **yalnız JSON** üretir (mevcut `src\client\drift_schemas\drift_schema_v3.json` bunun çıktısıdır);
+`.dart` dosyalarını **`schema generate`** üretir ve **`build_runner` bunu YAPMAZ**. Tek komutla
+yetinen build `G2`'nin migration ayağını hiç koşturamaz.
+*Kabul:* `G2` yeşil; `drift_schemas\drift_schema_v4.json` **ve** `test\generated_migrations\schema_v4.dart`
+repoda; `Gorevler`'in `CREATE TABLE` metni v3 ve v4'te **bayt bayt aynı**.
 
 **T3 — İki ayrıştırıcı + projeksiyon (`D2`, `D4`).** `lib/senkron/uzak_degisiklik_uygulayici.dart`:
 `changesUygula` / `snapshotUygula`, kanal-nitelikli `alan` adları, `null` kanal koruması, üç alanın
-projeksiyonu, rozete dokunmama.
-*Kabul:* `G3` yeşil; hem `changes` hem `snapshot` gövdesi (sabit fixture JSON) doğru projeksiyon üretir.
+projeksiyonu, rozete dokunmama, **yerelde olmayan `entityId` için INSERT** (`D4`'ün yeni-entity
+tablosu: `olusturuldu` = en küçük op-HLC `wallMs`'i, `guncellendi` = kazanan alan-HLC `wallMs`'i,
+`senkronDurumu` **varsayılanla**), snapshot'ın **birleştirici** olması (tablo temizlenmez).
+*Kabul:* `G3` yeşil; hem `changes` hem `snapshot` gövdesi (sabit fixture JSON) doğru projeksiyon üretir;
+yeni entity **INSERT edilir** ve `olusturuldu` iki farklı çalıştırmada **aynı** değeri alır.
 
 **T4 — Yerel LWW (`D3`).** `lib/senkron/alan_anahtari.dart`: `normHex`, `karsilastir`, `kazandiMi` +
-`UzakAlanDurumu` okuma/yazma. Saf sınıf; DB'ye yalnız çağıran dokunur.
+`UzakAlanDurumu` okuma/yazma **ve iki karar ayrımı** (meta tabanı = yalnız `UzakAlanDurumu`;
+projeksiyon tabanı = `enBuyuk(meta, kuyruk)`). Saf sınıf; DB'ye yalnız çağıran dokunur.
 *Kabul:* `G4` yeşil; sunucunun `Hlc.CompareTo` sırasıyla eşdeğerlik **tabloyla** ölçülür.
 
-**T5 — Bekleyen yerel yazım koruması (`D5`).** `hamAlanHlcCikar` + `kuyrukEnBuyuk` + tabanın
-`enBuyuk(...)` ile birleştirilmesi.
-*Kabul:* `G5` yeşil; `bekliyor` **ve** `gonderildi` satırları tarandı; kaçış-duyarlı desen ayağı geçti.
+**T5 — Bekleyen yerel yazım koruması (`D5`).** `hamAlanHlcCikar` (**fail-loud**: çıpa varken desen
+tutmazsa `StateError`) + `kuyrukEnBuyuk` + **yalnız projeksiyon tabanının** birleştirilmesi.
+*Kabul:* `G5` yeşil; `bekliyor` **ve** `gonderildi` satırları tarandı; kaçış-duyarlı desen ayağı ve
+fail-loud ayağı geçti; echo ayakları **hâlâ** yeşil (iki karar ayrımı çalışıyor).
 
 **T6 — Çekme turu (`D0`, `D6`, `D7`).** `SenkronDongusu.cekmeTuruCalistir()`, `ops:[]` gövdesi, tek-uçuş
-kilidi paylaşımı, boşaltma döngüsü + tavan, `resyncRequired`, `devUserId` değişimi, echo'nun normal
-yoldan uygulanması, `main.dart`'ta açılış tetiği + listede elle yenileme eylemi.
-*Kabul:* `G1` yeşil; `G6` (F2) yeşil.
+kilidi paylaşımı, **K3 bayrağı** (`_cekmeBekliyor`, yutulan tetikleyici bir kez yeniden koşar),
+boşaltma döngüsü + tavan + **boş sayfada durma**, `resyncRequired` (imleç silinir, `UzakAlanDurumu`
+korunur), `devUserId` değişimi + `imlecSahibi` (`AyarlarDeposu.yukleVeyaOlustur` /
+`devUserIdDegistir`), echo'nun normal yoldan uygulanması, `main.dart`'ta açılış tetiği + listede elle
+yenileme eylemi.
+*Kabul:* `G1` yeşil (tetikleyici sayımı, K3 ayağı, kullanıcı değişimi ayağı dâhil); `G6` (F2) yeşil.
 
-**T7 — Backend zorlamaları (`D8`, `D9`).** `SyncIngest.IsEnvelopeValid`'e sürüm nibble kontrolü;
+**T7 — İTME TURU DA UYGULAR + ATOMİK SAYFA (`D0`/K2, `D7`/1).**
+`_basariliYanitIsle` yeniden düzenlenir: `applied` işlendikten **sonra** dönen `changes`/`snapshot`
+**aynı** `UzakDegisiklikUygulayici`'ya verilir; sayfa uygulaması **ve** `nextCursor` yazımı **tek**
+`_db.transaction()` içindedir ve imleç **en son** yazılır. `turCalistir()` ve `cekmeTuruCalistir()`
+bu **aynı** yolu kullanır — kopya uygulama yolu YASAK (`tek-kopya-kapisi.py` bunu ölçer).
+*Kabul:* `G5`'in dört yeni ayağı yeşil (itme turu uygular · imleç en son · tek transaction · yarım
+sayfa senaryosunda imleç ilerlememiş); `M33`, `M34`, `M35` ısırır.
+
+**T8 — Backend zorlamaları (`D8`, `D9`).** `SyncIngest.IsEnvelopeValid`'e sürüm nibble kontrolü;
 `BuildOutbox` imzası + `OwnerId: authenticatedActorId`. Başka hiçbir backend dosyasına dokunulmaz.
 *Kabul:* `G7` yeşil; `araclar\verify.ps1` EXIT 0; mevcut backend testlerinin **hepsi** yeşil kalır.
 
-**T8 — F3 canlı yakınsama koşumu (`G8`).** `src/client/tool/f3_iki_istemci_yakinsama.dart`: iki ayrı
+**T9 — F3 canlı yakınsama koşumu (`G8`).** `src/client/tool/f3_iki_istemci_yakinsama.dart`: iki ayrı
 Drift dosya-DB'si (`f3-a.sqlite`, `f3-b.sqlite`), **tek** `devUserId` (aynı sahip), iki farklı
-`clientId`. Sıra: A yazar+senkron -> B çeker -> B yazar+senkron -> A çeker -> iki projeksiyon
-**bayt-özdeş**.
-*Kabul:* `G8` yeşil; ham çıktı KANIT'ta; iki projeksiyonun `sha256`'sı **eşit**.
+`clientId`. Sıra: A yazar+senkron -> B çeker -> B yazar+senkron -> A çeker -> iki **DAR DÖKÜM**
+karşılaştırılır.
 
-**T9 — Mutantlar.** `M1`-`M32` **tek tek** uygulanır, hedef kapının **KIRMIZI** yandığı ölçülür, mutant
+[KIRMIZI] **YAKINSAMA DÖKÜMÜ DARDIR — K1 (Onur, kilitli).** Karşılaştırma **tam olarak** şudur:
+```sql
+SELECT id, baslik, tamamlandi, silindi FROM gorevler ORDER BY id
+```
+`sha256` iddiası **yalnız bu dökümün** üstünde kurulur. `olusturuldu`, `guncellendi` ve `senkronDurumu`
+**HARİÇTİR**. Ölçülmüş gerekçe: `Gorevler` yedi sütunludur (`veritabani.dart:10-32`) ama
+(a) `olusturuldu` Task scalar listesinde **yoktur** (`FieldStrategyRegistry.cs:170`) ⇒ **tele hiç
+çıkmaz**, B onu `D4`'ün kuralıyla türetir, A ise kendi yazımında `saat()`'ten almıştır
+(`gorev_deposu.dart:112`) ⇒ ikisi **hiçbir doğru kodda** eşitlenemez; (b) `senkronDurumu` A'da
+`'senkronize'` olur (`senkron_dongusu.dart:186`), B'de varsayılan `'yerel'` kalır
+(`veritabani.dart:27`) çünkü `D4` uzak yazımda rozete **dokunmayı yasaklar**. Geniş döküm iddiası
+**doğru kodda bile imkânsızdı**; dar döküm ölçülebilir olanı ölçer.
+[SINIR] Bu üç sütunun yakınsadığı **iddia edilmiyor ve ölçülmüyor**. `guncellendi` `D4`'ün kuralıyla
+türetilir ama eşitliği bu dilimde **doğrulanmamıştır**.
+*Kabul:* `G8` yeşil; ham çıktı KANIT'ta; iki **dar dökümün** `sha256`'sı **eşit**.
+
+**T10 — Mutantlar.** `M1`-`M40` **tek tek** uygulanır, hedef kapının **KIRMIZI** yandığı ölçülür, mutant
 geri alınır, kapı yeniden **YEŞİL** olur. Her mutantın ham çıktısı **koşum anında** dosyaya yazılır (§8).
-*Kabul:* `09-MUTANT` altında **otuz iki** dosya; `iddia-kapisi.py --kanit` EXIT 0.
+*Kabul:* `09-MUTANT` altında **kırk** dosya; `iddia-kapisi.py --kanit` EXIT 0.
 
-**T10 — KANIT ve kapanış.** §8'e göre `KANIT\slice-3d\` doldurulur; `00-OZET.md` ve `HUKUM.md` yazılır.
+**T11 — KANIT ve kapanış.** §8'e göre `KANIT\slice-3d\` doldurulur; `00-OZET.md` ve `HUKUM.md` yazılır.
 *Kabul:* §7'nin **tamamı** ölçülmüş; `spec-kapi-kapsama.py` ve `iddia-kapisi.py` EXIT 0.
 
 **Yeni bağımlılık YOK.** `package:http` ve `drift` zaten var; `pub-cve-kapisi.py` /
@@ -530,13 +694,17 @@ bakar. [KIRMIZI] **Sahte ağ sunucunun sözleşmesini TAKLİT ETMEK ZORUNDA:** g
 |---|---|---|
 | `D0` | kuyruk **boş**, `cekmeTuruCalistir()` | **bir** istek gitti (bugün: sıfır) |
 | `D0` | gövde | `"ops":[]` **taşır**; `jsonDecode(govde)['ops']` boş liste |
-| `D0` | tetikleyici sayımı: açılış + elle yenileme | gözlenen istek sayısı **iki**, fazlası yok |
+| `D0` | tetikleyici sayımı: açılış + elle yenileme (kuyruk **boş**) | gözlenen istek sayısı **iki**, fazlası yok |
 | `D0` | 5 sn sanal saat ilerletilir, hiçbir tetik yok | **ek istek YOK** (periyodik yoklama yasağı) |
-| `D0` | `turCalistir()` ile `cekmeTuruCalistir()` **eşzamanlı** | tek-uçuş: gözlenen istek sayısı **bir** |
+| `D0` | **kuyrukta bir bekleyen op VARKEN** `turCalistir()` başlatılır, o `Future` beklenmeden `cekmeTuruCalistir()` çağrılır | tek-uçuş: **ilk** tur devam ederken **ikinci istek gitmez** |
+| `D0` | (aynı ayak devam) ilk tur bittikten sonra | **K3:** yutulan çekme **bir kez** koşar ⇒ toplam istek **iki** (biri itme, biri çekme); üçüncü istek **yok** |
+| `D0` | tek tur devam ederken **üç** çekme tetikleyicisi yutulur | tur bitince yalnız **bir** ek istek (bayrak sayaç değil) |
 | `D7` | `hasMore: true` -> `true` -> `false` | **üç** istek; her istek öncekinin `nextCursor`'ını taşır |
-| `D7` | `hasMore` daima `true` | tur **20**'de durur, sonsuza gitmez |
-| `D7` | `resyncRequired: true` | saklanan imleç **silinir**; sonraki istek `"sinceCursor":null` |
-| `D7` | `devUserId` değişip DB yeniden açılır | `nextCursorJson` **null**, `UzakAlanDurumu` **boş** |
+| `D7` | `hasMore` daima `true`, sayfalar **dolu** | tur **20**'de durur, sonsuza gitmez |
+| `D7` | `hasMore: true` ama `changes` **boş** | döngü **ilk turda DURUR** (tek istek; yirmi boş tur yok) |
+| `D7` | `resyncRequired: true` | saklanan imleç **silinir**; sonraki istek `"sinceCursor":null`; `UzakAlanDurumu` satırları **AYNEN durur** |
+| `D7` | `devUserIdDegistir(...)` sonrası DB kapatılıp açılır, `yukleVeyaOlustur()` koşar | `nextCursorJson` **null**, `UzakAlanDurumu` **boş**, `imlecSahibi` = yeni `devUserId` |
+| `D7` | `imlecSahibi == null` olan (migration'dan gelen) satır | imleç **silinir** (sahipsiz imleç güvenilmez) |
 | `D8` | dört yazma yolunun `operationId`'leri | tiresiz biçimin **13. hanesi (indeks 12) `'7'`** |
 
 ### G2 — ŞEMA / MIGRATION KAPISI (Drift, **gerçek dosya DB**)
@@ -567,6 +735,9 @@ gerekçesi: "kapat/yeniden aç" ayağı bellekte doğru kodla da kırmızı yana
 | `D4` | `completion.status == "done"` | `tamamlandi == true` |
 | `D4` | `isDeleted.value == "True"` (büyük T) | `silindi` **false kalır** (Ordinal, tam dize) |
 | `D4` | uygulama sonrası `senkronDurumu` | **değişmedi** (rozete dokunulmadı) |
+| `D4` | **yerelde OLMAYAN** `entityId` taşıyan `changes` | `Gorevler`'e **INSERT** edildi; `baslik` telden, `senkronDurumu == 'yerel'` (varsayılan) |
+| `D4` | aynı fixture **iki kez** ve **iki farklı** sanal saatle uygulanır | `olusturuldu` **iki koşumda da AYNI** (en küçük op-HLC `wallMs`'i; cihaz saatinden değil) |
+| `D2` | dolu bir `UzakAlanDurumu` + `Gorevler` üstüne **snapshot** uygulanır | tablolar **temizlenmedi**; snapshot'ta olmayan yerel satır **duruyor**; her alan `D3` yolundan geçti |
 
 ### G4 — LWW KARŞILAŞTIRMA KAPISI (Dart birim testi, saf sınıf)
 `test/g4_lww_kapisi_test.dart`.
@@ -592,7 +763,14 @@ gerekçesi: "kapat/yeniden aç" ayağı bellekte doğru kodla da kırmızı yana
 | `D5` | `baslik` değeri **tam olarak** `{"value":"a\"hlc\":{\"wallMs\":9999999999999,…","hlc":…}` üretecek bir metin | desen yanılmaz; doğru HLC okunur |
 | `D6` | `changes`'te **kendi `clientId`'li** echo op'u | **uygulanır**; `UzakAlanDurumu` sunucunun (kırpılmış) HLC'siyle yazılır |
 | `D6` | echo sonrası `UzakAlanDurumu.hlcWall` | gövdedeki yerel damga **değil**, yanıttaki damga |
+| `D6` | echo, **aynı alan için kuyrukta `bekliyor` op VARKEN** gelir | `UzakAlanDurumu` **yine yazılır** (meta kararı kuyruğa bakmaz); `Gorevler` **değişmez** |
+| `D5` | `hamAlanHlcCikar`: gövdede `"title":` çıpası **var**, desen bozulmuş | **`StateError` fırlatır** (sessiz `null` YOK) |
+| `D5` | gövdede `"notes":` çıpası **yok** | sessiz `null` (meşru dal), istisna **yok** |
 | `D4` | uzak yazım uygulandıktan sonra `senkronDurumu` | **değişmedi** |
+| `D0` | **itme turu** (`turCalistir()`) yanıtı `changes` taşır | değişiklikler **uygulanır** (bugün: atılıyor) |
+| `D0` | ilk itme turu, `sinceCursor == null`, yanıt `snapshot` taşır | snapshot **uygulanır**; hiçbir entity kaybolmaz |
+| `D7` | sayfa uygulaması ile imleç yazımının sırası (log/çağrı kaydı) | imleç **EN SON** yazıldı |
+| `D7` | uygulama ortasında fırlatan sahte uygulayıcı (yarım sayfa) | **tek transaction** geri sarıldı: `nextCursorJson` **eski değerinde**, uygulanan satır **yok** |
 
 ### G6 — F2 UCUZ YAKINSAMA KAPISI (Dart, **iki Drift DB + sahte sunucu**, saniyeler)
 `test/g6_f2_yakinsama_kapisi_test.dart`. `SahteSunucu` sınıfı: bellek içi outbox tutar, `owner_id`
@@ -605,7 +783,7 @@ süzgecini taşır. **Yakınsamanın otoritesi `G8`'dir (F3).** `G6` ucuz bir re
 
 | ölçülen karar | ayak | beklenen |
 |---|---|---|
-| `D3` | A yazar -> B çeker -> B yazar -> A çeker | iki `Gorevler` projeksiyonu **bayt-özdeş** (`sha256` eşit) |
+| `D3` | A yazar -> B çeker -> B yazar -> A çeker | iki **DAR DÖKÜM** bayt-özdeş (`sha256` eşit) — döküm `T9`'da pinlendi: `SELECT id, baslik, tamamlandi, silindi FROM gorevler ORDER BY id` |
 | `D3` | aynı alana **eşzamanlı** iki yazım (farklı `clientId`, aynı `wallMs`+`counter`) | iki istemci **AYNI kazananı** seçer |
 | `D5` | A'nın bekleyen düzenlemesi varken A çeker | çekmeden **hemen sonra** okunan A projeksiyonu **A'nın bekleyen değerini** taşır |
 | `D0` | ikinci tur | `sinceCursor` **dolu** gider (snapshot dalına dönmez) |
@@ -633,7 +811,7 @@ Koşum: `dart run tool/f3_iki_istemci_yakinsama.dart` (cwd = `src/client`).
 | `D7` | **1:** A ve B ilk kez açılır (imleç yok) | ikisi de **snapshot** dalını alır, `nextCursor` saklanır |
 | `D2` | **2:** A bir görev yazar + senkron; B çeker | B'nin projeksiyonunda görev **var**, alanları A'nınkiyle **birebir** |
 | `D3` | **3:** B başlığı değiştirir + senkron; A çeker | A'nın başlığı B'nin değeriyle **aynı** |
-| `D3` | **4:** iki projeksiyonun tam dökümü | **bayt-özdeş** (`sha256` eşit) |
+| `D3` | **4:** iki tarafın **DAR DÖKÜMÜ** (`SELECT id, baslik, tamamlandi, silindi FROM gorevler ORDER BY id`) | **bayt-özdeş** (`sha256` eşit). `olusturuldu`/`guncellendi`/`senkronDurumu` **karşılaştırılmaz** — K1, gerekçesi `T9`'da |
 | `D5` | **5:** A yerel düzenleme yapar (kuyrukta bekliyor), sonra A çeker | çekme **hemen sonrası** A'nın başlığı **A'nın bekleyen değeri** |
 | `D3` | **6:** A ve B aynı alanı çevrimdışı yazar, sonra ikisi de senkron+çeker | ikisi de **aynı** kazananda durur |
 
@@ -665,7 +843,7 @@ görür. Bu yüzden ayak 5 A'nın projeksiyonunu **çekmeden hemen sonra, A'nın
 
 ---
 
-## 6. MUTANTLAR — otuz iki; KAPALI ve numaralı liste
+## 6. MUTANTLAR — kırk; KAPALI ve numaralı liste
 
 **Kural:** mutant **tek tek** uygulanır -> kapının **KIRMIZI** yandığı ölçülür -> mutant **geri alınır**
 -> kapı yeniden **YEŞİL** olur. Isırmayan mutant, kapının **kör** olduğunun kanıtıdır; **kapı düzeltilir,
@@ -711,15 +889,24 @@ kendi ısırma kanıtını taşır (`G6` sahte sunucuya, `G8` gerçek sunucuya k
 | **M30** | (koşan) Canlıda `changes` dalını yok say (yalnız `snapshot`) | G8 / D2 | ayak 3'te A, B'nin başlığını hiç görmez ⇒ **KIRMIZI** |
 | **M31** | (koşan) Canlıda bekleyen yerel yazım korumasını kaldır | G8 / D5 | ayak 5'te A'nın başlığı bir an B'nin değerine düşer ⇒ **KIRMIZI** |
 | **M32** | Bir dosyaya `info` seviyesinde analyzer ihlali ekle | G9 | `--fatal-infos` ısırmalı ⇒ **KIRMIZI** |
+| **M33** | İtme turunda (`turCalistir()`) dönen `changes`/`snapshot`'ı uygulama (slice-3c davranışı) | G5 / D0 | itme-turu ayakları düşer; snapshot sessizce kaybolur ⇒ **KIRMIZI** |
+| **M34** | İmleç yazımını sayfa uygulamasından **ÖNCEYE** al | G5 / D7 | sıra ayağı düşer; yarım sayfada imleç ilerlemiş olur ⇒ **KIRMIZI** |
+| **M35** | Sayfa uygulaması ile imleç yazımını **iki ayrı** `transaction`'a böl | G5 / D7 | geri sarma ayağı düşer (`nextCursorJson` ilerlemiş kalır) ⇒ **KIRMIZI** |
+| **M36** | K3 bayrağını (`_cekmeBekliyor`) kaldır — yutulan tetikleyici kaybolsun | G1 / D0 | K3 ayağında ikinci istek hiç gelmez ⇒ **KIRMIZI** |
+| **M37** | `hamAlanHlcCikar`'da çıpa varken desen tutmazsa `StateError` yerine `null` dön | G5 / D5 | fail-loud ayağı düşer ⇒ **KIRMIZI** |
+| **M38** | Yeni entity INSERT'inde `olusturuldu`'yu `saat()`'ten yaz | G3 / D4 | determinizm ayağı düşer (iki koşum farklı değer) ⇒ **KIRMIZI** |
+| **M39** | Boş sayfada durma kuralını kaldır (yalnız `hasMore`'a bak) | G1 / D7 | boş-sayfa ayağı düşer (bir yerine yirmi istek) ⇒ **KIRMIZI** |
+| **M40** | `snapshotUygula`'nın başına `DELETE FROM uzak_alan_durumu` + `gorevler` temizliği ekle | G3 / D2 | birleştirme ayağı düşer (yerel satır kaybolur) ⇒ **KIRMIZI** |
 
-**Koşan-uygulama mutantları: `M29`, `M30`, `M31` — tavan üç, aşılmadı.**
+**Koşan-uygulama mutantları: `M29`, `M30`, `M31` — tavan üç, aşılmadı.** `M33`-`M40` **statik/birim**
+sınıfındadır (sahte ağ + bellek/dosya DB, saniyeler) ⇒ tavansız.
 
 ---
 
 ## 7. Kabul kriterleri (hepsi ölçülür; beyan kabul edilmez)
 
 1. `G1`-`G9` **koştu** ve hepsi **YEŞİL**; her kapının çıkış kodu KANIT'ta (`cmd /v:on` ölçümüyle).
-2. `M1`-`M32`'nin tamamı tek tek uygulandı, hedef kapı **KIRMIZI** yandı, mutant geri alındı, kapı
+2. `M1`-`M40`'ın tamamı tek tek uygulandı, hedef kapı **KIRMIZI** yandı, mutant geri alındı, kapı
    **YEŞİL** döndü. Isırmayan mutant varsa **kapı düzeltilir** ve durum §10'a yazılır — **kör kapı
    teslim edilmez.**
 3. Her mutantın ham çıktısı **koşum anında** `KANIT\slice-3d\09-MUTANT\` altına yazıldı (§8 şeması).
@@ -758,7 +945,7 @@ KANIT\slice-3d\
   06-G6-f2-yakinsama\             <- test ciktisi + iki projeksiyonun sha256'si
   07-G7-backend-zorlama\          <- dotnet test ciktisi + outbox SQL sorgu ciktisi
   08-G8-f3-canli\                 <- alti ayagin ham cikti + iki projeksiyon sha256
-  09-MUTANT\                      <- M1..M32: her biri icin AYRI dosya (asagidaki desen)
+  09-MUTANT\                      <- M1..M40: her biri icin AYRI dosya (asagidaki desen)
   10-G9-regresyon\                <- analyze, flutter test, verify.ps1, kapi betikleri
   HUKUM.md                        <- nihai karar; her iddia bir dosyaya ATIF yapar
 ```
@@ -810,8 +997,10 @@ tarafı** tabloya girer ve **dizin adı kodla birebir aynı** olur.
 | `03-.../fixture-*.json` | `test/g3_ayristirici_kapisi_test.dart` (`dart:io`) | `../../KANIT/slice-3d/03-G3-ayristirici` |
 | `04-.../esdegerlik.txt` | `test/g4_lww_kapisi_test.dart` (`dart:io`) | `../../KANIT/slice-3d/04-G4-lww` |
 | `06-.../sha256.txt` | `test/g6_f2_yakinsama_kapisi_test.dart` (`dart:io`) | `../../KANIT/slice-3d/06-G6-f2-yakinsama` |
+| `07-.../dotnet-test.txt` | **PowerShell komut satırı** (`Tee-Object -FilePath`) | mutlak: `C:\dev\Momentum\KANIT\slice-3d\07-G7-backend-zorlama\dotnet-test.txt` |
+| `07-.../outbox-sorgu.txt` | **`owner_id` ayağının KENDİSİ** (`Momentum.Persistence.Tests`, `File.WriteAllText`) — sorgu Testcontainers içinde koşar, PowerShell o bağlantıyı **göremez** | mutlak, ortam değişkeninden: `MOMENTUM_KANIT_DIZIN` (yoksa test **fırlatır**, sessizce atlamaz) |
 | `08-.../f3-*.txt` | `tool/f3_iki_istemci_yakinsama.dart` (`dart:io`) | `../../KANIT/slice-3d/08-G8-f3-canli` |
-| kapı test/derleme çıktıları (`05`, `07`, `10`) | **PowerShell komut satırı** (`Tee-Object -FilePath`) | mutlak: `C:\dev\Momentum\KANIT\slice-3d\<dizin>\<ad>.txt` |
+| kapı test/derleme çıktıları (`05`, `10`) | **PowerShell komut satırı** (`Tee-Object -FilePath`) | mutlak: `C:\dev\Momentum\KANIT\slice-3d\<dizin>\<ad>.txt` |
 | `09-MUTANT\Mnn-*.txt` | **PowerShell koşum kalıbı** (§8.1) | mutlak: `C:\dev\Momentum\KANIT\slice-3d\09-MUTANT\` |
 
 [KIRMIZI] **Dart tarafındaki göreli yollar cwd = `src\client` VARSAYAR** (`flutter test` /
@@ -856,7 +1045,12 @@ gizlenmiş sınır edilmez."* Aşağıdaki her satır **bilinçli** bir sınırd
    **GÖRMEZ**. Rozet sözlüğünün genişletilmesi (`uzaktan-guncellendi`) slice-3e borcudur ve **tabloyu
    yeniden yaratan** bir migration gerektirir.
 2. [SINIR] **`hasMore` yanlış-pozitif verebilir** (§1.1): son sayfa tam `PageSize` ise fazladan bir boş
-   tur koşulur. Veri kaybı değil, maliyet.
+   tur koşulur. Veri kaybı değil, maliyet. (`D7`/2'nin boş-sayfa kuralı bunu **bir** tura indirir.)
+2b. [SINIR] **YAKINSAMA DAR DÖKÜM ÜZERİNDEDİR (K1).** `sha256` iddiası yalnız
+   `id, baslik, tamamlandi, silindi` sütunlarını kapsar. `olusturuldu`, `guncellendi` ve
+   `senkronDurumu` **karşılaştırılmaz ve yakınsadıkları İDDİA EDİLMEZ** — gerekçe `T9`'da ölçümle
+   yazılıdır (`olusturuldu` tele hiç çıkmıyor; `senkronDurumu`'na `D4` gereği dokunulmuyor).
+2c. [SINIR] **Yerelde olup sunucuda olmayan satır silinmez** (`D2`); snapshot **birleştiricidir**.
 3. [SINIR] **Boşaltma tavanı 20 tur** (`D7`); 10.000 değişikliğin üstünde davranış `[DOGRULANMADI]`.
 4. [SINIR] **`sets` (OR-Set) kanalı uygulanmaz** (§1.4) — `UzakAlanDurumu` anahtarına sığmaz.
    `tags`/`assignees`/`checklistItems` uzaktan değişse istemci **hiçbir şey görmez**.
@@ -880,4 +1074,12 @@ gizlenmiş sınır edilmez."* Aşağıdaki her satır **bilinçli** bir sınırd
     emsalinden geliyor; oysa kuyruk gövdesinden alan-HLC okumakta `ulong` taşma riski **yoktur** ve
     `jsonDecode` ile **okumak** (yeniden üretmeden) `D1`'i ihlal etmezdi. Kilit **değişmedi**: bu dilimde
     ham metin uygulanır ve deseni `M21` korur. Kilit gevşetilecekse **Onur karar verir** (K40).
-13. Bir karar yanlış çıkarsa: **kodla düzeltme.** Bulguyu buraya yaz, dur, Onur'un kilidini bekle.
+13. [SINIR] **Yeni entity `senkronDurumu = 'yerel'` ile doğar** (`D4`). Rozet sözlüğünde *"uzaktan
+    geldi"* yok; bu satır kullanıcıya *"henüz gönderilmedi"* gibi görünür. Bilinçli, `D4`'ün doğrudan
+    sonucu, K1 gereği dökümde de yok.
+14. [SINIR] **`AyarlarDeposu.devUserIdDegistir(...)` üretimde çağrılmaz** (`D7`/4). Bugün kullanıcı
+    değiştiren bir akış yok; yol yalnız `G1`'in ayağını **ölçülebilir** kılmak için genel API'de durur.
+15. [SINIR] **Çekme yalnız TETİKLE koşar** — periyodik yoklama yok, itme yok. Uygulama açıkken başka
+    bir cihazın yazdığı satır, kullanıcı yenilemedikçe ya da uygulama yeniden açılmadıkça **gelmez**.
+    Gerçek zamanlılık slice-3e'nin (SignalR) işidir.
+16. Bir karar yanlış çıkarsa: **kodla düzeltme.** Bulguyu buraya yaz, dur, Onur'un kilidini bekle.
