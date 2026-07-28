@@ -1,0 +1,61 @@
+  Geri yüklenecek projeler belirleniyor...
+  Geri yükleme için tüm projeler güncel.
+  Momentum.Domain -> C:\dev\Momentum\src\backend\Momentum.Domain\bin\Debug\net9.0\Momentum.Domain.dll
+  Momentum.Application -> C:\dev\Momentum\src\backend\Momentum.Application\bin\Debug\net9.0\Momentum.Application.dll
+  Momentum.Infrastructure -> C:\dev\Momentum\src\backend\Momentum.Infrastructure\bin\Debug\net9.0\Momentum.Infrastructure.dll
+  Momentum.Api -> C:\dev\Momentum\src\backend\Momentum.Api\bin\Debug\net9.0\Momentum.Api.dll
+  Momentum.Persistence.Tests -> C:\dev\Momentum\tests\Momentum.Persistence.Tests\bin\Debug\net9.0\Momentum.Persistence.Tests.dll
+C:\dev\Momentum\tests\Momentum.Persistence.Tests\bin\Debug\net9.0\Momentum.Persistence.Tests.dll (.NETCoreApp,Version=v9.0) için test çalıştırması
+Toplam 1 test dosyası belirtilen desenle eşleşti.
+[xUnit.net 00:00:07.37]     Momentum.Persistence.Tests.D9OwnerIdVisibilityTests.D9_outbox_owner_id_X_actor_id_Y_kalir [FAIL]
+  Başarısız Momentum.Persistence.Tests.D9OwnerIdVisibilityTests.D9_outbox_owner_id_X_actor_id_Y_kalir [1 s]
+  Hata İletisi:
+   Shouldly.ShouldAssertException : ownerId
+    should be
+b350f196-5982-4743-af25-c1e66a2801e2
+    but was
+2d46f0c3-8518-4937-abcc-0803a16ce696
+
+Additional Info:
+    owner_id KIMLIK DOGRULAMADAN gelir
+  Yığın İzleme:
+     at Momentum.Persistence.Tests.D9OwnerIdVisibilityTests.D9_outbox_owner_id_X_actor_id_Y_kalir() in C:\dev\Momentum\tests\Momentum.Persistence.Tests\D9OwnerIdVisibilityTests.cs:line 62
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Momentum.Persistence.Tests.D9OwnerIdVisibilityTests.D9_outbox_owner_id_X_actor_id_Y_kalir() in C:\dev\Momentum\tests\Momentum.Persistence.Tests\D9OwnerIdVisibilityTests.cs:line 63
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+[xUnit.net 00:00:07.79]     Momentum.Persistence.Tests.D9OwnerIdVisibilityTests.D9_baslik_X_govde_actorId_Y_ise_satir_Xin_cekmesinde_gorunur_Yninkinde_gorunmez [FAIL]
+  Başarısız Momentum.Persistence.Tests.D9OwnerIdVisibilityTests.D9_baslik_X_govde_actorId_Y_ise_satir_Xin_cekmesinde_gorunur_Yninkinde_gorunmez [414 ms]
+  Hata İletisi:
+   Shouldly.ShouldAssertException : xSnapshot.Entities
+    should contain an element satisfying the condition
+(e.EntityId == entity)
+    but does not
+
+Additional Info:
+    D9: outbox owner_id KIMLIK DOGRULANMIS X'tir -- X'in cekmesinde GORUNMELI
+  Yığın İzleme:
+     at Momentum.Persistence.Tests.D9OwnerIdVisibilityTests.D9_baslik_X_govde_actorId_Y_ise_satir_Xin_cekmesinde_gorunur_Yninkinde_gorunmez() in C:\dev\Momentum\tests\Momentum.Persistence.Tests\D9OwnerIdVisibilityTests.cs:line 29
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Momentum.Persistence.Tests.D9OwnerIdVisibilityTests.D9_baslik_X_govde_actorId_Y_ise_satir_Xin_cekmesinde_gorunur_Yninkinde_gorunmez() in C:\dev\Momentum\tests\Momentum.Persistence.Tests\D9OwnerIdVisibilityTests.cs:line 32
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task, ConfigureAwaitOptions options)
+
+Başarısız! - Başarısız:     2, Başarılı:     0, Atlanan:     0, Toplam:     2, Süre: 2 s - Momentum.Persistence.Tests.dll (net9.0)
+EXIT=1

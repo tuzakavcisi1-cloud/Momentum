@@ -1,0 +1,12 @@
+--- KANIT/slice-3d/09-MUTANT/_baseline/SyncIngest.cs.orig	2026-07-28 15:23:48.159046000 +0300
++++ src/backend/Momentum.Domain/Sync/SyncIngest.cs	2026-07-28 16:18:05.826640400 +0300
+@@ -48,7 +48,8 @@
+             // (1) envelope validation (RejectedInvalid closed list) -- returned immediately, not recorded.
+             if (!IsEnvelopeValid(op))
+             {
+-                return new IngestResult(op.OperationId, IngestResultCode.RejectedInvalid, null);
++                // M27 mutant: op-bazli RejectedInvalid yerine tum istegi bozan bir istisna.
++                throw new InvalidOperationException("gecersiz zarf -- M27 mutant");
+             }
+ 
+             // (2) dedup (before receive-time-dependent steps -> replay determinism).

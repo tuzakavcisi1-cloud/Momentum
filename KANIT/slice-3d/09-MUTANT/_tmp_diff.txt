@@ -1,0 +1,11 @@
+--- KANIT/slice-3d/09-MUTANT/_baseline/kuyruk_tabani.dart.orig	2026-07-28 15:23:48.126863700 +0300
++++ src/client/lib/senkron/kuyruk_tabani.dart	2026-07-28 16:12:53.904303000 +0300
+@@ -52,7 +52,7 @@
+ 
+   final eslesme = desen.firstMatch(govdeJson);
+   if (eslesme == null) {
+-    throw StateError('hamAlanHlcCikar: cipa VAR, desen TUTMADI -- $ad');
++    return null; // M37 mutant: fail-loud yerine sessiz null
+   }
+   return HamAlanHlc(
+     wallMs: int.parse(eslesme.group(1)!),

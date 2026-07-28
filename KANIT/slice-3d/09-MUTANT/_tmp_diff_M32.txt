@@ -1,0 +1,10 @@
+--- KANIT/slice-3d/09-MUTANT/_baseline/main.dart.orig	2026-07-28 15:23:48.224926500 +0300
++++ src/client/lib/main.dart	2026-07-28 16:24:08.121689800 +0300
+@@ -1,6 +1,7 @@
+ import 'dart:async';
+ 
+ import 'package:flutter/material.dart';
++import 'package:flutter/widgets.dart'; // M32 mutant: gereksiz import (info-seviyeli lint) -- material.dart zaten widgets.dart'i disa aktarir
+ import 'package:flutter_driver/driver_extension.dart';
+ 
+ import 'ag/http_senkron_agi.dart';

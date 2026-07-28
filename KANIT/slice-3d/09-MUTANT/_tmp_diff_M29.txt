@@ -1,0 +1,13 @@
+--- KANIT/slice-3d/09-MUTANT/_baseline/alan_anahtari.dart.orig	2026-07-28 15:23:48.095186900 +0300
++++ src/client/lib/senkron/alan_anahtari.dart	2026-07-28 16:32:38.286493600 +0300
+@@ -118,9 +118,7 @@
+     AlanAnahtari? kuyrukTabani,
+   }) async {
+     final eskiMeta = await metaOku(entityType, entityId, alan);
+-    if (kazandiMi(gelenAnahtar, eskiMeta)) {
+-      await metaYaz(entityType, entityId, alan, gelenAnahtar);
+-    }
++    // M29 mutant (canli): UzakAlanDurumu yazimi kaldirildi.
+     final projeksiyonTabani = enBuyuk(eskiMeta, kuyrukTabani);
+     return kazandiMi(gelenAnahtar, projeksiyonTabani);
+   }

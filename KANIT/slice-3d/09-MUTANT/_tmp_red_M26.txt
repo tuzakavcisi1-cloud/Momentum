@@ -1,0 +1,45 @@
+  Geri yüklenecek projeler belirleniyor...
+  Geri yükleme için tüm projeler güncel.
+  Momentum.Domain -> C:\dev\Momentum\src\backend\Momentum.Domain\bin\Debug\net9.0\Momentum.Domain.dll
+  Momentum.SyncCore.Tests -> C:\dev\Momentum\tests\Momentum.SyncCore.Tests\bin\Debug\net9.0\Momentum.SyncCore.Tests.dll
+C:\dev\Momentum\tests\Momentum.SyncCore.Tests\bin\Debug\net9.0\Momentum.SyncCore.Tests.dll (.NETCoreApp,Version=v9.0) için test çalıştırması
+Toplam 1 test dosyası belirtilen desenle eşleşti.
+[xUnit.net 00:00:00.27]     Momentum.SyncCore.Tests.SyncIngestV7Tests.V4_op_ikinci_kez_gonderilir_yine_RejectedInvalid_dedupa_kaydedilmez [FAIL]
+[xUnit.net 00:00:00.28]     Momentum.SyncCore.Tests.SyncIngestV7Tests.Uc_oplu_istek_v7_v4_v7_hepsi_islenir_istek_400_DEGIL [FAIL]
+[xUnit.net 00:00:00.28]     Momentum.SyncCore.Tests.SyncIngestV7Tests.OperationId_gercek_v4_RejectedInvalid_doner [FAIL]
+  Başarısız Momentum.SyncCore.Tests.SyncIngestV7Tests.V4_op_ikinci_kez_gonderilir_yine_RejectedInvalid_dedupa_kaydedilmez [63 ms]
+  Hata İletisi:
+   Shouldly.ShouldAssertException : ilk.Code
+    should be
+IngestResultCode.RejectedInvalid
+    but was
+IngestResultCode.Applied
+  Yığın İzleme:
+     at Momentum.SyncCore.Tests.SyncIngestV7Tests.V4_op_ikinci_kez_gonderilir_yine_RejectedInvalid_dedupa_kaydedilmez() in C:\dev\Momentum\tests\Momentum.SyncCore.Tests\SyncIngestV7Tests.cs:line 59
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Başarısız Momentum.SyncCore.Tests.SyncIngestV7Tests.Uc_oplu_istek_v7_v4_v7_hepsi_islenir_istek_400_DEGIL [2 ms]
+  Hata İletisi:
+   Shouldly.ShouldAssertException : r2.Code
+    should be
+IngestResultCode.RejectedInvalid
+    but was
+IngestResultCode.Applied
+  Yığın İzleme:
+     at Momentum.SyncCore.Tests.SyncIngestV7Tests.Uc_oplu_istek_v7_v4_v7_hepsi_islenir_istek_400_DEGIL() in C:\dev\Momentum\tests\Momentum.SyncCore.Tests\SyncIngestV7Tests.cs:line 46
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Başarısız Momentum.SyncCore.Tests.SyncIngestV7Tests.OperationId_gercek_v4_RejectedInvalid_doner [< 1 ms]
+  Hata İletisi:
+   Shouldly.ShouldAssertException : result.Code
+    should be
+IngestResultCode.RejectedInvalid
+    but was
+IngestResultCode.Applied
+  Yığın İzleme:
+     at Momentum.SyncCore.Tests.SyncIngestV7Tests.OperationId_gercek_v4_RejectedInvalid_doner() in C:\dev\Momentum\tests\Momentum.SyncCore.Tests\SyncIngestV7Tests.cs:line 34
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Başarısız! - Başarısız:     3, Başarılı:     1, Atlanan:     0, Toplam:     4, Süre: 68 ms - Momentum.SyncCore.Tests.dll (net9.0)
+EXIT=1
