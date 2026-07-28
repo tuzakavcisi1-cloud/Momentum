@@ -105,6 +105,99 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## 🔒 CHECKPOINT (28 Tem 2026 · oturum 35: **K73 — KABUL EDİLEN DİLİMİN KİLİTLERİ §5'TEN ÇEKİLİR; `belge-tavan-kapisi.py` DOĞDU**)
+
+### ÖNCE: BENİM ÖNERDİĞİM ÇÖZÜM ÖLÇÜMLE ÇÜRÜDÜ — kurulmadı
+
+Onur *"`DURUM.md` sorununu nasıl çözeceğiz?"* diye sordu. İlk cevabım şuydu: **`kilit-indeks.py`** yaz,
+`hafiza-dizin.py` desenini izle, §5'i arşivden **türetilmiş bir indekse** çevir (`K72 · hafıza satır
+110`), K19-a'nın *"gövde atıf yapar, kopyalamaz"* doktrinini nihayet §5'e uygula. Tahminî kazanç
+**~7,6 KB**.
+
+**Kurmadan önce ölçtüm ve plan İKİ KEZ öldü:**
+
+1. **Kapsama ölçüldü:** §5'teki **27** kilidin yalnız **7'si** arşivde `### K<n> — …` başlığı
+   taşıyor. Kalan 20'si (`K62 K64 K63 K66 K65 K53 K59 K57 K60 K57-b K58 K55 K56 K46 K42-d K41
+   K44-a K34-f K26 K40`) türetilemez ⇒ araç ya onları **sessizce düşürürdü** ya da uydururdu.
+   Kopyayı kaldırmak için yazılan araç, kaybı kopyadan **daha kötü** hâle getirecekti.
+2. **Daha derin kusur:** `PROJE_HAFIZA.md`'nin DİZİN'i bir **navigasyon** aracıdır; §5 ise
+   **yürürlükteki kural kitabı**dır. `K55 · hafıza satır 1432` satırı, K55'in *ne yasakladığını*
+   söylemez — oturum kuralı öğrenmek için 629 KB'lik arşivi açmak zorunda kalırdı ki K53 bunu tam
+   olarak yasaklamıştı. **Aynı desen iki farklı işte doğru olmaz.**
+
+**Ders (genelleşir):** *bir deseni "burada işe yaradı" diye başka bir yere taşımak, o yerin ne iş
+gördüğünü ölçmeden yapılırsa mühendislik değil taklittir.* İki ölçüm betiği toplam ~100 satırdı ve
+yanlış bir aracın doğmasını engelledi — K53/1'in gerekçesinin (*mekanik kontrol ucuz ve
+deterministik*) bir kez daha karşılığı.
+
+**İkinci mekanik ayrım denemesi de çürüdü:** §5'i *"kural"* ⇄ *"olay kaydı"* diye ayırmak için iki
+ölçülebilir işaret (kimlik/sha taşıyor mu · kip taşıyor mu) kullandım. Sonuç: **%18,9 olay · %10,9
+kural · %70,1 BELİRSİZ**. Kilitler gerçekten karışık yazılmış; **mekanik ayrım yok.** Uydurulmuş bir
+eşikle bölmek K40 ihlali olurdu — yapılmadı.
+
+### K73 — KURAL: BİR DİLİMİN TASARIM/SPEC KİLİTLERİ, DİLİM **KABUL EDİLDİĞİNDE** §5'TEN ÇEKİLİR
+
+Mekanik ayrım yoksa, **olgusal** bir ayrım var ve o ölçülebilir: *dilim kabul edildi mi?*
+
+> **Bir dilimin tasarım ve spec kilitleri, dilim KABUL EDİLDİĞİ ANDA `DURUM.md` §5'ten çıkarılır ve
+> tek satırlık bir atıfla temsil edilir — çünkü o andan sonra kural PROZADA değil KAPIDA yaşar.**
+
+Gerekçe projenin kendi doktrinidir (K53): *mekanikleşmiş bir sınıf için kâğıt tur meşru değildir.*
+`D0`–`D9`, `P1`–`P7` gibi kurallar bugün `G1`–`G9` kapılarında ve 40 mutantta **koşuyor**; §5'teki
+kopyaları bir şeyi zorlamıyor, yalnız **sapma kanalı** açıyor (K21-DÜZELTME'nin doğuş mekanizması).
+**Hiçbir şey silinmedi:** K57…K70 checkpoint'lerinin tam metni arşivde duruyor, spec'ler
+`GOREV_CLAUDE_CODE/` altında bayt-kimlikli ve `tek-kopya-kapisi.py` kapsamında `kilitli`.
+
+**ÇEKİLENLER (10 kilit, 4.606 b) ve nerede yaşadıkları:**
+
+| çekilen | dilim | kural bugün NEREDE zorlanıyor |
+|---|---|---|
+| `K57` · `K59` | slice-3b | `GOREV-slice-3b-istemci-iskeleti.md` **44.560 b · `F0C3A75A`** + A2/G kapıları |
+| `K62` `K63` `K64` `K65` `K66` | slice-3c | `GOREV-slice-3c-senkron.md` **41.692 b · `537D0579`** + `D0`–`D9` kapıları |
+| `K68` `K69` `K70` | slice-3d | `GOREV-slice-3d-cekme.md` **80.399 b · `889A383F`** + `G1`–`G9` + 40 mutant |
+
+🔴 **`K72` ÇEKİLMEDİ ve bu kasıtlıdır:** `P6`/`D4` daraltması **henüz build edilmedi**, yani kuralı
+zorlayan `G10` kapısı **yok**. Kural kapıda yaşamıyorsa prozadan çıkarılamaz. `R9` kabul edildiğinde
+`K72` de bu maddeyle çekilecektir — **kuralın kendisi ne zaman çekileceğini söylüyor.**
+
+**ÖLÇÜLEN SONUÇ (yazımdan SONRA diskten, D1-önleme):** §5 **9.646 → 6.219 b** (çekilen 10 madde **4.606 b**; geri konan K73 kuralı + üç atıf satırı ~1,9 KB) · `DURUM.md` **32.298 → 29.625 b** · pay **470 → 3.143 b** ⇒ `belge-tavan-kapisi.py` artık **YEŞİL**.
+
+🔴 **KENDİ D1 KUSURUM, AYNI OTURUMDA, ALTINCIDAN SONRA YEDİNCİ KEZ:** bu paragrafı ilk yazdığımda içine **ölçmediğim** iki sayı koydum (*"§5 5.030 b"*, *"DURUM.md 27.9xx b"*) — ikisi de **YANLIŞTI**. Bu oturumun kendi checkpoint'i (K71) D1-önlemeyi *"defter/belgeye sayı yazan HER betiğe zorunlu olsun"* diye borç yazmıştı ve ben aynı oturumda **belgeye** elle sayı yazarken o adımı atladım. Düzeltmeyi yapan şey yine bir betik oldu, el değil. **Borç artık yalnız defter için değil, HER belge yazımı için geçerlidir.**
+
+### `belge-tavan-kapisi.py` DOĞDU — üç oturumluk beyan edilmiş zayıflık kapandı
+
+K58 tavanı koyarken kendi zayıflığını **beyan etmişti**: *"tavanı şu an hiçbir kapı zorlamıyor — ilk
+ısırışta `belge-tavan-kapisi.py` yazılır."* Tavan o günden beri **on üç kez** aşıldı (oturum 34'te
+yedi, 35'te altı) ve her seferinde **el ile** budandı. Beyan edilmiş zayıf kontrol, kontrol değildir.
+
+**Araç, tavanın kendisini değil PAYI da ölçer** — çünkü bu projede kusur *"tavanı aştım"* biçiminde
+değil, *"tavana 38 bayt kala checkpoint yazamıyorum"* biçiminde doğdu. Kodlar: `T0` dosya yok ·
+`T1` tavan aşıldı (KIRMIZI) · `T2` pay dar (SARI, eşik tavanın %5'i).
+
+**Altın küme 9/9** ve iki vakası özellikle önemlidir: **vaka 5** (pay eşiğinin tam üstünde ⇒ SUSMALI)
+eşiğin uydurulmadığını kanıtlar; **vaka 7** (dosya yok ⇒ `T0`, ama KIRMIZI DEĞİL) *"ölçemediğini
+kırmızı sayma"* kuralını kapının içine gömer. **İlk gerçek koşumda hemen ısırdı:** `DURUM.md`
+32.298 / 32.768 b, pay 470 b ⇒ **SARI `T2`**. Kapı doğduğu gün borcu gösterdi.
+
+**Beyan edilmiş sınır (çıktıya basılır):** içeriğin gerekli olup olmadığını ölçmez, neyin
+silineceğine karar vermez, tavanı kendi değiştirmez (K40).
+
+### 🔴 YENİ BULGU — `hafiza-dizin.py` K60'I İHLAL EDİYOR ve hedefi 629 KB'LİK ARŞİV
+
+`araclar/hafiza-dizin.py` sonunda şu satır var:
+`io.open(yol, "w", encoding="utf-8", newline="\n").write(metin)`
+
+**Bu tam olarak K60'ın yasakladığı desendir** ve K60 oturum 31'de `PROJE_HAFIZA.md`'yi **542 KB'den
+0 bayta düşürdüğü** için doğmuştu. `hafiza-dizin.py` bu dosyaya yazan **tek araçtır** ⇒ dolu silah,
+namlusu arşive dönük. Bugün patlamamasının tek sebebi encode'un hata vermemesi.
+
+🔴 **DÜZELTİLMEDİ — K34-f:** aracı onaran el, onu **yazan elden AYRI** olmalı ve `hafiza-dizin.py`'yi
+Cowork yazdı (K58, oturum 31). Borç `DURUM.md` §8'e adıyla yazıldı. *(Bu oturumda yazılan
+`belge-tavan-kapisi.py` **hiçbir dosyaya yazmıyor** — salt okur, bu sınıfa hiç girmiyor.)*
+
+---
+
+
 ## 🔒 CHECKPOINT (28 Tem 2026 · oturum 35: **K72 — `R9` KİLİDİ: `P6`/`D4` DARALTILDI; spec yazıldı, DENETLENDİ, KIRILDI, düzeltildi**)
 
 ### K72 — `P6`/`D4` DARALTILDI (Onur kilitledi, 28 Tem 2026)

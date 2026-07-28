@@ -18,10 +18,11 @@
 
 1. **Bu dosyayı** + `CLAUDE.md`'yi oku. *(`PROJE_HAFIZA.md`'yi okuma — gerekirse sonra bak.)*
 2. `python araclar\tek-kopya-kapisi.py .` — **tek kopya dosya regresyon kapısı (K60).** KIRMIZI ise **önce dosyayı kurtar** (`git restore <yol>`), sonra iş yap.
-3. `python araclar\radar.py --altin-kume` (EXIT 0) → `python araclar\radar.py .`
+3. `python araclar\belge-tavan-kapisi.py .` — **canlı belge tavanı (K73).** `T1` KIRMIZI ise checkpoint yazmadan **ÖNCE** budanır.
+4. `python araclar\radar.py --altin-kume` (EXIT 0) → `python araclar\radar.py .`
    **KIRMIZI ise yeni tur YASAK**; dört şık Onur'a sunulur, **varsayılan DEVRET**.
-4. `git --no-optional-locks status --porcelain` + `Test-Path .git\index.lock`
-5. §4'teki **SIRADAKİ İŞ**'ten devam et.
+5. `git --no-optional-locks status --porcelain` + `Test-Path .git\index.lock`
+6. §4'teki **SIRADAKİ İŞ**'ten devam et.
 
 ---
 
@@ -59,18 +60,12 @@
 
 - **K72** — **`R9` kilidi: `P6`/`D4` DARALTILDI.** Rozet dokunulmazlığı **UPDATE-of-local**'da AYNEN durur; **INSERT-from-pull** kapsam dışıdır ⇒ çekmeyle doğan satır `'senkronize'` ile INSERT edilir. Ölçüldü: CHECK kısıtı buna **zaten izin veriyor** ⇒ **migration YOK, şema v4 KALIR**. Reddedilen *"rozeti kaldır"* şıkkı `AYAK6` olarak **mekanik şarta** çevrildi. Build spec'i: `GOREV-R9-rozet-kapsami.md` **14.061 b · `B2082127`** (bağımsız denetim: 4 bloker + 3 önemli + 5 not, kapatıldı). 🔴 Spec **`kilitli` sınıfına ALINMADI** — kilitlenen **tasarımdır**, metin değil.
 - **K71** — **kabul kriteri 9 ÖLÇÜLDÜ ve GEÇTİ (3/3 ayak);** `R9` kusuru koşan uygulamadan doğdu; `DURUM.md` §8 arşivlendi ve **altı bayat iddia** ayıklandı. Kanıt: `KANIT/slice-3d/10-KABUL9/`.
-- **K70** — **slice-3d (ÇEKME) KABUL EDİLDİ; spec KİLİTLİ:** `GOREV-slice-3d-cekme.md` **80.399 b · `889A383F`**, `tek-kopya-kapisi.py`'de `kilitli`. Kabul, **Cowork'ün kendi altı ölçümüne** dayanır (K26). **İki bulgu bilinçle AÇIK borç bırakıldı** (§8): `02-G2` üretici kodu · `verify.ps1`'in fail-loud ayağı. `R8` sert durağı **öldü** (3.070 satır ürün kodu).
-- **K69** — **slice-3d spec'i yazıldı+denetlendi; üç karar kilitli:** `P5` `owner_id` kusuru **kapsanır** (`SyncCommandHandler.cs:184` → `authenticatedActorId`) · `P6` uzak değişiklik **rozete DOKUNMAZ** · `P7` **bekleyen yerel yazım korunur**. **K68/3'ün gerekçesi düzeltildi, kilidi AYNI.** **K69/EK — DARALT:** denetim **yalnız kâğıtta ölçülebilene** bakar; mutantların ısırması, `G8`'in gerçek kurulumu ve `P5`'in yakalayıcılığı **bilinçle build'e devredildi**. **K69/EK-2:** denetim koştu, 12 bulgu kapatıldı, üç yeni çatalı Onur kilitledi (dar döküm · itme turu da uygular · yutulan tetik bir kez yeniden koşar).
-- **K68** — **slice-3d (çekme) tasarımı KİLİTLİ:** `P1` ayrı `UzakAlanDurumu` tablosu (şema v4) · `P2` açılış + elle yenile + `hasMore` boşaltma (yoklama YOK) · `P3` F3 uçtan uca **+** F2 ucuz kapı · `P4` `IsEnvelopeValid`'de op-bazlı v7 nibble reddi + mutant. **Echo ATILMAZ** (kırpılmış HLC öğrenilir) · **snapshot dalı zorunlu** (ilk senkron oraya düşer) · **ayrı çekme ucu YOK**. Tasarım turu **tekrar açılmaz**.
+- **K73** — **Bir dilimin tasarım/spec kilitleri, dilim KABUL EDİLDİĞİNDE §5'ten çekilir** ve tek satırlık atıfla temsil edilir; çünkü o andan sonra kural **prozada değil KAPIDA** yaşar (K53 doktrini). Arşivde hiçbir şey silinmez. 🔴 Kapısı **olmayan** kilit çekilemez — bu yüzden `K72` §5'te DURUYOR (`G10` henüz yok).
+- **slice-3b tasarım/spec kilitleri (K57 · K59)** — dilim KAPANDI ⇒ **§5'ten ÇEKİLDİ [K73]**. Kurallar `GOREV-slice-3b-istemci-iskeleti.md` **44.560 b · `F0C3A75A`** + A2/G kapılarında zorlanıyor. Gerekçe: hafıza K57/K59.
+- **slice-3c tasarım/spec kilitleri (K62 · K63 · K64 · K65 · K66)** — **KABUL EDİLDİ** ⇒ **§5'ten ÇEKİLDİ [K73]**. `D0`–`D9` bugün `GOREV-slice-3c-senkron.md` **41.692 b · `537D0579`** + `G1`–`G9` kapılarında ve mutantlarda **koşuyor**. Gerekçe: hafıza K62–K66.
+- **slice-3d tasarım/spec kilitleri (K68 · K69 · K70)** — **KABUL EDİLDİ** ⇒ **§5'ten ÇEKİLDİ [K73]**. `P1`–`P7` bugün `GOREV-slice-3d-cekme.md` **80.399 b · `889A383F`** + dokuz kapı + **40 mutantta** koşuyor. Gerekçe: hafıza K68–K70. 🔴 `P6`/`D4` **K72 ile DARALTILDI** (aşağıda).
 - **K61** — **Dev-kimlik kalkanı (şık 1) KİLİTLİ:** yalnız `Development`'ta `DevCurrentUser` (**`X-Momentum-Dev-User`** → `UserId`; başlık yok/bozuk ⇒ 401, sessiz varsayılan kullanıcı YOK); **üretimde `NullCurrentUser` korunur ve bunu bir MUTANT kanıtlar** (`Production` ⇒ 401). `UserId` ⟂ `ClientId`. ADR 0003 **donmuş kalır** (K41). Beyan edilen sınır: bu bir kimlik **çözümü değil**, ölçüm **iskelesidir**.
-- **K62** — **slice-3c tasarım kilitleri (`D0`–`D9`), spec v2:** kanal eşlemesi (`tamamlandi` → `Groups["completion"]`, `isDeleted` = tam `"true"`, `status` ∈ {`done`,`open`}, grup yazımı **REPLACE**) · kuyruk gövdesi **üretim anında donar**, sıra `(wall, counter, opId)` · HLC **monoton + KALICI + TAVANLI** (`now+300000`) ve sunucu damgasıyla **birleşir** · batch **≤ 100** + **tek uçuş** · zehirli op **karantina**, `cakisma` **kilitlenir** · **`D7`** zarf (`operationId`/`clientId`/`entityId`/`actorId` boş-GUID olamaz; her yazımın **kendi HLC'si**) · **`D8`** `Gorevler`+kuyruk **tek transaction**, `gonderildi → bekliyor` **kurtarma** · **`D9`** HTTP sınıflandırma (400 ⇒ tur durur; deneme tavanı 8) · **yalnız push**, çekme **uygulanmaz**.
-- **K64** — **Spec v2 KİLİTLİ: 41.692 b · `537D0579`** (Onur onayladı, 27 Tem 2026). Değişen her bayt kilidi bozar; dosya `tek-kopya-kapisi.py` kapsamında **`kilitli`** sınıfına alındı ⇒ sapma **açılış protokolü adım 2'de** ölçülür. **`5899A220` (v1) GEÇERSİZDİR.**
-- **K63** — **Spec v1 (`5899A220`) GEÇERSİZ; v2 geçerlidir.** İki bağımsız denetçi v1'i kırdı: 10 bloker · 12 önemli · 8 not (30 kapatıldı, 3 sınır beyan edildi). **Kendi mutantlarımdan `M13` eşdeğerdi (iptal), `M14`'ün beklenen sonucu olgusal olarak yanlıştı** (`tasks` upsert'tir). Kural: **ısırmayan mutant kapıyı gevşetmez — önce kapı düzeltilir** (K60'ın M2b emsali).
-- **K66** — **slice-3c KABUL EDİLDİ (Cowork'ün kendi koşumu, K26).** Dört bulgu kayda geçti: ① devir notundaki `00-OZET.md` kimliği **yanlış** (iki ayrı dosya karıştırıldı) · ② spec §8'in *"her mutant için kanıt"* şartı **tam karşılanmadı** (8/36 ham; kalanı transkriptten doğrulandı) · ③ **kabul kriteri 8'in ölçümü kör** — `git diff` **takipsiz dosyaları görmez**, doğru ölçüm `diff` **+** `status` · ④ K65 bir **backend kusuru değil**, spec kusuru + backend'de zorlanmamış varsayım.
-- **K65** — **`opId` UUIDv7 + `counter` her damgada artar (Onur kilitledi).** Gerekçe: sunucu clamp'i iki alan-HLC'sini eşitleyince tie-break `opId` dize-ordinaline düşüyor; v4 rastgele olduğu için **yazı-tura** oluyordu (~%40‑50 kayıp). Düzeltme **yalnız istemcide**; backend'e tek satır dokunulmadı; **10/10** ardışık koşum SON.
 - **K53** — Verimlilik reformu: kâğıt denetim turu tavanı **1** · radar KIRMIZI'da varsayılan **DEVRET** · koşan-uygulama-mutant tavanı **3** · iki oturum 0 ürün kodu = **sert durak (`R8` — K57'de `R7`'den yeniden adlandırıldı)** · hafıza bölündü.
-- **K59** — Spec **v6, KİLİTLİ**: **44.560 b · `F0C3A75A`**. **`6056A5BB`, `79A53AA3`, `BE4581BA`, `1AB02B73` GEÇERSİZ.** ① **A2 iki yakalama** ister (vitrin + gerçek ekran, ham JSON, birleşimde 8 ad) — gevşetme **değil**, sağlanamaz şartın sağlanabilir ve **daha pahalı** hâli; gerekçe §5/G1'de ölçümle yazılı. ② Kriter **6·7·8**'e araç adı + ölçülen rakamlar (`8/8`, `6/6`, `18/18`) ⇒ `sayi-tazeligi.py` artık bu satırları **mekanik** doğruluyor, **muafiyet kalmadı**.
-- **K57** — Spec v5 (`6056A5BB`): on **bayat çapraz-atıf** düzeltildi; özü değişmedi. Onuncuyu, kilitten **sonra** doğan `sayi-tazeligi.py` buldu. Ayrıntı: `PROJE_HAFIZA.md` K57.
 - **K60** — **Tek kopya dosyaya yazan her betik ATOMİK yazar:** önce `metin.encode("utf-8")` (hata dosyaya **dokunmadan** patlar), sonra `.tmp`, en son takas. Gerekçe ucuz değil: oturum 31'de `io.open(yol,"w")` `PROJE_HAFIZA.md`'yi **önce boşalttı** ⇒ 542 KB arşiv 0 bayta düştü; kurtaran **şanstı** (`git restore`). ✅ Kapısı var: `tek-kopya-kapisi.py`. **Beyan edilen sınır:** kapı hasarı **önlemez**, sessiz kalmasını imkânsız kılar. 🔴 **oturum 34 EKİ:** bu makinede `os.replace` `WinError 5` veriyor ⇒ takas **üç adımlı yedekli** yapılır (§7).
 - **K57‑b** — `araclar/radar.py` **plugin 0.2.0 ile BAYT-ÖZDEŞ** (`46E3A8BC`); proje-yerel not **eklenmez** ⇒ sapma **tek sha ile** ölçülür.
 - **K58** — `DURUM.md` tavanı **12 → 32 KB**. Gerekçe okuma kapasitesi **değil**: ① R4 freni, ② dikkat (3,5k token okunur, 40k *göz gezdirilir*). Gevşetmenin dayanağı: bayat-atıf sınıfı **mekanikleşti**. 🔴 Tavanı **hiçbir kapı zorlamıyor** — beyan edilmiş **zayıf kontrol**; ilk ısırışta `belge-tavan-kapisi.py` yazılır. Ayrıca `PROJE_HAFIZA.md`'ye **mekanik dizin** (`hafiza-dizin.py`); **yeni checkpoint `<!-- DIZIN:SON -->` ALTINA** eklenir.
@@ -103,6 +98,7 @@
 | `tek-kopya-kapisi.py` **1.1.0** | tek kopya dosyaların **HEAD'e göre regresyonunu** ölçer (`S0`–`S10`); sınıf başına farklı kural: append-only **küçülmez**, kilitli **sapmaz**, canlı **%10 budanabilir**; muafiyet gerekçesiz olamaz, **ölü muafiyeti söyler** | **19/19** |
 | `tek-kopya-mutant.py` | kapının **ölçüm ayağını** gerçek depoda kanıtlar: arşivi 0 bayta düşürür, satır siler, kilitli dosyayı **aynı boyutta** değiştirir, `.tmp` bırakır, UTF-8'i bozar, dosyayı siler — hepsinde kapının **ısırdığını** ölçer | **11/11** |
 | `hafiza-dizin.py` **1.0.0** | `PROJE_HAFIZA.md`'nin başına **türetilmiş** checkpoint dizini yazar; **fikirli** (koşum 2–3'te sha sabit) ve kendi çıktısını doğrular | **7/7** |
+| `belge-tavan-kapisi.py` **1.0.0** | canlı belge **bayt tavanı + PAY**; `T1` aşım (KIRMIZI) · `T2` dar pay (SARI, eşik %5) · `T0` dosya yok. Tavanı **kendi değiştirmez** (K40) | **9/9** |
 | `dosya-kimlik.py` | bayt + sha256 + U+FFFD + CRLF | — |
 | `mcp-arac-probe.py` | MCP'nin **gerçek** araç listesi (`tools/list`) | — |
 | `pub-surum-olc.py` | pub.dev `/api` sürüm + advisory | — |
@@ -172,8 +168,8 @@
   **hiç ölçülmüyor**. Ayrıca bu bir **araç** değişikliğidir (K34-f).
 - 🔴 **D1-ÖNLEME BORCU** — defter/belgeye sayı yazan **her** betiğe *"önce diskten ölç"* adımı zorunlu
   olsun. D1 bu projede **altı kez** ısırdı; radar onu **sonradan** bulur, önleme **doğmasını** engeller.
-- 🔴 **`belge-tavan-kapisi.py` HÂLÂ YOK** — `DURUM.md` tavanını (32 KB) **hiçbir kapı zorlamıyor**;
-  beyan edilmiş **zayıf kontrol**. K71 taşıması payı geçici olarak açtı, sınıfı kapatmadı.
+- ✅ **KAPANDI [K73]:** `belge-tavan-kapisi.py` **yazıldı** (altın küme **9/9**), açılış protokolüne girdi ve ilk koşumda **ısırdı** (`T2`, pay 470 b). Üç oturumluk beyan edilmiş zayıf kontrol mekanikleşti.
+- 🔴 **`araclar/hafiza-dizin.py` K60'I İHLAL EDİYOR — hedefi 629 KB'lik ARŞİV [oturum 35].** Son satırı `io.open(yol, "w", …).write(metin)`; bu **tam olarak** K60'ın yasakladığı desendir ve K60, `PROJE_HAFIZA.md` 542 KB'den **0 bayta** düştüğü için doğmuştu. Bu araç o dosyaya yazan **tek** araçtır. 🔴 **Onarım AYRI ELE (K34-f)** — `hafiza-dizin.py`'yi Cowork yazdı (K58).
 - 🔴 **`pub-surum-olc.py`'ye ÇÖZÜMLENEBİLİRLİK AYAĞI [Z10b]** — araç **sürümü** ölçüyor,
   **çözülebilirliği** ölçmüyor. Kalkan gelene dek her pin `pub get` ile doğrulanır.
 - 🟢 **`tek-kopya-kapisi.py`'nin BEYAN EDİLMİŞ SINIRI [S10]** — karşılaştırma **LF'e normalize**
