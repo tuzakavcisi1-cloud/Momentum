@@ -53,7 +53,7 @@
 
 🔴 **SIRADAKİ İŞ — sırayla:** ① **kabul kriteri 9** (Android emülatör + uzak görev görünürlüğü) ölçülmedi, ayrı oturum ister ve vitrinin en güçlü kanıtıdır · ② `araclar/oturum-sagligi.py` (K21 kapısı, ilk **ARAÇ** işi — K44-a) · ③ **K42-d adım 4 = slice-3e (SignalR)**; `P2`'nin tetikleyicisi onun üstüne oturur. §8'deki iki yeni borç 3e'de kapanır. **Push Onur'da.**
 
-🟡 **Arka planda `http://localhost:5298` Development API HÂLÂ ÇALIŞIYOR** (ölçüldü: `netstat` LISTENING, PID 28528). F3 uçtan uca koşumu için **gerekli**; kapatılacaksa bilinçli kapatılır.
+🟡 **Arka planda `http://localhost:5298` Development API çalışıyor olabilir** — `G8`/F3 uçtan uca koşumu için **gerekli**. 🔴 **PID YAZILMAZ, ÖLÇÜLÜR** (`netstat -ano | findstr :5298`); bu satırda üç oturum boyunca bayat bir PID durdu. Gerekmiyorsa bilinçli kapatılır.
 
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
