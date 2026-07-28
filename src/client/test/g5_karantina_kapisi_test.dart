@@ -46,12 +46,14 @@ void main() {
   late DriftGorevDeposu depo;
   late HlcUretici hlc;
   late String clientId;
+  late String devUserId;
 
   setUp(() async {
     db = Veritabani(NativeDatabase.memory());
     ayarlarDeposu = AyarlarDeposu(db, idUret: uretimIdUret);
     final ayarlar = await ayarlarDeposu.yukleVeyaOlustur();
     clientId = ayarlar.clientId;
+    devUserId = ayarlar.devUserId;
     hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: clientId,
@@ -74,6 +76,7 @@ void main() {
     ayarlarDeposu: ayarlarDeposu,
     hlc: hlc,
     clientId: clientId,
+    devUserId: devUserId,
   );
 
   test('D5: Duplicate -- Applied ile AYNI muamele (idempotens): satir silinir, senkronize olur', () async {

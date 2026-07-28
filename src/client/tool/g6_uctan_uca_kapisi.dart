@@ -57,7 +57,7 @@ void main() {
       simdiMs: () =>
           DateTime.now().toUtc().millisecondsSinceEpoch + saatKaymasiMs,
       clientId: ayarlar.clientId,
-    );
+);
     final depo = DriftGorevDeposu(
       db,
       saat: () => DateTime.now().toUtc().add(Duration(milliseconds: saatKaymasiMs)),
@@ -81,6 +81,7 @@ void main() {
       ayarlarDeposu: ayarlarDeposu,
       hlc: hlc,
       clientId: ayarlar.clientId,
+      devUserId: ayarlar.devUserId,
       baslangicCursorJson: ayarlar.nextCursorJson,
     );
 
@@ -153,7 +154,7 @@ void main() {
     final bozukOp = WireOp(
       operationId: bozukOpId,
       clientId: ayarlar.clientId,
-      entityId: bozukEntityId,
+entityId: bozukEntityId,
       actorId: ayarlar.devUserId,
       entityType: 'task', // D7 ihlali: kayit "Task" bekler
       opHlc: bozukOpHlc,
@@ -163,7 +164,7 @@ void main() {
           SenkronKuyruguCompanion.insert(
             opId: bozukOpId,
             clientId: ayarlar.clientId,
-            entityType: 'task',
+entityType: 'task',
             entityId: bozukEntityId,
             govdeJson: jsonEncode(bozukOp.toJson()),
             hlcWallMs: bozukOpHlc.wallMs,

@@ -41,7 +41,7 @@ void main() {
     final hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: ayarlar.clientId,
-    );
+);
 
     // Kuyruk INSERT'inin PK ihlaliyle FIRLAMASINI saglamak icin, uretilecek
     // operationId ile AYNI opId'de bir satir ONCEDEN eklenir.
@@ -93,7 +93,7 @@ void main() {
     final hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: ayarlar.clientId,
-    );
+);
 
     const catisanId = 'catisan-gorev-id';
     await db
@@ -160,7 +160,7 @@ void main() {
     final hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: ayarlar.clientId,
-    );
+);
     final agi = SahteSenkronAgi();
     final dongu = SenkronDongusu(
       db: db,
@@ -168,6 +168,7 @@ void main() {
       ayarlarDeposu: ayarlarDeposu,
       hlc: hlc,
       clientId: ayarlar.clientId,
+      devUserId: ayarlar.devUserId,
     );
 
     await dongu.gonderildiKurtar();
@@ -227,7 +228,7 @@ void main() {
     final hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: ayarlar.clientId,
-    );
+);
     final agi = SahteSenkronAgi();
     final dongu = SenkronDongusu(
       db: db,
@@ -235,6 +236,7 @@ void main() {
       ayarlarDeposu: ayarlarDeposu,
       hlc: hlc,
       clientId: ayarlar.clientId,
+      devUserId: ayarlar.devUserId,
     );
 
     await dongu.turCalistir();

@@ -35,13 +35,15 @@ public sealed class ScopeAndDriftAnchorTests(PostgresFixture fixture)
     }
 
     /// <summary>
-    /// D7 [mutantsiz -- surukleme cipasi, BULGU-C]: documents (does NOT fix) that F5 only cleaned the
-    /// materialized path -- the untouched outbox/SyncPuller path still trusts the wire-declared actor.
-    /// A creates; A authenticates a later op whose WIRE actorId is B (injection) -- the materialized
-    /// owner stays A, but the outbox row's owner is B.
+    /// D7 [mutantsiz -- surukleme cipasi, BULGU-C -- slice-3d D9 ile DUZELTILDI]: F5 daha once yalniz
+    /// materialize edilen yolu temizlemisti; outbox/SyncPuller yolu HALA govdedeki actorId'ye guveniyordu.
+    /// slice-3d D9 bunu kapatti (`BuildOutbox` artik `authenticatedActorId` alir). A olusturur; A daha
+    /// sonraki bir op'u KIMLIK DOGRULAR ama govdenin actorId'si B'dir (enjeksiyon) -- hem materialize
+    /// edilen sahip HEM outbox satirinin sahibi A'dir (govdenin B iddiasi YOK sayilir); `actor_id`
+    /// (denetim kaydi) HALA govdeden (B) gelir -- D9 BEYAN: bu ikisi bilerek AYRI kalir.
     /// </summary>
     [Fact]
-    public async Task D7_materialized_owner_and_outbox_owner_diverge_when_wire_actor_is_injected()
+    public async Task D9_outbox_owner_comes_from_authenticated_actor_not_wire_actor()
     {
         var connectionString = await TestDatabase.CreateAsync(fixture);
         await using var app = new SyncTestApp(connectionString);
@@ -56,7 +58,11 @@ public sealed class ScopeAndDriftAnchorTests(PostgresFixture fixture)
 
         (await Db.ScalarAsync<Guid>(connectionString, "SELECT owner_id FROM tasks WHERE entity_id = @e", ("e", entity))).ShouldBe(actorA);
         (await Db.ScalarAsync<Guid>(connectionString,
-            "SELECT owner_id FROM outbox_messages WHERE aggregate_id = @e ORDER BY id DESC LIMIT 1", ("e", entity))).ShouldBe(actorB);
+            "SELECT owner_id FROM outbox_messages WHERE aggregate_id = @e ORDER BY id DESC LIMIT 1", ("e", entity)))
+            .ShouldBe(actorA, "D9: owner_id KIMLIK DOGRULAMADAN gelir, ASLA govdenin actorId'sinden");
+        (await Db.ScalarAsync<Guid>(connectionString,
+            "SELECT actor_id FROM outbox_messages WHERE aggregate_id = @e ORDER BY id DESC LIMIT 1", ("e", entity)))
+            .ShouldBe(actorB, "D9 BEYAN: actor_id (denetim kaydi) DEGISMEZ, govdeden gelmeye devam eder");
     }
 
     /// <summary>

@@ -53,7 +53,7 @@ void main() {
     final hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: ayarlar.clientId,
-    );
+);
     var depo = DriftGorevDeposu(
       db,
       saat: () => DateTime.now().toUtc(),
@@ -123,7 +123,7 @@ void main() {
       final hlc = HlcUretici(
         simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
         clientId: ayarlar.clientId,
-      );
+);
       final agi = SahteSenkronAgi();
       final dongu = SenkronDongusu(
         db: db,
@@ -131,6 +131,7 @@ void main() {
         ayarlarDeposu: ayarlarDeposu,
         hlc: hlc,
         clientId: ayarlar.clientId,
+        devUserId: ayarlar.devUserId,
       );
       await dongu.turCalistir();
 
@@ -152,7 +153,7 @@ void main() {
     final hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: ayarlar.clientId,
-    );
+);
     final depo = DriftGorevDeposu(
       db,
       saat: () => DateTime.now().toUtc(),
@@ -172,6 +173,7 @@ void main() {
       ayarlarDeposu: ayarlarDeposu,
       hlc: hlc,
       clientId: ayarlar.clientId,
+      devUserId: ayarlar.devUserId,
     );
     await dongu.turCalistir();
 
@@ -244,7 +246,7 @@ void main() {
       final hlc = HlcUretici(
         simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
         clientId: ayarlar.clientId,
-      );
+);
       final depo = DriftGorevDeposu(
         db,
         saat: () => DateTime.now().toUtc(),
@@ -266,6 +268,7 @@ void main() {
         ayarlarDeposu: ayarlarDeposu,
         hlc: hlc,
         clientId: ayarlar.clientId,
+        devUserId: ayarlar.devUserId,
       );
       await dongu.turCalistir();
 
@@ -292,7 +295,7 @@ void main() {
       final hlc = HlcUretici(
         simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
         clientId: ayarlar.clientId,
-      );
+);
       final depo = DriftGorevDeposu(
         db,
         saat: () => DateTime.now().toUtc(),
@@ -337,6 +340,7 @@ void main() {
         ayarlarDeposu: ayarlarDeposu,
         hlc: hlc,
         clientId: ayarlar.clientId,
+        devUserId: ayarlar.devUserId,
       );
 
       final ikiTur = [dongu.turCalistir(), dongu.turCalistir()];
@@ -358,7 +362,7 @@ void main() {
     var hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: ayarlar.clientId,
-    );
+);
     final depo = DriftGorevDeposu(
       db,
       saat: () => DateTime.now().toUtc(),
@@ -399,6 +403,7 @@ void main() {
       ayarlarDeposu: ayarlarDeposu,
       hlc: hlc,
       clientId: ayarlar.clientId,
+      devUserId: ayarlar.devUserId,
     );
     await dongu.turCalistir();
 
@@ -420,7 +425,7 @@ void main() {
     hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: ayarlar.clientId,
-    );
+);
     agi = SahteSenkronAgi();
     dongu = SenkronDongusu(
       db: db,
@@ -428,6 +433,7 @@ void main() {
       ayarlarDeposu: ayarlarDeposu,
       hlc: hlc,
       clientId: ayarlar.clientId,
+      devUserId: ayarlar.devUserId,
       baslangicCursorJson: ayarlar.nextCursorJson,
     );
     final depo2 = DriftGorevDeposu(
@@ -461,7 +467,7 @@ void main() {
     final hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: ayarlar.clientId,
-    );
+);
     final depo = DriftGorevDeposu(
       db,
       saat: () => DateTime.now().toUtc(),
@@ -501,6 +507,7 @@ void main() {
       ayarlarDeposu: ayarlarDeposu,
       hlc: hlc,
       clientId: ayarlar.clientId,
+      devUserId: ayarlar.devUserId,
     );
     await dongu.turCalistir();
     var ayarSatiri = await (db.select(
@@ -528,6 +535,7 @@ void main() {
       ayarlarDeposu: ayarlarDeposu,
       hlc: hlc,
       clientId: ayarlar.clientId,
+      devUserId: ayarlar.devUserId,
       baslangicCursorJson: ayarSatiri.nextCursorJson,
     );
     await depo.ekle('resync tetikleyici');
@@ -546,6 +554,7 @@ void main() {
       ayarlarDeposu: ayarlarDeposu,
       hlc: hlc,
       clientId: ayarlar.clientId,
+      devUserId: ayarlar.devUserId,
       baslangicCursorJson: ayarSatiri.nextCursorJson,
     );
     await depo.ekle('resync sonrasi op');

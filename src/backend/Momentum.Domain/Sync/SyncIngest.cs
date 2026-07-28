@@ -124,6 +124,15 @@ public sealed class SyncIngest
             return false;
         }
 
+        // slice-3d D8: operationId UUIDv7 olmak ZORUNDA -- LWW tie-break'i (HlcKey) zaman-sirali
+        // bir opId varsayar; v4 ile tie-break yazi-turaya doner. Sadece BU op reddedilir
+        // (RejectedInvalid), istegin geri kalani ISLENMEYE DEVAM EDER -- D9 ile birlesince
+        // "tum istek 400" kuyrugu kalici tikar.
+        if ((op.OperationId.ToByteArray()[7] >> 4) != 0x7)
+        {
+            return false;
+        }
+
         foreach (var hlc in EnumerateHlcs(op))
         {
             if (hlc.WallMs < 0)

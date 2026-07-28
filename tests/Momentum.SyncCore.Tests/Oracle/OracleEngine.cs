@@ -94,6 +94,13 @@ public sealed class OracleEngine
             return false;
         }
 
+        // slice-3d D8: real SyncIngest.IsEnvelopeValid now requires a v7 OperationId --
+        // the oracle must agree or every property test generating a non-v7 op diverges.
+        if ((op.OperationId.ToByteArray()[7] >> 4) != 0x7)
+        {
+            return false;
+        }
+
         if (AllHlcs(op).Any(h => h.WallMs < 0))
         {
             return false;

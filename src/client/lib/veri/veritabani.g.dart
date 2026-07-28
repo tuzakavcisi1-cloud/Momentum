@@ -1235,6 +1235,17 @@ class $AyarlarTable extends Ayarlar with TableInfo<$AyarlarTable, AyarRow> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _imlecSahibiMeta = const VerificationMeta(
+    'imlecSahibi',
+  );
+  @override
+  late final GeneratedColumn<String> imlecSahibi = GeneratedColumn<String>(
+    'imlec_sahibi',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1243,6 +1254,7 @@ class $AyarlarTable extends Ayarlar with TableInfo<$AyarlarTable, AyarRow> {
     sonCounter,
     nextCursorJson,
     devUserId,
+    imlecSahibi,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1296,6 +1308,15 @@ class $AyarlarTable extends Ayarlar with TableInfo<$AyarlarTable, AyarRow> {
     } else if (isInserting) {
       context.missing(_devUserIdMeta);
     }
+    if (data.containsKey('imlec_sahibi')) {
+      context.handle(
+        _imlecSahibiMeta,
+        imlecSahibi.isAcceptableOrUnknown(
+          data['imlec_sahibi']!,
+          _imlecSahibiMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1329,6 +1350,10 @@ class $AyarlarTable extends Ayarlar with TableInfo<$AyarlarTable, AyarRow> {
         DriftSqlType.string,
         data['${effectivePrefix}dev_user_id'],
       )!,
+      imlecSahibi: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}imlec_sahibi'],
+      ),
     );
   }
 
@@ -1345,6 +1370,7 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
   final int sonCounter;
   final String? nextCursorJson;
   final String devUserId;
+  final String? imlecSahibi;
   const AyarRow({
     required this.id,
     required this.clientId,
@@ -1352,6 +1378,7 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
     required this.sonCounter,
     this.nextCursorJson,
     required this.devUserId,
+    this.imlecSahibi,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1364,6 +1391,9 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
       map['next_cursor_json'] = Variable<String>(nextCursorJson);
     }
     map['dev_user_id'] = Variable<String>(devUserId);
+    if (!nullToAbsent || imlecSahibi != null) {
+      map['imlec_sahibi'] = Variable<String>(imlecSahibi);
+    }
     return map;
   }
 
@@ -1377,6 +1407,9 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
           ? const Value.absent()
           : Value(nextCursorJson),
       devUserId: Value(devUserId),
+      imlecSahibi: imlecSahibi == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imlecSahibi),
     );
   }
 
@@ -1392,6 +1425,7 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
       sonCounter: serializer.fromJson<int>(json['sonCounter']),
       nextCursorJson: serializer.fromJson<String?>(json['nextCursorJson']),
       devUserId: serializer.fromJson<String>(json['devUserId']),
+      imlecSahibi: serializer.fromJson<String?>(json['imlecSahibi']),
     );
   }
   @override
@@ -1404,6 +1438,7 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
       'sonCounter': serializer.toJson<int>(sonCounter),
       'nextCursorJson': serializer.toJson<String?>(nextCursorJson),
       'devUserId': serializer.toJson<String>(devUserId),
+      'imlecSahibi': serializer.toJson<String?>(imlecSahibi),
     };
   }
 
@@ -1414,6 +1449,7 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
     int? sonCounter,
     Value<String?> nextCursorJson = const Value.absent(),
     String? devUserId,
+    Value<String?> imlecSahibi = const Value.absent(),
   }) => AyarRow(
     id: id ?? this.id,
     clientId: clientId ?? this.clientId,
@@ -1423,6 +1459,7 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
         ? nextCursorJson.value
         : this.nextCursorJson,
     devUserId: devUserId ?? this.devUserId,
+    imlecSahibi: imlecSahibi.present ? imlecSahibi.value : this.imlecSahibi,
   );
   AyarRow copyWithCompanion(AyarlarCompanion data) {
     return AyarRow(
@@ -1436,6 +1473,9 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
           ? data.nextCursorJson.value
           : this.nextCursorJson,
       devUserId: data.devUserId.present ? data.devUserId.value : this.devUserId,
+      imlecSahibi: data.imlecSahibi.present
+          ? data.imlecSahibi.value
+          : this.imlecSahibi,
     );
   }
 
@@ -1447,14 +1487,22 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
           ..write('sonWall: $sonWall, ')
           ..write('sonCounter: $sonCounter, ')
           ..write('nextCursorJson: $nextCursorJson, ')
-          ..write('devUserId: $devUserId')
+          ..write('devUserId: $devUserId, ')
+          ..write('imlecSahibi: $imlecSahibi')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, clientId, sonWall, sonCounter, nextCursorJson, devUserId);
+  int get hashCode => Object.hash(
+    id,
+    clientId,
+    sonWall,
+    sonCounter,
+    nextCursorJson,
+    devUserId,
+    imlecSahibi,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1464,7 +1512,8 @@ class AyarRow extends DataClass implements Insertable<AyarRow> {
           other.sonWall == this.sonWall &&
           other.sonCounter == this.sonCounter &&
           other.nextCursorJson == this.nextCursorJson &&
-          other.devUserId == this.devUserId);
+          other.devUserId == this.devUserId &&
+          other.imlecSahibi == this.imlecSahibi);
 }
 
 class AyarlarCompanion extends UpdateCompanion<AyarRow> {
@@ -1474,6 +1523,7 @@ class AyarlarCompanion extends UpdateCompanion<AyarRow> {
   final Value<int> sonCounter;
   final Value<String?> nextCursorJson;
   final Value<String> devUserId;
+  final Value<String?> imlecSahibi;
   const AyarlarCompanion({
     this.id = const Value.absent(),
     this.clientId = const Value.absent(),
@@ -1481,6 +1531,7 @@ class AyarlarCompanion extends UpdateCompanion<AyarRow> {
     this.sonCounter = const Value.absent(),
     this.nextCursorJson = const Value.absent(),
     this.devUserId = const Value.absent(),
+    this.imlecSahibi = const Value.absent(),
   });
   AyarlarCompanion.insert({
     this.id = const Value.absent(),
@@ -1489,6 +1540,7 @@ class AyarlarCompanion extends UpdateCompanion<AyarRow> {
     this.sonCounter = const Value.absent(),
     this.nextCursorJson = const Value.absent(),
     required String devUserId,
+    this.imlecSahibi = const Value.absent(),
   }) : clientId = Value(clientId),
        devUserId = Value(devUserId);
   static Insertable<AyarRow> custom({
@@ -1498,6 +1550,7 @@ class AyarlarCompanion extends UpdateCompanion<AyarRow> {
     Expression<int>? sonCounter,
     Expression<String>? nextCursorJson,
     Expression<String>? devUserId,
+    Expression<String>? imlecSahibi,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1506,6 +1559,7 @@ class AyarlarCompanion extends UpdateCompanion<AyarRow> {
       if (sonCounter != null) 'son_counter': sonCounter,
       if (nextCursorJson != null) 'next_cursor_json': nextCursorJson,
       if (devUserId != null) 'dev_user_id': devUserId,
+      if (imlecSahibi != null) 'imlec_sahibi': imlecSahibi,
     });
   }
 
@@ -1516,6 +1570,7 @@ class AyarlarCompanion extends UpdateCompanion<AyarRow> {
     Value<int>? sonCounter,
     Value<String?>? nextCursorJson,
     Value<String>? devUserId,
+    Value<String?>? imlecSahibi,
   }) {
     return AyarlarCompanion(
       id: id ?? this.id,
@@ -1524,6 +1579,7 @@ class AyarlarCompanion extends UpdateCompanion<AyarRow> {
       sonCounter: sonCounter ?? this.sonCounter,
       nextCursorJson: nextCursorJson ?? this.nextCursorJson,
       devUserId: devUserId ?? this.devUserId,
+      imlecSahibi: imlecSahibi ?? this.imlecSahibi,
     );
   }
 
@@ -1548,6 +1604,9 @@ class AyarlarCompanion extends UpdateCompanion<AyarRow> {
     if (devUserId.present) {
       map['dev_user_id'] = Variable<String>(devUserId.value);
     }
+    if (imlecSahibi.present) {
+      map['imlec_sahibi'] = Variable<String>(imlecSahibi.value);
+    }
     return map;
   }
 
@@ -1559,7 +1618,485 @@ class AyarlarCompanion extends UpdateCompanion<AyarRow> {
           ..write('sonWall: $sonWall, ')
           ..write('sonCounter: $sonCounter, ')
           ..write('nextCursorJson: $nextCursorJson, ')
-          ..write('devUserId: $devUserId')
+          ..write('devUserId: $devUserId, ')
+          ..write('imlecSahibi: $imlecSahibi')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UzakAlanDurumuTable extends UzakAlanDurumu
+    with TableInfo<$UzakAlanDurumuTable, UzakAlanDurumuRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UzakAlanDurumuTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entityTypeMeta = const VerificationMeta(
+    'entityType',
+  );
+  @override
+  late final GeneratedColumn<String> entityType = GeneratedColumn<String>(
+    'entity_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityIdMeta = const VerificationMeta(
+    'entityId',
+  );
+  @override
+  late final GeneratedColumn<String> entityId = GeneratedColumn<String>(
+    'entity_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _alanMeta = const VerificationMeta('alan');
+  @override
+  late final GeneratedColumn<String> alan = GeneratedColumn<String>(
+    'alan',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hlcWallMeta = const VerificationMeta(
+    'hlcWall',
+  );
+  @override
+  late final GeneratedColumn<int> hlcWall = GeneratedColumn<int>(
+    'hlc_wall',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hlcCounterMeta = const VerificationMeta(
+    'hlcCounter',
+  );
+  @override
+  late final GeneratedColumn<int> hlcCounter = GeneratedColumn<int>(
+    'hlc_counter',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hlcClientIdMeta = const VerificationMeta(
+    'hlcClientId',
+  );
+  @override
+  late final GeneratedColumn<String> hlcClientId = GeneratedColumn<String>(
+    'hlc_client_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _winOpIdMeta = const VerificationMeta(
+    'winOpId',
+  );
+  @override
+  late final GeneratedColumn<String> winOpId = GeneratedColumn<String>(
+    'win_op_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    entityType,
+    entityId,
+    alan,
+    hlcWall,
+    hlcCounter,
+    hlcClientId,
+    winOpId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'uzak_alan_durumu';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UzakAlanDurumuRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entity_type')) {
+      context.handle(
+        _entityTypeMeta,
+        entityType.isAcceptableOrUnknown(data['entity_type']!, _entityTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityTypeMeta);
+    }
+    if (data.containsKey('entity_id')) {
+      context.handle(
+        _entityIdMeta,
+        entityId.isAcceptableOrUnknown(data['entity_id']!, _entityIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityIdMeta);
+    }
+    if (data.containsKey('alan')) {
+      context.handle(
+        _alanMeta,
+        alan.isAcceptableOrUnknown(data['alan']!, _alanMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_alanMeta);
+    }
+    if (data.containsKey('hlc_wall')) {
+      context.handle(
+        _hlcWallMeta,
+        hlcWall.isAcceptableOrUnknown(data['hlc_wall']!, _hlcWallMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hlcWallMeta);
+    }
+    if (data.containsKey('hlc_counter')) {
+      context.handle(
+        _hlcCounterMeta,
+        hlcCounter.isAcceptableOrUnknown(data['hlc_counter']!, _hlcCounterMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hlcCounterMeta);
+    }
+    if (data.containsKey('hlc_client_id')) {
+      context.handle(
+        _hlcClientIdMeta,
+        hlcClientId.isAcceptableOrUnknown(
+          data['hlc_client_id']!,
+          _hlcClientIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_hlcClientIdMeta);
+    }
+    if (data.containsKey('win_op_id')) {
+      context.handle(
+        _winOpIdMeta,
+        winOpId.isAcceptableOrUnknown(data['win_op_id']!, _winOpIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_winOpIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entityType, entityId, alan};
+  @override
+  UzakAlanDurumuRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UzakAlanDurumuRow(
+      entityType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_type'],
+      )!,
+      entityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_id'],
+      )!,
+      alan: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}alan'],
+      )!,
+      hlcWall: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hlc_wall'],
+      )!,
+      hlcCounter: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hlc_counter'],
+      )!,
+      hlcClientId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hlc_client_id'],
+      )!,
+      winOpId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}win_op_id'],
+      )!,
+    );
+  }
+
+  @override
+  $UzakAlanDurumuTable createAlias(String alias) {
+    return $UzakAlanDurumuTable(attachedDatabase, alias);
+  }
+}
+
+class UzakAlanDurumuRow extends DataClass
+    implements Insertable<UzakAlanDurumuRow> {
+  final String entityType;
+  final String entityId;
+  final String alan;
+  final int hlcWall;
+  final int hlcCounter;
+  final String hlcClientId;
+  final String winOpId;
+  const UzakAlanDurumuRow({
+    required this.entityType,
+    required this.entityId,
+    required this.alan,
+    required this.hlcWall,
+    required this.hlcCounter,
+    required this.hlcClientId,
+    required this.winOpId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entity_type'] = Variable<String>(entityType);
+    map['entity_id'] = Variable<String>(entityId);
+    map['alan'] = Variable<String>(alan);
+    map['hlc_wall'] = Variable<int>(hlcWall);
+    map['hlc_counter'] = Variable<int>(hlcCounter);
+    map['hlc_client_id'] = Variable<String>(hlcClientId);
+    map['win_op_id'] = Variable<String>(winOpId);
+    return map;
+  }
+
+  UzakAlanDurumuCompanion toCompanion(bool nullToAbsent) {
+    return UzakAlanDurumuCompanion(
+      entityType: Value(entityType),
+      entityId: Value(entityId),
+      alan: Value(alan),
+      hlcWall: Value(hlcWall),
+      hlcCounter: Value(hlcCounter),
+      hlcClientId: Value(hlcClientId),
+      winOpId: Value(winOpId),
+    );
+  }
+
+  factory UzakAlanDurumuRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UzakAlanDurumuRow(
+      entityType: serializer.fromJson<String>(json['entityType']),
+      entityId: serializer.fromJson<String>(json['entityId']),
+      alan: serializer.fromJson<String>(json['alan']),
+      hlcWall: serializer.fromJson<int>(json['hlcWall']),
+      hlcCounter: serializer.fromJson<int>(json['hlcCounter']),
+      hlcClientId: serializer.fromJson<String>(json['hlcClientId']),
+      winOpId: serializer.fromJson<String>(json['winOpId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entityType': serializer.toJson<String>(entityType),
+      'entityId': serializer.toJson<String>(entityId),
+      'alan': serializer.toJson<String>(alan),
+      'hlcWall': serializer.toJson<int>(hlcWall),
+      'hlcCounter': serializer.toJson<int>(hlcCounter),
+      'hlcClientId': serializer.toJson<String>(hlcClientId),
+      'winOpId': serializer.toJson<String>(winOpId),
+    };
+  }
+
+  UzakAlanDurumuRow copyWith({
+    String? entityType,
+    String? entityId,
+    String? alan,
+    int? hlcWall,
+    int? hlcCounter,
+    String? hlcClientId,
+    String? winOpId,
+  }) => UzakAlanDurumuRow(
+    entityType: entityType ?? this.entityType,
+    entityId: entityId ?? this.entityId,
+    alan: alan ?? this.alan,
+    hlcWall: hlcWall ?? this.hlcWall,
+    hlcCounter: hlcCounter ?? this.hlcCounter,
+    hlcClientId: hlcClientId ?? this.hlcClientId,
+    winOpId: winOpId ?? this.winOpId,
+  );
+  UzakAlanDurumuRow copyWithCompanion(UzakAlanDurumuCompanion data) {
+    return UzakAlanDurumuRow(
+      entityType: data.entityType.present
+          ? data.entityType.value
+          : this.entityType,
+      entityId: data.entityId.present ? data.entityId.value : this.entityId,
+      alan: data.alan.present ? data.alan.value : this.alan,
+      hlcWall: data.hlcWall.present ? data.hlcWall.value : this.hlcWall,
+      hlcCounter: data.hlcCounter.present
+          ? data.hlcCounter.value
+          : this.hlcCounter,
+      hlcClientId: data.hlcClientId.present
+          ? data.hlcClientId.value
+          : this.hlcClientId,
+      winOpId: data.winOpId.present ? data.winOpId.value : this.winOpId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UzakAlanDurumuRow(')
+          ..write('entityType: $entityType, ')
+          ..write('entityId: $entityId, ')
+          ..write('alan: $alan, ')
+          ..write('hlcWall: $hlcWall, ')
+          ..write('hlcCounter: $hlcCounter, ')
+          ..write('hlcClientId: $hlcClientId, ')
+          ..write('winOpId: $winOpId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    entityType,
+    entityId,
+    alan,
+    hlcWall,
+    hlcCounter,
+    hlcClientId,
+    winOpId,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UzakAlanDurumuRow &&
+          other.entityType == this.entityType &&
+          other.entityId == this.entityId &&
+          other.alan == this.alan &&
+          other.hlcWall == this.hlcWall &&
+          other.hlcCounter == this.hlcCounter &&
+          other.hlcClientId == this.hlcClientId &&
+          other.winOpId == this.winOpId);
+}
+
+class UzakAlanDurumuCompanion extends UpdateCompanion<UzakAlanDurumuRow> {
+  final Value<String> entityType;
+  final Value<String> entityId;
+  final Value<String> alan;
+  final Value<int> hlcWall;
+  final Value<int> hlcCounter;
+  final Value<String> hlcClientId;
+  final Value<String> winOpId;
+  final Value<int> rowid;
+  const UzakAlanDurumuCompanion({
+    this.entityType = const Value.absent(),
+    this.entityId = const Value.absent(),
+    this.alan = const Value.absent(),
+    this.hlcWall = const Value.absent(),
+    this.hlcCounter = const Value.absent(),
+    this.hlcClientId = const Value.absent(),
+    this.winOpId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UzakAlanDurumuCompanion.insert({
+    required String entityType,
+    required String entityId,
+    required String alan,
+    required int hlcWall,
+    required int hlcCounter,
+    required String hlcClientId,
+    required String winOpId,
+    this.rowid = const Value.absent(),
+  }) : entityType = Value(entityType),
+       entityId = Value(entityId),
+       alan = Value(alan),
+       hlcWall = Value(hlcWall),
+       hlcCounter = Value(hlcCounter),
+       hlcClientId = Value(hlcClientId),
+       winOpId = Value(winOpId);
+  static Insertable<UzakAlanDurumuRow> custom({
+    Expression<String>? entityType,
+    Expression<String>? entityId,
+    Expression<String>? alan,
+    Expression<int>? hlcWall,
+    Expression<int>? hlcCounter,
+    Expression<String>? hlcClientId,
+    Expression<String>? winOpId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (entityType != null) 'entity_type': entityType,
+      if (entityId != null) 'entity_id': entityId,
+      if (alan != null) 'alan': alan,
+      if (hlcWall != null) 'hlc_wall': hlcWall,
+      if (hlcCounter != null) 'hlc_counter': hlcCounter,
+      if (hlcClientId != null) 'hlc_client_id': hlcClientId,
+      if (winOpId != null) 'win_op_id': winOpId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UzakAlanDurumuCompanion copyWith({
+    Value<String>? entityType,
+    Value<String>? entityId,
+    Value<String>? alan,
+    Value<int>? hlcWall,
+    Value<int>? hlcCounter,
+    Value<String>? hlcClientId,
+    Value<String>? winOpId,
+    Value<int>? rowid,
+  }) {
+    return UzakAlanDurumuCompanion(
+      entityType: entityType ?? this.entityType,
+      entityId: entityId ?? this.entityId,
+      alan: alan ?? this.alan,
+      hlcWall: hlcWall ?? this.hlcWall,
+      hlcCounter: hlcCounter ?? this.hlcCounter,
+      hlcClientId: hlcClientId ?? this.hlcClientId,
+      winOpId: winOpId ?? this.winOpId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entityType.present) {
+      map['entity_type'] = Variable<String>(entityType.value);
+    }
+    if (entityId.present) {
+      map['entity_id'] = Variable<String>(entityId.value);
+    }
+    if (alan.present) {
+      map['alan'] = Variable<String>(alan.value);
+    }
+    if (hlcWall.present) {
+      map['hlc_wall'] = Variable<int>(hlcWall.value);
+    }
+    if (hlcCounter.present) {
+      map['hlc_counter'] = Variable<int>(hlcCounter.value);
+    }
+    if (hlcClientId.present) {
+      map['hlc_client_id'] = Variable<String>(hlcClientId.value);
+    }
+    if (winOpId.present) {
+      map['win_op_id'] = Variable<String>(winOpId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UzakAlanDurumuCompanion(')
+          ..write('entityType: $entityType, ')
+          ..write('entityId: $entityId, ')
+          ..write('alan: $alan, ')
+          ..write('hlcWall: $hlcWall, ')
+          ..write('hlcCounter: $hlcCounter, ')
+          ..write('hlcClientId: $hlcClientId, ')
+          ..write('winOpId: $winOpId, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -1571,6 +2108,7 @@ abstract class _$Veritabani extends GeneratedDatabase {
   late final $GorevlerTable gorevler = $GorevlerTable(this);
   late final $SenkronKuyruguTable senkronKuyrugu = $SenkronKuyruguTable(this);
   late final $AyarlarTable ayarlar = $AyarlarTable(this);
+  late final $UzakAlanDurumuTable uzakAlanDurumu = $UzakAlanDurumuTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1579,6 +2117,7 @@ abstract class _$Veritabani extends GeneratedDatabase {
     gorevler,
     senkronKuyrugu,
     ayarlar,
+    uzakAlanDurumu,
   ];
 }
 
@@ -2158,6 +2697,7 @@ typedef $$AyarlarTableCreateCompanionBuilder =
       Value<int> sonCounter,
       Value<String?> nextCursorJson,
       required String devUserId,
+      Value<String?> imlecSahibi,
     });
 typedef $$AyarlarTableUpdateCompanionBuilder =
     AyarlarCompanion Function({
@@ -2167,6 +2707,7 @@ typedef $$AyarlarTableUpdateCompanionBuilder =
       Value<int> sonCounter,
       Value<String?> nextCursorJson,
       Value<String> devUserId,
+      Value<String?> imlecSahibi,
     });
 
 class $$AyarlarTableFilterComposer
@@ -2205,6 +2746,11 @@ class $$AyarlarTableFilterComposer
 
   ColumnFilters<String> get devUserId => $composableBuilder(
     column: $table.devUserId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imlecSahibi => $composableBuilder(
+    column: $table.imlecSahibi,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -2247,6 +2793,11 @@ class $$AyarlarTableOrderingComposer
     column: $table.devUserId,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get imlecSahibi => $composableBuilder(
+    column: $table.imlecSahibi,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$AyarlarTableAnnotationComposer
@@ -2279,6 +2830,11 @@ class $$AyarlarTableAnnotationComposer
 
   GeneratedColumn<String> get devUserId =>
       $composableBuilder(column: $table.devUserId, builder: (column) => column);
+
+  GeneratedColumn<String> get imlecSahibi => $composableBuilder(
+    column: $table.imlecSahibi,
+    builder: (column) => column,
+  );
 }
 
 class $$AyarlarTableTableManager
@@ -2315,6 +2871,7 @@ class $$AyarlarTableTableManager
                 Value<int> sonCounter = const Value.absent(),
                 Value<String?> nextCursorJson = const Value.absent(),
                 Value<String> devUserId = const Value.absent(),
+                Value<String?> imlecSahibi = const Value.absent(),
               }) => AyarlarCompanion(
                 id: id,
                 clientId: clientId,
@@ -2322,6 +2879,7 @@ class $$AyarlarTableTableManager
                 sonCounter: sonCounter,
                 nextCursorJson: nextCursorJson,
                 devUserId: devUserId,
+                imlecSahibi: imlecSahibi,
               ),
           createCompanionCallback:
               ({
@@ -2331,6 +2889,7 @@ class $$AyarlarTableTableManager
                 Value<int> sonCounter = const Value.absent(),
                 Value<String?> nextCursorJson = const Value.absent(),
                 required String devUserId,
+                Value<String?> imlecSahibi = const Value.absent(),
               }) => AyarlarCompanion.insert(
                 id: id,
                 clientId: clientId,
@@ -2338,6 +2897,7 @@ class $$AyarlarTableTableManager
                 sonCounter: sonCounter,
                 nextCursorJson: nextCursorJson,
                 devUserId: devUserId,
+                imlecSahibi: imlecSahibi,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -2361,6 +2921,254 @@ typedef $$AyarlarTableProcessedTableManager =
       AyarRow,
       PrefetchHooks Function()
     >;
+typedef $$UzakAlanDurumuTableCreateCompanionBuilder =
+    UzakAlanDurumuCompanion Function({
+      required String entityType,
+      required String entityId,
+      required String alan,
+      required int hlcWall,
+      required int hlcCounter,
+      required String hlcClientId,
+      required String winOpId,
+      Value<int> rowid,
+    });
+typedef $$UzakAlanDurumuTableUpdateCompanionBuilder =
+    UzakAlanDurumuCompanion Function({
+      Value<String> entityType,
+      Value<String> entityId,
+      Value<String> alan,
+      Value<int> hlcWall,
+      Value<int> hlcCounter,
+      Value<String> hlcClientId,
+      Value<String> winOpId,
+      Value<int> rowid,
+    });
+
+class $$UzakAlanDurumuTableFilterComposer
+    extends Composer<_$Veritabani, $UzakAlanDurumuTable> {
+  $$UzakAlanDurumuTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get alan => $composableBuilder(
+    column: $table.alan,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get hlcWall => $composableBuilder(
+    column: $table.hlcWall,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get hlcCounter => $composableBuilder(
+    column: $table.hlcCounter,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hlcClientId => $composableBuilder(
+    column: $table.hlcClientId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get winOpId => $composableBuilder(
+    column: $table.winOpId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UzakAlanDurumuTableOrderingComposer
+    extends Composer<_$Veritabani, $UzakAlanDurumuTable> {
+  $$UzakAlanDurumuTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get alan => $composableBuilder(
+    column: $table.alan,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get hlcWall => $composableBuilder(
+    column: $table.hlcWall,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get hlcCounter => $composableBuilder(
+    column: $table.hlcCounter,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hlcClientId => $composableBuilder(
+    column: $table.hlcClientId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get winOpId => $composableBuilder(
+    column: $table.winOpId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UzakAlanDurumuTableAnnotationComposer
+    extends Composer<_$Veritabani, $UzakAlanDurumuTable> {
+  $$UzakAlanDurumuTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entityId =>
+      $composableBuilder(column: $table.entityId, builder: (column) => column);
+
+  GeneratedColumn<String> get alan =>
+      $composableBuilder(column: $table.alan, builder: (column) => column);
+
+  GeneratedColumn<int> get hlcWall =>
+      $composableBuilder(column: $table.hlcWall, builder: (column) => column);
+
+  GeneratedColumn<int> get hlcCounter => $composableBuilder(
+    column: $table.hlcCounter,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get hlcClientId => $composableBuilder(
+    column: $table.hlcClientId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get winOpId =>
+      $composableBuilder(column: $table.winOpId, builder: (column) => column);
+}
+
+class $$UzakAlanDurumuTableTableManager
+    extends
+        RootTableManager<
+          _$Veritabani,
+          $UzakAlanDurumuTable,
+          UzakAlanDurumuRow,
+          $$UzakAlanDurumuTableFilterComposer,
+          $$UzakAlanDurumuTableOrderingComposer,
+          $$UzakAlanDurumuTableAnnotationComposer,
+          $$UzakAlanDurumuTableCreateCompanionBuilder,
+          $$UzakAlanDurumuTableUpdateCompanionBuilder,
+          (
+            UzakAlanDurumuRow,
+            BaseReferences<
+              _$Veritabani,
+              $UzakAlanDurumuTable,
+              UzakAlanDurumuRow
+            >,
+          ),
+          UzakAlanDurumuRow,
+          PrefetchHooks Function()
+        > {
+  $$UzakAlanDurumuTableTableManager(_$Veritabani db, $UzakAlanDurumuTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UzakAlanDurumuTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UzakAlanDurumuTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UzakAlanDurumuTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> entityType = const Value.absent(),
+                Value<String> entityId = const Value.absent(),
+                Value<String> alan = const Value.absent(),
+                Value<int> hlcWall = const Value.absent(),
+                Value<int> hlcCounter = const Value.absent(),
+                Value<String> hlcClientId = const Value.absent(),
+                Value<String> winOpId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UzakAlanDurumuCompanion(
+                entityType: entityType,
+                entityId: entityId,
+                alan: alan,
+                hlcWall: hlcWall,
+                hlcCounter: hlcCounter,
+                hlcClientId: hlcClientId,
+                winOpId: winOpId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String entityType,
+                required String entityId,
+                required String alan,
+                required int hlcWall,
+                required int hlcCounter,
+                required String hlcClientId,
+                required String winOpId,
+                Value<int> rowid = const Value.absent(),
+              }) => UzakAlanDurumuCompanion.insert(
+                entityType: entityType,
+                entityId: entityId,
+                alan: alan,
+                hlcWall: hlcWall,
+                hlcCounter: hlcCounter,
+                hlcClientId: hlcClientId,
+                winOpId: winOpId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UzakAlanDurumuTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Veritabani,
+      $UzakAlanDurumuTable,
+      UzakAlanDurumuRow,
+      $$UzakAlanDurumuTableFilterComposer,
+      $$UzakAlanDurumuTableOrderingComposer,
+      $$UzakAlanDurumuTableAnnotationComposer,
+      $$UzakAlanDurumuTableCreateCompanionBuilder,
+      $$UzakAlanDurumuTableUpdateCompanionBuilder,
+      (
+        UzakAlanDurumuRow,
+        BaseReferences<_$Veritabani, $UzakAlanDurumuTable, UzakAlanDurumuRow>,
+      ),
+      UzakAlanDurumuRow,
+      PrefetchHooks Function()
+    >;
 
 class $VeritabaniManager {
   final _$Veritabani _db;
@@ -2371,4 +3179,6 @@ class $VeritabaniManager {
       $$SenkronKuyruguTableTableManager(_db, _db.senkronKuyrugu);
   $$AyarlarTableTableManager get ayarlar =>
       $$AyarlarTableTableManager(_db, _db.ayarlar);
+  $$UzakAlanDurumuTableTableManager get uzakAlanDurumu =>
+      $$UzakAlanDurumuTableTableManager(_db, _db.uzakAlanDurumu);
 }

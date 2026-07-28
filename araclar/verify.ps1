@@ -49,6 +49,15 @@ function Invoke-Step {
 # 1) Build (warnings are errors).
 Invoke-Step 'build -warnaserror' { & $dotnet build $solution -warnaserror --nologo }
 
+# slice-3d D9OwnerIdVisibilityTests: fail-loud yerine sessizce atlamayi ONLEMEK icin
+# MOMENTUM_KANIT_DIZIN zorunludur (8.2). verify.ps1 -- otomatik regresyon kapisi --
+# ayarlanmamissa makul bir varsayilan verir; elle `dotnet test` cagiran biri icin
+# degisken hala zorunlu kalir (test kendi basina firlatir).
+if (-not $env:MOMENTUM_KANIT_DIZIN) {
+    $env:MOMENTUM_KANIT_DIZIN = Join-Path $repoRoot 'KANIT\slice-3d\07-G7-backend-zorlama'
+}
+New-Item -ItemType Directory -Force -Path $env:MOMENTUM_KANIT_DIZIN | Out-Null
+
 # 2) Test (reuse the build output).
 Invoke-Step 'test' { & $dotnet test $solution --no-build --nologo }
 

@@ -8,27 +8,35 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 
 import '../ag/senkron_agi.dart';
+import '../senkron/kuyruk_tabani.dart';
+import '../senkron/uzak_degisiklik_uygulayici.dart';
 import 'ayarlar_deposu.dart';
 import 'hlc.dart';
 import 'veritabani.dart';
 
-/// GOREV-slice-3c T6: senkron dongusu -- D4 (tek uçuş, toplu gönderim
-/// tavanı 100) + D8/2 (`gonderildi` kurtarma) + D5 (sonuç işleme) + D9
-/// (yanıt sınıflandırma) BURADA birlesir. `HlcUretici` D3'un damgasini,
-/// `AyarlarDeposu` D6'nin imlecini tasir -- ikisi de UYGULAMA GENELINDE
-/// TEK ORNEKTIR (main.dart bunlari DriftGorevDeposu ile PAYLASIR).
+/// GOREV-slice-3c T6 + slice-3d T6/T7: senkron dongusu -- D4 (tek uçuş,
+/// toplu gönderim tavanı 100) + D8/2 (`gonderildi` kurtarma) + D5 (sonuç
+/// işleme) + D9 (yanıt sınıflandırma) + slice-3d `D0`/`D6`/`D7` (çekme
+/// turu, echo, boşaltma döngüsü, atomik sayfa) BURADA birlesir.
 class SenkronDongusu {
   static const int _denemeTavani = 8;
+  static const int _bosaltmaTavani = 20; // D7/2 -- sonsuz boş-tur riskine karşı.
 
   final Veritabani _db;
   final SenkronAgi _agi;
   final AyarlarDeposu _ayarlarDeposu;
   final HlcUretici _hlc;
   final String _clientId;
+  final String _devUserId;
+  final UzakDegisiklikUygulayici _uygulayici;
 
   String? _mevcutCursorJson;
 
   Future<void>? _devamEdenTur;
+  // K3 (Onur, kilitli): tek-uçuş kilidi devam eden turu döndürdüğünde
+  // yutulan çekme tetikleyicisi BU bayrakla hatırlanır -- sayaç DEĞİLDİR,
+  // devam eden tur bitince BİR KEZ yeniden koşar ve temizlenir.
+  bool _cekmeBekliyor = false;
 
   SenkronDongusu({
     required Veritabani db,
@@ -36,24 +44,55 @@ class SenkronDongusu {
     required AyarlarDeposu ayarlarDeposu,
     required HlcUretici hlc,
     required String clientId,
+    required String devUserId,
     String? baslangicCursorJson,
+    // Test-görünür (G5 D7/D0 ayakları çağrı sırasını/atomikliği gözlemlemek
+    // için bir gözlemci sarmalayıcı enjekte eder) -- üretimde her zaman null,
+    // SenkronDongusu KENDİ örneğini kurar.
+    UzakDegisiklikUygulayici? uygulayici,
   }) : _db = db,
        _agi = agi,
        _ayarlarDeposu = ayarlarDeposu,
        _hlc = hlc,
        _clientId = clientId,
-       _mevcutCursorJson = baslangicCursorJson;
+       _devUserId = devUserId,
+       _mevcutCursorJson = baslangicCursorJson,
+       _uygulayici = uygulayici ??
+           UzakDegisiklikUygulayici(
+             db,
+             kuyrukTabaniSaglayici: (entityId, alan) => kuyrukEnBuyuk(db, entityId, alan),
+           );
 
-  /// D4 PAZARLIKSIZ: aynı anda en fazla BİR tur. Zaten devam eden bir tur
-  /// varsa yeni bir tur BAŞLATMAZ, onun bitmesini bekler -- zamanlayıcı +
-  /// elle tetik + "bağlantı geri geldi" olayı çakışsa bile sahte ağa giden
-  /// istek sayısı tek turdan fazla olmaz, `denemeSayisi` çift artmaz.
+  /// D4 PAZARLIKSIZ: aynı anda en fazla BİR tur (itme YA DA çekme). Zaten
+  /// devam eden bir tur varsa (hangi türden olursa olsun) yeni bir tur
+  /// BAŞLATMAZ, aynı Future'ı döndürür.
   Future<void> turCalistir() {
     final devamEden = _devamEdenTur;
     if (devamEden != null) return devamEden;
-    final tur = _turCalistirIc();
+    return _kilitliBaslat(() => _yuvarlakDongusu(kuyrugaBak: true));
+  }
+
+  /// slice-3d D0: kuyrukta bekleyen satır olup olmadığına BAKMAZ -- gövdeyi
+  /// DAİMA `"ops":[]` ile kurar. İtme turuyla AYNI tek-uçuş kilidini
+  /// paylaşır; kilit doluysa K3 bayrağını kurar ve kendi istek ATMAZ.
+  Future<void> cekmeTuruCalistir() {
+    if (_devamEdenTur != null) {
+      _cekmeBekliyor = true;
+      return _devamEdenTur!;
+    }
+    return _kilitliBaslat(() => _yuvarlakDongusu(kuyrugaBak: false));
+  }
+
+  Future<void> _kilitliBaslat(Future<void> Function() ic) {
+    final tur = ic();
     _devamEdenTur = tur;
-    return tur.whenComplete(() => _devamEdenTur = null);
+    return tur.whenComplete(() async {
+      _devamEdenTur = null;
+      if (_cekmeBekliyor) {
+        _cekmeBekliyor = false;
+        await cekmeTuruCalistir(); // K3: yutulan tetikleyici BİR KEZ yeniden koşar.
+      }
+    });
   }
 
   /// D8/2: uçuş işareti olan (`gonderildi`) TÜM satırları `bekliyor`e
@@ -67,25 +106,48 @@ class SenkronDongusu {
     );
   }
 
-  Future<void> _turCalistirIc() async {
-    await gonderildiKurtar();
+  /// Ortak yuvarlak döngüsü -- `kuyrugaBak=true` (itme): pending satırları
+  /// seçer/gönderir. `kuyrugaBak=false` (çekme, D0): HER round `ops:[]`
+  /// gönderir. D7/2 boşaltma: bir round `hasMore` + dolu sayfa dönerse
+  /// döngü (aynı tek-uçuş kilidi içinde) devam eder; boş sayfa `hasMore`'a
+  /// BAKILMAKSIZIN döngüyü durdurur; tavan `_bosaltmaTavani`.
+  Future<void> _yuvarlakDongusu({required bool kuyrugaBak}) async {
+    if (kuyrugaBak) {
+      await gonderildiKurtar();
+    }
+    var bosaltmaSayaci = 0;
+    // Cekme turu (kuyrugaBak=false) HER ZAMAN en az bir istek atar (D0).
+    // Itme turu (kuyrugaBak=true) once kuyruga bakar -- bekleyen YOKSA VE
+    // henuz bir boşaltma devami da GEREKMIYORSA hicbir istek atmadan doner
+    // (mevcut/eski davranis: kuyruk bos ise sifir istek).
+    var devamGerekli = !kuyrugaBak;
 
     while (true) {
-      final secilenler = await _bekleyenleriSec();
-      if (secilenler.isEmpty) return;
+      final secilenler = kuyrugaBak
+          ? await _bekleyenleriSec()
+          : const <SenkronKuyruguRow>[];
 
-      await (_db.update(_db.senkronKuyrugu)..where(
-            (t) => t.opId.isIn(secilenler.map((s) => s.opId)),
-          ))
-          .write(const SenkronKuyruguCompanion(durum: Value('gonderildi')));
+      // Gonderilecek satir YOK ve onceki round bir devam istemiyorsa -- BITTI.
+      if (secilenler.isEmpty && !devamGerekli) return;
+
+      if (secilenler.isNotEmpty) {
+        await (_db.update(_db.senkronKuyrugu)..where(
+              (t) => t.opId.isIn(secilenler.map((s) => s.opId)),
+            ))
+            .write(const SenkronKuyruguCompanion(durum: Value('gonderildi')));
+      }
 
       final govde = _istekGovdesiOlustur(secilenler);
       final sonuc = await _agi.gonder(govde);
 
       switch (sonuc) {
         case SenkronBasarili(:final govdeJson):
-          await _basariliYanitIsle(govdeJson, secilenler);
-        // basarili -- kuyrukta baska bekleyen varsa dongu devam eder.
+          devamGerekli = await _basariliYanitIsle(govdeJson, secilenler);
+          if (devamGerekli) {
+            bosaltmaSayaci++;
+            if (bosaltmaSayaci >= _bosaltmaTavani) return; // [KIRMIZI] tavan -- sonsuz donguye girmez.
+          }
+        // devam -- sonraki turda kuyrugaBak ise _bekleyenleriSec() yeniden sorgulanir.
         case SenkronHttpHatasi(:final durumKodu):
           await _httpHatasiIsle(durumKodu, secilenler);
           return; // D9: 4xx/401/5xx sonrasi devam etmenin anlami yok.
@@ -113,7 +175,8 @@ class SenkronDongusu {
 
   /// D6 PAZARLIKSIZ: `sinceCursor`/her opun `govdeJson`'u HAM METİN olarak
   /// gömülür -- decode/re-encode YOK (D1: govde yeniden üretilmez; D6:
-  /// `Xid` `ulong`, sayıya çevirmek yasak).
+  /// `Xid` `ulong`, sayıya çevirmek yasak). slice-3d D0: `secilenler` boşsa
+  /// `"ops":[]` doğal olarak üretilir (çekme turu da bu YOLDAN gider).
   String _istekGovdesiOlustur(List<SenkronKuyruguRow> secilenler) {
     final opsJoined = secilenler.map((s) => s.govdeJson).join(',');
     final cursor = _mevcutCursorJson ?? 'null';
@@ -121,14 +184,25 @@ class SenkronDongusu {
         '"sinceCursor":$cursor,"ops":[$opsJoined]}';
   }
 
-  Future<void> _basariliYanitIsle(
+  /// slice-3d K2/D7-1: itme turu DA `changes`/`snapshot`'ı AYNI
+  /// `UzakDegisiklikUygulayici`'ya uygular; sayfa uygulaması VE imleç
+  /// yazımı TEK `_db.transaction()` içindedir, imleç EN SON yazılır (bir
+  /// sayfa ATOMİKTİR -- yarım sayfa senaryosunda tüm işlem geri sarılır).
+  /// Döner: D7/2 boşaltma döngüsünün DEVAM etmesi mi gerekiyor
+  /// (`hasMore == true` VE bu sayfa boş DEĞİLDİ).
+  Future<bool> _basariliYanitIsle(
     String govdeJson,
     List<SenkronKuyruguRow> gonderilenler,
   ) async {
     final govde = jsonDecode(govdeJson) as Map<String, Object?>;
-    final appliedListesi = (govde['applied'] as List)
+    final appliedListesi = (govde['applied'] as List? ?? const [])
         .cast<Map<String, Object?>>();
     final resyncRequired = govde['resyncRequired'] as bool? ?? false;
+    final hasMore = govde['hasMore'] as bool? ?? false;
+    final changes = (govde['changes'] as List? ?? const [])
+        .cast<Map<String, Object?>>();
+    final snapshot = (govde['snapshot'] as List? ?? const [])
+        .cast<Map<String, Object?>>();
     final opIdToRow = {for (final r in gonderilenler) r.opId: r};
 
     await _db.transaction(() async {
@@ -154,13 +228,27 @@ class SenkronDongusu {
 
       await _ayarlarDeposu.hlcKalicilastir(_hlc.sonWall, _hlc.sonCounter);
 
+      // slice-3d D2/D6: iki dal ayrıştırıcı, snapshot BİRLEŞTİRİCİ, echo
+      // ATLANMAZ -- ikisi de VERİ olarak (imleçten ÖNCE) uygulanır.
+      if (snapshot.isNotEmpty) {
+        await _uygulayici.snapshotUygula(snapshot);
+      }
+      if (changes.isNotEmpty) {
+        await _uygulayici.changesUygula(changes);
+      }
+
+      // D7/1 PAZARLIKSIZ: imleç EN SON yazılır -- veri uygulamasından SONRA,
+      // AYNI transaction içinde.
       if (resyncRequired) {
         _mevcutCursorJson = null;
       } else {
         _mevcutCursorJson = _hamCursorCikar(govdeJson);
       }
-      await _ayarlarDeposu.nextCursorKalicilastir(_mevcutCursorJson);
+      await _ayarlarDeposu.nextCursorKalicilastir(_mevcutCursorJson, devUserId: _devUserId);
     });
+
+    // D7/2: boş sayfa hasMore'a BAKILMAKSIZIN döngüyü durdurur.
+    return hasMore && (changes.isNotEmpty || snapshot.isNotEmpty);
   }
 
   /// D5: op bazında sonuç işleme + `cakisma` kilidi.
@@ -240,6 +328,7 @@ class SenkronDongusu {
     required String basariRozeti,
     String? sonHataKodu,
   }) async {
+    if (satirlar.isEmpty) return; // cekme turu (ops:[]) icin denenecek satir yok.
     await _db.transaction(() async {
       for (final satir in satirlar) {
         final yeniDeneme = satir.denemeSayisi + 1;

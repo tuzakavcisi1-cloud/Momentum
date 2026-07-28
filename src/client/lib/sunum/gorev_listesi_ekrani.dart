@@ -39,8 +39,12 @@ import 'yukleme_durumu.dart';
 }
 class GorevListesiEkrani extends StatefulWidget {
   final GorevDeposu depo;
+  // slice-3d D0: KAPALI LISTE'deki dort tetikleyiciden biri -- "kullanici
+  // elle yenilediginde bir cekme turu". `null` ise (mevcut testler/durum
+  // vitrini) yenile dugmesi HIC gosterilmez -- geriye donuk uyumlu.
+  final Future<void> Function()? onYenile;
 
-  const GorevListesiEkrani({super.key, required this.depo});
+  const GorevListesiEkrani({super.key, required this.depo, this.onYenile});
 
   @override
   State<GorevListesiEkrani> createState() => _GorevListesiEkraniState();
@@ -65,6 +69,20 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MRenk.yuzey(context),
+      appBar: widget.onYenile == null
+          ? null
+          : AppBar(
+              backgroundColor: MRenk.yuzey(context),
+              elevation: 0,
+              actions: [
+                IconButton(
+                  key: const ValueKey('elle_yenile_dugmesi'),
+                  icon: const Icon(Icons.refresh),
+                  tooltip: 'Yenile',
+                  onPressed: () => widget.onYenile!(),
+                ),
+              ],
+            ),
       body: SafeArea(
         child: Column(
           children: [

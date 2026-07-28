@@ -66,23 +66,49 @@ class Ayarlar extends Table {
   IntColumn get sonCounter => integer().withDefault(const Constant(0))();
   TextColumn get nextCursorJson => text().nullable()();
   TextColumn get devUserId => text()();
+  // GOREV-slice-3d D7/4: imlecin AIT OLDUGU devUserId. devUserId degisirse
+  // (bugun cagrilmayan devUserIdDegistir haric hicbir akista) imlec +
+  // UzakAlanDurumu sifirlanir -- eski satir (migration'dan gelen) null'dir
+  // ve SAHIPSIZ sayilir (D7/4).
+  TextColumn get imlecSahibi => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Gorevler, SenkronKuyrugu, Ayarlar])
+/// GOREV-slice-3d D1: yerel LWW meta tablosu. `Gorevler` SAF PROJEKSIYON
+/// kalir -- HLC/versiyon bilgisi burada, ayri tabloda durur. `alan`
+/// KANAL-NITELIKLI'dir (`fields:title`, `groups:completion`, `order:listPos`)
+/// -- bir grubun TEK HLC'si vardir, uyeleri ayri damgalanmaz.
+@DataClassName('UzakAlanDurumuRow')
+class UzakAlanDurumu extends Table {
+  TextColumn get entityType => text()();
+  TextColumn get entityId => text()();
+  TextColumn get alan => text()();
+  IntColumn get hlcWall => integer()();
+  IntColumn get hlcCounter => integer()();
+  TextColumn get hlcClientId => text()();
+  TextColumn get winOpId => text()();
+
+  @override
+  Set<Column> get primaryKey => {entityType, entityId, alan};
+}
+
+@DriftDatabase(tables: [Gorevler, SenkronKuyrugu, Ayarlar, UzakAlanDurumu])
 class Veritabani extends _$Veritabani {
   Veritabani([QueryExecutor? baglanti]) : super(baglanti ?? _uretimBaglantisi());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   /// GOREV-slice-3c D1/T3: v1->v2 SQLite bir CHECK kisitini ALTER TABLE ile
   /// degistiremez -- `gorevler` (yeni 5-degerli CHECK ile) `TableMigration`
   /// ile YENIDEN YARATILIR; veri `columnTransformer` OLMADAN kopyalanir
   /// (sutun adlari/tipleri degismedi, yalniz CHECK genisledi). v2->v3 salt
   /// eklemelidir (`ayarlar`), CHECK/tip degisikligi yok.
+  /// GOREV-slice-3d D1/D7-4: v3->v4 SALT-EKLEMEdir -- `Gorevler`e DOKUNULMAZ,
+  /// `alterTable` cagrilmaz; `uzakAlanDurumu` yeni tablo + `ayarlar.imlecSahibi`
+  /// yeni sutun AYNI blokta (Ö6: iki ayri drift_dev komutu -- dump + generate).
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
@@ -91,8 +117,20 @@ class Veritabani extends _$Veritabani {
         await m.createTable(senkronKuyrugu);
         await m.alterTable(TableMigration(gorevler));
       }
-      if (from < 3) {
+      // `createTable` cagiranin GUNCEL (v4) Dart tablo tanimini kullanir --
+      // `ayarlar` burada YENI olusturulursa `imlecSahibi` ZATEN icindedir.
+      final ayarlarYeniOlusturuldu = from < 3;
+      if (ayarlarYeniOlusturuldu) {
         await m.createTable(ayarlar);
+      }
+      if (from < 4) {
+        await m.createTable(uzakAlanDurumu);
+        if (!ayarlarYeniOlusturuldu) {
+          // `ayarlar` v3'ten beri VARDI (imlecSahibi'siz) -- simdi eklenir.
+          // Yeni olusturulduysa (yukarida) sutun ZATEN var -- ikinci kez
+          // eklemek "duplicate column" ile patlar.
+          await m.addColumn(ayarlar, ayarlar.imlecSahibi);
+        }
       }
     },
   );

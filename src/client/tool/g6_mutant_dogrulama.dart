@@ -47,7 +47,7 @@ void main() {
     print('M34-CLIENTID: ${ayarlar.clientId}');
 
     final agi = _GozlemciAgi(HttpSenkronAgi(senkronUcNoktasi: Uri.parse('http://127.0.0.1:5298/v1/sync'), actorId: ayarlar.devUserId));
-    final dongu = SenkronDongusu(db: db, agi: agi, ayarlarDeposu: ayarlarDeposu, hlc: hlc, clientId: ayarlar.clientId);
+    final dongu = SenkronDongusu(db: db, agi: agi, ayarlarDeposu: ayarlarDeposu, hlc: hlc, clientId: ayarlar.clientId, devUserId: ayarlar.devUserId);
 
     await dongu.turCalistir();
     print('M34-YANIT-SAYISI: ${agi.gozlenenYanitlar.length}');
@@ -78,7 +78,7 @@ void main() {
     print('M35-ENTITYID: $entityId');
 
     final agi = _GozlemciAgi(HttpSenkronAgi(senkronUcNoktasi: Uri.parse('http://127.0.0.1:5298/v1/sync'), actorId: ayarlar.devUserId));
-    final dongu = SenkronDongusu(db: db, agi: agi, ayarlarDeposu: ayarlarDeposu, hlc: hlc, clientId: ayarlar.clientId);
+    final dongu = SenkronDongusu(db: db, agi: agi, ayarlarDeposu: ayarlarDeposu, hlc: hlc, clientId: ayarlar.clientId, devUserId: ayarlar.devUserId);
     await dongu.turCalistir();
 
     final yanit = jsonDecode(agi.gozlenenYanitlar.single) as Map<String, Object?>;
@@ -103,7 +103,7 @@ void main() {
     final depo = DriftGorevDeposu(db, saat: () => DateTime.now().toUtc().add(Duration(milliseconds: saatKaymasiMs)), idUret: uretimIdUret, hlc: hlc, ayarlarDeposu: ayarlarDeposu, actorId: ayarlar.devUserId);
 
     final agi = _GozlemciAgi(HttpSenkronAgi(senkronUcNoktasi: Uri.parse('http://127.0.0.1:5298/v1/sync'), actorId: ayarlar.devUserId));
-    final dongu = SenkronDongusu(db: db, agi: agi, ayarlarDeposu: ayarlarDeposu, hlc: hlc, clientId: ayarlar.clientId);
+    final dongu = SenkronDongusu(db: db, agi: agi, ayarlarDeposu: ayarlarDeposu, hlc: hlc, clientId: ayarlar.clientId, devUserId: ayarlar.devUserId);
 
     await depo.ekle('M36 v1 (baslangic)');
     final entityId = (await db.select(db.gorevler).get()).single.id;

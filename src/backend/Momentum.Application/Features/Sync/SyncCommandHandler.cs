@@ -156,7 +156,7 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
             // ownerId is the AUTHENTICATED actor -- NEVER op.ActorId (F5, mutant-3's target).
             await _materializer.MaterializeAsync(op, entity, authenticatedActorId, cancellationToken);
             await _clientClock.UpsertGreatestAsync(op.ClientId, effective, cancellationToken);
-            await _outbox.WriteAsync(BuildOutbox(wireOp, op, entity, effective, preProjectId, receiveWall), cancellationToken);
+            await _outbox.WriteAsync(BuildOutbox(wireOp, op, entity, effective, preProjectId, receiveWall, authenticatedActorId), cancellationToken);
         }
 
         await _processed.RecordAsync(op.ClientId, op.OperationId, result.Code, result.EffectiveOpHlc, cancellationToken);
@@ -164,7 +164,7 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
         return result;
     }
 
-    private OutboxRecord BuildOutbox(WireOp wireOp, ChangeOperation op, EntityState entity, Hlc effective, string? preProjectId, long receiveWall)
+    private OutboxRecord BuildOutbox(WireOp wireOp, ChangeOperation op, EntityState entity, Hlc effective, string? preProjectId, long receiveWall, Guid authenticatedActorId)
     {
         var postProjectId = ReadProjectId(op.EntityType, entity);
         var scopeId = TryScope(postProjectId);
@@ -181,7 +181,10 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
             AggregateType: op.EntityType,
             AggregateId: op.EntityId,
             OperationId: op.OperationId,
-            OwnerId: op.ActorId,
+            // slice-3d D9 (K69 kusur duzeltmesi): OwnerId KIMLIK DOGRULAMADAN gelir, ASLA op.ActorId --
+            // aksi halde govdede baskasinin actorId'sini tasiyan bir op DOGRU materialize olur ama
+            // outbox satiri YANLIS sahibe etiketlenir ve o satir hic kimsenin cekmesinde gorunmez.
+            OwnerId: authenticatedActorId,
             ScopeId: scopeId,
             OldScopeId: oldScopeId,
             ActorId: op.ActorId,

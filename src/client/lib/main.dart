@@ -31,27 +31,30 @@ void main() async {
   // F5: durum vitrini gercek DB/ayarlar bootstrap'ina hic ihtiyac duymaz --
   // "olu tuzagi engeller" gerekcesi burada da korunur (bkz. durum_vitrini.dart).
   GorevDeposu? depo;
+  SenkronDongusu? dongu;
   if (!const bool.fromEnvironment('DURUM_VITRINI')) {
     final kurulum = await _uretimKurulumOlustur();
     depo = kurulum.depo;
+    dongu = kurulum.dongu;
     // D8/2 PAZARLIKSIZ: acilista `gonderildi` olan TUM satirlar `bekliyor`e
     // doner (bir onceki koşum ucusun ortasinda cokmus olabilir).
     await kurulum.dongu.gonderildiKurtar();
-    // T6: zamanlayici tetikli senkron -- D4'un mutex'i cakisan tetikleri
-    // (zamanlayici + baska bir tetik) zaten tek tura indirger.
-    Timer.periodic(
-      const Duration(seconds: 15),
-      (_) => kurulum.dongu.turCalistir(),
-    );
+    // slice-3d D0: PERIYODIK YOKLAMA YASAK -- Timer.periodic ile cekmek
+    // KALDIRILDI. Acilista once bekleyen (varsa) itilir, hemen ardindan
+    // KAPALI LISTE'nin 1. tetikleyicisi (acilis cekme turu) koşulur; ikisi
+    // AYNI tek-uçuş kilidini paylastigi icin cekme turu dogal olarak K3
+    // bayragiyla ertelenip itme bitince BIR KEZ koşar.
     unawaited(kurulum.dongu.turCalistir());
+    unawaited(kurulum.dongu.cekmeTuruCalistir());
   }
-  runApp(MomentumUygulamasi(depo: depo));
+  runApp(MomentumUygulamasi(depo: depo, dongu: dongu));
 }
 
 class MomentumUygulamasi extends StatelessWidget {
   final GorevDeposu? depo;
+  final SenkronDongusu? dongu;
 
-  const MomentumUygulamasi({super.key, required this.depo});
+  const MomentumUygulamasi({super.key, required this.depo, this.dongu});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +65,7 @@ class MomentumUygulamasi extends StatelessWidget {
       // F5: --dart-define=DURUM_VITRINI=true ile durum vitrini acilir.
       home: depo == null
           ? const DurumVitrini()
-          : GorevListesiEkrani(depo: depo!),
+          : GorevListesiEkrani(depo: depo!, onYenile: dongu?.cekmeTuruCalistir),
     );
   }
 }
@@ -105,6 +108,7 @@ Future<_UretimKurulumu> _uretimKurulumOlustur() async {
     ayarlarDeposu: ayarlarDeposu,
     hlc: hlc,
     clientId: ayarlar.clientId,
+    devUserId: ayarlar.devUserId,
     baslangicCursorJson: ayarlar.nextCursorJson,
   );
 

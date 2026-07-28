@@ -25,7 +25,7 @@ void main() {
     final hlc = HlcUretici(
       simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
       clientId: ayarlar.clientId,
-    );
+);
     final depo = DriftGorevDeposu(
       db,
       saat: () => DateTime.now().toUtc(),
@@ -55,6 +55,7 @@ void main() {
       ayarlarDeposu: ayarlarDeposu,
       hlc: hlc,
       clientId: ayarlar.clientId,
+      devUserId: ayarlar.devUserId,
       baslangicCursorJson: ayarlar.nextCursorJson,
     );
 

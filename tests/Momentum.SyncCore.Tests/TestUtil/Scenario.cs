@@ -14,14 +14,23 @@ public static class Ids
 
     public static Guid Tag(int i) => Make(0x04, i);
 
-    public static Guid Op(int i) => Make(0x05, i);
+    public static Guid Op(int i)
+    {
+        var bytes = MakeBytes(0x05, i);
+        // slice-3d D8: SyncIngest.IsEnvelopeValid now requires OperationId to be v7-shaped
+        // (byte[7] high nibble == 0x7) -- the other id categories are unaffected.
+        bytes[7] = (byte)((bytes[7] & 0x0F) | 0x70);
+        return new Guid(bytes);
+    }
 
-    private static Guid Make(byte category, int index)
+    private static Guid Make(byte category, int index) => new(MakeBytes(category, index));
+
+    private static byte[] MakeBytes(byte category, int index)
     {
         var bytes = new byte[16];
         bytes[0] = category;
         BitConverter.GetBytes(index).CopyTo(bytes, 4);
-        return new Guid(bytes);
+        return bytes;
     }
 }
 
