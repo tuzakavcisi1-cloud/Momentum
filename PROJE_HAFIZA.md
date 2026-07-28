@@ -325,6 +325,79 @@ K42-d adım 3"* diyordu — adım 3 (slice-3c) **bitmişti**.
 
 ---
 
+### K69/EK-2 — DARALTILMIŞ DENETİM KOŞTU: 4 BLOKER + 8 ÖNEMLİ; SPEC DÜZELTİLDİ (oturum 34)
+
+DARALT kilidi (K69/EK) tek geçişlik, sınıf-tabanlı denetim öngörüyordu. Koştu ve **kendini ödedi.**
+K26 sağlandı: **iki bağımsız denetçi**, spec'i yazan elden AYRI, **farklı merceklerle** ve
+**birbirini görmeden** koştu — (A) atıf doğruluğu + kilit uyumu · (B) uygulanabilirlik + muğlaklık.
+Bulgu: **4 BLOKER · 8 ÖNEMLİ · 6 NOT.** İki bulguda **bağımsız olarak buluştular** (yakınsama kanıtı
+ve yutulan tetikleyici) — bu, denetimin gürültü değil sinyal ürettiğinin göstergesidir.
+
+**DÖRT BLOKER (hepsi kapatıldı):**
+- **`B1` — `sha256` bayt-özdeşlik kriteri DOĞRU KODLA İMKÂNSIZDI.** `Gorevler`'in yedi sütunundan
+  üçü iki cihazda asla eşitlenemez: `olusturuldu` Task scalar listesinde **YOK**
+  (`FieldStrategyRegistry.cs:170`) ⇒ tele hiç çıkmıyor, alan cihaz onu kendi saatinden uyduruyor
+  (`gorev_deposu.dart:112`); `senkronDurumu` yazan cihazda `'senkronize'`
+  (`senkron_dongusu.dart:186`), alan cihazda varsayılan `'yerel'` — çünkü **`P6`** rozete dokunmayı
+  yasaklıyor. ⇒ `G6`/`G8` **doğru uygulamada kırmızı yanardı** ve uygulayıcı kapıyı geçmek için ya
+  `P6`'yı ihlal ederdi ya dökümü kendi lehine daraltırdı. **Onur kilitledi:** döküm
+  `SELECT id, baslik, tamamlandi, silindi FROM gorevler ORDER BY id`; üç sütun gerekçesiyle
+  **`[SINIR]`** olarak dışarıda.
+- **`B2` — Push turu `changes`'i ATIYOR ama imleci İLERLETİYOR ⇒ sessiz KALICI VERİ KAYBI.** Sunucu
+  **her** yanıtta çekme yapıyor (`SyncCommandHandler.cs:74-95`) ve `_basariliYanitIsle`
+  `nextCursor`'ı **koşulsuz** kalıcılaştırıyor (`senkron_dongusu.dart:158-162`), `changes`/`snapshot`'a
+  hiç bakmadan. İlk turda `sinceCursor==null` ise **tüm snapshot** çöpe gidiyor ve cihaz *"gördüm"*
+  sayıyor. 🔴 **Bu bugün SHIPPED KODDA VAR** — slice-3c'de zararsızdı çünkü çekme yoktu; 3d'de
+  veri kaybı olurdu. **Onur kilitledi:** itme turu da yanıtı uygular; *"turCalistir değişmez"*
+  cümlesi DÜŞTÜ; imleç ancak veri uygulandıktan SONRA ilerler.
+- **`B3` — Yerelde OLMAYAN bir görevin satırı nasıl doğar: HİÇBİR YERDE yoktu.** `olusturuldu` +
+  `guncellendi` NOT NULL, telde `createdAt` yok, `senkronDurumu` varsayılanı `'yerel'` ve `D4` ona
+  dokunmayı yasaklıyor; `G8` ayak 2 INSERT'i zorunlu kılıyor; liste `olusturuldu`'ya göre
+  sıralanıyor. Uygulayıcı **uydururdu**. Çözüm: `olusturuldu` = o entity için görülen **en küçük
+  op-HLC'sinin `wallMs`'i** (veriden türetilir, cihaz saatinden DEĞİL ⇒ determinizm).
+- **`B4` — `transaction`/`atomik` kelimeleri spec'te SIFIR kez geçiyordu.** Sayfanın uygulanması ile
+  `nextCursor` yazımı aynı transaction'da mı belirsizdi; *"önce imleç"* seçen bir uygulayıcı yarım
+  sayfayı **kalıcı** kayba çevirirdi. Artık tek `_db.transaction`, imleç **en son**.
+
+**EN SİVRİ İKİ ÖNEMLİ:** ① **`D6` (echo tohumlama) ile `D5`/`P7` (birleşik taban) BİRBİRİNİ
+YİYORDU** — kuyruk satırı yalnız `Applied`/`Duplicate`'te siliniyor (`senkron_dongusu.dart:171-173`)
+⇒ echo geldiğinde aynı alanın **kırpılmamış (daha büyük)** damgası kuyrukta duruyor, echo kaybediyor
+ve kırpılmış damga `UzakAlanDurumu`'na **hiç** yazılmıyordu; yani `P7` doğru uygulanınca `D6`'nın
+**tek gerekçesi çöküyordu**. Çözüm: kuyruk tabanı YALNIZ **projeksiyon yazımını** kapılar;
+`UzakAlanDurumu` kararı yalnız kendi satırına karşı verilir. ② **Paylaşılan tek-uçuş kilidi çekme
+tetikleyicisini SESSİZCE YUTUYORDU** (`senkron_dongusu.dart:51-57` devam eden turu *döndürüyor*,
+sıraya almıyor) — ki bu tam olarak `P2`'nin *"açılış turu"* senaryosu. Onur kilitledi: yutulan
+tetikleyici **kilit serbest kalınca BİR KEZ** yeniden koşar.
+
+**TEMİZ ÇIKANLAR DA ÖLÇÜLDÜ (gizlenmedi):** 33 `dosya:satır` atfının **32'si DOĞRU** — tek bayat
+`:187` (`_outbox.WriteAsync` gerçek yeri **`:159`**; `:187` = `ActorId: op.ActorId`, yani spec'in
+*"DEĞİŞMEZ"* dediği satır). D1 sınıfı bu spec'te **neredeyse hiç tekrarlanmadı** ve bu bir ilktir.
+**`P1`↔`P6` çatışma adayı ÖLÇÜLDÜ ve ISIRMADI:** migration'da `TableMigration`/`alterTable`/CHECK
+değişikliği yok, tek ek nullable `addColumn` ⇒ SALT-EKLEME kilidi **sağlam**. Beş ölçülmüş kısıt,
+LWW zinciri (`wall → counter → normHex(clientId) → normHex(opId)`, **kesin büyüklük**),
+`changes`⇄`snapshot` şekil ayrımı ve kanal eşlemesi **birebir doğru**.
+
+**SPEC'İN YENİ HÂLİ (Cowork'ün KENDİ ölçümü):** **80.399 b · `889A383F`** (önce 61.242 b ·
+`FD85FD37`), 1086 satır, U+FFFD 0, CRLF 0. Görev **T1–T11** (yeni `T7`), kapı **G1–G9** (+22 ayak),
+mutant **32 → 40** (`M33`–`M40`; koşan-uygulama mutantı hâlâ **üç** ⇒ K53/3 tavanı aşılmadı).
+Kapılar **Cowork'ün kendi koşumunda**: `spec-kapi-kapsama` **EXIT 0** (KAPI 9 · KURAL 10 · MUTANT
+40) · `iddia-kapisi` **HÜKÜM TEMİZ, EXIT 0**. Çıkış kodları çıktı **dosyaya yönlendirilerek** ölçüldü
+— boru hattı (`| findstr`) exit kodunu yutuyor (bu oturumda iki kez yakalandı).
+
+**AÇIK KALAN / `[DOĞRULANMADI]`:** `I2`/`I3` hâlâ **KOŞMADI** (`KANIT/slice-3d/` yok; build sonrası
+`--kanit` ile koşacak) · `MOMENTUM_KANIT_DIZIN` ortam değişkeni adı **spec yazarının seçimi**, mevcut
+bir kural değil · `dart run drift_dev schema dump`/`generate` komutları **koşulmadı** (slice-3c
+emsaline dayanıyor) · `D8`'in nibble indeksi (`ToByteArray()[7]`) yalnız akıl yürütmeyle doğrulandı,
+gerçek GUID'le ölçülmedi — spec zaten `G7`'de ölçülmesini şart koşuyor.
+
+**DERS:** DARALT doğru kilitti. Denetim, build'in **hiç göremeyeceği** dört kusuru buldu (`B2` ve
+`B4` kapılar yeşil yanarken sessizce veri kaybı üretirdi) ve build'in daha iyi ölçtüğü üç konuya
+(mutantların ısırması, `G8`'in gerçek kurulumu, `P5`'in yakalayıcılığı) **hiç girmedi**. Kâğıt turu
+ile build arasındaki sınır, *"hangi soruyu hangi araç daha iyi ölçer"* diye çizildiğinde her ikisi de
+kazanıyor.
+
+---
+
 ## 🔒 CHECKPOINT (28 Tem 2026 · oturum 33: **K68 — slice-3d (ÇEKME) TASARIM KİLİDİ + üç ölçüm bulgusu**)
 
 ### K68 — slice-3d tasarımı KİLİTLENDİ (Onur, 28 Tem 2026, dört şıkkın dördü de öneriyi seçti)
