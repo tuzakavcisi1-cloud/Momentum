@@ -32,13 +32,26 @@
 - **Otomatik (verify):** backend build+test+analyzer+güvenlik; frontend analyze+test+a11y; OpenAPI kontrat; **taç mücevher kapısı** (senkron/çakışmayı bağımsız 2. implementasyonla doğrula + idempotency). Her kapı MUTANT testiyle ısırdığını kanıtlar (KÖR KAPI YOK).
 - **Uzman ajanlar (kilitte):** architecture, code-review, testing-strategy, accessibility-review, risk-assessment, RED-TEAM EN SON.
 
-## Oturum sağlığı ve devir [K21 — PAZARLIKSIZ]
+## Oturum sağlığı ve devir [K21 — PAZARLIKSIZ · **KANONİK KAYNAK; EŞİKLER BAŞKA HİÇBİR DOSYAYA KOPYALANMAZ**]
 Devir kararı **ölçülür, hissedilmez.** Canlı bağlam = transcript'teki son mesajın
 `input + cache_read + cache_creation` toplamı (`~/.claude/projects/*/<oturum-id>.jsonl`; kendi oturum-id'nle).
-🟢 **<%55 devam** (devir/temiz-oturum önerisi YOK) · 🟡 **%55-75** eldeki maddeyi bitir, checkpoint yaz,
-yeni büyük iş başlatma — **"dolu bağlamda ADR yazma yasağı" BURADAN başlar** · 🔴 **>%75** devir notu yaz, kapat.
-**Ölçemezsen yeşil de kırmızı da varsayma: ölçemediğini söyle, Onur'a sor.** Her büyük iş başında ve her
-checkpoint'te ölçümü **raporla**.
+
+🔴 **EŞİKLER MUTLAKTIR — YÜZDE HESAPLAMA, YÜZDE YAZMA:**
+🟢 **< 550k: DEVAM** (devir/temiz-oturum önerisi YOK) · 🟡 **550k–750k:** eldeki maddeyi bitir, checkpoint
+yaz, yeni büyük iş başlatma — *"dolu bağlamda ADR/spec yazma yasağı"* **BURADAN** başlar · 🔴 **> 750k:**
+devir notu yaz, oturumu kapat.
+
+Bu sayılar 1M pencere beyanından türetildi **ama karar yolunda PAYDA YOKTUR** — yalnız mutlak token
+karşılaştırılır. **Yüzde yazmak KUSUR BELİRTİSİDİR:** yüzde yazan bir el paydayı yeniden uydurmuş demektir.
+Ölçülen kusur (oturum 33 + 34): kural buraya **yüzde olarak** kopyalanmış, payda düşmüş, iki oturum **200k
+uydurup** 🟡 ve 🔴 ilan etmiş; oturum 33 spec yazımını gereksiz devretmiş ve `R8` sert durağının bir bacağı
+o sahte oturum sınırından doğmuştur. Kanonik metin+gerekçe: `PROJE_HAFIZA.md` K21 ve **K21-DÜZELTME**.
+
+**PAYDA YANLIŞLAMA TESTİ [bedava, HER ölçümde koşar]:** ölçülen canlı bağlam varsayılan pencereden
+**BÜYÜKSE ve istek koşuyorsa**, o pencere varsayımı **ÖLÜDÜR** ⇒ renk ilan etme, Onur'a söyle.
+(28 Tem 2026'da koştu: 339.116 token ölçüldü ve istekler koşuyordu ⇒ **200k varsayımı ÖLDÜ**.)
+**Ölçemezsen** yeşil de kırmızı da varsayma: ölçemediğini söyle, Onur'a sor. Her büyük iş başında ve her
+checkpoint'te ölçümü **mutlak sayıyla** raporla.
 
 ## Git — sandbox'tan okuma [ÖLÇÜLDÜ, PAZARLIKSIZ]
 Cowork bağlı diskte **düz `git status` KOŞMAZ**: mount `unlink`'e izin vermediği için git

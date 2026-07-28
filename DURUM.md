@@ -31,7 +31,7 @@
 |---|---|
 | **Backend** | ✅ slice-1 → 3a bitti. `araclar\verify.ps1` ⇒ build 0 uyarı/0 hata · **test 110/110** · CVE 0 · EXIT 0 |
 | **Veritabanı** | ✅ Docker 29.6.1, `momentum-postgres` Up (healthy) |
-| **İstemci (Flutter)** | 🟢 **T0→T9 BİTTİ.** 8 bileşen + `MomentumTema` · durum vitrini · Drift çevrimdışı CRUD · **yedi kapı G1–G7 koştu** · **24 mutant etiketinin hepsi ısırdı** (A 11 → B 10 → C 3). **Cowork'ün KENDİ koşumu: `analyze --fatal-infos` 0 bulgu · `flutter test` 36/36 · EXIT 0.** Kriter 13 yöntem sağlamasıyla ölçüldü (release `libapp.so` ×3 mimari: vitrin/driver sembolü **0**; debug'da 4/2/10 ⇒ yanlış-negatif değil). **A2 = 8/8** — iki ham ağaç, birleşimi **Cowork kendi ayrıştırdı**. ✅ **slice-3b KAPANDI — commit `5df3caf`** (72 dosya, 91.005 satır). **Sıradaki: K42-d adım 3.** |
+| **İstemci (Flutter)** | 🟢 **slice-3b T0→T9 + slice-3c BİTTİ.** 8 bileşen + `MomentumTema` · Drift çevrimdışı CRUD · senkron kuyruğu (yalnız **push**) · yedi kapı `G1`–`G7` koştu, **24 mutant etiketinin hepsi ısırdı** · `A2` = **8/8** (iki ham ağaç, birleşimi Cowork ayrıştırdı) · Cowork'ün kendi koşumu `analyze` 0 bulgu / `flutter test` 36/36 EXIT 0. Kapanış commit'leri `5df3caf` (3b) ve slice-3c. 🔴 **Çekme (pull) YOK — slice-3d'nin işi.** |
 | **Tasarım sistemi** | ✅ `DESIGN.md` v1 (15.742 b · `534DFF68`) — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7 |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
 | **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** — R8 · D1‑D5 · `--olc-urun-kodu` · altın küme **18/18**. Hüküm **KIRMIZI** ve bu **beklenen**: kâğıt artefaktlar (`docs/ADR/0003` park · `GOREV-slice-3b-spec` build'e devredildi) hâlâ defterde duruyor. `slice-3b-istemci` kapanış kaydı: bloker 0 · **`urun_kodu_satiri` = 61** ⇒ **R8 SUSTU** · `gorunen_cikti_yuzde` **ilk kez 0'ın üstünde (35, TAHMİN)**. Varsayılan cevap **DEVRET** — zaten yapılan bu |
@@ -45,9 +45,9 @@
 
 ✅ **K42-d ADIM 3 (`slice-3c`) BİTTİ ve BAĞIMSIZ DOĞRULANDI.** Spec `GOREV-slice-3c-senkron.md` (K64, **41.692 b · `537D0579`**) T1–T8 tamamlandı; **ürün kodu +7.602 / −160 satır, 45 dosya** — `R8` sert durağı kalktı.
 
-**COWORK'ÜN KENDİ KOŞUMU (builder'ın beyanına güvenilmedi, K26):** `analyze --fatal-infos` **0 bulgu** · `flutter test` **+79** · `verify.ps1` build 0 uyarı + **114/114** (Architecture 5 · Api 15 · SyncCore 40 · Persistence 54) + CVE 0 · `spec-kapi-kapsama` 8 kapı/10 kural/36 mutant bulgu yok · `sayi-tazeligi`/`tek-kopya`/`design-token` temiz — **hepsi EXIT 0.** 36 mutantın **8'i** ham KANIT'lı, kalan 28 Claude Code transkriptinden (9.124.995 b) Cowork'ün kendi ayrıştırmasıyla doğrulandı; 🟡 bu **yakınlık** ölçer, nedensellik kanıtlamaz. Sınıf **K67'de mekanikleşti**.
+**COWORK'ÜN KENDİ KOŞUMU [slice-3c, K26 — builder'ın beyanına güvenilmedi]:** `analyze --fatal-infos` 0 bulgu · `flutter test` **+79** · `verify.ps1` build 0 uyarı + **114/114** + CVE 0 · `spec-kapi-kapsama` 8 kapı/10 kural/36 mutant · `sayi-tazeligi`/`tek-kopya`/`design-token` temiz — **hepsi EXIT 0.** 36 mutantın **8'i** ham KANIT'lı; kalan 28 transkriptten doğrulandı (🟡 **yakınlık** ölçer, nedensellik kanıtlamaz). Sınıf **K67'de mekanikleşti.**
 
-🔴 **K65 (kilitlerde) ve K66/4 adlandırma düzeltmesi arşivdedir.** Tek satırlık özü: **bu bir "backend kusuru" DEĞİLDİ** — düzeltme tamamen istemcide yapıldı (`opId` v4→**v7**, `counter` her damgada artar, 10/10 ardışık koşum), backend'e tek satır dokunulmadı; doğru sınıflandırma **① spec kusuru (kapandı) + ② backend'de zorlanmamış varsayım (AÇIK, §8 → K68/`P4`)**.
+🔴 **K65 ve K66/4 arşivdedir.** Tek satırlık özü: bu bir *backend kusuru* **değildi** — düzeltme tamamen istemcide yapıldı (`opId` v4→**v7**, `counter` her damgada artar, 10/10 ardışık koşum), backend'e tek satır dokunulmadı. Doğru sınıflandırma: **① spec kusuru (kapandı) + ② backend'de zorlanmamış varsayım** (K68/`P4` ile planlandı).
 
 **KANIT:** `KANIT/slice-3c/` — `HUKUM.md` (**7.386 b · `E3F87A3D`**) · kök `00-OZET.md` (**3.147 b · `54D1570A`**) · `09-MUTANT/00-OZET.md` (**5.640 b · `4A5CEB71`**).
 
@@ -76,6 +76,7 @@
 - **K60** — **Tek kopya dosyaya yazan her betik ATOMİK yazar:** önce `metin.encode("utf-8")` (hata dosyaya **dokunmadan** patlar), sonra `.tmp`, en son takas. Gerekçe ucuz değil: oturum 31'de `io.open(yol,"w")` `PROJE_HAFIZA.md`'yi **önce boşalttı** ⇒ 542 KB arşiv 0 bayta düştü; kurtaran **şanstı** (`git restore`). ✅ Kapısı var: `tek-kopya-kapisi.py`. **Beyan edilen sınır:** kapı hasarı **önlemez**, sessiz kalmasını imkânsız kılar. 🔴 **oturum 34 EKİ:** bu makinede `os.replace` `WinError 5` veriyor ⇒ takas **üç adımlı yedekli** yapılır (§7).
 - **K57‑b** — `araclar/radar.py` **plugin 0.2.0 ile BAYT-ÖZDEŞ** (`46E3A8BC`); proje-yerel not **eklenmez** ⇒ sapma **tek sha ile** ölçülür.
 - **K58** — `DURUM.md` tavanı **12 → 32 KB**. Gerekçe okuma kapasitesi **değil**: ① R4 freni, ② dikkat (3,5k token okunur, 40k *göz gezdirilir*). Gevşetmenin dayanağı: bayat-atıf sınıfı **mekanikleşti**. 🔴 Tavanı **hiçbir kapı zorlamıyor** — beyan edilmiş **zayıf kontrol**; ilk ısırışta `belge-tavan-kapisi.py` yazılır. Ayrıca `PROJE_HAFIZA.md`'ye **mekanik dizin** (`hafiza-dizin.py`); **yeni checkpoint `<!-- DIZIN:SON -->` ALTINA** eklenir.
+- 🔴 **`araclar/oturum-sagligi.py` YOK — K21'in MEKANİK KAPISI EKSİK [K21-DÜZELTME, oturum 34].** Kural artık mutlak eşikli ve tek kanonik yerde, ama *"özet kanonik değerden sapmış mı?"* sorusunu **hiçbir araç sormuyor** — kanonik-kopya sınıfı bu projede beş kez ısırdı. Araç: transcript'ten **mutlak** token okur, rengi mutlak eşikten hesaplar, paydaya DOKUNMAZ, `CLAUDE.md`'nin K21 bloğunu kanonik değerlerle karşılaştırır, **payda yanlışlama testini** koşar. Altın küme: bilerek bozulmuş bir özet satırını yakalamalı. **Build'den sonra ilk ARAÇ işi** (K44-a; şimdi yazılmadı çünkü `R8` sert durağı yeni araç turunu da yasaklıyor — Onur'un kilidi: F1+F2+F4 şimdi, F3 build sonrası).
 - **K55** — Başka bir el çalışırken `git add -A` **YASAK**; `urun_kodu_satiri` = *"o oturumda repoya giren ürün kodu, **hangi el olursa olsun**"*.
 - **K56** — Kanonik kök **saf ASCII** (`C:\dev\Momentum`); `android.overridePathCheck` **eklenmez**, junction **kullanılmaz**.
 - **K46** — `DESIGN.md`'ye **tek bayt yazılmaz** (BD‑1…BD‑7 borçları açık).
@@ -84,7 +85,7 @@
 - **K44-a** — **Önce araç, sonra belge.**
 - **K34-f** — Bir aracı **onaran el**, onu **yazan elden AYRI** olmalı.
 - **K26** — Üretici kendi denetçisini spawn edemez. **Üreten ≠ denetleyen.**
-- **K21** — Oturum sağlığı ÖLÇÜLÜR: 🟢<%55 · 🟡%55‑75 · 🔴>%75. **Ölçemezsen yeşil de kırmızı da varsayma.**
+- **K21** — Oturum sağlığı **ölçülür**; eşikler **MUTLAK** (yüzde YOK). 🔴 **Kanonik eşikler YALNIZ `CLAUDE.md`'de — buraya KOPYALANMAZ.** Ölçülen gerekçe: bu satır eşikleri *yüzde* kopyalayınca **payda düştü**, iki oturum 200k uydurup yanlış renk ilan etti (**K21-DÜZELTME**). **Yüzde yazan el paydayı uydurmuştur.**
 - **K40** — Radar KIRMIZI'da yeni tur YASAK; kilit **Onur'dan** gelir.
 - **§4** — **Ölç ya da `[DOĞRULANMADI]` yaz.** "Beyan edilmiş sınır kabul edilir, gizlenmiş sınır edilmez."
 
@@ -155,13 +156,13 @@
 - 🔴 **Defter dürüstlük kusurları [D-kapısı buldu]** — `D3`: `docs/ADR/0003` tur 8 kaydının zorunlu alanları eksik. `D2`: aynı defterde **tur 1 atlanmış**. Append-only ⇒ **düzeltme kaydı**.
 - ✅ **KAPANDI [K59]:** *"Spec kriter 6/7 ölçülmedi"* — araç adları yazıldı, rakamlar ölçüldü, muafiyet **silindi**.
 - ✅ **KAPANDI [oturum 31]:** *A2 kanıtı eksik* — iki ham ağaç yazıldı (`widget-tree-vitrin.json` `574223D0` · `widget-tree-gercek-ekran.json` `6C5D431A`), **Cowork ikisini de `json.loads` ile ayrıştırdı**, birleşim **8/8**. `HUKUM.md` (`D6AC8377`) artık **düğüm kimliklerine** atıf yapıyor — beyan değil **çıktı**.
-- 🟢 **`tek-kopya-kapisi.py`'nin BEYAN EDİLMİŞ SINIRI [S10]** — karşılaştırma **LF'e normalize** içerik üzerinden yapılır, çünkü `core.autocrlf` çalışırken çalışma kopyası ile HEAD blob'u **aynı içerikte bile farklı bayttadır** (mutant M2 ölçtü: 2.400 → 2.800). Sonuç: **yalnızca satır sonu karakterini** kaybeden bir dosya kapıyı geçer (M2b). İçerik kaybı **değildir**; gizlenmiş değil **beyan edilmiş** sınırdır.
-- 🟡 **`radar.py` R5'in CÜMLESİ KAPSAMINI AŞIYOR [ölçüldü, oturum 31]** — R5 artefaktın **kendi son kaydındaki** `gorunen_cikti_yuzde` alanını okur ama *"**projenin** GÖRÜNEN ÇIKTISI hâlâ %0"* diye yazar. Yeni kayıt %35 derken park edilmiş eski artefaktlar hâlâ %0 bağırıyor. Kusur **metinde**, ölçümde değil. Onarım **üst akış plugin'inde** (K57‑b bayt-özdeşliği bozulmasın); ayrı el (K34‑f).
-- 🟡 **`radar --olc-urun-kodu` ÇALIŞMA AĞACINI GÖRMEZ** — yalnız commit'lenmiş farkı sayar. İki elin eşzamanlı çalıştığı bu projede **R8'i yanlış-pozitif yapar** (oturum 31'de fiilen yaktı; gerçek ölçüm **61 satır**). R8 KIRMIZI yandığında **önce çalışma ağacı ölçülür**. Onarım ayrı ele (K34‑f); üst akış plugin'de de aynı boşluk var.
-- 🟡 **`KANIT/slice-3b/04-G3/gercek-tarama.txt` 1,9 MB** — portfolyo reposuna 2 MB ham JSON kanıt değil **yüktür**; ilgili kesit + sha yeterdi.
-- 🟡 **M2b beyanının tersi ölçüldü** — spec/DESIGN A‑4 *"çok satırlı `/* */` içindeki literal KAÇABİLİR"* diyordu; kapı onu **yakaladı** ⇒ `yorum_disi()` yorumu soymuyor, yani **yorum içindeki literali de kod sayıyor** (kaçırma değil, yanlış-pozitif yönü). A‑4 beyanı bu ölçüme göre yeniden okunmalı.
+- 🟢 **`tek-kopya-kapisi.py`'nin BEYAN EDİLMİŞ SINIRI [S10]** — karşılaştırma **LF'e normalize** içerik üzerinden yapılır (`core.autocrlf` yüzünden aynı içerik farklı baytta; M2 ölçtü: 2.400 → 2.800). Sonuç: **yalnızca satır sonunu** kaybeden dosya kapıyı geçer (M2b). İçerik kaybı değildir; **beyan edilmiş** sınırdır.
+- 🟡 **`radar.py` R5'in CÜMLESİ KAPSAMINI AŞIYOR [ölçüldü]** — R5 artefaktın **kendi** son kaydındaki `gorunen_cikti_yuzde`'yi okur ama *"**projenin** görünen çıktısı %0"* der. Kusur **metinde**, ölçümde değil. Onarım üst akış plugin'inde (K57-b bayt-özdeşliği bozulmasın), ayrı el (K34-f).
+- 🟡 **`radar --olc-urun-kodu` ÇALIŞMA AĞACINI GÖRMEZ** — yalnız commit'lenmiş farkı sayar ⇒ iki elin eşzamanlı çalıştığı bu projede **R8'i yanlış-pozitif yapar** (oturum 31'de yaktı; gerçek ölçüm 61 satır). R8 KIRMIZI yandığında **önce çalışma ağacı ölçülür.** Onarım ayrı ele (K34-f).
+- 🟡 **`KANIT/slice-3b/04-G3/gercek-tarama.txt` 1,9 MB** — portfolyo reposuna yüktür; ilgili kesit + sha yeterdi.
+- 🟡 **M2b beyanının tersi ölçüldü** — spec/DESIGN A-4 *"çok satırlı `/* */` içindeki literal KAÇABİLİR"* diyordu; kapı onu **yakaladı** ⇒ `yorum_disi()` yorumu soymuyor (kaçırma değil, **yanlış-pozitif** yönü). A-4 beyanı bu ölçüme göre yeniden okunmalı.
 - 🟡 **`D1` bu defterde KÖR** — artefakt adları çoğunlukla **etiket**, yol değil. Yeni kayıtlara **gerçek yol** yazılır.
-- 🟡 **`sayi-tazeligi.py` — İMZA↔SAYI YAKINLIĞI ÖLÇÜLMÜYOR [3 kez tetikledi]** — uzun satırlarda araçla ilgisiz bir oran iddia sanılıyor. **Eşik uydurulmadı** (K40); biri muafiyet, biri metin düzeltmesiyle kapandı. **Kalıcı onarım AYRI EL'e** (K34‑f).
+- 🟡 **`sayi-tazeligi.py` — İMZA↔SAYI YAKINLIĞI ÖLÇÜLMÜYOR [3 kez tetikledi]** — uzun satırlarda araçla ilgisiz bir oran iddia sanılıyor. **Eşik uydurulmadı** (K40); ikisi muafiyet/metin düzeltmesiyle kapandı. Kalıcı onarım **ayrı ele** (K34-f).
 - **`radar.config.json` YOK ve bu bir KARAR** — varsayılan yollar repoya birebir uyuyor. Eşik değiştiren K40 gereği **altın kümeye vaka ekler**.
 - **`pub.dev` uçları** dokümantasyonsuz/garantisiz — kalkan: fixture altın kümeleri. · **Kontrast betiği** `araclar/` dışında.
 - **Açık `[DOĞRULANMADI]` (5):** flutter_secure_storage Windows · WebKit `__Host-` · Isopoh lisansı · NIST SP 800-38D · web'de `textScaler`/tema farkı.
@@ -171,7 +172,7 @@
 
 ## 9. DOSYA KİMLİKLERİ (`sha256` ilk 8 · **son yazımdan sonra ölçülür**)
 
-🔴 **BURAYA YALNIZ *DONMUŞ* KİMLİKLER YAZILIR.** Sık değişen bir dosyanın sha'sını buraya yazmak `kanonik-kopya` kusurunu **garanti eder** (bu tabloda üç kez bayat kimlik oluştu). Değişken dosyaların kimliği **yazılmaz, ÖLÇÜLÜR**:
+🔴 **BURAYA YALNIZ *DONMUŞ* KİMLİKLER YAZILIR.** Sık değişen bir sha'yı buraya yazmak `kanonik-kopya` kusurunu **garanti eder** (bu tabloda üç kez oldu). Değişkenlerin kimliği **yazılmaz, ÖLÇÜLÜR**:
 
 ```powershell
 python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GOREV_CLAUDE_CODE\GOREV-slice-3b-istemci-iskeleti.md
