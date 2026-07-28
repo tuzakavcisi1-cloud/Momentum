@@ -105,6 +105,109 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## 🔒 CHECKPOINT (28 Tem 2026 · oturum 35: **K71 — KABUL KRİTERİ 9 ÖLÇÜLDÜ (GEÇTİ); `R9` KUSURU DOĞDU; `DURUM.md` §8 ARŞİVLENDİ**)
+
+### K71 — kabul kriteri 9 GEÇTİ; koşan uygulama kâğıdın göremediği bir kusur gösterdi
+
+Onur'un kilidi: radar KIRMIZI'da **DURDUR** (kâğıdı park et, görünen çıktıya geç) + `DURUM.md`
+kapanmış tarihçesini arşive taşı. İkisi de yapıldı.
+
+**KRİTER 9 (spec §7/9, kilitli metin):** *"Uygulama Android'de açıldı ve çalıştı (ekran görüntüsü);
+açılışta çekme turu koştu ve uzaktan gelen bir görev listede göründü."* ⇒ **HÜKÜM: GEÇTİ, 3/3 ayak.**
+Ham kanıt: `KANIT/slice-3d/10-KABUL9/` (10 dosya; `00-HUKUM.md` ölçüm hükmü).
+
+Ölçüm kurgusu K26'ya uygun: builder'ın beyanı kullanılmadı, Cowork **kendi** koşumunu yaptı.
+Görünürlük ancak *aynı `actorId` + FARKLI `clientId`* ile ölçülebilir (`SyncPuller.cs:40` yalnız
+`owner_id` filtreli çeker) ⇒ cihazın `devUserId`'si (`3e966072…`) cihaz DB'sinden **ölçüldü**,
+"ikinci cihaz" olarak `9a1c47d2…` uyduruldu. Soğuk ayak asıl kanıttır: uygulama `am force-stop` ile
+**öldürüldü** (`pidof` çıkış 1), **ölüyken** sunucuya ikinci görev yazıldı, `am start` ile soğuk
+açıldı ve görev indi ⇒ turu tetikleyen **açılıştır**, kullanıcı eylemi değil (D0: yoklama YOK).
+İmleç `{"xid":1217,"seq":0}` → `{"xid":1217,"seq":279}` → `{"xid":1220,"seq":280}`.
+
+**İKİ KAPI YAN ÜRÜN OLARAK CANLI DOĞRULANDI:** ① `P4`/v7 nibble — gönderilen iki opId de UUIDv7
+üretildi ve `IsEnvelopeValid` (`SyncIngest.cs:131`) ikisini de kabul etti. ② `B3`/`olusturuldu`
+türetmesi — yeni satırların `olusturuldu` değeri op-HLC `wallMs`'iyle **milisaniyesi milisaniyesine**
+aynı, cihaz saatinden DEĞİL. K69/EK-2'nin çözümleri canlıda tuttu.
+
+### 🔴 `R9` — YENİ KUSUR: UZAKTAN GELEN GÖREV EKRANDA *"Yalnızca bu cihazda"* DİYOR
+
+Sunucudan inen iki görevin ikisi de saat ikonlu **"Yalnızca bu cihazda"** rozetiyle görünüyor
+(`06-soguk-acilis-listede.png`). Cümle **olgusal olarak yanlıştır** — o satırlar sunucudan indi.
+
+**Mekanizma koddan ölçüldü:** `P6` (K69) çekmeyle doğan satırı `senkron_durumu='yerel'` bırakıyor;
+`senkron_rozeti.dart:52-58` bunu `Metinler.yalnizcaBuCihazda`'ya çeviriyor; `senkronize` durumunda
+rozet **hiç çizilmiyor** (`SizedBox.shrink()`) ⇒ kullanıcının gördüğü tek sinyal `yerel`'dir ve
+yanlış tarafa basıyor.
+
+**`P6`'nın gerekçesi bu vakayı KAPSAMIYOR.** `P6`'nın koruduğu şey *bekleyen yerel yazımı olan* bir
+satırın rozetinin uzak echo'yla ezilmemesidir (`P7` ile kardeş). **Çekmeyle DOĞAN satırda bekleyen
+yazım YOKTUR** — ölçümde `senkron_kuyrugu` **0 satır**. Kilit, **INSERT-from-pull** ile
+**UPDATE-of-local**'ı ayırmadan yazıldığı için kapsamı dışına taştı.
+
+**Neden kâğıtta bulunamazdı:** üç denetim turu, 40 mutant ve 136 widget testi `P6`'yı *"rozete
+dokunma"* olarak **doğru** uyguladı. Kusur uygulamada değil, **kilidin kapsamındadır**; ancak gerçek
+bir listeye bakınca görünür. Doktrin teyidi: `R8`/DURDUR kilidinin ödediği bedel tam olarak budur —
+*koşan kod üzerindeki kapı kendini doğrular, kâğıt üzerindeki kapı doğrulanamaz* (K53/5).
+
+**Düzeltilmedi:** bu bir **tasarım kilidi (`P6`) değişikliğidir**, kilit Onur'dan gelir; oturumun
+kilidi DURDUR/kriter 9 ölçümüydü, kapsam dışına çıkılmadı.
+
+**Yan bulgu:** `senkron_rozeti.dart:9-11` doküman yorumu **bayat** — *"'senkronize' hiçbir zaman
+gerçek veriden doğmaz"* diyor, oysa cihaz DB'sinde `abcf4930…` satırı `senkronize` ve onu
+`senkron_dongusu.dart:186` gerçek itme turunda yazıyor.
+
+### 🔴 ÖLÇÜM ARACININ KENDİ KUSURU: BOZUK PNG
+
+İlk ekran yakalaması `adb exec-out screencap -p > dosya.png` ile alındı ⇒ **169.840 bayt**;
+PowerShell'in `>` yönlendirmesi **ikili veriyi metne çevirip bozuyor**. Aynı kare `screencap` +
+`adb pull` ile **84.550 bayt** ve geçerli PNG imzası (`137,80,78,71,13,10,26,10`) döndü. Bozuk dosya
+silindi, kalan üç PNG'nin imzası tek tek ölçüldü. **Ders: kanıtın VARLIĞI, kanıtın GEÇERLİ olduğunu
+göstermez.** Bu, `iddia-kapisi`'nin beyan edilmiş sınırının (`I2`/`I3` varlığı ölçer, geçerliliği
+değil) ikili dosyalardaki hâlidir.
+
+### 🔴 DEVİR NOTUNUN BİR SAYISI BAYAT ÇIKTI — "yazılı sayma, ÖLÇ" ilk koşumda karşılığını verdi
+
+Devir notu *"11 COMMIT PUSH BEKLİYOR"* diyordu. Açılışta ölçüldü:
+`git --no-optional-locks rev-list --left-right --count origin/main...HEAD` ⇒ **`0  0`**. Onur push'u
+yapmıştı. Notun kendisi *"YAZILI SAYMA, OLC"* diye uyarıyordu ve uyarı haklı çıktı.
+
+### `DURUM.md` §8 ARŞİVLENDİ — ALTI İDDİA **BAYAT** ÇIKTI (hepsi diskten ölçüldü, prozadan değil)
+
+`DURUM.md` 32.596 / 32.768 b idi (**pay 172 bayt**) ⇒ checkpoint yazmak imkânsızdı. Onur kilitledi:
+kapanmış tarihçe arşive. Taşımadan önce §8'in **her** iddiası diskten yeniden ölçüldü ve altısı
+**bayat** çıktı — yani her oturumun okuduğu TEK dosya, kapanmış borçları açık diye taşıyordu:
+
+1. *"`I2`/`I3` slice-3d'de HENÜZ KOŞMADI"* (iki ayrı yerde) ⇒ **BAYAT.** K70'te koştu ve temiz döndü.
+2. *"BACKEND `OperationId`'nin UUIDv7 olduğunu ZORLAMIYOR [K66/4]"* ⇒ **KAPANDI.** Ölçüldü:
+   `SyncIngest.cs:131` — `(op.OperationId.ToByteArray()[7] >> 4) != 0x7`, `IsEnvelopeValid` içinde.
+3. *"`owner_id` KAYNAK UYUŞMAZLIĞI (planlandı, kapanmadı)"* ⇒ **KAPANDI.** Ölçüldü:
+   `SyncCommandHandler.cs:187` `OwnerId: authenticatedActorId`, `:159` `WriteAsync(… authenticatedActorId)`.
+4. *"ÇEKME YOLU İÇİN İSTEMCİDE TEK TEST YOK; `changes`/`snapshot`/`hasMore` `src/client/lib`'de
+   SIFIR kez geçiyor"* ⇒ **BAYAT.** Ölçüldü: **22 eşleşme** (`senkron_dongusu.dart` 14 ·
+   `uzak_degisiklik_uygulayici.dart` 8) ve `g1_cekme_yolu_kapisi_test.dart` dahil altı kapı testi.
+5. *"Çekme yakınsaması slice-3c'de KANITLANMAYACAK; iki cihazın yakınsaması slice-3d borcudur"* ⇒
+   **KAPANDI.** `tool/f3_iki_istemci_yakinsama.dart` repoda.
+6. Sekiz ayrı *"✅ KAPANDI"* kalemi (K57 · K59 · K63 · K67 ×2 · oturum 31 · oturum 33) hâlâ canlı
+   dosyada duruyordu — kapanmış bir kalemi canlı durumda tutmak, R4'ün belge büyümesi kusurunun
+   ta kendisidir.
+
+**AÇIK KALDIĞI ÖLÇÜLENLER (silinmedi, §8'de duruyor):** `02-G2` üretici kodu
+(`g2_registry_zarf_kapisi_test.dart:64` **aynen duruyor**) · `verify.ps1` fail-loud varsayılanı
+(**duruyor**) · D1-önleme · `belge-tavan-kapisi.py` · Z10b · defter `D2`/`D3` · `DESIGN.md` BD-1…7.
+
+🔴 **`02-G2` SINIFININ İKİNCİ YAZICISI ÖLÇÜLDÜ:** `g3_ayristirici_kapisi_test.dart:20` →
+`Directory('../../KANIT/slice-3d/03-G3-ayristirici')`. Yani *"KANIT dizini ile onu yazan kodun yolu
+aynı mı?"* sorusunu soran araç eksikliği **tek vaka değil, bir sınıf**.
+
+### Oturum sağlığı (K21 — mutlak, yüzde YOK)
+
+Açılışta **120.059** token, checkpoint'te **216.522** token ⇒ **🟢 DEVAM** (eşik < 550k). Payda
+yanlışlama testi koştu, tetiklenmedi. `araclar/oturum-sagligi.py` (F3) **hâlâ yazılmadı** — bu
+oturumun kilidi DURDUR'du, araç turu açılmadı.
+
+---
+
+
 ## 🔒 CHECKPOINT (28 Tem 2026 · oturum 34 KAPANIŞ: **K70 — slice-3d (ÇEKME) KABUL EDİLDİ; spec KİLİTLENDİ**)
 
 ### K70 — slice-3d (ÇEKME) KABUL EDİLDİ; spec KİLİTLENDİ (Onur, 28 Tem 2026, oturum 34)

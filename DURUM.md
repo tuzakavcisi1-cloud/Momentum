@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı şu an **hiçbir kapı zorlamıyor** (beyan edilmiş zayıf kontrol, ilk ısırışta araç yazılır).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 28 Tem 2026, oturum 34 KAPANIŞ (K70 — **slice-3d KABUL**, spec kilitli).
+> **Son güncelleme:** 28 Tem 2026, oturum 35 (K71 — **kabul kriteri 9 GEÇTİ**; `R9` kusuru açık; §8 arşivlendi).
 
 ---
 
@@ -51,7 +51,7 @@
 
 ✅ **slice-3d (ÇEKME) KABUL EDİLDİ — K70, Onur onayladı [oturum 34].** Spec **KİLİTLİ**: `GOREV-slice-3d-cekme.md` **80.399 b · `889A383F`** (`tek-kopya-kapisi.py` kapsamında `kilitli` ⇒ sapma her açılışta ölçülür). **Ürün kodu 3.070 elle yazılan satır** — ölçüm `diff` **+** `status` ile yapıldı; yalnız `diff` **1.147** diyordu (K66/3 bir kez daha kanıtlandı). **COWORK'ÜN KENDİ KOŞUMU (K26), altı ölçümün altısı geçti:** `iddia-kapisi --kanit KANIT/slice-3d` **TEMİZ** · `spec-kapi-kapsama` · `sayi-tazeligi` · `verify.ps1` 120/120 · `analyze` 0 bulgu · `flutter test` 136/136 — hepsi **EXIT 0**. 🔴 **K66/2 BORCU KAPANDI:** `I2`/`I3` **ilk kez** koştu ve temiz döndü. Kapıların ölçmediğini Cowork ölçtü: 40 mutant dosyasının **hiçbiri** derleme hatası değil, hepsinde assertion izi var ⇒ **mutantlar doğru sebeple ısırdı** (K69/EK'in build'e devrettiği birinci sorunun cevabı: **EVET**).
 
-🔴 **SIRADAKİ İŞ — sırayla:** ① **kabul kriteri 9** (Android emülatör + uzak görev görünürlüğü) ölçülmedi, ayrı oturum ister ve vitrinin en güçlü kanıtıdır · ② `araclar/oturum-sagligi.py` (K21 kapısı, ilk **ARAÇ** işi — K44-a) · ③ **K42-d adım 4 = slice-3e (SignalR)**; `P2`'nin tetikleyicisi onun üstüne oturur. §8'deki iki yeni borç 3e'de kapanır. **Push Onur'da.**
+🔴 **SIRADAKİ İŞ — sırayla:** ✅ **kabul kriteri 9 ÖLÇÜLDÜ ve GEÇTİ** (K71, oturum 35; kanıt `KANIT/slice-3d/10-KABUL9/`, 3/3 ayak) — ve koşan uygulama **yeni bir kusur** gösterdi: 🔴 **`R9`** uzaktan gelen görev ekranda *"Yalnızca bu cihazda"* diyor (§8). `R9` bir **tasarım kilidi (`P6`) değişikliğidir, kilit Onur'dan gelir.** ① **`R9` kararı** · ② `araclar/oturum-sagligi.py` (K21 kapısı, ilk **ARAÇ** işi — K44-a) · ③ **K42-d adım 4 = slice-3e (SignalR)**; `P2`'nin tetikleyicisi onun üstüne oturur. **Push Onur'da.**
 
 🟡 **Arka planda `http://localhost:5298` Development API çalışıyor olabilir** — `G8`/F3 uçtan uca koşumu için **gerekli**. 🔴 **PID YAZILMAZ, ÖLÇÜLÜR** (`netstat -ano | findstr :5298`); bu satırda üç oturum boyunca bayat bir PID durdu. Gerekmiyorsa bilinçli kapatılır.
 
@@ -134,37 +134,84 @@
 
 ## 8. AÇIK BORÇLAR (adlandırılmış, gizlenmemiş)
 
-- ✅ **KAPANDI [K63]:** slice-3c spec'i bağımsız denetimden geçti; denetim v1'i **KIRDI** (10 bloker · 12 önemli · 8 not; 30 kapatıldı). **K26 SAĞLANDI.** Ders: *beyan edilmiş bir eksik, kapatılmamış bir eksiktir.*
-- 🔴 **`KANIT/slice-3c/02-G2/` GERİ DOĞDU — ÖNGÖRÜ GERÇEKLEŞTİ [oturum 34]:** klasör `16:48`'de dört JSON'la yeniden oluştu; `g2_registry_zarf_kapisi_test.dart:64`'teki `Directory('../../KANIT/slice-3c/02-G2')` **aynen duruyor**. slice-3d build notunda **ayrı bir madde** olarak verilmişti; **yapılmadı ve devir notunda hiç anılmadı** ⇒ *beyan edilmemiş atlama*. 🔴 Hiçbir araç *"KANIT dizini ile onu yazan kodun yolu aynı mı?"* diye sormuyor.
-- 🔴 **`verify.ps1` FAIL-LOUD AYAĞINI OTOMATİK ZİNCİRDE ETKİSİZ KILIYOR [oturum 34]:** +9 satır eklendi, `MOMENTUM_KANIT_DIZIN` yoksa **varsayılan atıyor** ve dizini yaratıyor. Gerekçe kod yorumunda yazılı ve testin kendisi hâlâ fırlatıyor — **ama** spec §8.2'nin *"zorunlu"* şartı regresyon zincirinde **artık hiç ölçülmüyor**. Ayrıca bu bir **araç** değişikliğidir (K34-f).
-- 🟡 **`[DOĞRULANMADI]` — builder'ın *"`cmd /v:on` kalıbı `M4`'te bir kez SESSİZCE başarısız oldu"* iddiası:** Cowork aynı kalıbı bu oturumda onlarca kez kullandı, **hiç yalan söylemedi**. Sapma (PowerShell `$LASTEXITCODE`) zararsız, **gerekçesi doğrulanmadı**.
-- 🔴 **D1 ALTINCI KEZ ISIRDI ve biri Cowork'ün TAZE kusuruydu [oturum 34]:** `senkron_dongusu.dart` defterde 10.838 b, diskte **15.131 b**; ayrıca Cowork defter kaydına **8.000 diye uydurduğu** bir bayt yazdı ve kendi D1-önleme adımı onu diskten ölçüp **11.284** ile düzeltti. İkisi de düzeltme kaydına geçti. **Öneri (borç):** defter/belgeye sayı yazan **her** betiğe D1-önleme adımı zorunlu olsun — radar `D1`'i **sonradan** bulur, önleme **doğmasını** engeller.
-- 🔴 **BACKEND `OperationId`'nin UUIDv7 OLDUĞUNU ZORLAMIYOR [K66/4]:** `HlcKey` tie-break'i zaman-sıralı `opId` **varsayar**, `IsEnvelopeValid` yalnız *"boş GUID değil"* der ⇒ v4 gönderen bir istemci K65'in yazı-turasını geri getirir ve **hiçbir kapı yanmaz**; bugün kapalı olmasının tek sebebi istemcinin uslu davranması. ✅ **K68/`P4` ile slice-3d KAPSAMINA ALINDI** (op-bazlı red + mutant; borç kapanmadı, **planlandı**).
-- **`owner_id` KAYNAK UYUŞMAZLIĞI — K69/`P5` ile KAPSAMA ALINDI (borç kapanmadı, PLANLANDI).** Outbox `owner_id` = wire `op.ActorId` (`SyncCommandHandler.cs:184`), materialize `authenticatedActorId` (`:157`), `SyncRequestValidator` wire `actorId`'yi doğrulamıyor. Kanıt kodun **kendi içinde**: `:156` yorumu *"ownerId is the AUTHENTICATED actor — NEVER op.ActorId"* diyor ⇒ bu bir tasarım tercihi değil **KUSUR**. Artımlı çekme yalnız `owner_id` filtreli (`SyncPuller.cs:40`) ⇒ çekme görünürlüğünü doğrudan etkiler. **Mekanizma ÖLÇÜLDÜ; canlı PoC KOŞULMADI.**
-- **`I2`/`I3` slice-3d'de HENÜZ KOŞMADI** — `iddia-kapisi.py` spec üzerinde yalnız `I1` ölçtü (`KANIT DIZINI: verilmedi`). `KANIT/slice-3d/` yokken *"kapılar geçti"* demek mutant kanıtını **kapsamaz**; build'den sonra `--kanit KANIT\slice-3d` ile koşulacak.
-- 🟡 **ÇEKME YOLU İÇİN İSTEMCİDE TEK TEST YOK** ve `changes`/`snapshot`/`hasMore` dizeleri `src/client/lib` ağacında **sıfır kez** geçiyor (ölçüldü) — D6 beyanı doğrulandı. `hasMore = (changes.Count == PageSize)`, `PageSize=500` sabit ⇒ son sayfa tam 500 ise **bir boş tur** fazladan koşulur (veri kaybı değil, maliyet).
-- ✅ **KAPANDI [oturum 33]:** `araclar/iddia-kapisi.py` **D1 bayat beyanı** (defter 19.912 ⇄ disk **20.157**) — düzeltme kaydı defterde; radar D1 **sustu**.
-- ✅ **MEKANİKLEŞTİ [K67]:** *"mutant ham çıktısı"* ve *"sayı ⇄ liste"* sınıflarının kapısı `araclar/iddia-kapisi.py` **1.1.0** (**20.157 b · `9F98CBF9`**), altın küme **12/12**. Araç iki kez kendi kör noktasını gösterdi (ters sıralı sayı iddiası · dairesel kanıt ⇒ envanter reddi `LISTE_ESIGI=8`). slice-3d spec'i bu kapıdan **geçti** (oturum 34, `I1` temiz).
-- **MEKANİKLEŞTİ [K66/2 → K67]:** mutant ham çıktısı **koşum anında** yazılmalı; `I2`/`I3` bunu ölçer (slice-3c'de 36 mutantın 8'i ham kanıtlıydı). **[KIRMIZI] slice-3d'de `I2`/`I3` HENÜZ KOŞMADI** — `KANIT/slice-3d/` yok; build'den sonra koşacak.
-- 🔴 **`git diff` TAKİPSİZ DOSYALARI GÖRMEZ — "dokunulan yüzey" ölçümü tek başına KÖR [K66/3]** — slice-3c'nin kabul kriteri 8'i `diff --stat` ile ölçülüyordu ve `src/backend/` altındaki yeni `Auth/DevCurrentUser.cs` ile iki stray klasörün **hiçbirini** göstermedi. Bundan sonra "dokunulan yüzey" iddiası **`diff` + `status` birlikte** ölçülür.
-- ✅ **KAPANDI [K67] — SAYI ↔ LİSTE TUTARSIZLIĞI:** iki kez üretilmiş sınıfın artık mekanik kapısı var (`iddia-kapisi.py` `I1`, Türkçe sayı sözcükleri dâhil). slice-3d spec'inde **ısırdı ve teslimden önce düzeltildi** (alt-ajanın iki `I1` bulgusu).
-- 🟡 **Çekme (pull) yakınsaması slice-3c'de KANITLANMAYACAK** — `D6` beyan edilmiş sınırı: `changes`/`snapshot` Drift'e uygulanmaz, yalnız `nextCursor` saklanır. İki cihazın yakınsaması **slice-3d borcudur**.
-- **`DESIGN.md` BD‑1…BD‑7** — **K46 gereği kapatılmadı**; liste spec §10'da. BD‑6'nın bayat sayısı `sayi-tazeligi.py`'de **gerekçeli muafiyet** olarak görünür.
-- ✅ **KAPANDI [K57]:** `radar.py` kopyası GERİDE · Spec T2/Z10 kilit düzeltmesi.
-- 🔴 **`pub-surum-olc.py`'ye ÇÖZÜMLENEBİLİRLİK AYAĞI [Z10b]** — araç **sürümü** ölçüyor, **çözülebilirliği** ölçmüyor. Kalkan gelene dek **her pin `pub get` ile doğrulanır**.
-- 🔴 **Defter dürüstlük kusurları [D-kapısı buldu]** — `D3`: `docs/ADR/0003` tur 8 kaydının zorunlu alanları eksik. `D2`: aynı defterde **tur 1 atlanmış**. Append-only ⇒ **düzeltme kaydı**.
-- ✅ **KAPANDI [K59]:** *"Spec kriter 6/7 ölçülmedi"* — araç adları yazıldı, rakamlar ölçüldü, muafiyet **silindi**.
-- ✅ **KAPANDI [oturum 31]:** *A2 kanıtı eksik* — iki ham ağaç Cowork tarafından `json.loads` ile ayrıştırıldı, birleşim **8/8**; `HUKUM.md` artık **düğüm kimliklerine** atıf yapıyor (beyan değil **çıktı**). Ham kimlikler arşivde.
-- 🟢 **`tek-kopya-kapisi.py`'nin BEYAN EDİLMİŞ SINIRI [S10]** — karşılaştırma **LF'e normalize** içerik üzerinden yapılır (`core.autocrlf` yüzünden aynı içerik farklı baytta; M2 ölçtü: 2.400 → 2.800). Sonuç: **yalnızca satır sonunu** kaybeden dosya kapıyı geçer (M2b). İçerik kaybı değildir; **beyan edilmiş** sınırdır.
-- 🟡 **`radar.py` R5'in CÜMLESİ KAPSAMINI AŞIYOR [ölçüldü]** — R5 artefaktın **kendi** son kaydındaki `gorunen_cikti_yuzde`'yi okur ama *"**projenin** görünen çıktısı %0"* der. Kusur **metinde**, ölçümde değil. Onarım üst akış plugin'inde (K57-b bayt-özdeşliği bozulmasın), ayrı el (K34-f).
-- 🟡 **`radar --olc-urun-kodu` ÇALIŞMA AĞACINI GÖRMEZ** — yalnız commit'lenmiş farkı sayar ⇒ iki elin eşzamanlı çalıştığı bu projede **R8'i yanlış-pozitif yapar** (oturum 31'de yaktı; gerçek ölçüm 61 satır). R8 KIRMIZI yandığında **önce çalışma ağacı ölçülür.** Onarım ayrı ele (K34-f).
-- 🟡 **`KANIT/slice-3b/04-G3/gercek-tarama.txt` 1,9 MB** — portfolyo reposuna yüktür; ilgili kesit + sha yeterdi.
-- 🟡 **M2b beyanının tersi ölçüldü** — spec/DESIGN A-4 *"çok satırlı `/* */` içindeki literal KAÇABİLİR"* diyordu; kapı onu **yakaladı** ⇒ `yorum_disi()` yorumu soymuyor (kaçırma değil, **yanlış-pozitif** yönü). A-4 beyanı bu ölçüme göre yeniden okunmalı.
-- 🟡 **`D1` bu defterde KÖR** — artefakt adları çoğunlukla **etiket**, yol değil. Yeni kayıtlara **gerçek yol** yazılır.
-- 🟡 **`sayi-tazeligi.py` — İMZA↔SAYI YAKINLIĞI ÖLÇÜLMÜYOR [3 kez tetikledi]** — uzun satırlarda araçla ilgisiz bir oran iddia sanılıyor. **Eşik uydurulmadı** (K40); ikisi muafiyet/metin düzeltmesiyle kapandı. Kalıcı onarım **ayrı ele** (K34-f).
-- **`radar.config.json` YOK ve bu bir KARAR** — varsayılan yollar repoya birebir uyuyor. Eşik değiştiren K40 gereği **altın kümeye vaka ekler**.
-- **`pub.dev` uçları** dokümantasyonsuz/garantisiz — kalkan: fixture altın kümeleri. · **Kontrast betiği** `araclar/` dışında.
-- **Açık `[DOĞRULANMADI]` (5):** flutter_secure_storage Windows · WebKit `__Host-` · Isopoh lisansı · NIST SP 800-38D · web'de `textScaler`/tema farkı.
+> 🔴 **KAPANMIŞ kalemler ve BAYAT çıkan altı iddia buradan ÇIKARILDI** ⇒ `PROJE_HAFIZA.md` **K71**
+> (28 Tem 2026, oturum 35). Bu bölüm yalnız **bugün açık olanı** taşır. Kapanmış bir kalemi burada
+> aramak bayat okuma üretir; gerekçesi arşivdedir.
+
+### Ürün / kod
+
+- 🔴 **`R9` — UZAKTAN GELEN GÖREV EKRANDA *"Yalnızca bu cihazda"* DİYOR [oturum 35, CANLI ölçüm].**
+  Sunucudan inen iki görevin ikisi de saat ikonlu bu rozeti taşıyor; cümle **olgusal olarak
+  yanlış**. Mekanizma: `P6` çekmeyle doğan satırı `senkron_durumu='yerel'` bırakıyor
+  (`senkron_rozeti.dart:52-58` ⇒ `yalnizcaBuCihazda`), `senkronize` ise rozeti **hiç çizmiyor**
+  (`SizedBox.shrink()`). `P6`'nın gerekçesi *bekleyen yerel yazımı* korumaktır ama **çekmeyle DOĞAN
+  satırda bekleyen yazım YOKTUR** (`senkron_kuyrugu` ölçümde 0 satır) ⇒ kilit, INSERT-from-pull ile
+  UPDATE-of-local'ı ayırmadığı için kapsamı dışına taştı. **Bu bir TASARIM KİLİDİ değişikliğidir,
+  kilit Onur'dan gelir.** Kanıt: `KANIT/slice-3d/10-KABUL9/` (`00-HUKUM.md` + `06-…png`).
+- 🟡 **`senkron_rozeti.dart:9-11` DOKÜMAN YORUMU BAYAT** — *"'senkronize' hiçbir zaman gerçek veriden
+  doğmaz, yalnız vitrin/testler içindir"* diyor; cihaz DB'sinde `abcf4930…` satırı **`senkronize`**
+  ve onu `senkron_dongusu.dart:186` gerçek itme turunda yazıyor (K69/EK-2 `B1` aynı satırı gösterir).
+- 🔴 **`KANIT/slice-3c/02-G2/` GERİ DOĞDU ve ÜRETİCİ KOD DÜZELTİLMEDİ.**
+  `g2_registry_zarf_kapisi_test.dart:64` hâlâ `Directory('../../KANIT/slice-3c/02-G2')` yazıyor
+  (28 Tem 2026'da yeniden ölçüldü, **aynen duruyor**). slice-3d build notunda ayrı madde olarak
+  verilmişti; yapılmadı **ve devir notunda anılmadı** ⇒ *beyan edilmemiş atlama*. Silmek düzeltme
+  DEĞİLDİR. 🔴 **AYNI DESENİN İKİNCİ YAZICISI ÖLÇÜLDÜ:** `g3_ayristirici_kapisi_test.dart:20` →
+  `Directory('../../KANIT/slice-3d/03-G3-ayristirici')`. Hiçbir araç *"KANIT dizini ile onu yazan
+  kodun yolu aynı mı?"* diye sormuyor ⇒ sınıf tek vaka değil.
+- 🟡 **Son sayfa tam `PageSize` ise BİR BOŞ TUR fazladan koşar** — `hasMore = (changes.Count ==
+  PageSize)`, `PageSize=500` sabit. Veri kaybı değil, **maliyet**.
+
+### Araç / kapı
+
+- 🔴 **`verify.ps1` FAIL-LOUD AYAĞINI OTOMATİK ZİNCİRDE ETKİSİZ KILIYOR** (28 Tem 2026'da yeniden
+  ölçüldü, duruyor): `if (-not $env:MOMENTUM_KANIT_DIZIN) { … }` varsayılan atıyor ve dizini
+  yaratıyor. Test hâlâ fırlatıyor, **ama** spec §8.2'nin *"zorunlu"* şartı regresyon zincirinde
+  **hiç ölçülmüyor**. Ayrıca bu bir **araç** değişikliğidir (K34-f).
+- 🔴 **D1-ÖNLEME BORCU** — defter/belgeye sayı yazan **her** betiğe *"önce diskten ölç"* adımı zorunlu
+  olsun. D1 bu projede **altı kez** ısırdı; radar onu **sonradan** bulur, önleme **doğmasını** engeller.
+- 🔴 **`belge-tavan-kapisi.py` HÂLÂ YOK** — `DURUM.md` tavanını (32 KB) **hiçbir kapı zorlamıyor**;
+  beyan edilmiş **zayıf kontrol**. K71 taşıması payı geçici olarak açtı, sınıfı kapatmadı.
+- 🔴 **`pub-surum-olc.py`'ye ÇÖZÜMLENEBİLİRLİK AYAĞI [Z10b]** — araç **sürümü** ölçüyor,
+  **çözülebilirliği** ölçmüyor. Kalkan gelene dek her pin `pub get` ile doğrulanır.
+- 🟢 **`tek-kopya-kapisi.py`'nin BEYAN EDİLMİŞ SINIRI [S10]** — karşılaştırma **LF'e normalize**
+  içerik üzerinden (`core.autocrlf`; M2: 2.400 → 2.800 b). Yalnız satır sonunu kaybeden dosya kapıyı
+  geçer (M2b). İçerik kaybı değil, **beyan edilmiş** sınır.
+- 🟡 **`radar.py` R5'in CÜMLESİ KAPSAMINI AŞIYOR** — R5 artefaktın kendi kaydını okur ama
+  *"**projenin** görünen çıktısı %0"* der. Kusur **metinde**. Onarım üst akış plugin'inde (K57-b
+  bayt-özdeşliği bozulmasın), **ayrı el** (K34-f).
+- 🟡 **`radar --olc-urun-kodu` ÇALIŞMA AĞACINI GÖRMEZ** — yalnız commit'lenmiş farkı sayar ⇒ iki elin
+  çalıştığı bu projede R8'i yanlış-pozitif yapar. R8 yandığında **önce çalışma ağacı ölçülür.**
+- 🟡 **`sayi-tazeligi.py` — İMZA↔SAYI YAKINLIĞI ÖLÇÜLMÜYOR [3 kez tetikledi].** Eşik uydurulmadı
+  (K40); kalıcı onarım **ayrı ele** (K34-f).
+- 🟡 **M2b beyanının TERSİ ölçüldü** — spec/DESIGN A-4 *"çok satırlı `/* */` içindeki literal
+  KAÇABİLİR"* diyordu; kapı onu **yakaladı** ⇒ `yorum_disi()` yorumu soymuyor (yanlış-pozitif yönü).
+- **`radar.config.json` YOK ve bu bir KARAR** — varsayılan yollar repoya birebir uyuyor. Eşik
+  değiştiren K40 gereği **altın kümeye vaka ekler**.
+
+### Belge / defter
+
+- **`DESIGN.md` BD‑1…BD‑7** — **K46 gereği kapatılmadı**; liste spec §10'da. BD‑6'nın bayat sayısı
+  `sayi-tazeligi.py`'de **gerekçeli muafiyet**.
+- 🔴 **Defter dürüstlük kusurları** — `D3`: `docs/ADR/0003` tur 8 kaydının zorunlu alanları eksik ·
+  `D2`: aynı defterde **tur 1 atlanmış**. Append-only ⇒ **düzeltme kaydı** (28 Tem 2026 radarında
+  hâlâ SARI yanıyor).
+- 🟡 **`D1` bu defterde KÖR** — artefakt adları çoğunlukla **etiket**, yol değil. Yeni kayıtlara
+  **gerçek yol** yazılır.
+- 🟡 **`KANIT/slice-3b/04-G3/gercek-tarama.txt` 1,9 MB** — portfolyo reposuna yüktür; kesit + sha yeterdi.
+
+### `[DOĞRULANMADI]` (ölçülmedi — "temiz" DEĞİL)
+
+- **Kriter 9 kapsamı dışında kalanlar:** web ayağı (`--platform chrome` bu ortamda sonuç üretmiyor) ·
+  iOS (Mac yok, CI-only) · boşaltma tavanı 20'nin **her** koşulda yeterliliği.
+- **Kriter 9 ölçümünün kendi beyan ettiği sınırlar:** `01-acilis.png`'deki ANR diyaloğunun sahibi
+  **System UI**'dır (ölçüldü), ama uygulamanın kendi ANR üretmediği **ölçülmedi** · soğuk açılış
+  **süresi** ölçülmedi · düzenleme/tamamlama/silme yollarının uzak yansıması bu ayakta ölçülmedi.
+- **builder'ın *"`cmd /v:on` kalıbı `M4`'te bir kez SESSİZCE başarısız oldu"* iddiası** — Cowork aynı
+  kalıbı onlarca kez kullandı, **hiç yalan söylemedi**; sapma zararsız, **gerekçesi doğrulanmadı**.
+- **Eski açık 5:** flutter_secure_storage Windows · WebKit `__Host-` · Isopoh lisansı ·
+  NIST SP 800-38D · web'de `textScaler`/tema farkı.
+- **`pub.dev` uçları** dokümantasyonsuz/garantisiz — kalkan: fixture altın kümeleri. · **Kontrast
+  betiği** `araclar/` dışında.
 - **Geçici artıklar (repo DIŞINDA, silme Onur'da):** `%TEMP%\_cw_*` · `C:\dev\_cowork_tmp\`.
 
 ---
