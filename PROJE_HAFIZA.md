@@ -105,6 +105,105 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## 🔒 CHECKPOINT (28 Tem 2026 · oturum 35: **K72 — `R9` KİLİDİ: `P6`/`D4` DARALTILDI; spec yazıldı, DENETLENDİ, KIRILDI, düzeltildi**)
+
+### K72 — `P6`/`D4` DARALTILDI (Onur kilitledi, 28 Tem 2026)
+
+`R9` (K71) Onur'a dört şıkla sunuldu; kilit **DARALT**: *`P6`/`D4`'ün rozet dokunulmazlığı
+**UPDATE-of-local** dalında AYNEN kalır; **INSERT-from-pull** dalı kapsam dışına alınır ve
+çekmeyle doğan satır `senkronDurumu = 'senkronize'` ile INSERT edilir.*
+
+**Reddedilen şık ve gerekçesi yazıya geçti:** *"rozet metnini yumuşat / rozeti kaldır"* reddedildi
+çünkü yanlış cümleyi **susturur ama bilgi kaybettirir** — kullanıcı gerçekten yalnız kendi cihazında
+duran görevi ayırt edemezdi. Bu red spec'te **`AYAK6`** olarak **mekanik şarta** çevrildi: *gerçekten
+`yerel` olan satır hâlâ "Yalnızca bu cihazda" demelidir.* **Karar bir kapıya dönüştü; sonraki el onu
+sessizce geri alamaz.**
+
+### TASARIM ÖLÇÜMLE DARALDI — kâğıtta tartışılmadı
+
+Kilitlemeden **önce** iki varsayım diskten ölçüldü ve ikisi de işi küçülttü:
+
+1. **CHECK kısıtı `senkronize`'ye ZATEN İZİN VERİYOR** (`veritabani.dart:18-25`, `schema_v4.dart:52-61`;
+   `GorevlerCompanion.insert` alanı **opsiyonel** alıyor, `veritabani.g.dart:388-397`) ⇒ **MIGRATION
+   YOK, şema v4 KALIR.** Bu ölçüm yapılmasaydı iş bir şema turu olarak planlanırdı.
+2. **`changes` ve `snapshot` AYRI ayrıştırıcılardır ama AYNI yazıcıdan geçer** (`:106`/`:158` → `:203`)
+   ⇒ **tek satırlık düzeltme iki dalı da kapsar.**
+
+Kusurun tam yeri: `uzak_degisiklik_uygulayici.dart:224` (`_projeksiyonYaz`, `mevcut == null` dalı).
+UPDATE dalına (`:235`) **dokunulmaması**, kabul kriteri 6'da *diff'te `+`/`-` görünmemesi* olarak
+**mekanikleştirildi**.
+
+### 🔴 BAĞIMSIZ DENETİM KOŞTU VE SPEC'İ KIRDI — 4 BLOKER · 3 ÖNEMLİ · 5 NOT
+
+K26 sağlandı: spec'i **yazan el Cowork**, denetleyen el **ayrı bir ajan**, ve denetçi spec'in her
+atfını **prozadan değil diskten** doğruladı. K53/1 gereği **tek tur**. Denetim kendini fazlasıyla
+ödedi — **dört blokerin ikisi doğrudan benim kusurumdu:**
+
+- **`B1` — spec `flutter test`'i KIRACAKTI ve kendi kabul kriterini çürütüyordu.**
+  `g3_ayristirici_kapisi_test.dart:162-172` bugün tam tersini iddia ediyor:
+  `expect(yeni.senkronDurumu, 'yerel', reason: 'D4 BEYAN: yeni entity yerel ile dogar')`. Spec
+  *"mevcut 136 test düşmez"* diyordu ve o 136'nın **biri** `T1`'in tersiydi. ⇒ **`T3` eklendi**
+  (test **silinmez, tersine çevrilir**) ve kriter 3 dürüstçe yeniden yazıldı.
+- **`B2` — bayat atıf kusuru KENDİNİ YENİDEN ÜRETİYORDU.** Spec *"`senkron_dongusu.dart:186`"*
+  diyordu; **`:186` BOŞ SATIR.** Gerçek yazıcı `:274` (`_rozetYaz(... 'senkronize')`), gövde `:364`.
+  Daha kötüsü: `T2` bu yanlış atfı **kaynak koda gömülecek bir yoruma** yazdıracaktı. Yani bayat-atıf
+  sınıfını düzelten görev, aynı sınıftan yeni bir vaka doğuruyordu.
+- **`B3` — `M45` bu kod tabanında UYGULANAMAZDI.** `_projeksiyonYaz` tek parametre alır ve çağıranı
+  ayırt etmez ⇒ *"yalnız `changes` yolunda düzelt"* bir mutasyon değil **yapısal refactor** olurdu.
+  İptal edildi, gerekçesiyle **mutant borcuna** yazıldı; yerine snapshot dalının yazıcıyı hiç
+  çağırmaması kondu.
+- **`B4` — SPEC KENDİ KAPILARINDA KIRMIZI YANIYORDU ve ben kriteri KOŞMADAN yazmıştım.** Ölçüldü:
+  `spec-kapi-kapsama` **EXIT 3** (`### G<n>` başlığı ayrıştırılamıyor — başlığı ters tırnak içinde
+  yazmışım), `iddia-kapisi` **EXIT 1** (`I1`: metinde *"bir mutant"*, tabloda 5). ⇒ **`iddia-kapisi`
+  R9 için "0 mutant" görüyordu; `--kanit` verilse bile `M41`–`M45`'in kanıtını HİÇ ARAMAYACAKTI.**
+  Bu, **kör kapının ölçüm katmanındaki hâli**dir: kriter yazmak, kriteri koşmak değildir.
+  Düzeltildikten sonra **ikisi de EXIT 0**.
+
+**EN SİVRİ ÖNEMLİ — `R10` DOĞDU:** çekilmiş `senkronize` bir satır yerelde düzenlenirse rozet
+`senkronize` kalır ⇒ `SizedBox.shrink()` ⇒ **hiçbir rozet görünmez** ve kullanıcı gönderilmemiş bir
+değişikliği senkronize sanar (`gorev_deposu.dart`'ın dört yazma yolu `senkronDurumu`'na yazmıyor).
+
+🔴 **`R10` BİLİNÇLE KAPSAM DIŞI BIRAKILDI — ve gerekçesi ölçüldü, tahmin edilmedi.** Denetçinin
+önerdiği düzeltme (yerel yazma yollarına *"rozeti `yerel` yap"*) **iki mevcut kapıyı kırıyor**:
+`g5_karantina_kapisi_test.dart:212-214` `duzenle()` sonrası rozetin **`cakisma` KALMASINI** bekliyor
+(`:216-219` de aynı). Yani gerçek soru *"bir satır hem ÇAKIŞMALI hem BEKLEYEN ise rozet hangisini
+söyler?"* — bu bir **öncelik kilidi**dir, Onur'dan gelir, build'de uydurulamaz. **Dürüst kıyas
+yazıldı:** sınıf `R9` düzeltmesinden önce de vardı (itilmiş görevler için); `T1` onu çekilmiş
+görevlere de genişletir; net kötüleşme **dar ama gerçek** ve gizlenmiyor.
+
+**Bu bulguyu bulan şey bir denetim turu değil, 20 satırlık bir `Select-String` taramasıydı** —
+K53/1'in kendi gerekçesinin (*"mekanik kontrol ucuz ve deterministik"*) altıncı kez doğrulanması.
+
+**Denetimin TEMİZ çıkardıkları da kayda geçti (gizlenmedi):** 19 atıfın **14'ü doğru**, 1 yanlış
+(`B2`), 1 bir satır kaymış (`:52-58` → gerçeği `:51-57`), 3 ölçülemedi. `cakisma`/`cevrimdisi`/
+`silindi=true` sınır gerekçelerinin **üçü de bağımsız olarak doğrulandı**. Ayrıca denetçi `AYAK3`'ün
+ön koşulunun üretimde erişilemez olduğunu ölçtü (`'kuyrukta'` hiçbir üretim yolunda yazılmıyor) ⇒
+ayak **`cakisma` ile** yeniden kuruldu; ve `AYAK6`'nın sentetik satırla kurulursa hiçbir şey
+kanıtlamayacağını gösterdi ⇒ ayak **`DriftGorevDeposu.ekle()`ye** bağlandı.
+
+### SPEC — kimlik ve boyut
+
+`GOREV_CLAUDE_CODE/GOREV-R9-rozet-kapsami.md` · **14.061 b · `B2082127`** · U+FFFD 0 · CRLF 0.
+Kapı **G10** (altı ayak) · mutant **M41–M45** (hepsi statik/widget ⇒ K53/3'ün koşan-uygulama tavanı
+**devreye girmez**) · üç gerekçeli mutant borcu.
+**Kapılar Cowork'ün kendi koşumunda:** `spec-kapi-kapsama` **EXIT 0** · `iddia-kapisi` **EXIT 0**.
+
+**`R4` freni bilinçle uygulandı:** slice-3d spec'i 80.399 b idi, bu **14.061 b**. Gerekçe K53'tür —
+tasarım kararı canlı ölçümle alındığı için kâğıtta yeniden tartışılacak bir şey yok; Claude Code'un
+ihtiyacı **tam değişiklik + ısıran kapı + mutantlar**dır. 🔴 **Spec `tek-kopya-kapisi.py` kapsamına
+`kilitli` olarak EKLENMEDİ** — Onur onu *"kilitli"* ilan etmedi; kilitlenen **tasarımdır** (K72),
+spec metni değil. Kilit istenirse ayrı bir karardır.
+
+### ROL BÖLÜMÜ KORUNDU — bedeli gizlenmiyor
+
+Cowork tasarımı kilitledi ve spec'i yazdı; **kodu Claude Code yazacak**. Sonuç: bu oturumun
+`urun_kodu_satiri` = **0**. Önceki oturum 3.070 yazdığı için `R8` (iki ardışık sıfır) **tetiklenmez**,
+ama bir sonraki oturum da ürün kodu üretmezse `R8` **ısırır ve haklı olur** — K53/4 tanımı gereği
+spec, araç ve belge sayılmaz.
+
+---
+
+
 ## 🔒 CHECKPOINT (28 Tem 2026 · oturum 35: **K71 — KABUL KRİTERİ 9 ÖLÇÜLDÜ (GEÇTİ); `R9` KUSURU DOĞDU; `DURUM.md` §8 ARŞİVLENDİ**)
 
 ### K71 — kabul kriteri 9 GEÇTİ; koşan uygulama kâğıdın göremediği bir kusur gösterdi
