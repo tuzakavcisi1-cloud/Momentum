@@ -1,6 +1,7 @@
 # DESIGN.md — Momentum Tasarım Sistemi
 
-> **Durum:** TASLAK v1 · 26 Tem 2026 · `slice-3b` (Flutter istemci) için yazıldı.
+> **Durum:** **v2** · 28 Tem 2026 · v1 26 Tem 2026'da `slice-3b` için yazılmıştı.
+> 🔴 **K46 AÇILDI (K75, Onur — 28 Tem 2026):** bu belge artık dokunulmaz değil. Açılma gerekçesi **ölçüldü**: `gorev_satiri.dart:59-62` çakışma rozeti ile taban rozeti `if/else` ile **karşılıklı dışlıyordu**, dolayısıyla *"hem çakışmalı hem bekleyen satır hangisini söyler?"* sorusunun cevabı YOKTU; ayrıca donmuş dört-durum sözlüğünde *"gönderilmemiş değişiklik"* cümlesi üretilemiyordu (`R10`). **Açılma KAPSAMI bu iki maddedir**; başka değişiklik yine Onur'un kilidini ister.
 > **Yetki:** K10 (tasarım yönü) · K10-e (MUST/NICE bölünmesi) · **K42-b** (tam tasarım sistemi + iki pazarlıksız kısıt) · **K44-a** (araç ÖNCE, belge SONRA).
 > **Bu belge kendi başına bir güvence DEĞİLDİR.** Hükmü `araclar/design-token-kapisi.py` verir (§10).
 
@@ -127,7 +128,7 @@ W3C'nin bağıl parlaklık ve kontrast formülü uygulandı (`(L1+0.05)/(L2+0.05
 | `GorevListesiEkrani` | Tek vitrin ekranı | `bosluk.m`, `renk.yuzey` |
 | `GorevSatiri` | Görev: onay kutusu + başlık + senkron rozeti | `tipo.govde.m`, `bosluk.s`, `olcu.dokunma.hedefi`, `renk.ayirici` |
 | `GorevEkleAlani` | Alt sabit giriş + ekle düğmesi | `renk.kenarlik.etkilesim`, `radius.m`, `renk.birincil`, `renk.uzeri.birincil` |
-| `SenkronRozeti` | 4 durum: yerel · kuyrukta · gönderildi · çevrimdışı | `renk.cevrimdisi`, `tipo.etiket.s`, `olcu.ikon`, `bosluk.xs` |
+| `SenkronRozeti` | **5 durum [K75]:** yerel · **gönderilmemiş** · kuyrukta · senkronize · çevrimdışı | `renk.cevrimdisi`, `tipo.etiket.s`, `olcu.ikon`, `bosluk.xs` |
 | `CakismaRozeti` | Sunucu ile çakışma; dokununca çözüm sayfası | `renk.tehlike`, `olcu.ikon`, `radius.s` |
 | `BosDurum` | Hiç görev yok | `tipo.baslik.l`, `renk.metin.ikincil`, `bosluk.l` |
 | `YuklenmeDurumu` | İlk yükleme | `hareket.standart`, `renk.metin.ikincil` |
@@ -149,6 +150,7 @@ Bu matris **vitrinin kendisidir**: ödevin taç mücevheri *"çevrimdışı-önc
 | **boş** | `BosDurum` | — | "Henüz görev yok. Aşağıdan ekleyin." | — |
 | **yükleniyor** | `YuklenmeDurumu` | — | "Yükleniyor" | "Görevler yükleniyor" |
 | **yerel** (kaydedildi, gönderilmedi) | liste | saat ikonu + `renk.metin.ikincil` | "Yalnızca bu cihazda" | — |
+| **gönderilmemiş** [K75] (satır sunucuda VAR, son değişiklik gitmedi) | liste | kalem ikonu + `renk.metin.ikincil` | "Gönderilmemiş değişiklik" | "Gönderilmemiş değişiklik var" |
 | **kuyrukta** (gönderiliyor) | liste | yukarı ok, `hareket.standart` ile döner | "Gönderiliyor" | — |
 | **senkronize** | liste | ikon **YOK** (gürültü azaltma) | — | "Senkronize edildi" (A11Y‑7) |
 | **çevrimdışı** | liste + üst şerit | bulut-kapalı ikonu + `renk.cevrimdisi` | "Çevrimdışısınız. Değişiklikler kaydedildi." | "Çevrimdışı" |
@@ -156,6 +158,10 @@ Bu matris **vitrinin kendisidir**: ödevin taç mücevheri *"çevrimdışı-önc
 | **hata** | `HataDurumu` | — | "Bir şeyler ters gitti." + "Yeniden dene" | "Hata" |
 
 **PAZARLIKSIZ:** her durumda **ikon + metin birlikte** vardır (A11Y‑6). Yalnız renkle ayrılan durum **yoktur**.
+
+🔴 **PAZARLIKSIZ [K75] — ÇAKIŞMA TABANI BASTIRMAZ.** Çakışma bir **dik kanaldır**: `CakismaRozeti` ile taban rozet **AYNI ANDA** çizilir (önce çakışma ikonu, sonra taban). Gerekçe ölçüldü: bir satır hem çakışmalı hem bekleyen olabilir ve eski `if/else` bu iki gerçekten birini **sessizce düşürüyordu** — çakışma kazandığında kullanıcının gönderilmemiş değişikliğini öğrenmesinin **hiçbir yolu yoktu** (çözüm sayfası yer tutucu). İki rozet yan yanayken **A11Y‑4 (metin ölçeği 2.0×) yeniden ölçülür**: taban rozet metni `TextOverflow.ellipsis` ile kısalır, çakışma ikonunun 48dp dokunma hedefi (A11Y‑1) **küçültülemez**.
+
+**Taban rozet KOLONDAN DEĞİL KUYRUKTAN türetilir [K75].** Görev başına `U`=`gonderildi`, `B`=`bekliyor`, `Z`=`zehirli`, `K`=`Gorevler.senkronDurumu`. Çakışma kanalı: **`Z>0 || K=='cakisma'`** (yalnız `Z>0` YANLIŞTIR — 4xx yolu zehirli satır üretmeden kolona `'cakisma'` yazar). Taban: ① `U>0` ⇒ kuyrukta · ② `U=0,B>0,K='cevrimdisi'` ⇒ çevrimdışı · ③ `U=0,B>0` ⇒ **gönderilmemiş** · ④ `U=0,B=0` ⇒ `K` eşlemesi.
 
 ---
 
@@ -175,7 +181,7 @@ Bu matris **vitrinin kendisidir**: ödevin taç mücevheri *"çevrimdışı-önc
 
 - **Tek kaynak:** Material Symbols (Flutter yerleşik `Icons`). **İkinci ikon kütüphanesi eklenmez** — yeni bağımlılık = lisans + CVE kapısı (kırmızı çizgi #3).
 - **Boyut:** `olcu.ikon` (24). Büyük varyant `olcu.ikon.buyuk` **NICE**.
-- **Anlam pini [MUST]:** çevrimdışı = `cloud_off` · kuyrukta = `arrow_upward` · yerel = `schedule` · çakışma = `error_outline` · sil = `delete_outline`. **Aynı ikon iki farklı anlam taşıyamaz.**
+- **Anlam pini [MUST]:** çevrimdışı = `cloud_off` · kuyrukta = `arrow_upward` · yerel = `schedule` · çakışma = `error_outline` · **gönderilmemiş değişiklik = `edit_outlined` [K75]** · sil = `delete_outline`. **Aynı ikon iki farklı anlam taşıyamaz.**
 - **İkon-yalnız etkileşim YASAK** (A11Y‑3): her ikonun ya görünür metni ya `Semantics` etiketi vardır.
 
 ---
@@ -248,6 +254,8 @@ python araclar\design-token-kapisi.py .               # sonra belge <-> kod
 | **A‑4** | Çok satırlı `/* */` içindeki literal kaçağı — altın küme vakası eksik | ayrı el |
 | **A‑5** | Web'de `MRenk` çözümü + `textScaler` davranışı Android'den **farklı olabilir**; iki platformda ayrı ölçülecek [DOĞRULANMADI] | `slice-3b` adım 2 |
 | **A‑6** | Yazı tipi ailesi **seçilmedi** (sistem varsayılanı kullanılacak); gömülü font = lisans kapısı ⇒ bilinçli olarak ertelendi | sonraki dilim |
+| **A‑7** | **İki rozet yan yana** durumunda A11Y‑4 (2.0× ölçek) ve A11Y‑1 (48dp) **yeniden ölçülmedi** — dar ekranda taşma [DOĞRULANMADI] | `GOREV-R10` build |
+| **A‑8** | `gonderilmemis` durumu için **yeni token EKLENMEDİ** (mevcut `renk.metin.ikincil` kullanılır) — bilinçli: yeni `MUST` sembolü `D1`/`D3` yüzeyini büyütürdü | — |
 
 ---
 

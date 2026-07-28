@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı şu an **hiçbir kapı zorlamıyor** (beyan edilmiş zayıf kontrol, ilk ısırışta araç yazılır).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 28 Tem 2026, oturum 35 (K71 — **kabul kriteri 9 GEÇTİ**; `R9` kusuru açık; §8 arşivlendi).
+> **Son güncelleme:** 28 Tem 2026, oturum 36 (**K75** — `R10` tasarımı kilitlendi, **K46 AÇILDI**, `DESIGN.md` **v2**).
 
 ---
 
@@ -52,14 +52,14 @@
 
 ✅ **slice-3d (ÇEKME) KABUL EDİLDİ — K70, Onur onayladı [oturum 34].** Spec **KİLİTLİ**: `GOREV-slice-3d-cekme.md` **80.399 b · `889A383F`** (`tek-kopya-kapisi.py` kapsamında `kilitli` ⇒ sapma her açılışta ölçülür). **Ürün kodu 3.070 elle yazılan satır** — ölçüm `diff` **+** `status` ile yapıldı; yalnız `diff` **1.147** diyordu (K66/3 bir kez daha kanıtlandı). **COWORK'ÜN KENDİ KOŞUMU (K26), altı ölçümün altısı geçti:** `iddia-kapisi --kanit KANIT/slice-3d` **TEMİZ** · `spec-kapi-kapsama` · `sayi-tazeligi` · `verify.ps1` 120/120 · `analyze` 0 bulgu · `flutter test` 136/136 — hepsi **EXIT 0**. 🔴 **K66/2 BORCU KAPANDI:** `I2`/`I3` **ilk kez** koştu ve temiz döndü. Kapıların ölçmediğini Cowork ölçtü: 40 mutant dosyasının **hiçbiri** derleme hatası değil, hepsinde assertion izi var ⇒ **mutantlar doğru sebeple ısırdı** (K69/EK'in build'e devrettiği birinci sorunun cevabı: **EVET**).
 
-🔴 **SIRADAKİ İŞ:** ✅ **`R9` KAPANDI — KABUL EDİLDİ (K74).** Cowork'ün kendi koşumu: `iddia-kapisi` + `spec-kapi-kapsama` **EXIT 0** · `flutter test` **142/142** · `analyze` **0** · cihazda **bağımsız tekrar** (`KANIT/R9/09-COWORK-DOGRULAMA/`) ⇒ uzak görev artık rozetSİZ. → **① `R10` ÖNCELİK KİLİDİ ONUR'DA** (§8) · ② **slice-3e (SignalR)**, K42-d adım 4 · ③ `araclar/oturum-sagligi.py` (K21 — K44-a). **Push Onur'da.**
+🔴 **SIRADAKİ İŞ — `R10` BUILD'E HAZIR [K75, oturum 36].** Tasarım kilitli, spec yazıldı: `GOREV_CLAUDE_CODE/GOREV-R10-rozet-turetme.md` **14.650 b · `87E87C5F`** (KİLİTLİ DEĞİL — kilitlenen **TASARIM**). Kendi koşumu: `spec-kapi-kapsama` **BULGU YOK** (kapı 1 · kural 9 · mutant 12 · beyan edilmiş borç 1) · `iddia-kapisi` **TEMİZ** · `sayi-tazeligi` **TEMİZ** · `design-token-kapisi` **TEMİZ** · `dosya-kimlik` U+FFFD 0 / CRLF 0. Bağımsız denetim (K26, iki ayrı el) üç bloker buldu, üçü de kilide girdi. → **① Claude Code: `R10` build** · ② **slice-3e (SignalR)**, K42-d adım 4 · ③ `araclar/oturum-sagligi.py` (K21 — K44-a). **Push Onur'da — SAYI YAZILMAZ, açılışta ÖLÇÜLÜR** (§3 Git satırı). Oturum 35'in yedi commit'i bu oturum sırasında push edildi (reflog ölçüldü: `origin/main update by push` → `67bf0c1`).
 
 🟡 **Arka planda `http://localhost:5298` Development API çalışıyor olabilir** — `G8`/F3 uçtan uca koşumu için **gerekli**. 🔴 **PID YAZILMAZ, ÖLÇÜLÜR** (`netstat -ano | findstr :5298`); bu satırda üç oturum boyunca bayat bir PID durdu. Gerekmiyorsa bilinçli kapatılır.
 
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
+- **K75** — **`R10` tasarımı KİLİTLİ: rozet KOLONDAN DEĞİL KUYRUKTAN türetilir** (`U`/`B`/`Z` sayımları + `K`), çakışma kanalı **`Z>0 || K=='cakisma'`**, kolon yazma yolları **DEĞİŞMEZ**, şema v4 kalır, migration YOK. 🔴 **K46 AÇILDI** (kapsam: bileşik satır + `gonderilmemis` durumu) — gerekçe ölçüldü: `gorev_satiri.dart:59-62` `if/else` çakışma ile tabanı **karşılıklı dışlıyordu**. Kapısı `G11` (12 ayak, 12 mutant `M46`–`M57`); `D8` mutant borcu **beyan edildi**. Gerekçe: hafiza **K75**.
 - **K74** — **`R9` KABUL EDİLDİ** (Cowork'ün kendi koşumu, K26). Çekmeyle doğan satır artık `'senkronize'` ile INSERT ediliyor; `G10` altı ayak + `M41`–`M45` koşuyor; `flutter test` **142/142**. 🔴 **Düzeltmeden ÖNCE inmiş satırlar `'yerel'` KALIR** — migration yasak (kriter 5), **beyan edilmiş sınır**.
-- ~~**K72**~~ — **§5'ten ÇEKİLDİ [K73 kuralı işledi]:** `G10` artık var ve koşuyor ⇒ kural **kapıda** yaşıyor. Gerekçe: hafıza **K72** (daraltma) + **K74** (kabul).
 - **K71** — **kabul kriteri 9 ÖLÇÜLDÜ ve GEÇTİ (3/3 ayak);** `R9` kusuru koşan uygulamadan doğdu; `DURUM.md` §8 arşivlendi ve **altı bayat iddia** ayıklandı. Kanıt: `KANIT/slice-3d/10-KABUL9/`.
 - **K73** — **Bir dilimin tasarım/spec kilitleri, dilim KABUL EDİLDİĞİNDE §5'ten çekilir** ve tek satırlık atıfla temsil edilir; çünkü o andan sonra kural **prozada değil KAPIDA** yaşar (K53 doktrini). Arşivde hiçbir şey silinmez. 🔴 Kapısı **olmayan** kilit çekilemez — bu yüzden `K72` §5'te DURUYOR (`G10` henüz yok).
 - **slice-3b tasarım/spec kilitleri (K57 · K59)** — dilim KAPANDI ⇒ **§5'ten ÇEKİLDİ [K73]**. Kurallar `GOREV-slice-3b-istemci-iskeleti.md` **44.560 b · `F0C3A75A`** + A2/G kapılarında zorlanıyor. Gerekçe: hafıza K57/K59.
@@ -139,20 +139,11 @@
 
 ### Ürün / kod
 
-- 🔴 **`R9` — UZAKTAN GELEN GÖREV EKRANDA *"Yalnızca bu cihazda"* DİYOR [oturum 35, CANLI ölçüm].**
-  Sunucudan inen iki görevin ikisi de saat ikonlu bu rozeti taşıyor; cümle **olgusal olarak
-  yanlış**. Mekanizma: `P6` çekmeyle doğan satırı `senkron_durumu='yerel'` bırakıyor
-  (`senkron_rozeti.dart:52-58` ⇒ `yalnizcaBuCihazda`), `senkronize` ise rozeti **hiç çizmiyor**
-  (`SizedBox.shrink()`). `P6`'nın gerekçesi *bekleyen yerel yazımı* korumaktır ama **çekmeyle DOĞAN
-  satırda bekleyen yazım YOKTUR** (`senkron_kuyrugu` ölçümde 0 satır) ⇒ kilit, INSERT-from-pull ile
-  UPDATE-of-local'ı ayırmadığı için kapsamı dışına taştı. **Bu bir TASARIM KİLİDİ değişikliğidir,
-  kilit Onur'dan gelir.** ✅ **KAPANDI [K74]** — build koştu, **Cowork bağımsız doğruladı** (`KANIT/R9/`). Düzeltmeden **önce** inmiş satırlar `'yerel'` kalır (migration yasak, beyan edilmiş sınır).
 - 🔴 **SABİT `sleep` BİR ÖLÇÜM DEĞİLDİR [oturum 35 — KENDİ ölçüm kusurum].** Cihaz doğrulamasında 22 sn bekleyip **yanlış KIRMIZI** verdim; görev birkaç saniye sonra inmişti. Daha kötüsü: kriter 9'un ilk ölçümü (K71) 15 sn ile **geçmişti — o geçiş titizlik değil ŞANSTI.** Cihaz ölçen her betik **koşula kadar yoklamalı** (tavanlı), sabit uyumamalı.
 - 🔴 **`iddia-kapisi.py` İKİLİ DOSYALARI METİN GİBİ TARIYOR [oturum 35].** 89.628 b'lik bir PNG'nin rastgele baytları `\bM\d\b` desenine denk düşüp **dört hayalet kanıt** üretti. Bugün yanlış-pozitif; **tehlikeli yönü ters:** büyük bir ikili dosya `M41` desenine denk düşerse kapı o mutantın kanıtı **varmış gibi** sayar ⇒ **kanıt-kazayla-sağlanır**. Onarım: yalnız metin uzantıları taransın. 🔴 **AYRI ELE (K34-f)** — aracı Cowork yazdı (K67).
-- 🔴 **`R10` — ÇEKİLMİŞ GÖREV YERELDE DÜZENLENİNCE ROZET SUSAR [denetim buldu, oturum 35].** `senkronize` satır `duzenle()`/`tamamlaGeriAl()`/`sil()` ile değişince rozet `senkronize` kalır ⇒ `SizedBox.shrink()` ⇒ **hiçbir rozet yok**; kullanıcı gönderilmemiş değişikliği senkronize sanar (`gorev_deposu.dart` dört yazma yolu `senkronDurumu`'na yazmıyor). 🔴 **DÜZELTİLMEDİ, ÇÜNKÜ İKİ MEVCUT KAPIYI KIRAR** (`g5_karantina_kapisi_test.dart:212-214` ve `:216-219`: `duzenle()` sonrası rozet **`cakisma` KALMALI**). Gerçek soru: *hem ÇAKIŞMALI hem BEKLEYEN satır hangisini söyler?* — **öncelik kilidi Onur'dan gelir.** Sınıf `R9`'dan önce de vardı (itilmiş görevlerde); `T1` onu çekilmiş görevlere genişletir ⇒ **net kötüleşme dar ama gerçek.**
-- 🟡 **`senkron_rozeti.dart:9-11` DOKÜMAN YORUMU BAYAT** — *"'senkronize' hiçbir zaman gerçek veriden
-  doğmaz, yalnız vitrin/testler içindir"* diyor; cihaz DB'sinde `abcf4930…` satırı **`senkronize`**
-  ve onu `senkron_dongusu.dart:186` gerçek itme turunda yazıyor (K69/EK-2 `B1` aynı satırı gösterir).
+- 🔴 **`R10` — ÇEKİLMİŞ GÖREV YERELDE DÜZENLENİNCE ROZET SUSAR.** Tasarım **KİLİTLİ (K75)**, spec yazıldı, **build BEKLİYOR**. Denetimin bulup kilide giren üç bloker + altı beyan edilmiş sınır `GOREV-R10-rozet-turetme.md` §2/§8'dedir; buraya **kopyalanmaz** (kanonik-kopya kusuru). Başlıkları: 4xx yolu `K='cakisma'` yazıp zehirli üretmiyor · 401 iki kez yanlış etiketleniyor · `K='cevrimdisi'` geçmiş-zaman kalıntısı · sözlükte *silme bekliyor* yok · `limit(100)` taşması · rozet titremesi (`D8`).
+- 🟡 **`tazelik-muafiyet.json`'daki `BD-6` GEREKÇESİ BAYATLADI [oturum 36].** Muafiyet *"DESIGN.md K46 ile DONDURULMUŞTUR"* diyor; **K46 açıldı** (K75). Muafiyetin kendisi hâlâ geçerli (bayat `10/10` iddiası K75'in kapsamı DIŞINDA), ama **gerekçesi artık doğru değil**. 🔴 **AYRI ELE (K34-f)** — muafiyeti Cowork yazdı.
+- 🟢 **KAPANDI [oturum 36'da ölçüldü]:** `senkron_rozeti.dart` doükman yorumu artık bayat değil — satır 9-16 R9/T1'i anlatıyor ve çekmeyle doğan satırın `'senkronize'` başladığını yazıyor.
 - 🔴 **`KANIT/slice-3c/02-G2/` GERİ DOĞDU ve ÜRETİCİ KOD DÜZELTİLMEDİ.**
   `g2_registry_zarf_kapisi_test.dart:64` hâlâ `Directory('../../KANIT/slice-3c/02-G2')` yazıyor
   (28 Tem 2026'da yeniden ölçüldü, **aynen duruyor**). slice-3d build notunda ayrı madde olarak
@@ -230,7 +221,7 @@ python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GO
 
 | dosya | bayt | sha8 | neden donmuş |
 |---|---|---|---|
-| `DESIGN.md` | 15.742 | `534DFF68` | **K46** — tek bayt yazılamaz |
+| `DESIGN.md` **v2** | **18.075** | **`3780ACA4`** | 🔴 **K46 AÇILDI (K75)** — `534DFF68` (v1) **GEÇERSİZDİR**. Açılma kapsamı iki maddedir (bileşik satır + `gonderilmemis`); başka değişiklik Onur'un kilidini ister |
 | `GOREV-slice-3b-istemci-iskeleti.md` | **44.560** | **`F0C3A75A`** | 🔒 **K59 kilidi (v6)** — değişen her bayt kilidi bozar. `6056A5BB` · `79A53AA3` · `BE4581BA` · `1AB02B73` **geçersizdir** |
 | `GOREV-slice-3c-senkron.md` | **41.692** | **`537D0579`** | 🔒 **K64 kilidi (v2, Onur onayladı 27 Tem 2026)** — `5899A220` (v1) **GEÇERSİZDİR**. `tek-kopya-kapisi.py` kapsamında **`kilitli`** sınıfındadır ⇒ sapma **her açılışta ölçülür** |
 | `GOREV-slice-3d-cekme.md` | **80.399** | **`889A383F`** | 🔒 **K70 kilidi** (Onur onayladı 28 Tem 2026) — build'i sürdü, iki bağımsız denetimden geçti, `tek-kopya-kapisi.py` kapsamında **`kilitli`** ⇒ sapma **her açılışta** ölçülür |

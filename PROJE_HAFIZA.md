@@ -109,6 +109,97 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## K75 — R10 TASARIMI KİLİTLENDİ: rozet KUYRUKTAN türetilir + **K46 AÇILDI** [28 Tem 2026, oturum 36]
+
+**Kilit Onur'dan geldi (iki turda, denetimden SONRA revize edildi).** Radar açılışta KIRMIZI'ydı
+(kâğıt artefaktlar + defter D2/D3); K40 gereği dört şık sunuldu, Onur **DEVRET**'in fiilî karşılığını
+seçti: kâğıt değil koşan kod — `R10`.
+
+### Kusur (R10, oturum 35'te denetim buldu, oturum 36'da kodda doğrulandı)
+`Gorevler.senkronDurumu` kolonuna **yalnız senkron döngüsü** yazar (`_rozetYaz`,
+`senkron_dongusu.dart:364-370`). `gorev_deposu.dart`'ın dört yerel yazma yolu (`ekle` `:91`,
+`duzenle` `:121`, `tamamlaGeriAl` `:145`, `sil` `:179`) kolona **hiç dokunmaz** (ölçüldü). Sonuç:
+`'senkronize'` bir satır yerelde düzenlenince kolon değişmez, `SenkronRozeti` `SizedBox.shrink()`
+çizer ⇒ **hiçbir rozet yok** ⇒ kullanıcı gönderilmemiş değişikliği senkronize sanır.
+
+### Kilitlenen tasarım
+**Kolon yazma yolları DEĞİŞMEZ.** Rozet `senkron_kuyrugu`'ndan TÜRETİLİR. Görev başına:
+`U` = `durum='gonderildi'`, `B` = `durum='bekliyor'`, `Z` = `durum='zehirli'`, `K` = kolon.
+
+- **Çakışma kanalı:** `Z>0 **||** K=='cakisma'` — 🔴 `Z>0` TEK BAŞINA YANLIŞTI, denetim yakaladı
+  (aşağıda D-1).
+- **Taban:** ① `U>0` ⇒ `kuyrukta` ("Gönderiliyor") · ② `U=0, B>0, K=='cevrimdisi'` ⇒ `cevrimdisi` ·
+  ③ `U=0, B>0` ⇒ 🆕 `gonderilmemis` ("Gönderilmemiş değişiklik") · ④ `U=0, B=0` ⇒ K eşlemesi.
+- **Çakışma ikonu ile taban rozet ARTIK BİRLİKTE çizilir** (bugünkü `if/else` kalkar).
+- Akış **TEK join'li Drift `watch`** (iki stream + `combineLatest` DEĞİL): `leftOuterJoin` +
+  `groupBy(gorevler.id)` + `entityType='Task'` + `silindi=false` + `orderBy`a `id` tie-break.
+  `customSelect` seçilirse `readsFrom:{gorevler, senkronKuyrugu}` **PAZARLIKSIZ**.
+- `Gorev` domain modeline sayım **EKLENMEZ** (F4 dikişi, `gorev_deposu.dart:11-14`); ayrı
+  `GorevGorunum` tipi taşır. `rozetDikisi` saf kalır, `(K,U,B,Z)` alır, **K'yı ÖNCE doğrular**
+  (tanınmayan dize `ArgumentError` — bugünkü invaryant ölmez).
+- **Şema DEĞİŞMEZ, migration YOK.**
+
+### 🔴 K46 AÇILDI (Onur, 28 Tem 2026) — `DESIGN.md` artık dokunulmaz değil
+Gerekçe **ölçüldü, tercih değil**: `gorev_satiri.dart:59-62` `if (cakismaVarMi) CakismaRozeti()
+else Flexible(SenkronRozeti(...))` ⇒ çakışma ile taban **karşılıklı dışlayıcı**. Yani *"hem
+çakışmalı hem bekleyen satır hangisini söyler?"* sorusunun bugünkü widget'ta **cevabı yoktu** ve
+donmuş dört-durum sözlüğünde doğru cümle **üretilemiyordu**. K46 kapalıyken her seçenek bir yalan
+üretiyordu; Onur **Paket 3**'ü seçti: bileşik satır + yeni durum. Kapsam: `DESIGN.md` §4 durum
+matrisine `gonderilmemis` satırı + bileşik gösterim + `Metinler` girdisi; `design-token-kapisi.py`
+`D0`–`D6` ve `A11Y-7` genişler. **K46 tamamen kalkmadı — bu iş için açıldı.**
+
+### Bağımsız denetim (K26 · K53/1 — TEK tur, iki ayrı denetçi, ayrı pencereler)
+Üç blokerde **bağımsız olarak buluştular**:
+- **D-1 [BLOKER, düzeltildi]** `senkron_dongusu.dart:305-320`: 401 dışı 4xx satırı `bekliyor`
+  bırakır, `denemeSayisi`'nı **ARTIRMAZ**, kolona `'cakisma'` yazar ⇒ **zehirli satır DOĞMAZ**.
+  İlk tasarımın `Z>0` kuralı ateşlenmez, bugün ekranda duran kırmızı çakışma ikonu **kaybolurdu**
+  ve satır asla zehirliye geçmediği için geri gelmezdi. `g5_karantina_kapisi_test.dart:268-280`
+  bugünkü davranışı ölçüyor ama **kolona** baktığı için bu gerilemeye **KÖR**. Düzeltme kilide
+  girdi (`|| K=='cakisma'`).
+- **D-2 [BLOKER, K46 ile çözüldü]** "dik kanal" iddiası bugünkü widget'ta **karşılıksızdı**.
+- **D-3 [BLOKER, Onur revize etti]** Kural ③'ün ilk kilidi `'yerel'` ("Yalnızca bu cihazda") idi.
+  İki denetçi de **gerileme** saydı: R10'un yalanı bir *susmadır* (kullanıcının çıkarımı),
+  `'yerel'` ise bir *beyandır* — elde `K='senkronize'` kanıtı dururken ekrana yazılır; üstelik
+  **dışlayıcılık iddiasıdır** ("kimse görmüyor") ve ürünün vitrini gerçek zamanlı işbirliği.
+- **Cowork'ün denetçileri ÇÜRÜTTÜĞÜ nokta:** ikisi de `main.dart`'ı ölçemedi ve "soğuk açılışta
+  bayat `gonderildi` ⇒ sonsuz dönen ok" dedi. **Ölçtüm: `main.dart:41` `await
+  kurulum.dongu.gonderildiKurtar();` ve `runApp` satır 50'de** ⇒ senaryo **çürütüldü**, kural ①
+  ayakta. *Denetçi de yanılır; ölçüm hakemdir.*
+
+### 🔴 SPEC'E GİRECEK, MİMARİYİ DEĞİŞTİRMEYEN ÖLÇÜLMÜŞ KUSURLAR
+- **401 iki kez yanlış etiketlenir:** `:299-304` `basariRozeti:'cevrimdisi'` ⇒ cihaz çevrimiçiyken
+  "Çevrimdışı kaydedildi"; 8 tur sonra `denemeSayisi>8` ⇒ zehirli + `'cakisma'` ⇒ "Çakışma var".
+  Doğru bilgi (`sonHataKodu='http-401'`) DB'de **duruyor**, türetme onu **okumuyor**.
+- **`K='cevrimdisi'` GEÇMİŞ ZAMAN kalıntısıdır**, op başına yazılır; kural ② onu şimdiki-zaman
+  bağlantı iddiasına çeviriyor. Rozet gerçek connectivity'yi **hiç ölçmüyor** — beyan edilir.
+- **Sözlükte "silme bekliyor" yok** — sayım op'un *anlamına* bakmaz; `title` düzenlemesi ile
+  `isDeleted` op'u aynı `B`'ye düşer. Çakışan **silme** kullanıcıya hiç görünmez (satır listede yok).
+- **`_bekleyenleriSec` `limit(100)`** (`:172`): 101. op `gonderildi`→`bekliyor` döner, yeniden
+  seçilmez ⇒ rozeti kalıcı kural ③'te kalır.
+- **`gonderildiKurtar()` (`:115-117`) ile toplu `gonderildi` yazımı (`:134-137`) AYNI transaction'da
+  DEĞİL** ⇒ her turda U=0 ara karesi ⇒ rozet titremesi. Kaynağı iki stream değil **iki commit**.
+- **A11Y-7 duyurusu `didChangeDependencies`'te** (`senkron_rozeti.dart:34-51`): ebeveyn `durum`
+  parametresini değiştirdiğinde **koşmaz** (`didUpdateWidget` koşar) ⇒ "senkronize edildi" duyurusu
+  bugün hiç yapılmıyor olabilir. Türetme geçişleri normalleştirdiği için bu açık ana yola oturur.
+- **KÖR MUTANT LİSTESİ (hepsi statik/widget ⇒ K53/3 gereği TAVANSIZ):** ① `entityId` filtresini
+  düşür (global sayım) — tek görevli hiçbir test ısırmaz, **iki görevli** test gerekir · ② kural ①
+  ile çakışma kanalının sırasını değiştir · ③ `U` sayımını daima 0 yap — **askılı ağ (`Completer`)
+  ayağı olmadan ölçülemez**, kural ① kapısız kalır · ④ `.watch()` yerine `.get()` / `readsFrom`'a
+  `senkronKuyrugu` koyma — mutlu yol `gorevler`'e de yazdığı için **tesadüfen** yeşil kalır;
+  ısıracak tek test: render SONRASI **yalnız kuyruğa** yaz · ⑤ `rozetDikisi`'nin `throw`'unu
+  `try/catch` ile yut — **bu kapı BUGÜN bile kör**, hiçbir assert ölçmüyor.
+- 🔴 **MEVCUT 20 TESTİN HİÇBİRİ BU TASARIMI YANLIŞLAMIYOR** (ikisi ayrı ayrı saydı) ⇒ `R10` **yeni
+  kapı olmadan kapatılamaz**. `g10 AYAK6` yeşil kalır ama **sebebi değişir** (K='yerel' değil, B=1)
+  ⇒ `ekle()` bozulsa bile geçer: *"derlenir, geçer, hiçbir şey ölçmez"* sınıfı.
+
+### Beyan edilmiş sınırlar (gizlenmedi)
+- `DESIGN.md` yazıldığı an `design-token-kapisi.py` **KIRMIZI** yanar ve build inene kadar öyle
+  kalır — bu **beklenen ve beyan edilmiş** ara durumdur, susturulmaz.
+- `DESIGN.md` `tek-kopya-kapisi`'nda **`kilitli`** sınıftadır ve karşılaştırma **HEAD'e** göredir
+  ⇒ değişiklik commit'lenene kadar `S6` yanar. Yeni kimlik `DURUM.md` §9'a **son yazımdan SONRA**
+  ölçülüp yazılır; eski `534DFF68` **geçersiz** işaretlenir.
+- K74'ün sınırı aynen durur: düzeltmeden **önce** inmiş satırlar `'yerel'` kalır (migration yasak).
+
 ## 🔒 CHECKPOINT (28 Tem 2026 · oturum 35 KAPANIŞ: **K74 — `R9` KABUL EDİLDİ (Cowork'ün kendi koşumu); `K72` §5'ten ÇEKİLDİ**)
 
 ### K74 — `R9` rozet kapsamı düzeltmesi KABUL EDİLDİ
