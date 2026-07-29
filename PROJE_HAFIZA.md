@@ -109,6 +109,40 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## DEVİR — oturum 36 → 37 [29 Tem 2026]
+
+**Durum:** `R10` KAPANDI ve KABUL EDİLDİ (**K76**). Bu oturumda `K75` (tasarım kilidi + **K46 açıldı**,
+`DESIGN.md` **v2**) ve `K76` (kabul + `G11-A9` ölü tuzak onarımı + D2 kural 3 daraltması) kilitlendi.
+Son commit **`bf2e0e7`**; ağaç temiz, `.git/index.lock` yok. **Push Onur'da — sayı yazılmaz, ÖLÇÜLÜR.**
+
+**Sıradaki ilk iş: `slice-3e` (SignalR), K42-d adım 4.** P2'nin tetikleyicisi onun üstüne oturur;
+**periyodik yoklama HÂLÂ YASAK**. Sonra `araclar/oturum-sagligi.py` (K21 — K44-a).
+
+**Yeni oturumun ilk beş dakikası:** DURUM.md + CLAUDE.md oku (PROJE_HAFIZA.md'yi AÇMA; yalnız
+K76/K75/K74 checkpoint'leri) → `tek-kopya-kapisi` → `belge-tavan-kapisi` → `radar --altin-kume` →
+`radar .` → `git --no-optional-locks status --porcelain` + `Test-Path .git\index.lock` +
+`rev-list --left-right --count origin/main...HEAD` → oturum sağlığını KENDİ oturum-id'nle ölç.
+
+**Oturum 36'nın iki dersi (tekrar etmesin):**
+1. **Bir mutantın "ısırması" YETMEZ — KENDİ ayağının ısırması ölçülmelidir.** `M50` ısırıyordu ama
+   `G11-A9`'u geçiyordu; kolateral ısırık, o ayak değiştiği gün sessizce kaybolur.
+2. **PowerShell `*>` UTF-16LE yazar**; `utf-8` okuyan betik dosyayı sessizce bozuk okur (bir kez
+   yanlış NEGATİF verdi). Okuyucu `utf-16 → utf-8 → cp1254` sırasıyla denemelidir.
+
+**Açık borçlar (DURUM.md §8 tam liste; oturum 36'da ÜÇ YENİ):** taban rozet metni **1.0× ölçekte bile
+kırpılıyor** (`DESIGN.md` v2 `A-7` ısırdı, 2.0× ölçülmedi) · satırın `content-desc`'i rozet metnini
+**iki kez** taşıyor · cihaz kanıtındaki `zehirli` kayıt **SQLite'a seed edildi** (render gerçek, veri
+sentetik) · `tazelik-muafiyet.json` `BD-6` gerekçesi K46 açılınca bayatladı (ayrı el, K34-f) ·
+eskiler: `iddia-kapisi.py` ikili tarama · `hafiza-dizin.py` K60 ihlali · `verify.ps1` fail-loud ·
+`02-G2` üretici kodu + ikinci yazıcı · D1-önleme · Z10b · defter D2/D3 · `DESIGN.md` BD-1…BD-7.
+
+**Ortam (devralınan):** Backend 127.0.0.1:5298 çalışıyor (PID YAZMA, ÖLÇ: `netstat -ano | findstr
+:5298`) · emülatör `emulator-5554` açık, R10'lu APK kurulu · `adb` PATH'te **yok**, tam yol gerekir ·
+**köprü bu oturumda İKİ KEZ düştü** ⇒ uzun koşumları `Start-Process -WindowStyle Hidden` ile ayrık
+sürece al, çıktıyı DOSYAYA yaz, köprü dönünce oku · Cowork→PowerShell köprüsü `$` değişkenlerini
+SİLİYOR (komut satırına `$` gönderme, `.ps1`/`.py` yaz) · `os.replace` WinError 5 ⇒ üç adımlı yedekli
+takas · commit mesajına ÇİFT TIRNAK yazma · `git add -A` YASAK (K55).
+
 ## K76 — `R10` KABUL EDİLDİ · `G11-A9` KÖR AYAK onarıldı · D2 kural 3 daraltması KİLİTLENDİ [29 Tem 2026, oturum 36]
 
 **Onur onayladı (iki kilit birden).** Build'i Claude Code yaptı; **Cowork hiçbir sayısına
