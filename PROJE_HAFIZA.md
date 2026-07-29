@@ -109,6 +109,87 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## K81 — `G12` KABUL EDİLDİ + `K79/3` DARALTILDI (29 Tem 2026, oturum 37 · Onur onayladı)
+
+**COWORK'ÜN KENDİ KOŞUMU (K26) — geçenler.** `flutter analyze --fatal-infos` → *No issues found*
+(5,9 sn) EXIT 0 · `flutter test` → **171/171** EXIT 0 (156 → 171, +15) · `yoklama-yasagi-kapisi.py
+--altin-kume` → EXIT 0 **12/12** (kabul kriteri ≥9) · `flutter build web --release` → **EXIT 0** ·
+kanıt dizininde **100 KB üstü tek dosya yok** (kriter 9 koruması uygulanmış) · PNG'ler konteynere alınıp
+**gözle** denetlendi: 6:42'de dört satır → 6:43'te beş satır, *"G12 ANDROID RE…"* eklenmiş ⇒ `kIsWeb`
+koruması Android'i **kırmamış** (kriter 7). T3 kodu okundu: `kIsWeb` kontrolü `_durduruldu = false`'dan
+**önce** duruyor, yani bayrak `true` kalıyor ve hiçbir zamanlayıcı kurulmuyor — K79/2'ye harfiyen uygun.
+
+🔴 **COWORK, BUILDER'IN MUTANT ÖLÇÜMÜNÜ YETERSİZ BULDU VE DAHA SIKI ÖLÇTÜ.** Spec *"hedef ayağın adı ham
+çıktıda görünmeli"* diyordu; bu **zayıf bir kontroldür**, çünkü `flutter test` zaten bütün test adlarını
+basar ⇒ her mutantta bedavaya geçer. Cowork `[E]` satırlarını ayrıştırıp **hangi testin düştüğünü**
+ölçtü: **onüç birim mutantın onüçü de kendi ayağını düşürdü.** İkisinde nüans: `M63` → `A7` yerine
+**`A7b`**, `M69` → `A13` yerine **`A13b`** — ikisi de builder'ın böldüğü ayağın doğru yarısı, **ölü tuzak
+değil**. Kolateraller (`M59`+`A6`, `M60`+`A11`, `M68`+`A11`) aynı kök nedenden ve her birinin **kendi**
+hedefi de düşüyor ⇒ oturum 36'nın `G11-A9` sınıfı **tekrar etmedi**.
+
+**BUILDER'IN İKİ DÜRÜST DURUŞU TEYİT EDİLDİ.** `A9`/`A13` fixture'larının ilk hâlinin ölü tuzak olduğunu
+kendi bulup düzeltmesi (ve `A13b`'yi eklemesi) · `fakeAsync` altında `cancel()`'ın kendi olay teslimatı
+içinden çağrılmasının Future'ı hiç tamamlamadığını ölçüp işaretlemesi. Kriter 4 ve 8'de karar vermeyip
+Onur'a bırakması da doğrudur.
+
+---
+
+### 🔴 KARAR 1 — `Y1` SEMBOL BAZLI OLDU (`K79/3` DARALTILDI)
+
+**Bulgu:** `yoklama-yasagi-kapisi.py .` EXIT 1 verdi, tek bulgu `senkron_rozeti.dart:170` —
+`_DonenOkState` içindeki **dönen ok animasyonunun** `Timer.periodic`'i. Cowork kaynağı okudu: ağ yok,
+senkron çağrısı yok, saf sunum. **Araç doğru, kural fazla genişti.**
+
+**Onur'un kilidi:** sembol bazında beyaz liste. Reddedilen iki şık ve ölçülmüş bedelleri: *dosyayı
+beyaz listeye almak* → o dosyaya sonradan eklenecek senkron çeken bir `Timer` **kör** kalırdı;
+*beyan edilmiş sınır sayıp kırmızı bırakmak* → kalıcı kırmızı = alarm yorgunluğu, bu projede "kör kapı"
+tam olarak böyle doğar.
+
+**Cowork'ün onarımı (K34-f'e uygun: aracı Claude Code yazdı, Cowork onardı):** beyaz liste artık
+`(dosya, kapsayan bildirim)` çifti — `signalr_json_sinyal.dart::SignalrJsonSinyal` ve
+`senkron_rozeti.dart::_DonenOkState`. 🔴 **Ve bir KUSUR daha kapandı:** eski `_y1` beyaz liste dışındaki
+dosyayı `continue` ile atlıyordu, yani **gövde taraması hiç koşmuyordu**; Cowork bunu `M71` üzerinden
+ölçmüştü (mutant yalnız *"BEYAZ LİSTE DIŞI"* diye raporlanıyor, *"YOKLAMA ŞÜPHESİ"* bacağı gerçek depoda
+hiç çalışmıyordu). Artık **gövde kuralı beyaz listedekiler dâhil her zamanlayıcıya** uygulanır.
+
+**Altın kümeye üç vaka eklendi (12 → 15):** ① beyaz listedeki sembol — SUSMALI ② **aynı dosyada başka
+sembolde** `Timer` — ISIRMALI (dosya bütünü affedilmez) ③ beyaz listedeki sembolde **bile** senkron çeken
+gövde — GÖVDE BACAĞI ISIRMALI. Ayrıca `_vaka` yardımcısına **`icermeli`** parametresi eklendi: eski hâli
+yalnız **kodları** (`Y1`/`Y2`/…) karşılaştırıyordu, dolayısıyla `Y1`'in iki bacağını **ayırt edemiyordu**
+ve *"gövde bacağı koşuyor mu?"* sorusunu altın küme **soramıyordu**.
+
+**Ölçüldü:** altın küme **15/15 EXIT 0** · gerçek tarama **EXIT 0, BULGU YOK** ⇒ **kriter 4 GEÇTİ.**
+**`M71b`** (K81 sonrası yeniden koşum, `KANIT/slice-3e-G12/09-MUTANT/M71b-*`): taban **0 bulgu**, mutant
+altında **2 bulgu** ve ikincisi *"YOKLAMA ŞÜPHESİ … Timer gövdesinde `cekmeTuruCalistir` geçiyor"* ⇒
+gövde bacağı artık **gerçek depoda** kanıtlı. Ürün kodu mutanttan sonra geri alındı, `sha256` **aynı**.
+
+---
+
+### 🔴 KARAR 2 — KRİTER 8 UYGULANMAZ; KUSUR SPEC'İ YAZAN ELDEDİR
+
+`spec-kapi-kapsama.py` **dizin kabul etmiyor** (`.` ⇒ `ORTAM HATASI: Permission denied: '.'`), spec
+dosyasıyla çağrılınca da `[S0] BİÇİM: §5'te hiç '### G<n>' kapı başlığı yok` diyor — `G12` kendi başlık
+şemasını kullanıyor (`## 2. YAPILACAKLAR` / `## 3. MUTANT TABLOSU`). Yani kriter 8, **aracın hiç kabul
+etmediği bir argüman biçimiyle** ve **ayrıştıramadığı bir belge biçimine karşı** yazılmıştı. **Bu kusur
+builder'ın değil, `K79`'u yazan elindir** — Cowork kendi hatasını kaydeder.
+
+**Onur'un kilidi:** `G12` için kriter 8 **UYGULANMAZ** diye beyan edilir (spec K79 ile bayt-kilitli,
+dokunulmaz) ve biçim standardı `CLAUDE.md`'ye yazılır: bundan sonraki her `GOREV_CLAUDE_CODE/*.md`
+spec'i `## 5. KAPILAR` + `### G<n>` + `## 6. MUTANTLAR` başlıklarını taşır, araç **spec dosyasının
+yoluyla** çağrılır. Reddedilen şıklar: *aracı genişletmek* (K34-f gereği **ayrı el** ister) ·
+*spec'i düzeltmek* (K79 kilidini bozardı — kilitli spec'e dokunma yasağının ilk ihlali olurdu).
+**Beyan edilmiş boşluk:** `G12`'nin kapı/kural kapsama ölçümü bu dilimde **yapılmamıştır**.
+
+---
+
+### Kalan açık kalemler
+
+`Y3`'ün mutantı yok (spec §3'te beyanlı) · `iddia-kapisi.py` bu kanıt dizininde de **6 SARI hayalet**
+üretti (PNG/sqlite baytları; borç **üçüncü kez** ısırdı, onarım ayrı elde) · web ayağı
+**[DOĞRULANMADI]** olmaya devam eder — `kIsWeb` yalnız *"web'de sessizce kapalı"* olduğunu ölçer,
+*"web'de çalışıyor"* demez.
+
+
 ## K80 — ORTAMI KİM KALDIRIR: kural `CLAUDE.md`'ye yazıldı (29 Tem 2026, oturum 37 · Onur kilitledi)
 
 **Soru Onur'dan geldi:** *"Sen bana bu emülatörü falan açtırıyorsun ya, önceden yapmıyorduk böyle bir

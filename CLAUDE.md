@@ -93,6 +93,17 @@ yalnız `mv` ile kenara alabilir; kalıcı silmeyi Onur yapar.
 ## Rol bölümü
 Cowork = tasarım/ADR/spec/orkestrasyon/hafıza/denetim; Claude Code = build. Cowork, Code'un beyanına güvenmez; her artefaktı bağımsız doğrular (Desktop Commander ile gerçek FS'ten).
 
+### GOREV spec biçim standardı [K81 — 29 Tem 2026, PAZARLIKSIZ]
+
+`spec-kapi-kapsama.py` **dizin kabul etmez** (`.` verilirse `ORTAM HATASI: Permission denied`) ve
+kapıları yalnız `## 5. KAPILAR` altındaki `### G<n>` başlıklarından, mutantları `## 6. MUTANTLAR`
+altından okur. Bu yüzden **bundan sonraki her `GOREV_CLAUDE_CODE/*.md` spec'i** bu iki başlığı bu adla
+taşır ve araç **spec dosyasının yoluyla** çağrılır, dizinle değil.
+🔴 Ölçülmüş gerekçe: `GOREV-slice-3e-G12.md` kendi başlık şemasını kullandı (`## 2. YAPILACAKLAR` /
+`## 3. MUTANT TABLOSU`) ⇒ araç `[S0] BİÇİM` ile durdu ve o spec'in **kapsama ölçümü hiç yapılamadı**.
+Kusur builder'ın değil, **spec'i yazan elindir**: kriter, aracın hiç kabul etmediği bir argüman biçimiyle
+ve ayrıştıramadığı bir belge biçimine karşı yazılmıştı.
+
 ## Ortamı kim kaldırır [K80 — 29 Tem 2026, Onur kilitledi · PAZARLIKSIZ]
 
 **Cihaz ya da canlı-sunucu kanıtı isteyen HER spec, ortamı KENDİ kaldırma maddesini taşımak ZORUNDADIR.**

@@ -44,6 +44,16 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  # GOREV-slice-3e-G12 K79/5: birim testleri SAHTE KANAL + GERCEK PROTOKOL
+  # kosar -- `web_socket_channel`in KENDI uretim kodunun (`AdapterWebSocketChannel`)
+  # dayandigi `WebSocket` soyutlamasinin resmi test yardimcisi (`fakes()`),
+  # zaten transitif bagimlilikti (pubspec.lock), test-only DOGRUDAN ilan edilir.
+  web_socket: ^1.0.1
+  # K79/6: geri cekilme zamanlayicilarini GERCEK BEKLEMEDEN, sanal saatle
+  # (deterministik) ilerletmek icin -- zaten transitif (test_api), test-only
+  # DOGRUDAN ilan edilir.
+  fake_async: ^1.3.3
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

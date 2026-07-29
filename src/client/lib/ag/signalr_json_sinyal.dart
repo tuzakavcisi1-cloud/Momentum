@@ -2,11 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'gercek_zamanli_sinyal.dart';
+
+/// GOREV-slice-3e-G12 T1: kanal acici soyutlamasi -- uretimde `null` ⇒
+/// `IOWebSocketChannel.connect` (davranis DEGISMEZ), testte sahte bir
+/// `WebSocketChannel` enjekte edilebilir (K79/5: sahte TASIMA, gercek
+/// PROTOKOL).
+typedef KanalAcici = WebSocketChannel Function(Uri url, Map<String, String> basliklar);
 
 /// GOREV-slice-3e T2: SignalR JSON hub protokolunun YALNIZ gereken alt
 /// kumesi -- K77/1 PAZARLIKSIZ: kendi minimal istemcimiz, `signalr_netcore`
@@ -40,6 +47,7 @@ class SignalrJsonSinyal implements GercekZamanliSinyal {
   final Duration baglantiZamanAsimi;
   final http.Client _http;
   final Random _rastgele;
+  final KanalAcici? _kanalAcici;
 
   /// Taninmayan cerceve/mesaj tipi ve close olaylari SESSIZ YUTULMAZ (T2/5)
   /// -- varsayilan `print`, G12 oncesi tek kanal; test gozlemci enjekte eder.
@@ -55,6 +63,7 @@ class SignalrJsonSinyal implements GercekZamanliSinyal {
   int _geriCekilmeIndeksi = 0;
   bool _durduruldu = true;
   bool _kapatmaIslemde = false;
+  bool _durdurCagrildi = false;
 
   SignalrJsonSinyal({
     required this.sunucuTabanUrl,
@@ -62,10 +71,16 @@ class SignalrJsonSinyal implements GercekZamanliSinyal {
     http.Client? istemci,
     Random? rastgele,
     void Function(String mesaj)? gunlukYaz,
+    KanalAcici? kanalAcici,
     this.negotiateZamanAsimi = const Duration(seconds: 10),
     this.baglantiZamanAsimi = const Duration(seconds: 10),
   })  : _http = istemci ?? http.Client(),
         _rastgele = rastgele ?? Random(),
+        // `this._kanalAcici` parametre adini da PRIVATE yapardi, disaridan
+        // `kanalAcici:` adlandirilmis argumanla cagrilamaz hale gelirdi
+        // (bkz. senkron_dongusu.dart:1).
+        // ignore: prefer_initializing_formals
+        _kanalAcici = kanalAcici,
         gunlukYaz = gunlukYaz ?? _varsayilanGunlukYaz;
 
   static void _varsayilanGunlukYaz(String mesaj) {
@@ -78,26 +93,49 @@ class SignalrJsonSinyal implements GercekZamanliSinyal {
 
   @override
   Future<void> baslat() async {
+    // G12/T3 PAZARLIKSIZ (K79/2): web'de HIC baglanmaz -- IOWebSocketChannel
+    // dart:io'ya dayanir + WS upgrade'ine ozel baslik konamaz (K77/3).
+    // `_durduruldu` TRUE KALIR ki sonraki cagrilar da sessizce donsun ve
+    // HICBIR zamanlayici kurulmasin.
+    if (kIsWeb) {
+      gunlukYaz('web: gercek zamanli sinyal KAPALI (K79/2) -- elle yenileme tek yol');
+      return;
+    }
     if (!_durduruldu) return; // zaten baslatilmis -- idempotent.
     _durduruldu = false;
     unawaited(_baglanmayiDene());
   }
 
   /// K77/2: cagirildiktan SONRA yeniden baglanma DENENMEZ.
+  /// G12/T2 PAZARLIKSIZ: IDEMPOTENT -- ikinci cagri PATLAMAZ (sessizce doner).
+  /// `_denetleyici` de burada kapatilir (once hic kapanmiyordu, K79/0).
   @override
   Future<void> durdur() async {
+    if (_durdurCagrildi) return;
+    _durdurCagrildi = true;
     _durduruldu = true;
     _yenidenBaglanmaZamanlayicisi?.cancel();
     _yenidenBaglanmaZamanlayicisi = null;
     await _kanaliKapat();
+    await _denetleyici.close();
   }
 
+  /// G12 T4 ile OLCULDU (A11, `fakeAsync` altinda): bir abonenin `cancel()`ini
+  /// KENDI olay teslimati icinden -- sync:true ic kanal kuran
+  /// `AdapterWebSocketChannel` uzerinden, uretimin `IOWebSocketChannel`i de
+  /// BUNA dayanir -- cagirmak, dondugu Future'in fakeAsync sanal saatinde HIC
+  /// tamamlanmamasina yol aciyor (gercek/`fakeAsync`-DISI kosumda GOZLENMEDI,
+  /// A4 kaniti). Sebep tam olarak DOGRULANMADI ama duzeltme BAGIMSIZ SAGLAM:
+  /// `cancel()` cagrildigi ANDA gelecek olay teslimini durdurur, dondugu
+  /// Future'in NE ZAMAN tamamlandigina bagli hicbir mantik YOK -- bu yuzden
+  /// `_kanaliKapat` artik BEKLENMEZ (fire-and-forget, bkz. `_baglantiKoptu`);
+  /// eski kaynaklarin serbest kalmasi yeniden baglanma ZAMANLAMASINI geciktirmez.
   Future<void> _kanaliKapat() async {
     _keepaliveZamanlayicisi?.cancel();
     _keepaliveZamanlayicisi = null;
     final abonelik = _abonelik;
     _abonelik = null;
-    await abonelik?.cancel();
+    unawaited(abonelik?.cancel());
     final kanal = _kanal;
     _kanal = null;
     try {
@@ -109,6 +147,7 @@ class SignalrJsonSinyal implements GercekZamanliSinyal {
 
   Future<void> _baglanmayiDene() async {
     if (_durduruldu) return;
+    _kapatmaIslemde = false; // YENI deneme -- bu denemenin KENDI kopusu tekrar islenebilsin.
     try {
       final connectionToken = await _negotiate();
       if (_durduruldu) return;
@@ -147,13 +186,19 @@ class SignalrJsonSinyal implements GercekZamanliSinyal {
   }
 
   /// T2/2: ayni baslikla WS baglantisi -- http(s) -> ws(s).
+  /// G12/T1: acici enjekte edilmisse ONU kullanir; uretimde (`null`) davranis
+  /// AYNEN korunur -- `IOWebSocketChannel.connect`.
   WebSocketChannel _websocketAc(String connectionToken) {
     final wsTaban = _wsTabaniniTuret(sunucuTabanUrl);
-    return IOWebSocketChannel.connect(
-      Uri.parse('$wsTaban/hubs/sync?id=$connectionToken'),
-      headers: {_devKullaniciBasligi: actorId},
-    );
+    final url = Uri.parse('$wsTaban/hubs/sync?id=$connectionToken');
+    final basliklar = {_devKullaniciBasligi: actorId};
+    return (_kanalAcici ?? _varsayilanKanalAc)(url, basliklar);
   }
+
+  static WebSocketChannel _varsayilanKanalAc(
+    Uri url,
+    Map<String, String> basliklar,
+  ) => IOWebSocketChannel.connect(url, headers: basliklar);
 
   static String _wsTabaniniTuret(String httpTaban) {
     if (httpTaban.startsWith('https://')) {
@@ -270,17 +315,18 @@ class SignalrJsonSinyal implements GercekZamanliSinyal {
   }
 
   /// T2/7: baglanti koptugunda kanal kapatilir ve -- `durdur()` cagirilmadiysa
-  /// -- geri cekilme cizelgesiyle yeniden baglanma PLANLANIR.
+  /// -- geri cekilme cizelgesiyle yeniden baglanma PLANLANIR. G12 ile
+  /// OLCULDU: eski kanalin temizligi (`_kanaliKapat`) ARTIK BEKLENMEZ --
+  /// yeniden baglanma ZAMANLAMASI ona bagli DEGILDIR (bkz. `_kanaliKapat`
+  /// dokumantasyonu). `_kapatmaIslemde` bir sonraki `_baglanmayiDene()`
+  /// baslayana kadar `true` kalir -- ayni kopusun GEC gelen ikinci bildirimi
+  /// (ör. eski abonenin gecikmis `onDone`'u) ikinci bir tur PLANLAMAZ.
   void _baglantiKoptu(String neden) {
     if (_kapatmaIslemde) return; // ayni kopusun ikinci bildirimi -- yut.
     _kapatmaIslemde = true;
     gunlukYaz('baglanti koptu: $neden');
-    unawaited(
-      _kanaliKapat().whenComplete(() {
-        _kapatmaIslemde = false;
-        if (!_durduruldu) _yenidenBaglanmayiPlanla();
-      }),
-    );
+    unawaited(_kanaliKapat());
+    if (!_durduruldu) _yenidenBaglanmayiPlanla();
   }
 
   void _yenidenBaglanmayiPlanla() {

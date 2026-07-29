@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_driver/driver_extension.dart';
 
+import 'ag/gercek_zamanli_sinyal.dart';
 import 'ag/http_senkron_agi.dart';
 import 'ag/signalr_json_sinyal.dart';
 import 'design/tema.dart';
@@ -74,7 +75,10 @@ class MomentumUygulamasi extends StatelessWidget {
 class _UretimKurulumu {
   final GorevDeposu depo;
   final SenkronDongusu dongu;
-  const _UretimKurulumu(this.depo, this.dongu);
+  // GOREV-slice-3e-G12 T2: sinyal artik BURADA tutulur -- sahipsiz kalirsa
+  // `durdur()`u cagiracak kimse olmaz (K79/0 ikinci bulgu).
+  final GercekZamanliSinyal sinyal;
+  const _UretimKurulumu(this.depo, this.dongu, this.sinyal);
 }
 
 /// GOREV-slice-3c T3/T4/T5/T6: ayarlar (clientId/devUserId) once yuklenir/
@@ -123,5 +127,5 @@ Future<_UretimKurulumu> _uretimKurulumOlustur() async {
   sinyal.olaylar.listen((_) => unawaited(dongu.cekmeTuruCalistir()));
   unawaited(sinyal.baslat());
 
-  return _UretimKurulumu(depo, dongu);
+  return _UretimKurulumu(depo, dongu, sinyal);
 }
