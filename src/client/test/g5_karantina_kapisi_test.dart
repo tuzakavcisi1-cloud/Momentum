@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:client/ag/senkron_agi.dart';
 import 'package:client/sunum/cakisma_rozeti.dart';
-import 'package:client/sunum/gorev_listesi_ekrani.dart';
 import 'package:client/sunum/gorev_satiri.dart';
 import 'package:client/sunum/senkron_rozeti.dart';
 import 'package:client/veri/ayarlar_deposu.dart';
@@ -225,7 +224,12 @@ void main() {
 
   test('D5: rozet dikisi -- cakisma => GorevSatiri.cakismaVarMi==true, CakismaRozeti gorunur', (
   ) async {
-    final (durum, cakismaVarMi) = rozetDikisi('cakisma');
+    final (durum, cakismaVarMi) = rozetDikisi(
+      'cakisma',
+      ucusta: 0,
+      bekleyen: 0,
+      zehirli: 0,
+    );
     expect(durum, SenkronDurumTuru.yerel);
     expect(cakismaVarMi, isTrue);
   });
@@ -239,7 +243,12 @@ void main() {
       // ihlal ediyor (ayri, DB'siz bir sorun; G5'in kapsami degil). rozetDikisi('cakisma')
       // -> (yerel,true) donusumu yukaridaki testte zaten dogrulandi; burada YALNIZ
       // o CIKTI ile GorevSatiri'nin CakismaRozeti gosterdigini kontrol eder.
-      final (senkronDurumu, cakismaVarMi) = rozetDikisi('cakisma');
+      final (senkronDurumu, cakismaVarMi) = rozetDikisi(
+        'cakisma',
+        ucusta: 0,
+        bekleyen: 0,
+        zehirli: 0,
+      );
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(

@@ -90,8 +90,26 @@ class _SabitDepo implements GorevDeposu {
   final List<Gorev> _gorevler;
   _SabitDepo(this._gorevler);
 
+  // GOREV-R10 D5: arayuz artik GorevGorunum doner -- bu sabit depo sayim
+  // tasimadigi icin (test verisi elle kurulur, kuyruk yok) daima sifir
+  // U/B/Z ile rozetDikisi'ni cagirir; taban SALT K'nin (senkronDurumu)
+  // esitlemesinden gelir.
   @override
-  Stream<List<Gorev>> gorevlerGorunur() => Stream.value(_gorevler);
+  Stream<List<GorevGorunum>> gorevlerGorunur() => Stream.value(
+    _gorevler.map((gorev) {
+      final (durum, cakismaVarMi) = rozetDikisi(
+        gorev.senkronDurumu,
+        ucusta: 0,
+        bekleyen: 0,
+        zehirli: 0,
+      );
+      return GorevGorunum(
+        gorev: gorev,
+        senkronDurumu: durum,
+        cakismaVarMi: cakismaVarMi,
+      );
+    }).toList(),
+  );
   @override
   Future<void> ekle(String baslik) async {}
   @override
@@ -105,7 +123,8 @@ class _SabitDepo implements GorevDeposu {
 /// A11Y-7/hata durumunu tetiklemek icin: akis HER ZAMAN hata verir.
 class _HataliDepo implements GorevDeposu {
   @override
-  Stream<List<Gorev>> gorevlerGorunur() => Stream.error(StateError('mock hata'));
+  Stream<List<GorevGorunum>> gorevlerGorunur() =>
+      Stream.error(StateError('mock hata'));
   @override
   Future<void> ekle(String baslik) async {}
   @override

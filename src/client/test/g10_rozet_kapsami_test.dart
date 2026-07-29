@@ -177,6 +177,11 @@ void main() {
     await tester.pumpWidget(gercekEkranSarmalayici(okuyucuDepo));
     await tester.pumpAndSettle();
 
+    // GOREV-R10 spec §4: POZITIF iddia -- join yonu ters donerse (leftOuterJoin
+    // yerine innerJoin) satirin TAMAMI listeden duser ve asagidaki findsNothing
+    // yine de gecerdi (kor). Baslik metninin VAR oldugunu ayrica dogrulamak
+    // bu mutant sinifini yakalar.
+    expect(find.text('AYAK5 uctan uca gorev'), findsOneWidget);
     expect(find.text(Metinler.yalnizcaBuCihazda), findsNothing);
     await db.close();
   });

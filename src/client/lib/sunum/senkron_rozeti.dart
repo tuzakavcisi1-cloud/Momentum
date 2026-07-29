@@ -14,7 +14,12 @@ import '../design/tokens.dart';
 /// 'kuyrukta', 'senkronize', 'cakisma', 'cevrimdisi'). Bu durumda rozetin
 /// CIZILMEMESI bir veri sinirlamasi degil, GURULTU AZALTMADIR (DESIGN.md
 /// SS4) -- kullaniciya yalniz DIKKAT gerektiren durumlar gosterilir.
-enum SenkronDurumTuru { yerel, kuyrukta, senkronize, cevrimdisi }
+///
+/// GOREV-R10 [K75]: `gonderilmemis` -- satir sunucuda VAR ama son degisiklik
+/// (senkron kuyrugunda bekleyen bir op) henuz gitmedi. `K` (ham DB kolonu)
+/// bu durumu HICBIR ZAMAN tasimaz -- taban KUYRUKTAN turetilir (rozetDikisi,
+/// D2 kural 3), enum degeri yalniz TURETILMIS taban icindir.
+enum SenkronDurumTuru { yerel, kuyrukta, senkronize, cevrimdisi, gonderilmemis }
 
 /// SS3.1 -- 4 durum: yerel * kuyrukta * gonderildi(senkronize) * cevrimdisi.
 /// senkronize/cevrimdisi durumlari, bu durumla ILK KEZ olusturulduklarinda
@@ -29,19 +34,39 @@ class SenkronRozeti extends StatefulWidget {
 }
 
 class _SenkronRozetiState extends State<SenkronRozeti> {
-  bool _duyuruYapildi = false;
+  // GOREV-R10 D9: eski kod duyuruyu SADECE didChangeDependencies'te
+  // yapiyordu -- bu yalniz ILK mount'ta / inherited bagimlilik degisiminde
+  // koşar, ebeveyn `durum` PARAMETRESINI degistirdiginde (ayni State,
+  // didUpdateWidget) HIC koşmaz ⇒ durum gecislerinde duyuru sessizce
+  // kaybolurdu. `_sonDuyurulanDurum` hem "ilk mount'ta bir kez" hem "onceki
+  // durum != yeni durum" kuralini TEK bayrakla tasir.
+  SenkronDurumTuru? _sonDuyurulanDurum;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_duyuruYapildi) return;
-    final duyuru = switch (widget.durum) {
+    if (_sonDuyurulanDurum == null) {
+      _duyuruGerekirseGonder(widget.durum);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant SenkronRozeti oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.durum != widget.durum) {
+      _duyuruGerekirseGonder(widget.durum);
+    }
+  }
+
+  void _duyuruGerekirseGonder(SenkronDurumTuru durum) {
+    _sonDuyurulanDurum = durum;
+    final duyuru = switch (durum) {
       SenkronDurumTuru.senkronize => Metinler.duyuruSenkronizeEdildi,
       SenkronDurumTuru.cevrimdisi => Metinler.duyuruCevrimdisi,
+      SenkronDurumTuru.gonderilmemis => Metinler.duyuruGonderilmemisDegisiklik,
       _ => null,
     };
     if (duyuru != null) {
-      _duyuruYapildi = true;
       SemanticsService.sendAnnouncement(
         View.of(context),
         duyuru,
@@ -78,6 +103,13 @@ class _SenkronRozetiState extends State<SenkronRozeti> {
           ikon: Icons.cloud_off,
           renk: MRenk.cevrimdisi(context),
           metin: Metinler.cevrimdisiKaydedildi,
+        );
+      case SenkronDurumTuru.gonderilmemis:
+        return _rozet(
+          context,
+          ikon: Icons.edit_outlined,
+          renk: MRenk.metinIkincil(context),
+          metin: Metinler.gonderilmemisDegisiklik,
         );
     }
   }

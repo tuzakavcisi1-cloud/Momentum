@@ -141,23 +141,25 @@ void main() {
       expect(sonDeger, isTrue);
     });
 
-    testWidgets('cakisma varsa CakismaRozeti gosterir, SenkronRozeti degil', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _sarmala(
-          Scaffold(
-            body: GorevSatiri(
-              gorev: _sahteGorev(),
-              onTamamlaDegisti: (_) {},
-              cakismaVarMi: true,
+    testWidgets(
+      'GOREV-R10 D7: cakisma varsa CakismaRozeti VE taban SenkronRozeti '
+      'BIRLIKTE gosterir (cakisma taban rozeti bastirmaz)',
+      (tester) async {
+        await tester.pumpWidget(
+          _sarmala(
+            Scaffold(
+              body: GorevSatiri(
+                gorev: _sahteGorev(),
+                onTamamlaDegisti: (_) {},
+                cakismaVarMi: true,
+              ),
             ),
           ),
-        ),
-      );
-      expect(find.byType(CakismaRozeti), findsOneWidget);
-      expect(find.byType(SenkronRozeti), findsNothing);
-    });
+        );
+        expect(find.byType(CakismaRozeti), findsOneWidget);
+        expect(find.byType(SenkronRozeti), findsOneWidget);
+      },
+    );
   });
 
   group('CakismaRozeti', () {

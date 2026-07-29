@@ -45,22 +45,22 @@ void main() {
     await depo.ekle('Sut al');
     var liste = await depo.gorevlerGorunur().first;
     expect(liste, hasLength(1));
-    expect(liste.single.baslik, 'Sut al');
-    expect(liste.single.tamamlandi, isFalse);
+    expect(liste.single.gorev.baslik, 'Sut al');
+    expect(liste.single.gorev.tamamlandi, isFalse);
 
-    final id = liste.single.id;
+    final id = liste.single.gorev.id;
 
     await depo.duzenle(id, 'Sut ve ekmek al');
     liste = await depo.gorevlerGorunur().first;
-    expect(liste.single.baslik, 'Sut ve ekmek al');
+    expect(liste.single.gorev.baslik, 'Sut ve ekmek al');
 
     await depo.tamamlaGeriAl(id, tamamlandi: true);
     liste = await depo.gorevlerGorunur().first;
-    expect(liste.single.tamamlandi, isTrue);
+    expect(liste.single.gorev.tamamlandi, isTrue);
 
     await depo.tamamlaGeriAl(id, tamamlandi: false);
     liste = await depo.gorevlerGorunur().first;
-    expect(liste.single.tamamlandi, isFalse);
+    expect(liste.single.gorev.tamamlandi, isFalse);
 
     await depo.sil(id);
     liste = await depo.gorevlerGorunur().first;
@@ -70,7 +70,7 @@ void main() {
   test('yumusak silme: silinen kayit gorunur listede yok, ham tabloda var', () async {
     await depo.ekle('Silinecek gorev');
     final once = await depo.gorevlerGorunur().first;
-    final id = once.single.id;
+    final id = once.single.gorev.id;
 
     await depo.sil(id);
 

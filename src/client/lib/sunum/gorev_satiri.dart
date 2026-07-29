@@ -57,10 +57,15 @@ class GorevSatiri extends StatelessWidget {
             ),
           ),
           SizedBox(width: MBosluk.s),
-          if (cakismaVarMi)
-            const CakismaRozeti()
-          else
-            Flexible(child: SenkronRozeti(durum: senkronDurumu)),
+          // GOREV-R10 D7 PAZARLIKSIZ: cakisma bir DIK KANALDIR -- taban
+          // rozeti BASTIRMAZ. Eski if/else bir satirin AYNI ANDA hem
+          // cakismali hem bekleyen olabilecegi gercegini sessizce
+          // dusuruyordu (DESIGN.md v2 §4). Once cakisma ikonu, sonra taban.
+          if (cakismaVarMi) ...[
+            const CakismaRozeti(),
+            SizedBox(width: MBosluk.xs),
+          ],
+          Flexible(child: SenkronRozeti(durum: senkronDurumu)),
         ],
       ),
     );

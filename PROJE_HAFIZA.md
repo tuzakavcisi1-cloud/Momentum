@@ -109,6 +109,77 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## K76 — `R10` KABUL EDİLDİ · `G11-A9` KÖR AYAK onarıldı · D2 kural 3 daraltması KİLİTLENDİ [29 Tem 2026, oturum 36]
+
+**Onur onayladı (iki kilit birden).** Build'i Claude Code yaptı; **Cowork hiçbir sayısına
+güvenmedi ve hepsini kendi koşumuyla yeniden ölçtü (K26).**
+
+### Cowork'ün KENDİ koşumu — builder'ın beyanı DOĞRULANDI
+`flutter analyze --fatal-infos` **No issues found, EXIT 0** · `flutter test`
+**`00:43 +156: All tests passed!` EXIT 0** · `design-token-kapisi` · `tek-kopya-kapisi` ·
+`belge-tavan-kapisi` · `spec-kapi-kapsama` · `iddia-kapisi --kanit KANIT/R10` ⇒ **beşi de EXIT 0**.
+
+**Kırmızı çizgiler DİSKTEN doğrulandı:** `gorev_deposu.dart`'ta `senkronDurumu` geçen 20 satırın
+**hiçbiri yazma değil** · `schemaVersion => 4`, `veritabani.dart`/`.g.dart` diff'te **YOK** ·
+`DESIGN.md` diff'i **BOŞ** · yedi dosyanın sha8'i beyanla **birebir**.
+**Spec'in zorunlu kıldıkları:** `g10:180` pozitif iddiası **eklenmiş** · `pumpAndSettle` yalnız
+yasağı anlatan **yorumda** · sorgu `leftOuterJoin`+`groupBy`+`silindi=false`+`entityType='Task'`+
+`orderBy(olusturuldu,id)` **tam** · `gorev_satiri`'nda `if/else` **kalkmış** · `didUpdateWidget` **var**.
+
+### 🔴 COWORK'ÜN BULDUĞU KUSUR: `G11-A9` KENDİ MUTANTINI YAKALAMIYORDU (ÖLÜ TUZAK)
+Mutant kanıtlarının **varlığını değil İÇERİĞİNİ** taradım ve her mutantın **hangi ayağı**
+düşürdüğünü ölçtüm. 12'nin 11'i kendi ayağını ısırdı; **`M50` (groupBy düşürülür) A9'u GEÇTİ** —
+yalnız A4 ve A10'a takıldı. Sebep mekanik ve kesin: `addColumns([count(...)])` taşıyan bir sorgudan
+`GROUP BY` düşünce SQLite **toplam sorgusuna** döner ve üç değil **TEK** satır verir ⇒ eski
+`hasLength(1)` iddiası mutant altında da **doğru kalır**. Testin kendi `reason` metni
+(*"groupBy düşerse satır kuyruk satırı kadar (3) tekrar eder"*) **olgusal olarak YANLIŞTI**.
+**Onarım Cowork'te (K34-f: kapıyı yazan el onarmaz):** A9 **iki görevle** kuruldu (biri üç op'lu),
+`hasLength(2)` + görev-başına kimlik ölçülüyor. **KANIT `KANIT/R10/09-MUTANT/M50b-*`:** temizde
+G11 **14/14**, mutantta **A9 ısırıyor** (*Expected: an object with length of <2> · Which: has length
+of <1>*), geri alındıktan sonra tam paket **156/156** ve `gorev_deposu.dart` sha `B5B45367`'ye döndü.
+**Ders: bir mutantın 'ısırması' yetmez — KENDİ ayağının ısırması ölçülmelidir.** Kolateral ısırık,
+o ayak değiştiği gün sessizce kaybolur.
+
+### 🔴 D2 KURAL 3 DARALTMASI KİLİTLENDİ (`K != 'yerel'`)
+Build sırasında ölçüldü: ham kural taze bir görevi de (`K='yerel'`, kendi ekleme op'undan `B>0`)
+*"Gönderilmemiş değişiklik"* yapıyor ve `g10` AYAK6'yı kırıyordu. Tie-break **DESIGN.md v2 §4'ün
+kendi tanımı**: *"gönderilmemiş"* = **satır sunucuda VAR**; taze satır sunucuda yok.
+🔴 **Beyan edilmiş sınır:** kolonu hâlâ `'yerel'` olan **ESKİ** satırlar (K72/K74 mirası) sunucuda
+**olsalar bile** düzenlenince "Yalnızca bu cihazda" der ⇒ `R10`'un yalanının **daralmış hâli yaşar**.
+Kalıcı çözüm kolona değil **kuyruktaki op'un ANLAMINA** bakmaktır (ekleme op'u ⇒ sunucuda yok);
+Onur bunu **ayrı iş** olarak bıraktı.
+
+### Builder'ın tek FAZLA İYİMSER beyanı (ölçüldü)
+*"12/12 ısırdı — hepsi `Expected:/Actual:` izli"* ⇒ **11'i doğru**. `M50` iddia ile değil
+**çalışma-zamanı hatasıyla** düşüyor (`Bad state: No element`, `Please use readTableOrNull for outer
+joins`). Isırıyor, ama beyan bu haliyle fazla iyimserdi. Kanıt sınıfı: *ısırdı* ≠ *iddiayla ısırdı*.
+
+### Cihaz — PNG'ler GÖZLE denetlendi (builder'ın dosyasını okumakla yetinilmedi)
+(a) kalem ikonu + "Gönderilmemiş de…" **VAR** · (b) aynı görevde rozet **YOK** · (c) kırmızı çakışma
+ikonu **VE** taban rozet **yan yana** ⇒ `D7` cihazda kanıtlı.
+🟡 (c)'deki taban rozet **`cevrimdisi`** (kural 2), yani *çakışma + gönderilmemiş* çifti **cihazda
+değil**, yalnız `G11-A7`'de kanıtlı. 🟡 Çakışma satırının `zehirli` kuyruk kaydı **doğrudan SQLite'a
+seed edildi** (builder beyan etti; render gerçek widget ağacı, sentetik olan veri).
+🔴 **`DESIGN.md` v2 açık kalemi `A-7` İLK KOŞUMDA ISIRDI:** taban rozet metni **1.0× ölçekte bile
+kırpılıyor** ("Gönderilmemiş de…", "Çevrimdışısın…"); 2.0× henüz denenmedi.
+🟡 `_uipoll.xml`'de ölçüldü: satırın `content-desc`'i rozet metnini **iki kez** taşıyor
+(`Semantics(label:)` + `Text` çocuğu) ⇒ ekran okuyucu tekrar okur. R10 öncesinden gelen sınıf.
+
+### Ölçülen üretim
+`src/client/lib` **+228 satır** (−58): `gorev_deposu.dart` +140 · `senkron_rozeti.dart` +37 ·
+`gorev_listesi_ekrani.dart` +15 · `vitrin` +17 · `metinler` +10 · `gorev_satiri` +9.
+Test tarafı: mevcut beş dosyada +62, **yeni `g11_rozet_turetme_kapisi_test.dart` 24.715 b**.
+⇒ **`R8` SUSTU** (iki oturum 0 satır sert durağı yanmadı).
+
+### Ortam (kanla yazılıya EK)
+🔴 **Cowork↔masaüstü köprüsü bu oturumda İKİ KEZ düştü** (biri doğrulama zincirinin ortasında).
+Ders uygulandı: uzun koşumlar **ayrık sürece** (`Start-Process -WindowStyle Hidden`) alınıp çıktı
+**dosyaya** yazıldı; köprü dönünce sonuç kaybolmadan okundu. Ayrıca köprü dönünce **ilk iş** mutasyon
+altındaki dosyanın sha'sını doğrulamak oldu (`B5B45367` ⇒ geri alma tamamlanmış).
+🔴 PowerShell `*>` yönlendirmesi **UTF-16LE** yazar; Python'da `utf-8` okuyan bir betik bu dosyayı
+**sessizce bozuk** okur (bir kez ısırdı: "No issues found" araması yanlış NEGATİF verdi). Okuyucu
+`utf-16 → utf-8 → cp1254` sırasıyla denemelidir.
+
 ## K75 — R10 TASARIMI KİLİTLENDİ: rozet KUYRUKTAN türetilir + **K46 AÇILDI** [28 Tem 2026, oturum 36]
 
 **Kilit Onur'dan geldi (iki turda, denetimden SONRA revize edildi).** Radar açılışta KIRMIZI'ydı

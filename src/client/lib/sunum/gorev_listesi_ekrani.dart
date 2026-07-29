@@ -6,37 +6,16 @@ import 'bos_durum.dart';
 import 'gorev_ekle_alani.dart';
 import 'gorev_satiri.dart';
 import 'hata_durumu.dart';
-import 'senkron_rozeti.dart';
 import 'yukleme_durumu.dart';
 
 /// SS3.1 -- tek vitrin ekrani (gercek, akis-tabanli ekran; durum_vitrini.dart
 /// ile KARISTIRILMAZ, o statik/deterministik bir gosterimdir).
 ///
 /// F5 PAZARLIKSIZ: G5 bu ekranin uzerinde de kosar (bos * yerel * hata).
-/// GOREV-slice-3c T6 ile birlikte gercek veri artik kuyrukta/senkronize/
-/// cevrimdisi/cakisma da uretebilir (senkron dongusu); [rozetDikisi] (D5)
-/// `Gorevler.senkronDurumu` dizesini `GorevSatiri`nin iki parametresine
-/// cevirir.
-///
-/// GOREV-slice-3c D5: `senkronDurumu` -> `(SenkronDurumTuru, cakismaVarMi)`.
-/// Taninmayan dize CHECK kisitinin anlamini yok eder (sessizce 'yerel'e
-/// dusmek YASAK) -- bu yuzden FIRLATIR.
-(SenkronDurumTuru, bool) rozetDikisi(String senkronDurumu) {
-  switch (senkronDurumu) {
-    case 'yerel':
-      return (SenkronDurumTuru.yerel, false);
-    case 'kuyrukta':
-      return (SenkronDurumTuru.kuyrukta, false);
-    case 'senkronize':
-      return (SenkronDurumTuru.senkronize, false);
-    case 'cevrimdisi':
-      return (SenkronDurumTuru.cevrimdisi, false);
-    case 'cakisma':
-      return (SenkronDurumTuru.yerel, true);
-    default:
-      throw ArgumentError('Taninmayan senkronDurumu: $senkronDurumu');
-  }
-}
+/// GOREV-R10 D5: rozet turetme (`rozetDikisi`) artik `veri/gorev_deposu.dart`
+/// katmanindadir -- bu ekran `GorevGorunum.senkronDurumu`/`cakismaVarMi`yi
+/// DOGRUDAN okur, kendisi turetme yapmaz (F4 dikisi: widget'lar tasima
+/// katmani durumunu gormez).
 class GorevListesiEkrani extends StatefulWidget {
   final GorevDeposu depo;
   // slice-3d D0: KAPALI LISTE'deki dort tetikleyiciden biri -- "kullanici
@@ -51,7 +30,7 @@ class GorevListesiEkrani extends StatefulWidget {
 }
 
 class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
-  late Stream<List<Gorev>> _akis;
+  late Stream<List<GorevGorunum>> _akis;
 
   @override
   void initState() {
@@ -87,7 +66,7 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
         child: Column(
           children: [
             Expanded(
-              child: StreamBuilder<List<Gorev>>(
+              child: StreamBuilder<List<GorevGorunum>>(
                 stream: _akis,
                 builder: (context, anlik) {
                   if (anlik.hasError) {
@@ -96,25 +75,22 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
                   if (!anlik.hasData) {
                     return const YuklenmeDurumu();
                   }
-                  final gorevler = anlik.data!;
-                  if (gorevler.isEmpty) {
+                  final gorunumler = anlik.data!;
+                  if (gorunumler.isEmpty) {
                     return const BosDurum();
                   }
                   return ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: MBosluk.m),
-                    itemCount: gorevler.length,
+                    itemCount: gorunumler.length,
                     itemBuilder: (context, i) {
-                      final gorev = gorevler[i];
-                      final (senkronDurumu, cakismaVarMi) = rozetDikisi(
-                        gorev.senkronDurumu,
-                      );
+                      final gorunum = gorunumler[i];
                       return GorevSatiri(
-                        key: ValueKey('gorev_satiri_${gorev.id}'),
-                        gorev: gorev,
+                        key: ValueKey('gorev_satiri_${gorunum.gorev.id}'),
+                        gorev: gorunum.gorev,
                         onTamamlaDegisti: (deger) => widget.depo
-                            .tamamlaGeriAl(gorev.id, tamamlandi: deger),
-                        senkronDurumu: senkronDurumu,
-                        cakismaVarMi: cakismaVarMi,
+                            .tamamlaGeriAl(gorunum.gorev.id, tamamlandi: deger),
+                        senkronDurumu: gorunum.senkronDurumu,
+                        cakismaVarMi: gorunum.cakismaVarMi,
                       );
                     },
                   );

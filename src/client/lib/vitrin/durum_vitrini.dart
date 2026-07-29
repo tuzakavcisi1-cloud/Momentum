@@ -60,6 +60,12 @@ class DurumVitrini extends StatelessWidget {
                 senkronDurumu: SenkronDurumTuru.yerel,
               ),
               GorevSatiri(
+                key: const ValueKey('vitrin_gonderilmemis'),
+                gorev: _ornekGorev('vitrin-gonderilmemis', 'Sozlesmeyi imzala'),
+                onTamamlaDegisti: (_) {},
+                senkronDurumu: SenkronDurumTuru.gonderilmemis,
+              ),
+              GorevSatiri(
                 key: const ValueKey('vitrin_kuyrukta'),
                 gorev: _ornekGorev('vitrin-kuyrukta', 'Ekmek al'),
                 onTamamlaDegisti: (_) {},
@@ -85,6 +91,17 @@ class DurumVitrini extends StatelessWidget {
                 key: const ValueKey('vitrin_cakisma'),
                 gorev: _ornekGorev('vitrin-cakisma', 'Toplanti hazirla'),
                 onTamamlaDegisti: (_) {},
+                cakismaVarMi: true,
+              ),
+              // GOREV-R10 D7 [K75]: cakisma DIK KANALDIR -- taban rozeti
+              // BASTIRMAZ. Bu kart ikisini AYNI ANDA gosterir (cakisma
+              // ikonu + "Gönderilmemiş değişiklik"), DESIGN.md v2 §4'teki
+              // "iki rozet yan yana" senaryosunun vitrin karsiligidir.
+              GorevSatiri(
+                key: const ValueKey('vitrin_cakisma_bilesik'),
+                gorev: _ornekGorev('vitrin-cakisma-bilesik', 'Rapor gonder'),
+                onTamamlaDegisti: (_) {},
+                senkronDurumu: SenkronDurumTuru.gonderilmemis,
                 cakismaVarMi: true,
               ),
               SizedBox(

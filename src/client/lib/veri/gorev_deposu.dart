@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:drift/drift.dart';
 
+import '../sunum/senkron_rozeti.dart';
 import 'ayarlar_deposu.dart';
 import 'hlc.dart';
 import 'veritabani.dart';
@@ -32,9 +33,27 @@ class Gorev {
   });
 }
 
+/// GOREV-R10 D5: `Gorev` (ham 7 alan, K75 PAZARLIKSIZ degismez) + KUYRUKTAN
+/// TURETILEN rozet durumu TEK yerde -- widget'lar iki ayri parametre yerine
+/// (senkronDurumu, cakismaVarMi) TEK gorunum nesnesi tuketir. Ham `U`/`B`/`Z`
+/// sayimlari BURADAN DISARI CIKMAZ; yalniz turetilmis sonuc tasinir.
+class GorevGorunum {
+  final Gorev gorev;
+  final SenkronDurumTuru senkronDurumu;
+  final bool cakismaVarMi;
+
+  const GorevGorunum({
+    required this.gorev,
+    required this.senkronDurumu,
+    required this.cakismaVarMi,
+  });
+}
+
 abstract class GorevDeposu {
-  /// Gorunur kayitlara TEK erisim yolu -- silindi=false filtresi YALNIZ burada.
-  Stream<List<Gorev>> gorevlerGorunur();
+  /// Gorunur kayitlara TEK erisim yolu -- silindi=false filtresi YALNIZ
+  /// burada. GOREV-R10 D5/D6: rozet KUYRUKTAN turetilir, sonuc GorevGorunum
+  /// olarak doner (Gorev + turetilmis senkronDurumu/cakismaVarMi).
+  Stream<List<GorevGorunum>> gorevlerGorunur();
 
   Future<void> ekle(String baslik);
 
@@ -43,6 +62,73 @@ abstract class GorevDeposu {
   Future<void> tamamlaGeriAl(String id, {required bool tamamlandi});
 
   Future<void> sil(String id);
+}
+
+/// GOREV-R10 D3/D4 PAZARLIKSIZ: SAF fonksiyon -- DB/BuildContext/saat erisimi
+/// YOK, ayni girdi HER ZAMAN ayni cikti. `senkronDurumu` (K, ham kolon) ONCE
+/// dogrulanir -- taninmayan dize kurallar 1-3 kisa devre yapsa bile FIRLAR
+/// (D3, mevcut "sessizce 'yerel'e dusmek YASAK" invaryanti).
+///
+/// D1 PAZARLIKSIZ cakisma kanali: `zehirli>0 || senkronDurumu=='cakisma'` --
+/// yalniz `zehirli>0` YANLIStir (4xx yolu zehirli satir uretmeden kolona
+/// 'cakisma' yazar, bkz. senkron_dongusu.dart _httpHatasiIsle).
+///
+/// D2 taban durumu (ilk eslesen kural kazanir):
+///  1. ucusta>0                                             => kuyrukta
+///  2. ucusta=0, bekleyen>0, K=='cevrimdisi'                => cevrimdisi
+///  3. ucusta=0, bekleyen>0, K!='yerel' [build bulgusu, altta] => gonderilmemis (YENI)
+///  4. ucusta=0, bekleyen=0                  => K eslemesi
+(SenkronDurumTuru, bool) rozetDikisi(
+  String senkronDurumu, {
+  required int ucusta,
+  required int bekleyen,
+  required int zehirli,
+}) {
+  const gecerliDurumlar = {
+    'yerel',
+    'kuyrukta',
+    'senkronize',
+    'cakisma',
+    'cevrimdisi',
+  };
+  if (!gecerliDurumlar.contains(senkronDurumu)) {
+    throw ArgumentError('Taninmayan senkronDurumu: $senkronDurumu');
+  }
+
+  final cakismaVarMi = zehirli > 0 || senkronDurumu == 'cakisma';
+
+  // BUILD-ZAMANI BULGU (K75 D2 kural 3'e ELE ALINMAMIŞ kenar durum --
+  // ölçüldü, spec'e kopyalanmadı, Cowork/Onur'a build notunda bildirilir):
+  // D2 kural 3'ün ham metni ("U=0,B>0 => gonderilmemis") K='yerel'i istisna
+  // TUTMUYOR, ama DESIGN.md v2 §4 "gönderilmemiş"i AÇIKÇA "satır sunucuda
+  // VAR" diye tanımlıyor -- taze/hiç senkronlanmamış bir satır (K='yerel')
+  // sunucuda YOK. Ham kural bu haliyle uygulanınca ÖLÇÜLEN regresyon:
+  // g10_rozet_kapsami_test.dart AYAK6 (ekle() sonrası "Yalnızca bu cihazda"
+  // beklentisi) KIRILDI -- taze bir görev, kendi gönderilmemiş ekleme
+  // op'undan ötürü B>0 olduğu için hemen "Gönderilmemiş değişiklik" gösterdi.
+  // DESIGN.md'nin kendi tanımını tie-break olarak kullanıp K=='yerel' kural
+  // 3'ten İSTİSNA TUTULUR (rule 4'e düşer, taban 'yerel' kalır) -- kilitli
+  // R10 senaryosunun kendisi (senkronize->düzenle->gönderilmemiş, G11-A3)
+  // ETKİLENMEZ çünkü orada K zaten 'yerel' DEĞİLDİR.
+  final SenkronDurumTuru taban;
+  if (ucusta > 0) {
+    taban = SenkronDurumTuru.kuyrukta;
+  } else if (bekleyen > 0 && senkronDurumu == 'cevrimdisi') {
+    taban = SenkronDurumTuru.cevrimdisi;
+  } else if (bekleyen > 0 && senkronDurumu != 'yerel') {
+    taban = SenkronDurumTuru.gonderilmemis;
+  } else {
+    taban = switch (senkronDurumu) {
+      'senkronize' => SenkronDurumTuru.senkronize,
+      'yerel' => SenkronDurumTuru.yerel,
+      'cevrimdisi' => SenkronDurumTuru.cevrimdisi,
+      'cakisma' => SenkronDurumTuru.yerel,
+      'kuyrukta' => SenkronDurumTuru.kuyrukta,
+      _ => throw StateError('gecerliDurumlar disi: $senkronDurumu'),
+    };
+  }
+
+  return (taban, cakismaVarMi);
 }
 
 /// GOREV-slice-3c T4 (D2/D7/D8-1): dort yazma yolunun HER BIRI, `Gorevler`
@@ -79,12 +165,59 @@ class DriftGorevDeposu implements GorevDeposu {
     silindi: satir.silindi,
   );
 
+  /// GOREV-R10 D6 PAZARLIKSIZ: TEK sorgu, TEK `watch()` -- iki ayri stream +
+  /// combineLatest YASAK (ara karede yanlis rozet doğurur). `Gorevler`
+  /// SURUCU, kuyruk `leftOuterJoin` -- `innerJoin` kuyruk satiri olmayan
+  /// (senkronize) her gorevi listeden DUSURUR. `groupBy(gorevler.id)`
+  /// PAZARLIKSIZ: yoksa satir sayisi O(kuyruk satiri) olur. SQLite
+  /// `FILTER (WHERE ...)` kullanilir -- olculdu (bu makinede sqlite 3.53.3,
+  /// FILTER >=3.30'dan beri var, build notunda beyan edilir).
   @override
-  Stream<List<Gorev>> gorevlerGorunur() {
-    final sorgu = _db.select(_db.gorevler)
-      ..where((t) => t.silindi.equals(false))
-      ..orderBy([(t) => OrderingTerm(expression: t.olusturuldu)]);
-    return sorgu.watch().map((satirlar) => satirlar.map(_map).toList());
+  Stream<List<GorevGorunum>> gorevlerGorunur() {
+    final kuyruk = _db.senkronKuyrugu;
+    final ucustaSutunu = kuyruk.opId.count(
+      filter: kuyruk.durum.equals('gonderildi'),
+    );
+    final bekleyenSutunu = kuyruk.opId.count(
+      filter: kuyruk.durum.equals('bekliyor'),
+    );
+    final zehirliSutunu = kuyruk.opId.count(
+      filter: kuyruk.durum.equals('zehirli'),
+    );
+
+    final sorgu =
+        _db.select(_db.gorevler).join([
+            leftOuterJoin(
+              kuyruk,
+              kuyruk.entityId.equalsExp(_db.gorevler.id) &
+                  kuyruk.entityType.equals('Task'),
+              useColumns: false,
+            ),
+          ])
+          ..where(_db.gorevler.silindi.equals(false))
+          ..addColumns([ucustaSutunu, bekleyenSutunu, zehirliSutunu])
+          ..groupBy([_db.gorevler.id])
+          ..orderBy([
+            OrderingTerm(expression: _db.gorevler.olusturuldu),
+            OrderingTerm(expression: _db.gorevler.id),
+          ]);
+
+    return sorgu.watch().map(
+      (satirlar) => satirlar.map((satir) {
+        final gorev = _map(satir.readTable(_db.gorevler));
+        final (senkronDurumu, cakismaVarMi) = rozetDikisi(
+          gorev.senkronDurumu,
+          ucusta: satir.read(ucustaSutunu) ?? 0,
+          bekleyen: satir.read(bekleyenSutunu) ?? 0,
+          zehirli: satir.read(zehirliSutunu) ?? 0,
+        );
+        return GorevGorunum(
+          gorev: gorev,
+          senkronDurumu: senkronDurumu,
+          cakismaVarMi: cakismaVarMi,
+        );
+      }).toList(),
+    );
   }
 
   @override

@@ -1,6 +1,8 @@
-/// F6 -- 13 kullanici dizgesi TEK YERDE. Kilit aninda
-/// araclar/fixture/metinler-kilit.json'a dondurulur; G5 bu dosyayi fixture
-/// ile birebir karsilastirir. DESIGN.md ayristirilmaz (§9.1 F6).
+/// F6 -- 13 kullanici dizgesi TEK YERDE (GOREV-R10/K75: iki yeni dizge BU
+/// SAYIYA DAHIL DEGIL, ayri EK grupta -- fixture/metinler-kilit.json F6
+/// kilidini bozmaz). Kilit aninda araclar/fixture/metinler-kilit.json'a
+/// dondurulur; G5 bu dosyayi fixture ile birebir karsilastirir. DESIGN.md
+/// ayristirilmaz (§9.1 F6).
 class Metinler {
   Metinler._();
 
@@ -21,6 +23,11 @@ class Metinler {
   static const String duyuruCevrimdisi = 'Çevrimdışı';
   static const String duyuruCakismaVar = 'Çakışma var';
   static const String duyuruHata = 'Hata';
+
+  // GOREV-R10 [K75] -- 'gonderilmemis' durumu (DESIGN.md v2 §4/§6).
+  static const String gonderilmemisDegisiklik = 'Gönderilmemiş değişiklik';
+  static const String duyuruGonderilmemisDegisiklik =
+      'Gönderilmemiş değişiklik var';
 
   // EK -- F6'nin 13 dizgesine DAHIL DEGIL (G5 fixture karsilastirmasi bunu
   // icermez). Sabit kontrol etiketidir, durum dizgesi degildir; GorevEkleAlani

@@ -35,7 +35,14 @@ Görev başına sayımlar: **`U`** = `senkron_kuyrugu.durum='gonderildi'` · **`
 - **D2 Taban durum (ilk eşleşen kural kazanır):**
   1. `U > 0` ⇒ `kuyrukta` ("Gönderiliyor")
   2. `U = 0` ve `B > 0` ve `K == 'cevrimdisi'` ⇒ `cevrimdisi`
-  3. `U = 0` ve `B > 0` ⇒ **`gonderilmemis`** ("Gönderilmemiş değişiklik") — YENİ DURUM
+  3. `U = 0` ve `B > 0` ve **`K != 'yerel'`** ⇒ **`gonderilmemis`** ("Gönderilmemiş değişiklik")
+     🔴 **`K != 'yerel'` İSTİSNASI KİLİTLİ [K76, Onur — 29 Tem 2026].** Build sırasında ölçüldü:
+     ham kural taze bir görevi de (`K='yerel'`, kendi ekleme op'u yüzünden `B>0`) *"Gönderilmemiş
+     değişiklik"* yapıyor ve `g10` AYAK6'yı kırıyordu. Tie-break `DESIGN.md` v2 §4'ün kendi tanımı:
+     *"gönderilmemiş"* = **satır sunucuda VAR**; taze satır sunucuda YOK. 🔴 **Beyan edilmiş sınır:**
+     kolonu hâlâ `'yerel'` olan ESKİ satırlar (K72/K74 mirası) sunucuda **olsalar bile** düzenlenince
+     "Yalnızca bu cihazda" der — `R10`'un yalanının **daralmış hâli** yaşar. Kalıcı çözüm kolona
+     değil **kuyruktaki op'un ANLAMINA** bakmaktır (ekleme op'u ⇒ sunucuda yok); ayrı iş.
   4. `U = 0` ve `B = 0` ⇒ `K` eşlemesi: `senkronize`⇒rozet YOK · `yerel`⇒"Yalnızca bu cihazda" ·
      `cevrimdisi`⇒"Çevrimdışı kaydedildi" · `cakisma`⇒taban `yerel` · `kuyrukta`⇒`kuyrukta`
 - **D3 [PAZARLIKSIZ] `K` ÖNCE doğrulanır.** Tanınmayan dize `ArgumentError` **fırlatır** — kurallar
@@ -148,10 +155,18 @@ Dosya: `src/client/test/g11_rozet_turetme_kapisi_test.dart`. Ayakları:
 | G11-A6 | ASKILI AĞ: `Completer`'da bekleyen sahte ağ, `turCalistir()` await edilmeden ⇒ askıdayken taban `kuyrukta` | D2 |
 | G11-A7 | BİLEŞİK: aynı görevde `zehirli` + `bekliyor` ⇒ `CakismaRozeti` VE taban rozet aynı anda | D7 |
 | G11-A8 | 4xx: sunucu 400 ⇒ Z=0, K='cakisma' ⇒ çakışma ikonu hâlâ görünür | D1 |
-| G11-A9 | `groupBy`: aynı göreve üç kuyruk satırı ⇒ listede tek `GorevSatiri` | D6 |
+| G11-A9 | `groupBy`: **İKİ görev** (biri üç bekleyen op'lu) ⇒ görünümde **İKİ** satır | D6 |
 | G11-A10 | `silindi`: silinmiş görev listede yok, kuyruk satırı onu diriltmiyor | D6 |
 | G11-A11 | duyuru: `yerel` → `senkronize` geçişinde BİR duyuru; ikinci pump'ta tekrar YOK | D9 |
 | G11-A12 | ham sayım sızmıyor: `Gorev` alan sayısı DEĞİŞMEDİ, `rozetDikisi` saf | D4 / D5 |
+
+🔴 **`G11-A9` KÖR AYAKTI ve ONARILDI [K76 — Cowork, K34-f].** İlk sürüm TEK görevle kurulmuş ve
+`hasLength(1)` beklemişti; `M50` (groupBy düşürülür) bu ayağı **geçiyordu** (ölçüldü:
+`M50-kirmizi.txt`'te düşen ayaklar A4 ve A10, **A9 yeşil**). Sebep mekanik: `addColumns([count(...)])`
+taşıyan bir sorgudan `GROUP BY` düşünce SQLite **toplam sorgusuna** döner ve üç değil **TEK** satır
+verir ⇒ `hasLength(1)` mutant altında da doğru kalır (**ölü tuzak**). Onarım: iki görevle kurulur,
+`hasLength(2)` ölçülür. Kanıt `KANIT/R10/09-MUTANT/M50b-*`: temizde **14/14**, mutantta **A9 ısırır**
+(*Expected: length of <2> · Which: has length of <1>*), geri alınınca tam paket **156/156**.
 
 **Widget ayaklarında `pumpAndSettle` KULLANILMAZ** — `kuyrukta` durumunun `_DonenOk`'u
 `Timer.periodic` ile sonsuz kare planlar (`senkron_rozeti.dart:118-158`) ve `pumpAndSettle` zaman
