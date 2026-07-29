@@ -109,6 +109,85 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## K78 — slice-3e YÜRÜYEN İSKELET KABUL EDİLDİ (29 Tem 2026, oturum 37 · Onur onayladı)
+
+**Ne kabul edildi.** `GOREV-slice-3e-iskelet.md`'nin T1–T5'i. Claude Code yazdı, **Cowork hiçbir sayısına
+güvenmeden yeniden koştu (K26).** Backend'e **tek bayt yazılmadı**. Ürün kodu: `gercek_zamanli_sinyal.dart`
+**25 satır** (yeni) + `signalr_json_sinyal.dart` **307 satır** (yeni) + `main.dart` **+11** + `pubspec.yaml`
+**+3** = **346 satır**.
+
+**COWORK'ÜN KENDİ KOŞUMU — geçen ölçümler.**
+`flutter analyze --fatal-infos` → *No issues found* (12,6 sn), EXIT 0 · `flutter test` → **156/156**,
+EXIT 0 · `pub-cve-kapisi` altın küme **8/8** sonra gerçek tarama **EXIT 0 TEMİZ** · `pub-lisans-kapisi`
+altın küme sonra gerçek tarama **EXIT 0**, **96 paket** (SDK 5 / hosted 91), izinsiz 0 · bilinmeyen 0 ·
+geçersiz eşleşme 0 · `tek-kopya` YEŞİL · `belge-tavan` YEŞİL · radar KIRMIZI ama **yeni bulgu yok**
+(aynı üç eski `D` kaydı).
+
+🔴 **COWORK KENDİ HİPOTEZİNİ ÖLÇTÜ VE ÇÜRÜTTÜ.** `signalr_json_sinyal.dart`
+`package:web_socket_channel/io.dart` (⇒ `dart:io`) çekiyor ve `main.dart` bunu **koşulsuz** import
+ediyor; Cowork *"bu web derlemesini kırar, ciddi regresyon"* diye düşündü. `flutter build web --release`
+koşuldu: **EXIT 0, `Built build\web`** (123,7 sn). **Hipotez yanlıştı ve bu kayda geçirildi** — denetçinin
+kendi yanlışını gizlemesi, denetlediği elin yanlışını gizlemesinden farksızdır.
+
+**CİHAZ KANITI — gözle denetlendi, sahte değil.** Üç PNG konteynere alınıp **gerçekten açıldı**:
+`00-once.png` (3:08) iki satır + System UI ANR diyaloğu · `01-sonra.png` (3:14) **üç** satır, *"UZAKTAN
+GELEN …"* eklenmiş · `02-yeniden-baglanma.png` (3:18) **dört** satır, *"UCAK MODUNDA …"* da gelmiş.
+Üç SQLite anlık görüntüsünün sha'sı **üçü de farklı** (`a36ef426` / `59cb4e25` / `620314a2`) ⇒ çekme turu
+gerçekten koştu, yalnız log değil. Ham logcat'teki **dokuz** `[sinyal]` satırının **dokuzu** da özette
+var — kiraz toplama yok.
+
+---
+
+### 🔴 ÇÜRÜTÜLEN MANŞET SAYI — "~146 ms"
+
+Builder *"gönderimden ~146 ms sonra cihaz `Changed` aldı"* yazmıştı. Bu **bir ölçüm değildi**: gönderim
+damgası **host'un UTC saatinden** (curl), alım damgası **cihazın logcat saatinden** geliyor. Cowork
+emülatörün saatini üç kez ölçtü (`adb shell date +%s%3N` ↔ host, gidiş-dönüş süresi de kaydedildi):
+host'tan **1.242 / 1.434 / 1.444 ms GERİDE**. Sapma o an da buysa gerçek gecikme **~1,59 sn**, yani sayı
+bir büyüklük mertebesi yanlış; o an farklıydıysa da **bilinmiyor**.
+
+**Yapılan:** sayı `00-HUKUM.md` ve `_ws-trafik.txt`'ten **ÇEKİLDİ**, yerine `[DOĞRULANMADI]` + sapma
+ölçümü + *"çekildi"* beyanı yazıldı. **İşlevsel iddia SAĞLAM ve bundan etkilenmez:** `Changed` yoklama
+olmadan geldi, tek abonelik satırı `cekmeTuruCalistir()`'i tetikledi, imleç
+`{"xid":1245,"seq":289}` → `{"xid":1248,"seq":290}` ilerledi, uçak modunda kaçan yazım yeniden bağlanmanın
+tetiklediği **tek** çekme turuyla kurtarıldı.
+
+**Yeni kusur sınıfı: `saat-sapmasi-olculmemis`.** İki farklı saatten alınan damgaların farkı, sapma
+ölçülmeden bir gecikme sayısı olarak yazılamaz. Bu sınıfın mekanik kapısı **YOK**.
+
+---
+
+### Diğer bulgular (hepsi `DURUM.md` §8'e girdi)
+
+**🟡 "6/6 jitter aralığında" bir ÜST SINIR ölçümüdür.** Ölçülen aralıklar 1160 / 2066 / 3236 / 8610 /
+16402 / 29647 ms; altısı da `[0,8×, 1,2×]` içinde. Ama aralık = *zamanlayıcı gecikmesi + başarısız deneme
+süresi* ve deneme süresi ölçülmedi. Üçüncüsü alt sınıra (3.200 ms) yalnız **36 ms** uzakta ⇒ deneme 36
+ms'den uzun sürdüyse gerçek gecikme aralığın DIŞINDA. Belge bu sınırla işaretlendi.
+
+**🟡 Özet, ham kanıtı sessizce kısaltmış.** `_ws-trafik.txt`'teki beş `SocketException` satırı hamda
+birebir yok; hamda `ClientException with SocketException: … address = 10.0.2.2, port = 5298, …` yazıyor.
+Zaman damgaları ve anlam aynı; kısaltma **işaretlenmemişti**, şimdi beyan edildi.
+
+**🔴 Web'de sessiz sonsuz yeniden-bağlanma riski.** Derleme geçiyor ama tarayıcıda `IOWebSocketChannel`
+çalışmaz ve WS upgrade'ine `X-Momentum-Dev-User` konamaz ⇒ her deneme kopar, 30 sn'de bir sonsuza dek
+yeniden dener. `G12`'nin işi (`kIsWeb` koruması / koşullu import).
+
+**🟡 `SignalrJsonSinyal` durdurulamıyor** — örnek `_UretimKurulumu`'ya konmuyor, `StreamController` hiç
+kapanmıyor ⇒ **test edilemez**. **🟡 346 satırın tek testi yok** (156/156 düşmedi ama artmadı da) —
+`G12`'nin ilk işi. **🟡 `iddia-kapisi.py` hayalet kanıt sınıfı ikinci kez ısırdı:** tabloda sıfır mutant
+varken altı hayalet (`M111, M6, M7, M8, M8p, M9`), kaynak 2 MB'lık `pub-lisans-kapisi.txt` + PNG/sqlite
+baytları. **🟡 Builder'ın *"`web_socket_channel`/`stream_channel` BSD-3-Clause ölçüldü"* ifadesi kapı
+çıktısında görünmüyor** — kapı temiz paketleri tek tek basmıyor. Lisans doğru (Cowork pub.dev `/api` ile
+ayrıca ölçtü) ama **kanıt yolu yanlış gösterilmiş**.
+
+**Kilitlere uyum tam:** kendi istemcimiz yazıldı (K77/1), `CursorHint` hiç okunmuyor (K77/6), ek debounce
+yok (K77/5), backend değişmedi, `G12`/mutant bilerek yok (K77/4).
+
+**K78/4 — SIRADAKİ İŞ `G12` kapısı + mutant tasarımı.** İlk üç ayağı bu checkpoint belirliyor:
+① 346 satırlık protokol kodunun birim testi, ② `durdur()` sahipliği (test edilebilirlik), ③ web koruması.
+
+
+
 ## K77 — slice-3e TASARIM KİLİDİ (29 Tem 2026, oturum 37 · Onur kilitledi)
 
 **Bağlam.** Oturum 37 açılışında radar KIRMIZI yandı; K40 gereği dört şık sunuldu ve Onur **DEVRET**'i

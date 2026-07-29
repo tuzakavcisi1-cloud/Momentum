@@ -50,17 +50,15 @@
 
 ✅ **slice-3c (İTME) ve slice-3d (ÇEKME) KABUL EDİLDİ** — K62–K66 · K68–K70. Kurallar artık prozada değil **kapılarda** yaşıyor (`D0`–`D9`, `P1`–`P7`, dokuz kapı, 40 mutant); gerekçe ve tam ölçüm dökümü arşivde. Spec kimlikleri §9'da, `tek-kopya-kapisi.py` her açılışta sapmayı ölçer.
 
-🔴 **SIRADAKİ İŞ: slice-3e YÜRÜYEN İSKELET** (K42-d adım 4, tasarımı **K77** ile kilitli). Ölçüldü: **backend ayağı ZATEN BİTMİŞ** (slice-2b2 — `SyncHub`, `SignalRSignalPublisher`, negotiate-öncesi 401; canlı: başlıksız **401**, başlıkla **200**+`connectionToken`) ⇒ **dilim istemci işidir, backend'e tek bayt yazılmaz.** Talimat: `GOREV_CLAUDE_CODE\GOREV-slice-3e-iskelet.md` (spec DEĞİL; `G12`+mutantlar iskeletten SONRA). Sonra ② `araclar/oturum-sagligi.py` (K21 — K44-a) · ③ açık borçlar §8. **Push Onur'da — SAYI YAZILMAZ, açılışta ÖLÇÜLÜR.**
+🔴 **SIRADAKİ İŞ: `G12` kapısı + mutant tasarımı** (K78/4). ✅ **slice-3e YÜRÜYEN İSKELET KABUL EDİLDİ — K78.** Cowork'ün kendi koşumu: `analyze` **0** · `flutter test` **156/156** · `pub-cve` + `pub-lisans` altın küme sonra gerçek tarama **EXIT 0** (96 paket) · 🔴 **`flutter build web --release` EXIT 0** (Cowork'ün "`dart:io` web'i kırar" hipotezi **ÇÜRÜDÜ**) · üç PNG **gözle** denetlendi · üç sqlite sha'sı **farklı** · dokuz `[sinyal]` satırının dokuzu hamda. Talimat: `GOREV-slice-3e-iskelet.md`. Sonra ② `araclar/oturum-sagligi.py` (K21 — K44-a) · ③ açık borçlar §8. **Push Onur'da — SAYI YAZILMAZ, açılışta ÖLÇÜLÜR.**
 
 🟡 **Ortam açılışta ÖLÇÜLÜR, YAZILMAZ** — `docker ps` (momentum-postgres) · `netstat -ano | findstr :5298` · `adb devices`. 🔴 **PID ve cihaz adı bu dosyaya YAZILMAZ**; bu satırda üç oturum boyunca bayat bir PID durdu. `G8`/F3 uçtan uca koşumu için üçü de gerekli.
 
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
-- **K77** — **slice-3e tasarımı KİLİTLİ (Onur, 29 Tem 2026).** ① taşıma = **kendi minimal SignalR-JSON istemcimiz**, `web_socket_channel ^3.0.3` (BSD-3, 0 advisory) üstünde; `signalr_netcore` **kullanılmaz** (6 geçişli bağımlılık; gerekçe arşivde). ② yeniden bağlanma **üstel geri çekilme + her bağlanmada BİR çekme turu** — 🔴 bu **yoklama DEĞİLDİR**: zamanlayıcı veri çekmez, yalnız bağlanmayı dener. ③ kapsam **Android+Windows**, web **`[DOĞRULANMADI]`** (hub her istekte `X-Momentum-Dev-User` istiyor, tarayıcı WS upgrade'ine başlık koyamaz; açmak backend `D4`/K61 kalkanına dokunmak olurdu). ④ **iskelet önce, kapılar sonra** (K53/5). ⑤ sinyal→çekme **doğrudan**, ek debounce YOK (patlama, mevcut tek-uçuş kilidi + K3 bayrağıyla en fazla **bir ek tura** çöküyor — koddan ölçüldü). ⑥ **`CursorHint` YOKSAYILIR** (`D6`: `Xid` `ulong`, sayıya çevirmek yasak) — sinyal yalnız **uyandırma zilidir**.
-- **K76** — **`R10` KABUL EDİLDİ** (Cowork'ün kendi koşumu, K26). 🔴 **D2 kural 3'e `K != 'yerel'` İSTİSNASI KİLİTLİ:** taze satır (`K='yerel'`) sunucuda YOK ⇒ *"Gönderilmemiş değişiklik"* diyemez (tie-break `DESIGN.md` v2 §4'ün kendi tanımı). **Beyan edilmiş sınır:** kolonu hâlâ `'yerel'` olan ESKİ satırlar sunucuda olsa da "Yalnızca bu cihazda" der. 🔴 **`G11-A9` ÖLÜ TUZAKTI** — `M50`'yi geçiriyordu (`GROUP BY`sız toplam sorgusu **tek** satıra çöker); Cowork onardı (K34-f). Gerekçe: hafiza **K76**.
-- **K75** — **`R10` tasarımı KİLİTLİ: rozet KOLONDAN DEĞİL KUYRUKTAN türetilir** (`U`/`B`/`Z` sayımları + `K`), çakışma kanalı **`Z>0 || K=='cakisma'`**, kolon yazma yolları **DEĞİŞMEZ**, şema v4 kalır, migration YOK. 🔴 **K46 AÇILDI** (kapsam: bileşik satır + `gonderilmemis` durumu) — gerekçe ölçüldü: `gorev_satiri.dart:59-62` `if/else` çakışma ile tabanı **karşılıklı dışlıyordu**. Kapısı `G11` (12 ayak, 12 mutant `M46`–`M57`); `D8` mutant borcu **beyan edildi**. Gerekçe: hafiza **K75**.
-- **K74** — **`R9` KABUL EDİLDİ** (Cowork'ün kendi koşumu, K26). Çekmeyle doğan satır artık `'senkronize'` ile INSERT ediliyor; `G10` altı ayak + `M41`–`M45` koşuyor; `flutter test` **142/142**. 🔴 **Düzeltmeden ÖNCE inmiş satırlar `'yerel'` KALIR** — migration yasak (kriter 5), **beyan edilmiş sınır**.
-- **K71** — **kabul kriteri 9 ÖLÇÜLDÜ ve GEÇTİ (3/3 ayak);** `R9` kusuru koşan uygulamadan doğdu; `DURUM.md` §8 arşivlendi ve **altı bayat iddia** ayıklandı. Kanıt: `KANIT/slice-3d/10-KABUL9/`.
+- **K77** — **slice-3e tasarımı KİLİTLİ (6 karar).** ① taşıma = kendi minimal SignalR-JSON istemcimiz (`web_socket_channel`), `signalr_netcore` **kullanılmaz** ② yeniden bağlanma üstel geri çekilme + her bağlanmada BİR çekme turu — 🔴 **yoklama DEĞİL** (zamanlayıcı veri çekmez) ③ kapsam Android+Windows, web **`[DOĞRULANMADI]`** ④ iskelet önce, kapılar sonra ⑤ sinyal→çekme **doğrudan**, debounce YOK ⑥ **`CursorHint` YOKSAYILIR** (`D6`). Gerekçeler ve ölçümler: hafıza **K77**.
+- **K78** — **slice-3e YÜRÜYEN İSKELET KABUL EDİLDİ** (Cowork'ün kendi koşumu, K26; Onur onayladı). Backend'e tek bayt yazılmadı; 332 satır yeni istemci kodu + 11 satır `main.dart`. 🔴 **BİR MANŞET SAYI ÇÜRÜTÜLDÜ VE ÇEKİLDİ:** *"Changed→çekme ~146 ms"* iddiası **iki ayrı saatin** farkıydı (host UTC ↔ cihaz logcat); Cowork emülatör saatini üç kez ölçtü, host'tan **1.242/1.434/1.444 ms geride**. Sayı `[DOĞRULANMADI]` ile değiştirildi; **işlevsel iddia sağlam** (yoklamasız yayılım + imleç ilerlemesi + kurtarma ayrı ayrı ölçüldü). Jitter iddiası **üst sınır** diye işaretlendi, özetteki kısaltmalar beyan edildi. Gerekçe: hafıza **K78**.
+- **K76 · K75 · K74 · K71** — **`R9` ve `R10` KABUL EDİLDİ**; tasarım/spec kilitleri K73 gereği §5'ten **ÇEKİLDİ** ve bugün prozada değil `G10`/`G11` kapılarında + `M41`–`M57` mutantlarında **koşuyor**. 🔴 **Yaşayan iki beyan edilmiş sınır:** ① `D2` kural 3'ün `K != 'yerel'` istisnası — kolonu hâlâ `'yerel'` olan ESKİ satırlar sunucuda olsa da *"Yalnızca bu cihazda"* der; ② `R9` öncesi inmiş satırlar `'yerel'` KALIR (migration yasak). 🔴 **`K46` AÇIK** (kapsam: bileşik satır + `gonderilmemis`) ⇒ `DESIGN.md` **v2**. Gerekçeler: hafıza K71/K74/K75/K76.
 - **K73** — **Bir dilimin tasarım/spec kilitleri, dilim KABUL EDİLDİĞİNDE §5'ten çekilir** ve tek satırlık atıfla temsil edilir; çünkü o andan sonra kural **prozada değil KAPIDA** yaşar (K53 doktrini). Arşivde hiçbir şey silinmez. 🔴 Kapısı **olmayan** kilit çekilemez — bu yüzden `K72` §5'te DURUYOR (`G10` henüz yok).
 - **slice-3b tasarım/spec kilitleri (K57 · K59)** — dilim KAPANDI ⇒ **§5'ten ÇEKİLDİ [K73]**. Kurallar `GOREV-slice-3b-istemci-iskeleti.md` **44.560 b · `F0C3A75A`** + A2/G kapılarında zorlanıyor. Gerekçe: hafıza K57/K59.
 - **slice-3c tasarım/spec kilitleri (K62 · K63 · K64 · K65 · K66)** — **KABUL EDİLDİ** ⇒ **§5'ten ÇEKİLDİ [K73]**. `D0`–`D9` bugün `GOREV-slice-3c-senkron.md` **41.692 b · `537D0579`** + `G1`–`G9` kapılarında ve mutantlarda **koşuyor**. Gerekçe: hafıza K62–K66.
@@ -145,25 +143,16 @@
 - 🟡 **YENİ [K76]: satırın `content-desc`'i rozet metnini İKİ KEZ taşıyor** (`Semantics(label:)` + `Text` çocuğu; `KANIT/R10/_uipoll.xml`) ⇒ ekran okuyucu tekrar okur. R10 öncesinden gelen sınıf.
 - 🟡 **YENİ [K76]: cihaz kanıtında `zehirli` kuyruk kaydı SQLite'a SEED EDİLDİ** (gerçek sunucu reddi pratik sürede UI'dan tetiklenemedi). Render gerçek widget ağacı; **sentetik olan veridir** — beyan edilmiş sınır.
 - 🟡 **`tazelik-muafiyet.json`'daki `BD-6` GEREKÇESİ BAYATLADI [oturum 36].** Muafiyet *"DESIGN.md K46 ile DONDURULMUŞTUR"* diyor; **K46 açıldı** (K75). Muafiyet hâlâ geçerli ama **gerekçesi doğru değil**. 🔴 **AYRI ELE (K34-f)**.
-- 🔴 **`KANIT/slice-3c/02-G2/` GERİ DOĞDU ve ÜRETİCİ KOD DÜZELTİLMEDİ.**
-  `g2_registry_zarf_kapisi_test.dart:64` hâlâ `Directory('../../KANIT/slice-3c/02-G2')` yazıyor
-  (28 Tem 2026'da yeniden ölçüldü, **aynen duruyor**). slice-3d build notunda ayrı madde olarak
-  verilmişti; yapılmadı **ve devir notunda anılmadı** ⇒ *beyan edilmemiş atlama*. Silmek düzeltme
-  DEĞİLDİR. 🔴 **AYNI DESENİN İKİNCİ YAZICISI ÖLÇÜLDÜ:** `g3_ayristirici_kapisi_test.dart:20` →
-  `Directory('../../KANIT/slice-3d/03-G3-ayristirici')`. Hiçbir araç *"KANIT dizini ile onu yazan
-  kodun yolu aynı mı?"* diye sormuyor ⇒ sınıf tek vaka değil.
+- 🔴 **`KANIT/slice-3c/02-G2/` GERİ DOĞDU ve ÜRETİCİ KOD DÜZELTİLMEDİ.** `g2_registry_zarf_kapisi_test.dart:64` hâlâ `Directory('../../KANIT/slice-3c/02-G2')` yazıyor. Silmek düzeltme DEĞİLDİR. 🔴 **İkinci yazıcı da ölçüldü:** `g3_ayristirici_kapisi_test.dart:20`. Hiçbir araç *"KANIT dizini ile onu yazan kodun yolu aynı mı?"* diye sormuyor ⇒ sınıf tek vaka değil. Gerekçe: hafıza K71/K78.
 - 🟡 **Son sayfa tam `PageSize` ise BİR BOŞ TUR fazladan koşar** — `hasMore = (changes.Count ==
   PageSize)`, `PageSize=500` sabit. Veri kaybı değil, **maliyet**.
 
 ### Araç / kapı
 
-- 🔴 **`verify.ps1` FAIL-LOUD AYAĞINI OTOMATİK ZİNCİRDE ETKİSİZ KILIYOR** (28 Tem 2026'da yeniden
-  ölçüldü, duruyor): `if (-not $env:MOMENTUM_KANIT_DIZIN) { … }` varsayılan atıyor ve dizini
-  yaratıyor. Test hâlâ fırlatıyor, **ama** spec §8.2'nin *"zorunlu"* şartı regresyon zincirinde
-  **hiç ölçülmüyor**. Ayrıca bu bir **araç** değişikliğidir (K34-f).
+- 🔴 **`verify.ps1` FAIL-LOUD AYAĞINI OTOMATİK ZİNCİRDE ETKİSİZ KILIYOR.** `if (-not $env:MOMENTUM_KANIT_DIZIN) { … }` varsayılan atıp dizini yaratıyor; spec §8.2'nin *"zorunlu"* şartı regresyon zincirinde **hiç ölçülmüyor**. Araç değişikliği ⇒ **ayrı el (K34-f)**.
 - 🔴 **D1-ÖNLEME BORCU** — defter/belgeye sayı yazan **her** betiğe *"önce diskten ölç"* adımı zorunlu
   olsun. D1 bu projede **altı kez** ısırdı; radar onu **sonradan** bulur, önleme **doğmasını** engeller.
-- 🔴 **`araclar/hafiza-dizin.py` K60'I İHLAL EDİYOR — hedefi 629 KB'lik ARŞİV [oturum 35].** Son satırı `io.open(yol, "w", …).write(metin)`; bu **tam olarak** K60'ın yasakladığı desendir ve K60, `PROJE_HAFIZA.md` 542 KB'den **0 bayta** düştüğü için doğmuştu. Bu araç o dosyaya yazan **tek** araçtır. 🔴 **Onarım AYRI ELE (K34-f)** — `hafiza-dizin.py`'yi Cowork yazdı (K58).
+- 🔴 **`araclar/hafiza-dizin.py` K60'I İHLAL EDİYOR** — son satırı `io.open(yol,"w").write(metin)`; hedefi 665 KB'lik arşiv ve o dosyaya yazan **tek** araç. K60 tam da bu desenden doğdu. Onarım **ayrı ele (K34-f)**.
 - 🔴 **`pub-surum-olc.py`'ye ÇÖZÜMLENEBİLİRLİK AYAĞI [Z10b]** — araç **sürümü** ölçüyor,
   **çözülebilirliği** ölçmüyor. Kalkan gelene dek her pin `pub get` ile doğrulanır.
 - 🟢 **`tek-kopya-kapisi.py`'nin BEYAN EDİLMİŞ SINIRI [S10]** — karşılaştırma **LF'e normalize**
@@ -194,6 +183,11 @@
 
 - 🔴 **DEFTERDE `D2` BOŞLUĞU BİLEREK AÇIK BIRAKILDI [oturum 37].** `uzak_degisiklik_uygulayici.dart` defterde tur 1 (oturum 34) ve tur 3 (oturum 35) taşıyor, **tur 2 YOK**. Geriye dönük kayıt uydurmak `bulgu/kapatilan/uretilen` alanlarına **sahte sıfır** yazmak olurdu ⇒ ölçüm aracını kasten körleştirmek. Boşluk **beyan edildi**, `D2` SARI kalıyor.
 - 🟡 **`_start_api.cmd` `ASPNETCORE_ENVIRONMENT` SET ETMİYOR [oturum 37, ÖLÇÜLMEDİ].** `Program.cs` `IsDevelopment()` ile `DevCurrentUser` açıyor (K61), aksi hâlde `NullCurrentUser` ⇒ 401. `dotnet run --no-launch-profile`'ın ortamı Development'a düşürüp düşürmediği **ölçülmedi**; oturum 37'de değişken **elle** set edilerek koşuldu ve `/v1/tasks` başlıksız **401** / başlıklı **200** ölçüldü.
+
+- 🔴 **WEB'DE SESSİZ SONSUZ YENİDEN-BAĞLANMA RİSKİ [K78].** `flutter build web` **geçiyor** (ölçüldü) ama tarayıcıda `IOWebSocketChannel` çalışmaz ve WS upgrade'ine `X-Momentum-Dev-User` konamaz ⇒ her deneme kopar, 30 sn'de bir **sonsuza dek** yeniden dener ve `print` ile log basar. Çözüm `kIsWeb` koruması / koşullu import — **`G12`'nin işi**, iskeletin değil.
+- 🟡 **`SignalrJsonSinyal` DURDURULAMIYOR [K78].** `main.dart` örneği `_UretimKurulumu`'ya koymuyor ⇒ `durdur()` çağırabilecek sahip yok, `StreamController` hiç kapanmıyor. Uygulama ömrü boyunca zararsız ama **test edilemez**; `G12` buna takılır.
+- 🟡 **332 SATIR YENİ ÜRÜN KODUNUN TEK TESTİ YOK [K78].** `flutter test` 156/156 — düşmedi ama **artmadı da**. K77/4 gereği kapsam dışıydı; `G12`'nin **ilk** işi budur.
+- 🟡 **`iddia-kapisi.py` HAYALET KANIT SINIFI İKİNCİ KEZ ISIRDI [K78].** `KANIT/slice-3e-iskelet`'te tabloda **sıfır** mutant varken **altı** hayalet buldu (`M111, M6, M7, M8, M8p, M9`) — kaynak 2 MB'lık `pub-lisans-kapisi.txt` + PNG/sqlite baytları. Aynı dizindeki o 2 MB'lık dosya ayrıca portfolyo yüküdür.
 
 ### `[DOĞRULANMADI]` (ölçülmedi — "temiz" DEĞİL)
 

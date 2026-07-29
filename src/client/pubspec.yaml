@@ -36,6 +36,9 @@ dependencies:
   drift_flutter: ^0.3.1
   path_provider: ^2.1.6
   http: ^1.6.0
+  # K77/1 (slice-3e): kendi minimal SignalR-JSON istemcimizin tasima katmani.
+  # BSD-3-Clause, pub.dev /advisories 0 kayit (T4'te pub-cve-kapisi/pub-lisans-kapisi ile dogrulanir).
+  web_socket_channel: ^3.0.3
 
 dev_dependencies:
   flutter_test:

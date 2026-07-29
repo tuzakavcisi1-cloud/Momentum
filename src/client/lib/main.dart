@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_driver/driver_extension.dart';
 
 import 'ag/http_senkron_agi.dart';
+import 'ag/signalr_json_sinyal.dart';
 import 'design/tema.dart';
 import 'sunum/gorev_listesi_ekrani.dart';
 import 'veri/ayarlar_deposu.dart';
@@ -111,6 +112,16 @@ Future<_UretimKurulumu> _uretimKurulumOlustur() async {
     devUserId: ayarlar.devUserId,
     baslangicCursorJson: ayarlar.nextCursorJson,
   );
+
+  // GOREV-slice-3e T3: gercek zamanli sinyal -- K77/5 dogrudan esleme, EK
+  // debounce/zamanlayici/kuyruk YOK. `_senkronSunucuUrl`den YENIDEN turetilir,
+  // ikinci bir `String.fromEnvironment` EKLENMEZ.
+  final sinyal = SignalrJsonSinyal(
+    sunucuTabanUrl: _senkronSunucuUrl,
+    actorId: ayarlar.devUserId,
+  );
+  sinyal.olaylar.listen((_) => unawaited(dongu.cekmeTuruCalistir()));
+  unawaited(sinyal.baslat());
 
   return _UretimKurulumu(depo, dongu);
 }
