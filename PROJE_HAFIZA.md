@@ -109,6 +109,33 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## CHECKPOINT — 29 Tem 2026, oturum 38: K82 — `oturum-sagligi.py` DOĞDU ve İLK KOŞUMDA KENDİ YANLIŞ-POZİTİFİNİ ÜRETTİ
+
+**Ne yapıldı.** K21'in mekanik kapısı (`araclar/oturum-sagligi.py` 1.0.0) yazıldı. Üç oturumdur "SIRADAKİ İŞ" olarak bekliyordu; bu oturum açılışı sınıfın **iki yeni vakasını** üretti (devir notunun `PROJE_RADAR.jsonl` kimliği bayattı; DURUM.md başlığı oturum 36 diyordu).
+
+**Onur'un kilitlediği üç tasarım kararı (oturum 38, işaretlenebilir şıklarla sunuldu):**
+1. **İki ayak, AYRI HÜKÜM.** Kanonik/D1 ayağı transcript istemez, her zaman koşar; token ayağı yalnız `--transcript` verilirse koşar, verilmezse **OLCULMEDI** der. Gerekçe **ölçüldü**: Cowork'ün transcript'i buluttadır, araç Windows'ta koşar ⇒ DURUM.md'de yazılı hâliyle araç, yazıldığı gün kendi ana ayağını **ölçemeyecekti**. Üç oturumdur bunu kimse fark etmemişti.
+2. **D1 üç kaynağı birden tarar:** DURUM.md §9 donmuş kimlik tablosu (çalışma ağacıyla — onlar sözleşmedir) · PROJE_HAFIZA.md devir notunun kimlik bloğu (**yazım anıyla**) · PROJE_RADAR.jsonl (**zaman** ayağı; bayt-disk karşılaştırması radar'ın D1'idir, TEKRARLANMADI).
+3. **Yüzde koşulsuz KIRMIZI.** K21'in kendi cümlesi (*"yüzde yazan el paydayı uydurmuştur"*) koda çevrildi; altın kümede **yanlış-pozitif vakası** koşar (`%10 budanabilir` ısırmamalı).
+
+🔴 **ÖLÇÜLMÜŞ DERS — ARAÇ İLK GERÇEK KOŞUMDA KENDİ KUSURUNU ÜRETTİ.** v1.0 üç KIRMIZI verdi: `PROJE_RADAR.jsonl` (gerçek kusur), `PROJE_HAFIZA.md` (yapısal), **`DURUM.md` (YANLIŞ-POZİTİF)**. Üçüncüsü kusurdu: kayıt yazıldığında doğruydu, dosyayı **bu oturumda ben** değiştirdim. Araç *"yazım anında bayat mıydı"* ile *"sonradan değişti"*yi ayırmıyordu ⇒ her oturum kırmızı yanacak, **kör kapıya** dönecekti. Onarım: devir ayağı beyanı **PROJE_HAFIZA.md'yi son değiştiren commit** anındaki dosya hâliyle karşılaştırır (`git show <commit>:<yol>`); not commit'lenmemişse yazım anı = çalışma ağacı. Üç yeni altın küme vakası bu ayrımı kilitler (19b/19c/19d).
+
+🔴 **YENİ KURAL ADAYI — DEVİR NOTU KENDİ KABININ KİMLİĞİNİ YAZAMAZ.** Ölçüldü: not `PROJE_HAFIZA.md 684.530 b` diyor, yazım anında dosya **691.599 b**. Notu yazmak dosyayı büyütür ⇒ beyan **yapısal olarak imkânsızdır**. Araç bunu `D1-OZ` koduyla **SARI** raporlar, KIRMIZI değil: kusur eldeki değil **kuraldadır**.
+
+**Kendi koşumu (K26 — üreten ≠ denetleyen; bu ARAÇ kendini kanıtladı, ama ARACI kimse denetlemedi):**
+- Altın küme **25/25 · EXIT 0** — önce bulutta, sonra Onur'un makinesinde, aynı sonuç.
+- Gerçek tarama: **EXIT 2**, bir gerçek KIRMIZI (`PROJE_RADAR.jsonl` yazım anında bayat), iki SARI (`D1-OZ`, defter zaman ayağı), `S1`/`S2`/`S3` **temiz** (kanonik eşikler tutuyor, yüzde yok, eşik kopyası yok).
+- Token ayağı **gerçek transcript'le** kanıtlandı (bulutta, 929.824 b jsonl): **267.671 mutlak token ⇒ 🟢 YEŞİL**; payda yanlışlama testi tetiklenmedi.
+- 🔴 **KABUL EDİLMEDİ.** Aracı **yazan el Cowork'tür**; K26 gereği kendi ürettiğini onaylayamaz. Kilit ve bağımsız denetim **Onur'dadır** (ya da ayrı bir el).
+
+**Bu oturumda ayrıca ölçülenler:** açılış protokolü tam koştu (tek-kopya YEŞİL · belge-tavan YEŞİL · radar altın küme 18/18, gerçek tarama KIRMIZI/EXIT 2 — beklenen) · izlenen değişiklik **0**, `index.lock` **YOK**, HEAD `eb501cb` = uzak `origin/main` (`ls-remote` ile) ⇒ **push yapılmış** · **92 izlenmeyen dosya** · ortam üçü de ayakta (`momentum-postgres` healthy · `:5298` LISTENING · `emulator-5554`).
+
+**DURUM.md §8'den ÖLÇÜLEREK çıkarılan üç bayat kalem** (G12/K81 bunları kapatmıştı, liste güncellenmemişti): web `kIsWeb` koruması (`signalr_json_sinyal.dart:100`) · sinyal sahipliği `_UretimKurulumu`'da (`main.dart:79/123`) · adanmış test dosyası (`g12_sinyal_kapisi_test.dart`, 171/171).
+
+**Çürütülen şüphe (dürüstlük kaydı):** `src/client/test/` altındaki iki izlenmeyen dosyanın `171/171` sayısını şişirdiğinden şüphelendim; ölçtüm, ikisi de `void main() {}` ⇒ **sıfır test bildiriyor**, sayı bozulmamış. Şüphe **ölçümle çürütüldü**.
+
+---
+
 ## DEVİR NOTU — oturum 37 → 38 (29 Tem 2026)
 
 > Bu blok Onur'a sohbette **kod bloğu** olarak da verildi; ikisi aynı metindir.
