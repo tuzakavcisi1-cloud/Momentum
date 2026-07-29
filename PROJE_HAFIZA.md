@@ -109,6 +109,100 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## DEVİR NOTU — oturum 37 → 38 (29 Tem 2026)
+
+> Bu blok Onur'a sohbette **kod bloğu** olarak da verildi; ikisi aynı metindir.
+
+```
+MOMENTUM — DEVİR NOTU (oturum 37 → 38, 29 Tem 2026)
+PROJE: C:\dev\Momentum — Flutter istemci + .NET 9 backend + PostgreSQL, çevrimdışı-öncelikli senkron.
+Cowork = tasarım/spec/denetim/hafıza · Claude Code = build. Üreten ≠ denetleyen (K26).
+
+DURUM: slice-3e KAPANDI. K42-d'nin DÖRT ADIMI DA BİTTİ.
+  K77 — slice-3e tasarımı kilitlendi (6 karar). ÖLÇÜLDÜ: backend ayağı slice-2b2'de ZATEN BİTMİŞTİ
+        (SyncHub + SignalRSignalPublisher + negotiate-öncesi 401) ⇒ dilim İSTEMCİ işiydi, backend'e
+        tek bayt yazılmadı. Taşıma = kendi minimal SignalR-JSON istemcimiz (web_socket_channel).
+  K78 — YÜRÜYEN İSKELET KABUL. 🔴 Builder'ın "Changed→çekme ~146 ms" manşet sayısı ÇÜRÜTÜLDÜ:
+        iki ayrı saatin farkıydı (host UTC ↔ cihaz logcat); emülatör host'tan ~1,44 sn GERİDE
+        (üç ölçüm). Sayı çekildi, [DOĞRULANMADI] yazıldı. YENİ KUSUR SINIFI: saat-sapmasi-olculmemis.
+  K79 — G12 spec'i kilitlendi (üç ürün-kodu düzeltmesi + iki kapı ailesi, 16 mutant M58–M73).
+  K80 — "Ortamı kim kaldırır" kuralı CLAUDE.md'ye yazıldı: cihaz/canlı-sunucu kanıtı isteyen HER spec
+        ortamı KENDİ kaldırma maddesini taşır; PID/cihaz adı YAZILMAZ, ÖLÇÜLÜR; Cowork kaldırmaz,
+        DOĞRULAR. (Ölçüldü: Claude Code bunu zaten yapabiliyor — KANIT/slice-3d/09-MUTANT/_start_api.cmd)
+  K81 — G12 KABUL. Y1 SEMBOL bazlı oldu (K79/3 daraltıldı); kriter 8 UYGULANMAZ ilan edildi.
+
+SON COMMIT: 218e910 · PUSH EDİLDİ (origin/main...HEAD = 0/0 ölçüldü) · ağaç temiz · index.lock yok.
+🔴 PUSH DAİMA ONUR'DA. İleri/geri durumu YAZILMAZ, açılışta ÖLÇÜLÜR.
+
+COWORK'ÜN KENDİ KOŞUMU (builder'ın hiçbir sayısına güvenilmedi, K26):
+  analyze --fatal-infos 0 · flutter test 171/171 · yoklama-yasagi-kapisi altın küme 15/15 EXIT 0 ve
+  gerçek tarama EXIT 0 BULGU YOK · flutter build web --release EXIT 0 · pub-cve + pub-lisans EXIT 0 ·
+  tek-kopya + belge-tavan YEŞİL · üç PNG GÖZLE denetlendi · üç sqlite sha'sı farklı.
+  Ürün kodu bu oturumda: 346 satır (istemci) ⇒ R8 SUSTU.
+
+SIRADAKİ İŞ: araclar/oturum-sagligi.py (K21 — K44-a). ÜÇ oturumdur bekliyor ve bu oturum dördüncü
+  kanıtını üretti. Araç: transcript'ten MUTLAK token okur, rengi mutlak eşikten hesaplar, paydaya
+  DOKUNMAZ, CLAUDE.md'nin K21 bloğunu kanonik değerlerle karşılaştırır, payda yanlışlama testini koşar.
+  Altın küme: bilerek bozulmuş bir özet satırını yakalamalı. 🔴 BU OTURUMDAN GELEN İKİNCİ AYAK FİKRİ:
+  "checkpoint kaydı, ölçtüğü dosyanın SON yazımından ÖNCE yazılmış mı?" — D1 bu oturumda ÜÇ kez ısırdı.
+  Sonra: ② açık borçlar §8 · ③ iddia-kapisi.py ikili tarama onarımı (AYRI EL, K34-f).
+
+AÇILIŞ PROTOKOLÜ (atlanmaz):
+  1. DURUM.md + CLAUDE.md TAM oku. PROJE_HAFIZA.md'yi AÇMA — tek istisna en üstteki DEVİR + K81/K80/K79.
+  2. python araclar\tek-kopya-kapisi.py .
+  3. python araclar\belge-tavan-kapisi.py .
+  4. python araclar\radar.py --altin-kume  ->  python araclar\radar.py .   (KIRMIZI beklenen)
+  5. git --no-optional-locks status --porcelain + Test-Path .git\index.lock +
+     git --no-optional-locks rev-list --left-right --count origin/main...HEAD
+  6. Oturum sağlığını KENDİ oturum-id'nle ölç; eşikler MUTLAK, kanonik metin YALNIZ CLAUDE.md'de,
+     YÜZDE YAZMA.
+
+OTURUM 37'NİN ÜÇ DERSİ (tekrar etmesin):
+  1. "Ayak adı ham çıktıda görünüyor" MUTANT KANITI DEĞİLDİR — flutter test zaten tüm test adlarını
+     basar, o kontrol bedavaya geçer. [E] satırları ayrıştırılıp HANGİ TESTİN DÜŞTÜĞÜ ölçülmelidir.
+  2. İKİ FARKLI SAATTEN alınan damgaların farkı, sapma ÖLÇÜLMEDEN bir gecikme sayısı olarak yazılamaz.
+  3. D1 bu oturumda ÜÇ kez ısırdı ve üçüncüsünü COWORK KENDİ ÜRETTİ (sınıfı adlandırdığı oturumda):
+     checkpoint kaydı, dosyanın SON yazımından ÖNCE yazılırsa bayt beyanı bayatlar.
+
+AÇIK BORÇLAR (DURUM.md §8 tam liste; oturum 37'den YENİ olanlar):
+  - D1-ÖNLEME artık teorik değil: ÖLÇÜLMÜŞ ve TEKRARLAYAN. oturum-sagligi.py'nin ikinci ayağı olabilir.
+  - Y3'ün mutantı YOK (G12 spec §3'te beyanlı).
+  - G12 kriter 8 UYGULANMAZ — spec-kapi-kapsama.py dizin kabul etmiyor VE G12'nin başlık şemasını
+    ayrıştıramıyor. Biçim standardı CLAUDE.md'de; G12'nin kapsama ölçümü YAPILMADI.
+  - GOREV-slice-3e-G12.md tek-kopya-kapisi.py kapsamına EKLENMEDİ (aracın kilitli sha'sı bozulur +
+    11/11 mutant yeniden koşar) — kilit BEYANLA yaşıyor, DURUM.md §9'da yazılı.
+  - iddia-kapisi.py hayalet kanıt sınıfı ÜÇÜNCÜ kez ısırdı (PNG/sqlite baytları).
+  - Eskiler: 02-G2 üretici kodu + ikinci yazıcı · verify.ps1 fail-loud · hafiza-dizin.py K60 ihlali ·
+    Z10b · defter D2/D3 · DESIGN.md BD-1…BD-7 · taban rozet kırpılması (A-7) · web [DOĞRULANMADI].
+
+BEYAN EDİLMİŞ SINIRLAR (yaşayanlar): Y1 sembol bazlı, gövde kuralı beyaz listedekiler DÂHİL herkese ·
+  CursorHint YOKSAYILIR (D6) · web'de sinyal kIsWeb ile KAPALI ve web ayağı [DOĞRULANMADI] ·
+  D2 kural 3'ün K != 'yerel' istisnası · R9 öncesi inmiş satırlar 'yerel' KALIR.
+
+ORTAM (devralınan, kanla yazılı):
+  - K80 gereği ortamı ARTIK CLAUDE CODE KALDIRIR. Sıra: docker start momentum-postgres (healthy
+    görülene kadar yokla) → backend ayrı süreçte (🔴 ASPNETCORE_ENVIRONMENT=Development AÇIKÇA set
+    edilir, yoksa K61 her isteği 401'ler) → emülatör (tek AVD: tuzak_api34).
+  - PID/cihaz adı YAZMA, ÖLÇ: docker ps · netstat -ano | findstr :5298 · adb devices
+  - adb PATH'te YOK: C:\Users\gulci\AppData\Local\Android\Sdk\platform-tools\adb.exe
+  - 🔴 KÖPRÜ BU OTURUMDA ÜÇ KEZ DÜŞTÜ ⇒ uzun koşumları ayrık sürece al, çıktıyı DOSYAYA yaz.
+  - Cowork→PowerShell köprüsü "$" değişkenlerini SİLİYOR ve non-ASCII girdiyi cp1252 sanıp bozuyor
+    ⇒ komut satırına $ ve Türkçe karakter gönderme, \uXXXX kaçışı kullan ya da .py yaz.
+  - os.replace WinError 5 verebilir ⇒ üç adımlı yedekli takas (rename→rename→sha→sil).
+  - python HEM stdout HEM stderr reconfigure(encoding="utf-8", errors="replace") ister.
+  - Commit mesajına ÇİFT TIRNAK yazma. git add -A YASAK; yol belirterek ekle (K55).
+  - flutter test/build için PROGRAMFILES(X86)=C:\Program Files (x86) enjekte et.
+  - Ekran yakalama: adb shell screencap -p + adb pull ("> dosya.png" ikiliyi BOZAR).
+
+DOSYA KİMLİKLERİ (son yazımdan SONRA ölçüldü):
+  DURUM.md 29.923 b · DF44632A        | CLAUDE.md 15.599 b · EC022B7B
+  PROJE_HAFIZA.md 684.530 b · E1274D69 | PROJE_RADAR.jsonl 133.609 b · 45AB330C
+  GOREV-slice-3e-G12.md 12.623 b · BDB3630E (K79 KİLİTLİ)
+  araclar/yoklama-yasagi-kapisi.py 22.467 b · 5638353C
+  signalr_json_sinyal.dart 13.727 b | g12_sinyal_kapisi_test.dart 14.782 b
+```
+
+
 ## K81 — `G12` KABUL EDİLDİ + `K79/3` DARALTILDI (29 Tem 2026, oturum 37 · Onur onayladı)
 
 **COWORK'ÜN KENDİ KOŞUMU (K26) — geçenler.** `flutter analyze --fatal-infos` → *No issues found*
