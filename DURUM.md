@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı şu an **hiçbir kapı zorlamıyor** (beyan edilmiş zayıf kontrol, ilk ısırışta araç yazılır).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 29 Tem 2026, **oturum 39 açılışı** — §8 `BORCLAR.md`ye ayrıldı (K83), `oturum-sagligi.py`nin altın küme sayısı **ölçülerek** düzeltildi, §2ye `sayi-tazeligi.py` eklendi. *(Oturum 38 açılışında yapılan iş — §8in `G12`/`K81` sonrası budanması — arşivdedir.)*
+> **Son güncelleme:** 30 Tem 2026, **oturum 39 açılışı** — §8 `BORCLAR.md`ye ayrıldı (K83), `oturum-sagligi.py`nin altın küme sayısı **ölçülerek** düzeltildi, §2ye `sayi-tazeligi.py` eklendi. *(Oturum 38 açılışında yapılan iş — §8in `G12`/`K81` sonrası budanması — arşivdedir.)*
 
 ---
 
@@ -21,7 +21,7 @@
 3. `python araclar\belge-tavan-kapisi.py .` — canlı belge tavanı (K73). `T1` KIRMIZI ise checkpoint yazmadan **ÖNCE** budanır.
 4. `python araclar\sayi-tazeligi.py .` 🔴 **[oturum 39'da EKLENDİ — ölçülmüş gerekçe]** Bu kapı protokolde **YOKTU** ve elle koşulduğunda **KIRMIZI** verdi: `oturum-sagligi.py` için **bayat** bir altın-küme sayısı yazılıydı, ölçülen gerçek **26**. **Çağrılmayan kapı, kör kapı kadar kördür.** Sınıfın kalanı `BORCLAR.md`'de açık.
 5. `python araclar\oturum-sagligi.py --altin-kume` (**26/26**, EXIT 0) → `python araclar\oturum-sagligi.py .`
-6. `python araclar\radar.py --altin-kume` (EXIT 0) → `python araclar\radar.py .` — **KIRMIZI ise yeni tur YASAK**; dört şık Onur'a sunulur, **varsayılan DEVRET**. *(29 Tem 2026'dan beri yürürlükteki kilit: **K83 / DURDUR** — §4.)*
+6. `python araclar\radar.py --altin-kume` (EXIT 0) → `python araclar\radar.py .` — **KIRMIZI ise yeni tur YASAK**; dört şık Onur'a sunulur, **varsayılan DEVRET**. *(30 Tem 2026'dan beri yürürlükteki kilit: **K83 / DURDUR** — §4.)*
 7. `git --no-optional-locks log --oneline -1` + `rev-list --left-right --count origin/main...HEAD` + `status --porcelain` + `Test-Path .git\index.lock`. 🔴 **Son commit ve push durumu hiçbir belgeye YAZILMAZ, burada ÖLÇÜLÜR (K82-b).**
 8. **Oturum sağlığını KENDİ oturum-id'nle ÖLÇ.** Cowork'te transcript **BULUTTADIR** (`/root/.claude/projects/*/<oturum-id>.jsonl`) ⇒ araç **bulutta** `--transcript` ile koşulur. Windows'taki koşum `S4`'ü **OLCULMEDI** der ve **bu yeşil DEĞİLDİR**.
 9. **Ortamı ÖLÇ** (K80): `docker ps` · `netstat -ano | findstr :5298` · `adb devices`. 🔴 Sonuç **hiçbir belgeye yazılmaz** — beyan bayatlar, ölçüm bayatlamaz.
@@ -38,7 +38,7 @@
 | **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Cowork'ün kendi koşumu: `analyze --fatal-infos` **0** · `flutter test` **171/171** · kapılar `G1`–`G12` YEŞİL · `M1`–`M73` mutantların hepsi ısırdı. |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
-| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI**, **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔒 **K83 — Onur şık (4) DURDUR'u kilitledi (29 Tem 2026):** `docs/ADR/0003` ve `GOREV-slice-3b-spec` **park**, oturum görünen çıktıya geçti. **Beyan edilen bedel:** alarm her açılışta yine yanar; kilit ritüeli kısaltır, kusuru kapatmaz. **R8 SUSTU** ama sayaç **1** |
+| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI**, **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔒 **K83 — Onur şık (4) DURDUR'u kilitledi (30 Tem 2026):** `docs/ADR/0003` ve `GOREV-slice-3b-spec` **park**, oturum görünen çıktıya geçti. **Beyan edilen bedel:** alarm her açılışta yine yanar; kilit ritüeli kısaltır, kusuru kapatmaz. **R8 SUSTU** ama sayaç **1** |
 | **Git** | **PUSH DAİMA ONUR'DA.** İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR**: `git --no-optional-locks rev-list --left-right --count origin/main...HEAD` |
 
 **Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · .NET 9.0.316 · **Windows masaüstü ☠** · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
@@ -47,7 +47,7 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **OTURUM 39 KİLİTLERİ — K83 (Onur, 29 Tem 2026, üç şık birlikte):**
+🔒 **OTURUM 39 KİLİTLERİ — K83 (Onur, 30 Tem 2026, üç şık birlikte):**
 ① Radar KIRMIZI ⇒ şık **(4) DURDUR** — kâğıt artefaktlar **park**, oturum **görünen çıktıya** geçer.
 ② `DURUM.md` §8 ⇒ **`BORCLAR.md`** (kendi tavanı 16.384 b) + iki **bayat altın-küme iddiası** düzeltildi (`oturum-sagligi.py` fiilen **26** vaka taşıyor; ezberden yazılmış sayı çıktıdan okundu).
 ③ Ürün kodu dilimi **A-7**: taban rozet **metin taşması** + **2.0× ölçek ayağı** (A11Y-4). 🔴 `content-desc` çift okuma **BU DİLİMDE DEĞİL** — ayrı dilime bırakıldı, borç `BORCLAR.md`'de açık kalır.
@@ -113,6 +113,7 @@
 
 ## 7. KANLA YAZILI ORTAM UYARILARI
 
+- 🔴 **COWORK BULUTTA UTC İLE KOŞUYOR — TARİH ONUR'UN TAKVİMİNDEN 3 SAAT GERİDE [ÖLÇÜLDÜ, oturum 39].** Oturum bağlamı *"Today's date: 2026-07-29"* diyordu; aynı anda cihazda `Get-Date` **2026-07-30 00:50 +03:00** ölçtü (bulut UTC 21:50). **00:00–03:00 arası her oturum bir gün geriye tarih yazar.** Bu oturum bu kusuru fiilen üretti: `K83` checkpoint'i ve defter kaydı `2026-07-29` yazdı, `oturum-sagligi.py`'nin `D1` **zaman ayağı** yakaladı (*"kayıt 29 Tem, dosya 30 Tem'de yazılmış"*) ⇒ append-only iki dosyaya **düzeltme kaydı** girmek zorunda kalındı. 🔴 **Kural: tarih ortam beyanından OKUNMAZ, cihazdan ÖLÇÜLÜR** — `Get-Date -Format 'yyyy-MM-dd'`. Onur'un devir notu doğru tarihi taşıyordu; **bulut yanlıştı, insan doğruydu.**
 - **Claude Code DAİMA `Momentum` kökünden açılır** (üstten açarsan `.mcp.json` görünmez, dart MCP yüklenmez).
 - **Cowork→PowerShell köprüsü `$` değişkenlerini SİLİYOR** ve iç içe tırnakları bozuyor ⇒ `$` gönderme, **Python betiği yaz**.
 - **Commit mesajına ÇİFT TIRNAK yazma** (PowerShell argümanı böler, commit sessizce düşer); sonra `git log --oneline -1` ile SHA'yı doğrula.
@@ -135,7 +136,7 @@
 
 ## 8. AÇIK BORÇLAR → **`BORCLAR.md`**
 
-🔴 **Bu bölüm 29 Tem 2026'da (oturum 39, Onur'un kilidi K83) `BORCLAR.md`'ye TAŞINDI.** Ölçülmüş gerekçe:
+🔴 **Bu bölüm 30 Tem 2026'da (oturum 39, Onur'un kilidi K83) `BORCLAR.md`'ye TAŞINDI.** Ölçülmüş gerekçe:
 `belge-tavan-kapisi.py` **T2 SARI** verdi — `DURUM.md` **31.744 / 32.768 b**, pay yalnız **1.024 b** (eşik 1.638)
 ⇒ bir sonraki checkpoint tavanı **AŞACAKTI**. Taşınan blok **10.395 b**; **açılışta okunan bayt 31.744 → 21.349**.
 Toplam bayt azalmadı — azalan şey **her oturumun okumak zorunda olduğu** bayttır; kazanç budur, başka bir şey değil.

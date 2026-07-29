@@ -1,6 +1,6 @@
 # BORCLAR.md — Momentum · AÇIK BORÇLAR (adlandırılmış, gizlenmemiş)
 
-> 🔴 **AÇILIŞTA OKUNMAZ.** Bu dosya `DURUM.md` §8'den **29 Tem 2026'da (oturum 39, Onur'un kilidi K83)** ayrıldı.
+> 🔴 **AÇILIŞTA OKUNMAZ.** Bu dosya `DURUM.md` §8'den **30 Tem 2026'da (oturum 39, Onur'un kilidi K83)** ayrıldı.
 > Açılış protokolü **`DURUM.md` + `CLAUDE.md`** ile sınırlıdır; burası yalnız **iş bir borca dokunduğunda** açılır
 > (`PROJE_HAFIZA.md` ayrımının aynısı).
 > **TAVAN: ≤ 16.384 b.** Gerekçe `DURUM.md`'nin tavanından **farklıdır ve büyümeyi ÖDÜLLENDİRMEZ:** bu liste
