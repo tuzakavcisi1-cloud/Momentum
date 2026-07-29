@@ -36,6 +36,9 @@ VARSAYILAN_KAPSAM = [
     ("DURUM.md", 32768, "K58 -- R4 freni + dikkat; 12 KB'den yukseltildi"),
     ("CLAUDE.md", 32768, "acilista TAM okunur; DURUM.md ile ayni gerekce"),
     ("DESIGN.md", 32768, "K46 ile donduruldu; tavan yine de olculur"),
+    ("BORCLAR.md", 16384, "K83 -- DURUM.md 8'den ayrildi, acilista OKUNMAZ. Tavan "
+     "DURUM.md'nin YARISI ve bu bilinclidir: bu listenin buyumesi borcun "
+     "kapanmadigi sinyalidir, kapinin isirmasi DOGRU davranistir"),
 ]
 # Pay esigi: tavanin %5'inden az pay kaldiysa SARI. Olculmus gerekce: oturum 34'te
 # pay 38 bayta dustu ve bir SONRAKI her ekleme tavani asti -- yani dar pay,

@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı şu an **hiçbir kapı zorlamıyor** (beyan edilmiş zayıf kontrol, ilk ısırışta araç yazılır).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 29 Tem 2026, **oturum 38 açılışı** — `G12`/`K81` sonrası §8 budandı: G12'nin KAPATTIĞI üç `K78` kalemi **ölçülerek** çıkarıldı (kanıt: `signalr_json_sinyal.dart:100` `kIsWeb` · `main.dart:79/123` sinyal sahipliği `_UretimKurulumu`'da · `g12_sinyal_kapisi_test.dart`, 171/171).
+> **Son güncelleme:** 29 Tem 2026, **oturum 39 açılışı** — §8 `BORCLAR.md`ye ayrıldı (K83), `oturum-sagligi.py`nin altın küme sayısı **ölçülerek** düzeltildi, §2ye `sayi-tazeligi.py` eklendi. *(Oturum 38 açılışında yapılan iş — §8in `G12`/`K81` sonrası budanması — arşivdedir.)*
 
 ---
 
@@ -16,13 +16,16 @@
 
 ## 2. AÇILIŞ PROTOKOLÜ (sırayla, atlanmaz)
 
-1. **Bu dosyayı** + `CLAUDE.md`'yi oku. *(`PROJE_HAFIZA.md`'yi okuma — gerekirse sonra bak.)*
-2. `python araclar\tek-kopya-kapisi.py .` — **tek kopya dosya regresyon kapısı (K60).** KIRMIZI ise **önce dosyayı kurtar** (`git restore <yol>`), sonra iş yap.
-3. `python araclar\belge-tavan-kapisi.py .` — **canlı belge tavanı (K73).** `T1` KIRMIZI ise checkpoint yazmadan **ÖNCE** budanır.
-4. `python araclar\radar.py --altin-kume` (EXIT 0) → `python araclar\radar.py .`
-   **KIRMIZI ise yeni tur YASAK**; dört şık Onur'a sunulur, **varsayılan DEVRET**.
-5. `git --no-optional-locks status --porcelain` + `Test-Path .git\index.lock`
-6. §4'teki **SIRADAKİ İŞ**'ten devam et.
+1. **Bu dosyayı** + `CLAUDE.md`'yi **TAM** oku. *(`PROJE_HAFIZA.md` ve `BORCLAR.md` AÇILMAZ.)* 🔴 **İKİSİNİ DE** — oturum 38'de `CLAUDE.md` okunmadan "okundu" işaretlendi: **sahte yeşil**.
+2. `python araclar\tek-kopya-kapisi.py .` — regresyon kapısı (K60). KIRMIZI ise **önce dosyayı kurtar** (`git restore <yol>`), sonra iş yap.
+3. `python araclar\belge-tavan-kapisi.py .` — canlı belge tavanı (K73). `T1` KIRMIZI ise checkpoint yazmadan **ÖNCE** budanır.
+4. `python araclar\sayi-tazeligi.py .` 🔴 **[oturum 39'da EKLENDİ — ölçülmüş gerekçe]** Bu kapı protokolde **YOKTU** ve elle koşulduğunda **KIRMIZI** verdi: `oturum-sagligi.py` için **bayat** bir altın-küme sayısı yazılıydı, ölçülen gerçek **26**. **Çağrılmayan kapı, kör kapı kadar kördür.** Sınıfın kalanı `BORCLAR.md`'de açık.
+5. `python araclar\oturum-sagligi.py --altin-kume` (**26/26**, EXIT 0) → `python araclar\oturum-sagligi.py .`
+6. `python araclar\radar.py --altin-kume` (EXIT 0) → `python araclar\radar.py .` — **KIRMIZI ise yeni tur YASAK**; dört şık Onur'a sunulur, **varsayılan DEVRET**. *(29 Tem 2026'dan beri yürürlükteki kilit: **K83 / DURDUR** — §4.)*
+7. `git --no-optional-locks log --oneline -1` + `rev-list --left-right --count origin/main...HEAD` + `status --porcelain` + `Test-Path .git\index.lock`. 🔴 **Son commit ve push durumu hiçbir belgeye YAZILMAZ, burada ÖLÇÜLÜR (K82-b).**
+8. **Oturum sağlığını KENDİ oturum-id'nle ÖLÇ.** Cowork'te transcript **BULUTTADIR** (`/root/.claude/projects/*/<oturum-id>.jsonl`) ⇒ araç **bulutta** `--transcript` ile koşulur. Windows'taki koşum `S4`'ü **OLCULMEDI** der ve **bu yeşil DEĞİLDİR**.
+9. **Ortamı ÖLÇ** (K80): `docker ps` · `netstat -ano | findstr :5298` · `adb devices`. 🔴 Sonuç **hiçbir belgeye yazılmaz** — beyan bayatlar, ölçüm bayatlamaz.
+10. §4'teki **SIRADAKİ İŞ**'ten devam et.
 
 ---
 
@@ -35,7 +38,7 @@
 | **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Cowork'ün kendi koşumu: `analyze --fatal-infos` **0** · `flutter test` **171/171** · kapılar `G1`–`G12` YEŞİL · `M1`–`M73` mutantların hepsi ısırdı. |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
-| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** ve bu **yapısaldır** (§8): park edilmiş kâğıt artefaktların kaydı asla iyileşemez, park mekanizması yok. **R8 SUSTU.** Varsayılan cevap **DEVRET** |
+| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI**, **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔒 **K83 — Onur şık (4) DURDUR'u kilitledi (29 Tem 2026):** `docs/ADR/0003` ve `GOREV-slice-3b-spec` **park**, oturum görünen çıktıya geçti. **Beyan edilen bedel:** alarm her açılışta yine yanar; kilit ritüeli kısaltır, kusuru kapatmaz. **R8 SUSTU** ama sayaç **1** |
 | **Git** | **PUSH DAİMA ONUR'DA.** İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR**: `git --no-optional-locks rev-list --left-right --count origin/main...HEAD` |
 
 **Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · .NET 9.0.316 · **Windows masaüstü ☠** · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
@@ -44,13 +47,18 @@
 
 ## 4. SIRADAKİ İŞ
 
+🔒 **OTURUM 39 KİLİTLERİ — K83 (Onur, 29 Tem 2026, üç şık birlikte):**
+① Radar KIRMIZI ⇒ şık **(4) DURDUR** — kâğıt artefaktlar **park**, oturum **görünen çıktıya** geçer.
+② `DURUM.md` §8 ⇒ **`BORCLAR.md`** (kendi tavanı 16.384 b) + iki **bayat altın-küme iddiası** düzeltildi (`oturum-sagligi.py` fiilen **26** vaka taşıyor; ezberden yazılmış sayı çıktıdan okundu).
+③ Ürün kodu dilimi **A-7**: taban rozet **metin taşması** + **2.0× ölçek ayağı** (A11Y-4). 🔴 `content-desc` çift okuma **BU DİLİMDE DEĞİL** — ayrı dilime bırakıldı, borç `BORCLAR.md`'de açık kalır.
 
+🔴 **SIRADAKİ İŞ:** `GOREV_CLAUDE_CODE/GOREV-A7-rozet-tasma.md` spec'i — **K81 biçim standardı zorunlu** (`## 5. KAPILAR` altında `### G<n>` · `## 6. MUTANTLAR`), araç **spec dosyasının yoluyla** çağrılır, dizinle değil. Zincir: spec → `spec-kapi-kapsama.py` → bağımsız denetim → **red-team EN SON** → **build Claude Code'da**. Spec **ortamı kendi kaldırma maddesini taşır** (K80: docker → backend + `ASPNETCORE_ENVIRONMENT=Development` → emülatör; her biri **koşula kadar yoklanır**, sabit `sleep` ölçüm değildir).
 
+🔴 **R8 SAYACI 1 — SAYACI KAPATAN ŞEY SPEC DEĞİL, BUILD'DİR.** `urun_kodu_satiri` = *"o oturum penceresinde repoya giren **ÜRÜN** kodu, hangi el olursa olsun"*; **spec/araç/belge SAYILMAZ** (K55). Cowork spec'i bitirse bile sayaç **Claude Code commit edene kadar 1'de kalır** — bu oturumun kendi kendini yeşil ilan etmesinin yolu yoktur.
 
+🟡 **Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR** (K80 + K82-b) — §2 adım 7 ve 9. `A-7`'nin cihaz kanıtı **üçünü de** ister (docker + backend + emülatör). **Push Onur'dadır.**
 
-🔴 **SIRADAKİ İŞ:** ✅ **`G12` KABUL EDİLDİ — K81** (tam ölçüm dökümü arşivde; kurallar prozada değil `G12`'nin 15 ayağında ve `M58`–`M73` mutantlarında koşuyor). ✅ **`araclar/oturum-sagligi.py` 1.0.0 YAZILDI [K82]** — altın küme **25/25**, gerçek tarama **EXIT 2** (bir gerçek KIRMIZI: devir notunun `PROJE_RADAR.jsonl` kimliği **yazım anında** bayattı). 🔴 **KABUL EDİLMEDİ** — aracı yazan el Cowork'tür, K26 gereği kendini onaylayamaz: **bağımsız denetim + kilit Onur'da.** Sonra: ② açık borçlar §8 · ③ `iddia-kapisi.py` ikili tarama onarımı (ayrı el). **Push Onur'da — SAYI YAZILMAZ, açılışta ÖLÇÜLÜR.**
-
-🟡 **Ortam açılışta ÖLÇÜLÜR, YAZILMAZ** — `docker ps` (momentum-postgres) · `netstat -ano | findstr :5298` · `adb devices`. 🔴 **PID ve cihaz adı bu dosyaya YAZILMAZ**; bu satırda üç oturum boyunca bayat bir PID durdu. `G8`/F3 uçtan uca koşumu için üçü de gerekli.
+---
 
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
@@ -93,7 +101,7 @@
 | `tek-kopya-mutant.py` | kapının **ölçüm ayağını** gerçek depoda kanıtlar: arşivi 0 bayta düşürür, satır siler, kilitli dosyayı **aynı boyutta** değiştirir, `.tmp` bırakır, UTF-8'i bozar, dosyayı siler — hepsinde kapının **ısırdığını** ölçer | **11/11** |
 | `hafiza-dizin.py` **1.0.0** | `PROJE_HAFIZA.md`'nin başına **türetilmiş** checkpoint dizini yazar; **fikirli** (koşum 2–3'te sha sabit) ve kendi çıktısını doğrular | **7/7** |
 | `belge-tavan-kapisi.py` **1.0.0** | canlı belge **bayt tavanı + PAY**; `T1` aşım (KIRMIZI) · `T2` dar pay (SARI, eşik %5) · `T0` dosya yok. Tavanı **kendi değiştirmez** (K40) | **9/9** |
-| `oturum-sagligi.py` **1.0.0** | K21'in mekanik kapısı: kanonik eşik (`S1`) · yüzde avı (`S2`) · eşik kopyası (`S3`) · token+payda (`S4`/`S5`, `--transcript` ister, yoksa **OLCULMEDI**) · kimlik tazeliği (`D1`, **yazım anıyla**). Çıkış 4 = kanonik temiz ama sağlık ölçülmedi | **25/25** |
+| `oturum-sagligi.py` **1.0.0** | K21'in mekanik kapısı: kanonik eşik (`S1`) · yüzde avı (`S2`) · eşik kopyası (`S3`) · token+payda (`S4`/`S5`, `--transcript` ister, yoksa **OLCULMEDI**) · kimlik tazeliği (`D1`, **yazım anıyla**). Çıkış 4 = kanonik temiz ama sağlık ölçülmedi | **26/26** |
 | `dosya-kimlik.py` | bayt + sha256 + U+FFFD + CRLF | — |
 | `mcp-arac-probe.py` | MCP'nin **gerçek** araç listesi (`tools/list`) | — |
 | `pub-surum-olc.py` | pub.dev `/api` sürüm + advisory | — |
@@ -125,79 +133,13 @@
 
 ---
 
-## 8. AÇIK BORÇLAR (adlandırılmış, gizlenmemiş)
+## 8. AÇIK BORÇLAR → **`BORCLAR.md`**
 
-> 🔴 **KAPANMIŞ kalemler ve BAYAT çıkan altı iddia buradan ÇIKARILDI** ⇒ `PROJE_HAFIZA.md` **K71**
-> (28 Tem 2026, oturum 35). Bu bölüm yalnız **bugün açık olanı** taşır. Kapanmış bir kalemi burada
-> aramak bayat okuma üretir; gerekçesi arşivdedir.
-
-### Ürün / kod
-
-- 🔴 **SABİT `sleep` BİR ÖLÇÜM DEĞİLDİR [oturum 35 — KENDİ ölçüm kusurum].** Cihaz doğrulamasında 22 sn bekleyip **yanlış KIRMIZI** verdim; görev birkaç saniye sonra inmişti. Daha kötüsü: kriter 9'un ilk ölçümü (K71) 15 sn ile **geçmişti — o geçiş titizlik değil ŞANSTI.** Cihaz ölçen her betik **koşula kadar yoklamalı** (tavanlı), sabit uyumamalı.
-- 🔴 **`iddia-kapisi.py` İKİLİ DOSYALARI METİN GİBİ TARIYOR [oturum 35].** 89.628 b'lik bir PNG'nin rastgele baytları `\bM\d\b` desenine denk düşüp **dört hayalet kanıt** üretti. Bugün yanlış-pozitif; **tehlikeli yönü ters:** büyük bir ikili dosya `M41` desenine denk düşerse kapı o mutantın kanıtı **varmış gibi** sayar ⇒ **kanıt-kazayla-sağlanır**. Onarım: yalnız metin uzantıları taransın. 🔴 **AYRI ELE (K34-f)** — aracı Cowork yazdı (K67).
-- 🔴 **[K76] Taban rozet metni 1.0× ölçekte BİLE KIRPILIYOR** ("Gönderilmemiş de…", "Çevrimdışısın…"; cihaz PNG'lerinde, oturum 37'de yeniden görüldü). `DESIGN.md` v2 açık kalemi `A-7` ilk koşumda ısırdı; **2.0× (A11Y-4) ÖLÇÜLMEDİ**. Bileşik satırda iki rozet yan yanayken yer daralıyor.
-- 🟡 **[K76] Satırın `content-desc`'i rozet metnini İKİ KEZ taşıyor** (`Semantics(label:)` + `Text` çocuğu) ⇒ ekran okuyucu tekrar okur. · 🟡 **[K76] Cihaz kanıtındaki `zehirli` kuyruk kaydı SQLite'a SEED EDİLDİ** — render gerçek widget ağacı, **sentetik olan veridir**.
-- 🟡 **`tazelik-muafiyet.json`'daki `BD-6` GEREKÇESİ BAYATLADI [oturum 36].** Muafiyet *"DESIGN.md K46 ile DONDURULMUŞTUR"* diyor; **K46 açıldı** (K75). Muafiyet hâlâ geçerli ama **gerekçesi doğru değil**. 🔴 **AYRI ELE (K34-f)**.
-- 🔴 **`KANIT/slice-3c/02-G2/` GERİ DOĞDU ve ÜRETİCİ KOD DÜZELTİLMEDİ.** `g2_registry_zarf_kapisi_test.dart:64` hâlâ `Directory('../../KANIT/slice-3c/02-G2')` yazıyor. Silmek düzeltme DEĞİLDİR. 🔴 **İkinci yazıcı da ölçüldü:** `g3_ayristirici_kapisi_test.dart:20`. Hiçbir araç *"KANIT dizini ile onu yazan kodun yolu aynı mı?"* diye sormuyor ⇒ sınıf tek vaka değil. Gerekçe: hafıza K71/K78.
-- 🟡 **Son sayfa tam `PageSize` ise BİR BOŞ TUR fazladan koşar** — `hasMore = (changes.Count ==
-  PageSize)`, `PageSize=500` sabit. Veri kaybı değil, **maliyet**.
-
-### Araç / kapı
-
-- 🔴 **`verify.ps1` FAIL-LOUD AYAĞINI OTOMATİK ZİNCİRDE ETKİSİZ KILIYOR.** `if (-not $env:MOMENTUM_KANIT_DIZIN) { … }` varsayılan atıp dizini yaratıyor; spec §8.2'nin *"zorunlu"* şartı regresyon zincirinde **hiç ölçülmüyor**. Araç değişikliği ⇒ **ayrı el (K34-f)**.
-- 🟡 **D1-ÖNLEME BORCU — KISMEN KAPANDI [K82].** `oturum-sagligi.py` bayat kimliği artık **yakalar**
-  (yazım anıyla karşılaştırarak), ama sayı yazan betiklere *"önce diskten ölç"* adımını **dayatmaz**:
-  bu **tespit**tir, önleme değil.
-- 🔴 **DEVİR NOTU KENDİ KABININ KİMLİĞİNİ YAZMAMALI [K82, ölçüldü].** Not `PROJE_HAFIZA.md 684.530 b`
-  diyor, yazım anında **691.599 b** — notu yazmak dosyayı büyütür ⇒ beyan **yapısal olarak imkânsız**.
-  Araç `D1-OZ` ile SARI der; kural henüz `CLAUDE.md`'ye **yazılmadı** (Onur'un kilidi).
-- 🟡 **`CLAUDE.md` K53/4 hâlâ `R7` diyor [ölçüldü, oturum 38]** — kural K57'de **`R8`** oldu, radarın
-  ürettiği kod da `R8`. Pazarlıksız kurallar bloğunda bayat araç adı.
-- 🟡 **`oturum-sagligi.py` `tek-kopya-kapisi.py` kapsamına EKLENMEDİ** — eklemek kapının kilitli sha'sını
-  bozar + 11/11 mutantı yeniden koşturur; `GOREV-slice-3e-G12.md` ile **aynı beyanlı-kilit** durumu.
-- 🟡 **`oturum-sagligi.py` §3'ü GÖRMÜYOR [ölçüldü, oturum 38].** `D1` yalnız ÜÇ hücreli kimlik tablosunu
-  ayrıştırır; §3'ün iki hücreli satırları **kapsam dışı**. Boşluk aynı gün ısırdı: §3 `DESIGN.md` v1
-  `534DFF68`'i (§9'un **GEÇERSİZ** dediği sha) ve `156/156`'yı (gerçek **171/171**) taşıyordu — ikisi de
-  **elle** bulundu, araçla değil. Onarım **ayrı ele (K34-f)**.
-- 🔴 **`araclar/hafiza-dizin.py` K60'I İHLAL EDİYOR** — son satırı `io.open(yol,"w").write(metin)`; hedefi 665 KB'lik arşiv ve o dosyaya yazan **tek** araç. K60 tam da bu desenden doğdu. Onarım **ayrı ele (K34-f)**.
-- 🔴 **`pub-surum-olc.py`'ye ÇÖZÜMLENEBİLİRLİK AYAĞI [Z10b]** — araç **sürümü** ölçüyor,
-  **çözülebilirliği** ölçmüyor. Kalkan gelene dek her pin `pub get` ile doğrulanır.
-- 🟢 **`tek-kopya-kapisi.py` BEYAN EDİLMİŞ SINIRI [S10]** — karşılaştırma **LF'e normalize** içerik üzerinden (`core.autocrlf`); yalnız satır sonunu kaybeden dosya kapıyı geçer (M2b).
-- 🟡 **`radar.py` R5'in CÜMLESİ KAPSAMINI AŞIYOR** — artefaktın kaydını okur ama *"**projenin** görünen çıktısı %0"* der. Kusur **metinde**; onarım üst akış plugin'inde, **ayrı el** (K34-f).
-- 🟡 **`radar --olc-urun-kodu` ÇALIŞMA AĞACINI GÖRMEZ** — yalnız commit'lenmiş farkı sayar ⇒ R8 yanlış-pozitif olabilir; R8 yandığında **önce çalışma ağacı ölçülür.**
-- 🟡 **`sayi-tazeligi.py` İMZA↔SAYI YAKINLIĞI ÖLÇÜLMÜYOR** [3 kez tetikledi]; eşik uydurulmadı (K40), onarım **ayrı ele** (K34-f).
-- 🟡 **M2b beyanının TERSİ ölçüldü** — A-4 *"çok satırlı yorumdaki literal KAÇABİLİR"* diyordu; kapı **yakaladı** ⇒ `yorum_disi()` yorumu soymuyor (yanlış-pozitif yönü).
-- **`radar.config.json` YOK ve bu bir KARAR**; eşik değiştiren K40 gereği **altın kümeye vaka ekler.**
-
-### Belge / defter
-
-- **`DESIGN.md` BD‑1…BD‑7** — **K46 gereği kapatılmadı**; liste spec §10'da. BD‑6'nın bayat sayısı
-  `sayi-tazeligi.py`'de **gerekçeli muafiyet**.
-- 🔴 **Defter dürüstlük kusurları** — `D3`: `docs/ADR/0003` tur 8 kaydının zorunlu alanları eksik ·
-  `D2`: aynı defterde **tur 1 atlanmış**. Append-only ⇒ **düzeltme kaydı** (28 Tem 2026 radarında
-  hâlâ SARI yanıyor).
-- 🟡 **`D1` bu defterde KÖR** — artefakt adları çoğunlukla **etiket**, yol değil. Yeni kayıtlara
-  **gerçek yol** yazılır.
-- 🟡 **`KANIT/slice-3b/04-G3/gercek-tarama.txt` 1,9 MB** ve **`KANIT/slice-3e-iskelet/pub-lisans-kapisi.txt` 2 MB** — portfolyo yükü; kesit+sha yeterdi.
-
-- 🔴 **DEFTERDE `D2` BOŞLUĞU BİLEREK AÇIK BIRAKILDI [oturum 37].** `uzak_degisiklik_uygulayici.dart` defterde tur 1 (oturum 34) ve tur 3 (oturum 35) taşıyor, **tur 2 YOK**. Geriye dönük kayıt uydurmak `bulgu/kapatilan/uretilen` alanlarına **sahte sıfır** yazmak olurdu ⇒ ölçüm aracını kasten körleştirmek. Boşluk **beyan edildi**, `D2` SARI kalıyor.
-- 🟡 **`_start_api.cmd` `ASPNETCORE_ENVIRONMENT` SET ETMİYOR [oturum 37, ÖLÇÜLMEDİ].** `Program.cs` `IsDevelopment()` ile `DevCurrentUser` açıyor (K61), aksi hâlde `NullCurrentUser` ⇒ 401. `dotnet run --no-launch-profile`'ın ortamı Development'a düşürüp düşürmediği **ölçülmedi**; oturum 37'de değişken **elle** set edilerek koşuldu ve `/v1/tasks` başlıksız **401** / başlıklı **200** ölçüldü.
-
-- 🔴 **`_start_api.cmd` KANIT DİYE GÖSTERİLİYOR AMA VERSİYON KONTROLÜNDE DEĞİL [ölçüldü, oturum 38].** `CLAUDE.md` K80, `KANIT/slice-3d/09-MUTANT/_start_api.cmd`'yi *"Claude Code ortamı zaten kaldırabiliyor"*un kanıtı sayıyor; dosya `git status`'ta **`??`**. Temiz bir klonda doktrinin gösterdiği kanıt **YOK**. Ya commit'lenir ya atıf düzeltilir — repo değişikliği, karar **Onur'da**.
-- 🟡 **92 İZLENMEYEN DOSYA [ölçüldü, oturum 38].** `KANIT/R9/_tmp_*` · `KANIT/slice-3d/09-MUTANT/_tmp_*` · `KANIT/slice-3c/02-G2/` · `src/client/test/_debug_join_test.dart` + `_tmp_sqlite_version_test.dart`. 🔴 **`.gitignore` deseni ÖNERİLMEDİ**, gerekçesi ölçüldü: `_` önekli bazı dosyalar doktrinin **kanıtıdır** (üstteki madde) — geniş desen kanıtı gizler. İki ölü test dosyası **`void main() {}`** ⇒ **0 test bildiriyor**, `171/171` bozulmamış: *şüphe ölçümle ÇÜRÜTÜLDÜ*. Silme **Onur'da** (sandbox silemiyor).
-- 🔴 **RADAR YAPISAL OLARAK KALICI KIRMIZI [ölçüldü, oturum 38].** `radar.py`'de defter kaydını **park/kapatma mekanizması YOK** (`urun_kodu_haric` yalnız ürün-kodu sayımına ait). `docs/ADR/0003` (9 tur) ve `GOREV-slice-3b-spec` (7 tur) kayıtları **asla iyileşemez** ⇒ hüküm her açılışta KIRMIZI, dört-şık ritüeli her oturum aynı cevabı üretir. **Sürekli yanan alarm kör kapıya dönüşür.** Onarım `radar.py`'de ⇒ K57-b bayt-özdeşliğini bozar ⇒ **üst akış plugin'i + AYRI EL (K34-f)**.
-- 🟡 **`iddia-kapisi.py` HAYALET KANIT SINIFI İKİNCİ KEZ ISIRDI [K78].** `KANIT/slice-3e-iskelet`'te tabloda **sıfır** mutant varken **altı** hayalet buldu (`M111, M6, M7, M8, M8p, M9`) — kaynak 2 MB'lık `pub-lisans-kapisi.txt` + PNG/sqlite baytları. Aynı dizindeki o 2 MB'lık dosya ayrıca portfolyo yüküdür.
-
-### `[DOĞRULANMADI]` (ölçülmedi — "temiz" DEĞİL)
-
-- **Kriter 9'un kapsamı ve beyan ettiği sınırlar:** web ayağı (`--platform chrome` sonuç üretmiyor) · iOS (Mac yok, CI-only) · boşaltma tavanı 20'nin her koşulda yeterliliği · `01-acilis.png`'deki ANR **System UI**'a ait (ölçüldü) ama uygulamanın kendi ANR üretmediği **ölçülmedi** · soğuk açılış **süresi** ölçülmedi · düzenleme/tamamlama/silme yollarının uzak yansıması bu ayakta ölçülmedi.
-- **builder'ın *"`cmd /v:on` kalıbı `M4`'te bir kez SESSİZCE başarısız oldu"* iddiası** — Cowork aynı
-  kalıbı onlarca kez kullandı, **hiç yalan söylemedi**; sapma zararsız, **gerekçesi doğrulanmadı**.
-- **Eski açık 5:** flutter_secure_storage Windows · WebKit `__Host-` · Isopoh lisansı ·
-  NIST SP 800-38D · web'de `textScaler`/tema farkı.
-- **`pub.dev` uçları** dokümantasyonsuz/garantisiz — kalkan: fixture altın kümeleri. · **Kontrast
-  betiği** `araclar/` dışında.
-- **Geçici artıklar (repo DIŞINDA, silme Onur'da):** `%TEMP%\_cw_*` · `C:\dev\_cowork_tmp\`.
+🔴 **Bu bölüm 29 Tem 2026'da (oturum 39, Onur'un kilidi K83) `BORCLAR.md`'ye TAŞINDI.** Ölçülmüş gerekçe:
+`belge-tavan-kapisi.py` **T2 SARI** verdi — `DURUM.md` **31.744 / 32.768 b**, pay yalnız **1.024 b** (eşik 1.638)
+⇒ bir sonraki checkpoint tavanı **AŞACAKTI**. Taşınan blok **10.395 b**; **açılışta okunan bayt 31.744 → 21.349**.
+Toplam bayt azalmadı — azalan şey **her oturumun okumak zorunda olduğu** bayttır; kazanç budur, başka bir şey değil.
+`BORCLAR.md` **açılışta okunmaz**, kendi tavanını taşır ve `belge-tavan-kapisi.py` kapsamındadır.
 
 ---
 
@@ -229,4 +171,4 @@ python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GO
 
 ## 10. NEREDE NE VAR
 
-`DURUM.md` (canlı) · `CLAUDE.md` (kalıcı kurallar) · `PROJE_HAFIZA.md` (**append-only arşiv**, K1…K79) · `DESIGN.md` · `PROJE_RADAR.jsonl` (ölçüm defteri) · `docs/ADR/` · `GOREV_CLAUDE_CODE/` · `araclar/` · `KANIT/` · `src/`.
+`DURUM.md` (canlı, **açılışta okunur**) · `CLAUDE.md` (kalıcı kurallar, **açılışta okunur**) · `BORCLAR.md` (**açık borçlar — açılışta OKUNMAZ**, K83) · `PROJE_HAFIZA.md` (**append-only arşiv**, K1…K83) · `DESIGN.md` · `PROJE_RADAR.jsonl` (ölçüm defteri) · `docs/ADR/` · `GOREV_CLAUDE_CODE/` · `araclar/` · `KANIT/` · `src/`.
