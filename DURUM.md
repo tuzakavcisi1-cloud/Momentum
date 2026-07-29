@@ -47,16 +47,18 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **OTURUM 39 KİLİTLERİ — K83 (Onur, 30 Tem 2026, üç şık birlikte):**
-① Radar KIRMIZI ⇒ şık **(4) DURDUR** — kâğıt artefaktlar **park**, oturum **görünen çıktıya** geçer.
-② `DURUM.md` §8 ⇒ **`BORCLAR.md`** (kendi tavanı 16.384 b) + iki **bayat altın-küme iddiası** düzeltildi (`oturum-sagligi.py` fiilen **26** vaka taşıyor; ezberden yazılmış sayı çıktıdan okundu).
-③ Ürün kodu dilimi **A-7**: taban rozet **metin taşması** + **2.0× ölçek ayağı** (A11Y-4). 🔴 `content-desc` çift okuma **BU DİLİMDE DEĞİL** — ayrı dilime bırakıldı, borç `BORCLAR.md`'de açık kalır.
+🔒 **OTURUM 39 KİLİTLERİ — K83 (Onur, 30 Tem 2026):** ① radar KIRMIZI ⇒ şık **(4) DURDUR** · ② §8 ⇒ **`BORCLAR.md`** · ③ ürün kodu dilimi **A‑7** (rozet metin taşması + 2.0× ölçek; `content-desc` çift okuma **HARİÇ**).
+🔒 **K84 — `GOREV_CLAUDE_CODE/GOREV-A7-rozet-tasma.md` YAZILDI** (22.818 b). Onur üç tasarım şıkkını kilitledi: ölçüm ayağı **`RenderParagraph` intrinsic genişliği** · ürün çözümü **dar alanda dikey dönüş** · doktrin çelişkisi **spec'te ayrılır, iki kapı da kalır**. `spec-kapi-kapsama.py` ⇒ **EXIT 0** (`KAPI 3` / `MUTANT 11`, mutant borcu **YOK**).
+🔴 **KÖR KAPI KOŞARAK ÖLÇÜLDÜ** (`KANIT/A7/00-OLCUM-kor-kapi.txt`): `a11y_kapisi_test.dart:274` metnin ayrılan alanın **~10,6 katını** istediği ağaçta `takeException()` ⇒ **`null`**. Rozet metninin **%90'ından fazlası görünmüyor** ve mevcut kapı **hiçbir şey söylemiyor**. Ölçüm 2 (600dp/1.0×) istenen = ayrılan **birebir** ⇒ yeni ölçüm ayağı **yanlış‑pozitif üretmiyor**.
 
-🔴 **SIRADAKİ İŞ:** `GOREV_CLAUDE_CODE/GOREV-A7-rozet-tasma.md` spec'i — **K81 biçim standardı zorunlu** (`## 5. KAPILAR` altında `### G<n>` · `## 6. MUTANTLAR`), araç **spec dosyasının yoluyla** çağrılır, dizinle değil. Zincir: spec → `spec-kapi-kapsama.py` → bağımsız denetim → **red-team EN SON** → **build Claude Code'da**. Spec **ortamı kendi kaldırma maddesini taşır** (K80: docker → backend + `ASPNETCORE_ENVIRONMENT=Development` → emülatör; her biri **koşula kadar yoklanır**, sabit `sleep` ölçüm değildir).
+🔴 **SIRADAKİ İŞ — SIRAYLA:**
+1. **BAĞIMSIZ DENETİM (K26).** Spec'i Cowork yazdı ⇒ **kendi denetçisini spawn EDEMEZ**. Denetim **ayrı elden** gelir; sonra **red-team EN SON**, sonra **KİLİT**.
+2. **CLAUDE CODE BUILD.** Ortamı **builder kaldırır** (K80): emülatör → `flutter run`; canlı veri seçilirse docker + backend + **`ASPNETCORE_ENVIRONMENT=Development`** (K61 ⇒ yoksa 401). **Sabit `sleep` ölçüm değildir.**
+3. **`G13`/`G14`/`G15` kapı numaraları REZERVE** — başka dilim bu numaraları kullanmaz.
 
-🔴 **R8 SAYACI 1 — SAYACI KAPATAN ŞEY SPEC DEĞİL, BUILD'DİR.** `urun_kodu_satiri` = *"o oturum penceresinde repoya giren **ÜRÜN** kodu, hangi el olursa olsun"*; **spec/araç/belge SAYILMAZ** (K55). Cowork spec'i bitirse bile sayaç **Claude Code commit edene kadar 1'de kalır** — bu oturumun kendi kendini yeşil ilan etmesinin yolu yoktur.
+🔴 **R8 ISIRDI VE YAPISALDIR.** Radar: *"son 2 oturumda (oturum [38, 39]) tek satır ÜRÜN kodu girmedi"*. `urun_kodu_satiri` tanımı gereği (K55) **spec/araç/belge SAYILMAZ**; Cowork'ün rolü spec yazmaktır ⇒ **Cowork oturumu R8'i kendi başına ASLA kapatamaz.** Sayaç **yalnız Claude Code'un build commit'iyle** düşer. Radar'ın *"yapısal kalıcı kırmızı"* sınıfının **ikinci vakası** — borç `BORCLAR.md`'de.
 
-🟡 **Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR** (K80 + K82-b) — §2 adım 7 ve 9. `A-7`'nin cihaz kanıtı **üçünü de** ister (docker + backend + emülatör). **Push Onur'dadır.**
+🟡 **Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR** (K80 + K82-b) — §2 adım 7 ve 9. **Push Onur'dadır.**
 
 ---
 
