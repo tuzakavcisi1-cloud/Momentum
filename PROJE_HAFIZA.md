@@ -109,6 +109,47 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## K80 — ORTAMI KİM KALDIRIR: kural `CLAUDE.md`'ye yazıldı (29 Tem 2026, oturum 37 · Onur kilitledi)
+
+**Soru Onur'dan geldi:** *"Sen bana bu emülatörü falan açtırıyorsun ya, önceden yapmıyorduk böyle bir
+şey; acaba Code kendi açabiliyor muydu?"*
+
+**Ölçülen cevap: EVET, açabiliyor ve daha önce açtı.** Cowork tahmin etmedi, repoyu taradı:
+
+- `KANIT\slice-3d\09-MUTANT\_start_api.cmd` — **builder'ın kendi yazıp koştuğu** betik:
+  `cd /d …\Momentum.Api` + `set ConnectionStrings__Momentum=…` + `set ASPNETCORE_URLS=http://127.0.0.1:5298`
+  + `dotnet run --no-launch-profile > _api_log.txt 2>&1`. Yani backend'i oturum 34'te **Claude Code ayağa
+  kaldırdı**.
+- `KANIT\slice-3b\00-ortam.txt` — *"Android emulator o an KOŞMUYORDU"* ve *"Kullanılabilir emulator:
+  `tuzak_api34`"* diye **ölçmüş**; aynı dilimde `KANIT\slice-3b\01-G1-android\HUKUM.md`
+  `flutter run -d emulator-5554 … (emulator tuzak_api34, AVD, cold boot)` diyor ⇒ emülatörü de o kaldırmış.
+
+**Cowork'ün kendi payı — beyan edildi.** Cowork de açabilirdi; nitekim oturum 37'de `flutter test` ve
+`flutter build web`'i ayrık süreçte başlatıp çıktıyı dosyaya yazdırdı, aynı kalıp `dotnet run` ve
+`emulator.exe` için de çalışırdı. Onur'a komut vermesinin **gerçek** sebebi teknik imkânsızlık değildi:
+köprü bu oturumda **üç kez** düştü ve köprünün sahip olduğu bir kabuktan başlatılan uzun ömürlü sunucunun
+akıbeti köprü gidince belirsizleşir (logu okunamaz, öldürülemez). Bu gerekçe **geçerlidir ama
+SÖYLENMEMİŞTİ** — beyan edilmemiş bir tercihti ve Onur'un sorusu onu ortaya çıkardı.
+
+**KİLİTLENEN KURAL** (`CLAUDE.md` → *"Ortamı kim kaldırır"* bölümü; **`DURUM.md` §5'e KOPYALANMADI** —
+bu kalıcı bir iş akışı kuralıdır, yürürlükteki bir kilit değil; ikisine birden yazmak bu projede beş kez
+ısıran `kanonik-kopya` kusurunu üretirdi):
+
+Cihaz ya da canlı-sunucu kanıtı isteyen **her spec**, ortamı kendi kaldırma maddesini taşır — Postgres →
+backend → emülatör, sırayla, her biri **yoklanarak** doğrulanır. PID/cihaz adı/"çalışıyor" beyanı hiçbir
+belgeye yazılmaz, **ölçülür**. Sabit `sleep` ölçüm sayılmaz. `ASPNETCORE_ENVIRONMENT=Development` açıkça
+set edilir (K61 kalkanı aksi hâlde her isteği 401'ler; `_start_api.cmd` bunu set etmiyor ve
+`dotnet run --no-launch-profile`'ın ortamı Development'a düşürüp düşürmediği **[DOĞRULANMADI]**).
+**Cowork ortamı kaldırmaz, DOĞRULAR.**
+
+**Kapsam notu:** `GOREV-slice-3e-G12.md` **K79 ile kilitli** ve kabul kriteri 7 cihaz istiyor ama ortamı
+kimin kaldıracağını **söylemiyor** — bu boşluk ölçüldü ve **bilerek kapatılmadı**: kilitli bir spec'e bayt
+eklemek kilidi bozar. Kural **bir sonraki spec'ten** itibaren uygulanır; `G12` için ortam oturum 37'de
+elle kaldırıldı ve doğrulandı (Postgres healthy · 5298 LISTENING · `emulator-5554` + uygulama PID 6045 ·
+`/v1/tasks` ve `/hubs/sync/negotiate` başlıksız **401** / başlıklı **200**).
+
+
+
 ## K79 — `G12` SPEC'İ KİLİTLENDİ (29 Tem 2026, oturum 37 · Onur kilitledi)
 
 **Neden `G12` var — K78'in sekiz bulgusundan üçü.** slice-3e iskeleti kabul edildi ama Cowork'ün

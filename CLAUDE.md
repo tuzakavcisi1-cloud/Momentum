@@ -93,6 +93,31 @@ yalnız `mv` ile kenara alabilir; kalıcı silmeyi Onur yapar.
 ## Rol bölümü
 Cowork = tasarım/ADR/spec/orkestrasyon/hafıza/denetim; Claude Code = build. Cowork, Code'un beyanına güvenmez; her artefaktı bağımsız doğrular (Desktop Commander ile gerçek FS'ten).
 
+## Ortamı kim kaldırır [K80 — 29 Tem 2026, Onur kilitledi · PAZARLIKSIZ]
+
+**Cihaz ya da canlı-sunucu kanıtı isteyen HER spec, ortamı KENDİ kaldırma maddesini taşımak ZORUNDADIR.**
+Claude Code bunu **yapabilir ve daha önce yaptı** — ölçülmüş kanıt: `KANIT\slice-3d\09-MUTANT\_start_api.cmd`
+builder'ın kendi yazıp koştuğu `dotnet run` betiğidir; `KANIT\slice-3b\00-ortam.txt` emülatörü *"o an
+KOŞMUYORDU"* diye ölçmüş ve aynı dilimde `emulator-5554` üzerinde `flutter run` kanıtı üretmiştir.
+Spec'in kabul kriterlerinde şu üç adım **sırayla** bulunur: ① `docker start momentum-postgres` (healthy
+görülene kadar yoklanır) → ② backend ayrı süreçte, ortam değişkenleriyle → ③ emülatör
+(`flutter emulators --launch <avd>` ya da `emulator.exe -avd <avd>`), `adb devices` ile doğrulanır.
+
+- 🔴 **PID, cihaz adı ve "çalışıyor" beyanı hiçbir belgeye YAZILMAZ — ÖLÇÜLÜR:** `docker ps` ·
+  `netstat -ano | findstr :5298` · `adb devices`. *(Ölçüldü: `DURUM.md` §4 bu satırda üç oturum boyunca
+  bayat bir PID taşıdı; oturum 37 açılışında devir notunun "backend çalışıyor / emülatör açık" iddiasının
+  **ikisi de** yanlış çıktı.)*
+- 🔴 **Sabit `sleep` bir ölçüm değildir** — koşula kadar **yoklanır**, tavanlı. *(Oturum 35: 22 sn bekleyip
+  yanlış KIRMIZI verildi; kriter 9'un 15 sn'lik ilk geçişi titizlik değil ŞANSTI.)*
+- 🔴 **`ASPNETCORE_ENVIRONMENT=Development` AÇIKÇA set edilir.** `Program.cs` `builder.Environment.IsDevelopment()`
+  ile `DevCurrentUser`'ı açar; aksi hâlde `NullCurrentUser` ⇒ **her istek 401** (K61). `_start_api.cmd` bunu
+  **set ETMİYOR** ve `dotnet run --no-launch-profile`'ın ortamı Development'a düşürüp düşürmediği
+  **[DOĞRULANMADI]**. Değişkeni yazmak bu belirsizliği ortadan kaldırır.
+- **Cowork ortamı KALDIRMAZ, DOĞRULAR.** Gerekçe teknik imkânsızlık değil, ölçülmüş kırılganlıktır:
+  Cowork↔masaüstü köprüsü oturum 37'de **üç kez** düştü; köprünün sahip olduğu bir kabuktan başlatılan
+  uzun ömürlü sunucunun akıbeti köprü gidince belirsizleşir, logu okunamaz ve öldürülemez. Onur'un ya da
+  Code'un açtığı pencere görünür ve kapatılabilir. Cowork yalnız **ölçer** ve sonucu raporlar.
+
 ## Hafıza kuralı (checkpoint) [K53'te BÖLÜNDÜ]
 **İki dosya, iki iş:**
 - **`DURUM.md` — CANLI DURUM.** Her oturumun okuduğu tek dosya. **≤ 32 KB kalmak ZORUNDA** [K58, 27 Tem 2026 — eski tavan 12 KB'dı]. Durum değişince **YERİNDE değiştirilir** (eski satır silinir, yenisi yazılır — burada tarihçe **birikmez**). Aşarsa budanır.
