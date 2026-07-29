@@ -109,6 +109,118 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## DEVİR NOTU — oturum 38 → 39 (30 Tem 2026) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR
+
+> Bu blok Onur'a sohbette **kod bloğu** olarak da verildi; ikisi aynı metindir.
+> 🔴 **Bu not, K82'de doğan kurala UYAR: kendi kabının (`PROJE_HAFIZA.md`) kimliğini YAZMAZ** — notu
+> yazmak dosyayı büyütür, beyan yapısal olarak imkânsızdır.
+
+```
+MOMENTUM — DEVİR NOTU (oturum 38 → 39, 30 Tem 2026)
+PROJE: C:\dev\Momentum — Flutter istemci + .NET 9 backend + PostgreSQL, çevrimdışı-öncelikli senkron.
+Cowork = tasarım/spec/denetim/hafıza · Claude Code = build. Üreten ≠ denetleyen (K26).
+
+DURUM: slice-3e KAPANDI (K81). Oturum 38 = ARAÇ oturumu: K21'in mekanik kapısı DOĞDU.
+  K82 — araclar/oturum-sagligi.py 1.0.0. Onur üç tasarım kararını kilitledi:
+        (1) İKİ AYAK, AYRI HÜKÜM — kanonik/D1 transcript istemez; token ayağı --transcript ister,
+            yoksa "OLCULMEDI" der (çıkış kodu 4; 0 "ölçüldü ve sağlıklı" demektir, 4 onu demez).
+            🔴 ÖLÇÜLDÜ: Cowork'ün transcript'i BULUTTA, araç Windows'ta koşar ⇒ DURUM.md'de yazılı
+            hâliyle araç, yazıldığı gün kendi ana ayağını ÖLÇEMEYECEKTİ. Üç oturum bunu görmedi.
+        (2) D1 üç kaynağı tarar: DURUM.md §9 tablosu (çalışma ağacıyla — onlar SÖZLEŞME) · devir
+            notunun kimlik bloğu (YAZIM ANIYLA) · defter (ZAMAN ayağı). Defterin bayt-disk
+            karşılaştırması radar'ın D1'idir, TEKRARLANMADI.
+        (3) Yüzde koşulsuz KIRMIZI ("yüzde yazan el paydayı uydurmuştur"), yanlış-pozitif vakasıyla.
+SON COMMIT: 03631f1 · izlenen değişiklik 0 · index.lock YOK.
+🔴 PUSH DAİMA ONUR'DA; ileri/geri YAZILMAZ, açılışta ÖLÇÜLÜR:
+   git --no-optional-locks rev-list --left-right --count origin/main...HEAD
+   (oturum 38 açılışında ls-remote ile ölçüldü: HEAD = origin/main, 0/0 — yani 37 push'lanmıştı.)
+
+COWORK'ÜN KENDİ KOŞUMU (K26):
+  oturum-sagligi.py altın küme 26/26 EXIT 0 (önce bulutta, sonra cihazda — aynı) ·
+  gerçek tarama EXIT 2 · token ayağı GERÇEK transcript'le: 322.277 mutlak token ⇒ YEŞİL ·
+  tek-kopya YEŞİL · belge-tavan SARI (T2!) · radar altın küme 18/18, gerçek tarama KIRMIZI (yapısal).
+  Ürün kodu bu oturumda: 0 satır ⇒ 🔴 R8 SAYACI 1. SONRAKİ OTURUM ÜRÜN KODUYLA BAŞLAMALI.
+
+🔴 OTURUM 38'İN ÜÇ DERSİ (tekrar etmesin):
+  1. ARAÇ İKİ KEZ KENDİ YANLIŞ-POZİTİFİNİ ÜRETTİ. (a) "Kayıt bayat" ile "dosya sonradan değişti"
+     ayrılmadan ölçülemez; yazım anı = notu yazan commit. (b) Sonraki onarım "PROJE_HAFIZA.md
+     kirliyse not commit'siz" saydı — arşive YENİ checkpoint eklemek dosyayı kirletir ve eski,
+     commit'li notu çalışma ağacıyla karşılaştırtır. KİRLİLİK TESTİ YAZIM ANININ ÖLÇÜSÜ DEĞİLDİR;
+     doğrusu notu EKLEYEN commit'i aramaktır (git log -1 -S<sha8> -- PROJE_HAFIZA.md).
+     Ayrılmasaydı kapı her oturum kırmızı yanar ve KÖR KAPIYA dönerdi.
+  2. AYNI CANLI DOSYANIN İKİ BÖLÜMÜ ÇELİŞEBİLİR ve hiçbir araç sormuyordu: DURUM.md §3 hâlâ
+     DESIGN.md v1 534DFF68 (§9'un GEÇERSİZ dediği sha) ve 156/156 (gerçek 171/171) taşıyordu.
+     İkisi de ELLE bulundu. oturum-sagligi.py §3'ün İKİ HÜCRELİ satırlarını ayrıştırmıyor.
+  3. BİR BELGENİN "AÇIK BORÇLAR" LİSTESİ KAPANMIŞ KALEM TAŞIRSA BAYAT OKUMA ÜRETİR: §8, G12'nin
+     kapattığı üç K78 kalemini hâlâ açık gösteriyordu (ölçülerek çıkarıldı).
+
+SIRADAKİ İŞ (sırayla):
+  ① 🔴 ÜRÜN KODU — R8 sayacı 1. Aday: §8'in ürün borcu A-7 (taban rozet metni 1.0×'te BİLE
+     kırpılıyor; 2.0× ÖLÇÜLMEDİ) + content-desc çift okuma. Cowork spec yazar, Claude Code build eder.
+  ② oturum-sagligi.py BAĞIMSIZ DENETİM + KİLİT — K26: aracı yazan el Cowork, kendini onaylayamaz.
+     KABUL EDİLMEDİ. Denetim AYRI ELDEN gelmeli.
+  ③ DURUM.md TAVAN KARARI — T2 SARI, yalnız 1.024 b pay kaldı (eşik 1.638). Cowork'ün önerisi:
+     §8'i BORCLAR.md'ye ayır, kendi tavanıyla. Eşik/kapsam kararı K40 gereği ONUR'DA.
+  ④ iddia-kapisi.py ikili tarama onarımı (AYRI EL, K34-f).
+
+AÇIK BORÇLAR — oturum 38'den YENİ olanlar (tam liste DURUM.md §8):
+  - DEVİR NOTU KENDİ KABININ KİMLİĞİNİ YAZMAMALI [K82, ölçüldü]. Bu not kurala uyuyor; kural henüz
+    CLAUDE.md'ye YAZILMADI (Onur'un kilidi).
+  - oturum-sagligi.py §3'ü GÖRMÜYOR (iki hücreli satırlar kapsam dışı) — ayrı el.
+  - oturum-sagligi.py tek-kopya-kapisi.py kapsamına EKLENMEDİ (kapının kilitli sha'sı bozulur +
+    11/11 mutant yeniden koşar) — GOREV-slice-3e-G12.md ile aynı beyanlı-kilit durumu.
+  - CLAUDE.md K53/4 hâlâ "R7" diyor; kural K57'de R8 oldu. Pazarlıksız blokta bayat araç adı.
+  - _start_api.cmd KANIT diye gösteriliyor ama versiyon kontrolünde DEĞİL (git status'ta ??).
+    Temiz klonda doktrinin kanıtı YOK. Ya commit'lenir ya atıf düzeltilir — Onur'da.
+  - 92 izlenmeyen dosya. .gitignore ÖNERİLMEDİ ve gerekçesi ölçüldü: "_" önekli bazı dosyalar
+    doktrinin KANITIDIR. src/client/test/ altındaki iki ölü dosya "void main() {}" — 0 test
+    bildiriyor, 171/171 BOZULMAMIŞ (şüphe ölçümle ÇÜRÜTÜLDÜ). Silme Onur'da (sandbox silemiyor).
+  - RADAR YAPISAL OLARAK KALICI KIRMIZI: radar.py'de defter kaydını park/kapatma mekanizması YOK
+    ⇒ park edilmiş kâğıt artefaktlar asla iyileşemez, dört-şık ritüeli her oturum aynı cevabı alır.
+    Onarım radar.py'de ⇒ K57-b bayt-özdeşliğini bozar ⇒ üst akış plugin'i + AYRI EL.
+  - Eskiler: Y3 mutantı yok · G12 kriter 8 UYGULANMAZ · 02-G2 üretici kodu + ikinci yazıcı ·
+    verify.ps1 fail-loud · hafiza-dizin.py K60 ihlali · Z10b · defter D2/D3 · DESIGN.md BD-1…BD-7 ·
+    A-7 rozet kırpılması · web [DOĞRULANMADI].
+
+BEYAN EDİLMİŞ SINIRLAR (yaşayanlar): Y1 sembol bazlı · CursorHint YOKSAYILIR (D6) · web'de sinyal
+  kIsWeb ile KAPALI ve web ayağı [DOĞRULANMADI] · D2 kural 3'ün K != 'yerel' istisnası ·
+  R9 öncesi inmiş satırlar 'yerel' KALIR · oturum-sagligi.py defter ayağı GÜN çözünürlüğü taşır
+  (aynı gün yazılan bayat kaydı GÖREMEZ) · devir ayağı GIT'e bağımlı, CRLF'li dosyada OLCULEMEDI der.
+
+ORTAM (oturum 38'de ÖLÇÜLDÜ, beyan değil):
+  - docker momentum-postgres Up (healthy) · :5298 LISTENING · adb: emulator-5554 device.
+    🔴 PID/cihaz adı YAZILMAZ, her açılışta ÖLÇÜLÜR (K80).
+  - K80: ortamı CLAUDE CODE kaldırır, Cowork DOĞRULAR. ASPNETCORE_ENVIRONMENT=Development AÇIKÇA
+    set edilir (yoksa K61 her isteği 401'ler). adb: C:\Users\gulci\AppData\Local\Android\Sdk\
+    platform-tools\adb.exe
+  - 🔴 KÖPRÜ BU OTURUMDA DA DÜŞTÜ (bir kez) ⇒ uzun işi ayrık sürece al, çıktıyı dosyaya yaz.
+    ÖLÇÜLMÜŞ ÇALIŞAN DESEN: aracı ÖNCE bulutta yaz + altın kümesini orada koştur, SONRA tek parça
+    hâlinde SendUserFile + device_commit_files ile depoya indir. Yarım dosya depoya hiç düşmez.
+  - Cowork→PowerShell köprüsü "$" siliyor ve iç içe tırnağı bozuyor ⇒ komut satırına $ ve escape'li
+    tırnak gönderme; PowerShell'de "$_" da SİLİNİYOR (bu oturumda ölçüldü, Select-String kırıldı).
+  - python HEM stdout HEM stderr reconfigure(encoding="utf-8", errors="replace") ister.
+  - Commit mesajına ÇİFT TIRNAK yazma. git add -A YASAK; yol belirterek ekle (K55).
+  - PowerShell Get-Content PROJE_HAFIZA.md'yi BOZUK KODLAMAYLA gösteriyor ⇒ arşivi python ile oku.
+
+DOSYA KİMLİKLERİ (son yazımdan SONRA ölçüldü; PROJE_HAFIZA.md BİLEREK YOK — K82 kuralı):
+  DURUM.md 31.744 b · 474F4532          | CLAUDE.md 15.599 b · EC022B7B
+  PROJE_RADAR.jsonl 139.026 b · 7396DF55 | araclar/oturum-sagligi.py 42.019 b · 7054DEB1
+
+AÇILIŞ PROTOKOLÜ (atlanmaz; oturum 38'de bir adım EKLENDİ):
+  1. DURUM.md + CLAUDE.md TAM oku. 🔴 İKİSİNİ DE — oturum 38'de CLAUDE.md okunmadan "okundu"
+     işaretlendi; sahte yeşil. PROJE_HAFIZA.md'yi AÇMA (istisna: en üstteki DEVİR + K82/K81).
+  2. python araclar\tek-kopya-kapisi.py .
+  3. python araclar\belge-tavan-kapisi.py .        (T2 SARI bekleniyor — §3'teki karar)
+  4. python araclar\oturum-sagligi.py --altin-kume (26/26, EXIT 0) -> python araclar\oturum-sagligi.py .
+  5. python araclar\radar.py --altin-kume -> python araclar\radar.py .   (KIRMIZI beklenen)
+  6. git --no-optional-locks status --porcelain + Test-Path .git\index.lock + rev-list
+  7. Oturum sağlığını KENDİ oturum-id'nle ÖLÇ. Cowork'te transcript BULUTTADIR:
+     /root/.claude/projects/*/<oturum-id>.jsonl — araç bulutta --transcript ile koşulur.
+     Eşikler MUTLAK, kanonik metin YALNIZ CLAUDE.md'de, YÜZDE YAZMA.
+```
+
+---
+
 ## CHECKPOINT — 29 Tem 2026, oturum 38: K82 — `oturum-sagligi.py` DOĞDU ve İLK KOŞUMDA KENDİ YANLIŞ-POZİTİFİNİ ÜRETTİ
 
 **Ne yapıldı.** K21'in mekanik kapısı (`araclar/oturum-sagligi.py` 1.0.0) yazıldı. Üç oturumdur "SIRADAKİ İŞ" olarak bekliyordu; bu oturum açılışı sınıfın **iki yeni vakasını** üretti (devir notunun `PROJE_RADAR.jsonl` kimliği bayattı; DURUM.md başlığı oturum 36 diyordu).
