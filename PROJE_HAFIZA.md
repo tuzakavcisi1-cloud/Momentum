@@ -109,6 +109,16 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## DÜZELTME NOTU — 30 Tem 2026, oturum 38: K82 KURALI GENELLEŞTİ — NOT, KENDİNİ İÇEREN HİÇBİR ŞEYİN KİMLİĞİNİ YAZAMAZ
+
+Aşağıdaki devir notu `SON COMMIT: 03631f1` diyor. **Yanlış — ama elin hatası değil, YAPISAL.** Notu arşive yazan commit `9eee547`'dir; not yazıldığı anda o commit henüz **yoktu**. Aynı sınıf bu oturumda **üç kez** göründü: ① notun kendi kabının (`PROJE_HAFIZA.md`) baytı ② notun kendi commit'i ③ `DURUM.md` §4'te üç oturum duran bayat PID (K80).
+
+🔴 **GENELLEŞTİRİLMİŞ KURAL [K82-b]:** *bir kayıt, kendisini içeren şeyin kimliğini beyan edemez.* Beyan edilirse **daima** bayattır. Bu üç alan **YAZILMAZ, ÖLÇÜLÜR:** kabın baytı · notun commit'i (`git --no-optional-locks log --oneline -1`) · PID/cihaz. `oturum-sagligi.py` bunlardan yalnız ① için mekanik (`D1-OZ`); ② ve ③ **henüz kapısızdır** — açık borç.
+
+**Ölçüldü (bu düzeltmeden önce):** devir notu yazıldıktan sonra `oturum-sagligi.py` gerçek taraması **KIRMIZI'dan SARI'ya düştü** — dört kimlik girişinin dördü de yazım anında doğru, `D1-OZ` sustu. Yani kapı **kendiliğinden temizlenir**, kalıcı kırmızıya dönmez; bu, radar'ın yapısal kalıcı-kırmızı kusurundan (DURUM.md §8) **farklı** olduğunun kanıtıdır. Kalan tek SARI (`sayi-tazeligi.py` defter kaydı) gerçek ve önceden var olan bir bulgudur.
+
+---
+
 ## DEVİR NOTU — oturum 38 → 39 (30 Tem 2026) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR
 
 > Bu blok Onur'a sohbette **kod bloğu** olarak da verildi; ikisi aynı metindir.
