@@ -109,6 +109,87 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## K77 — slice-3e TASARIM KİLİDİ (29 Tem 2026, oturum 37 · Onur kilitledi)
+
+**Bağlam.** Oturum 37 açılışında radar KIRMIZI yandı; K40 gereği dört şık sunuldu ve Onur **DEVRET**'i
+seçti ("önerdiğini yap"). Devretmenin fiili karşılığı: kâğıt artefakta yeni tur açmak yerine **koşan
+koda** geçmek — yani K42-d adım 4, slice-3e.
+
+**ÖLÇÜLEN ZEMİN (dilimin boyutunu bu değiştirdi).** Cowork, devir notunun *"slice-3e (SignalR)"*
+ifadesini olduğu gibi kabul etmedi ve diskten + **canlı sunucudan** ölçtü:
+
+- `src/backend/Momentum.Api/Realtime/SyncHub.cs` (1.530 b) ve `SignalRSignalPublisher.cs` (1.279 b)
+  **zaten var** — slice-2b2'de yazılmışlar. `Program.cs`: `AddSignalR()`, `MapHub<SyncHub>("/hubs/sync")`,
+  negotiate'ten **önce** çalışan yol-tabanlı 401 middleware'i (D4).
+- Canlı: `POST /hubs/sync/negotiate?negotiateVersion=1` başlıksız **401**; `X-Momentum-Dev-User` ile
+  **200** + `connectionToken`, `availableTransports` = WebSockets · ServerSentEvents · LongPolling.
+- `SignalEnvelope(string Group, WireCursor CursorHint)` — **yükü boş**.
+- İstemcide `SenkronDongusu.cekmeTuruCalistir()` **hazır**; tek-uçuş kilidi (`_devamEdenTur`) + K3
+  bayrağı (`_cekmeBekliyor`) **zaten** coalescing yapıyor.
+
+⇒ **slice-3e istemci işidir. Backend'e tek bayt yazılmaz.** Devir notu bu dilimi olduğundan büyük
+gösteriyordu; sebebi kötü niyet değil, **ölçülmemiş bir etiket**.
+
+**KİLİTLENEN ALTI KARAR.**
+
+**K77/1 — Taşıma: kendi minimal SignalR-JSON istemcimiz**, `web_socket_channel ^3.0.3` üstünde
+(BSD-3-Clause, `/advisories` **0 kayıt** — ölçüldü). `signalr_netcore 1.4.4` (MIT, 0 advisory)
+**reddedildi**: altı geçişli bağımlılık getiriyor (`logging`, `tuple`, `web_socket_channel`,
+`sse_channel 0.1.1`, `message_pack_dart`, `http`) ⇒ kırmızı çizgi 3 (lisans+CVE) maliyeti altı kat,
+ve kütüphanenin **kendi** yeniden-bağlanma politikası bizim ölçtüğümüz şey olmaktan çıkardı. Sinyal
+yükü boş olduğu için MessagePack / SSE / stream / istemci→sunucu invoke **hiç gerekmiyor**; gereken
+alt küme el sıkışma + `type:1/target:Changed` + `type:6` ping'ten ibaret. **Beyan edilen bedel:** elle
+protokol yeni bir kusur sınıfıdır ve her ayağı mutantla ısırtılmak zorundadır. **Beyan edilen kaçış
+yolu:** taşıma `GercekZamanliSinyal` portunun arkasındadır; pakete dönmek tek dosyalık iştir.
+
+**K77/2 — Yeniden bağlanma: üstel geri çekilme (1→2→4→8→16→30 sn tavan, ±%20 jitter) + her başarılı
+(yeniden) bağlanmada BİR çekme turu.** 🔴 **Bu yoklama DEĞİLDİR ve ayrım yazıya geçirilmiştir:**
+zamanlayıcı **veri çekmez**, yalnız **bağlanmayı** dener; veri çekmenin tetikleyicisi `Changed` olayı
+ya da *"bağlantı kuruldu"* olayıdır. K68'in yasakladığı şey `Timer.periodic` ile `/v1/sync` dövmekti.
+Aynı beyan protokol keepalive'ı (`{"type":6}`, 15 sn) için de geçerlidir.
+
+**K77/3 — Kapsam: Android + Windows; web `[DOĞRULANMADI]` diye BEYAN EDİLİR.** Gerekçe ölçüldü:
+`/hubs/sync` middleware'i **her** istekte `X-Momentum-Dev-User` istiyor — negotiate'te **ve** WS
+upgrade'inde. Tarayıcı WS upgrade'ine özel başlık koyamaz; web'i açmak backend'e `access_token` query
+kanalı eklemek, yani slice-2b2 `D4` deny-by-default middleware'ine ve K61 kalkanına **dokunmak**
+demektir. Bu dilimde yapılmaz. (Ayrıca `flutter test --platform chrome` bu ortamda zaten sonuç
+üretmiyor — iki ölçüm: 7 dk ve 9,8 dk.)
+
+**K77/4 — İskelet önce, kapılar sonra (K53/5).** `GOREV-slice-3e-iskelet.md` bir **spec değildir**;
+`G12` ve mutantları iskelet cihazda ölçüldükten **sonra** yazılır. Belgede bu bir eksiklik değil,
+**kilitli karar** olarak yazılıdır.
+
+**K77/5 — Sinyal→çekme eşlemesi doğrudan; ek debounce/zamanlayıcı YOK.** Gerekçe koddan ölçüldü:
+elli sinyallik bir patlama mevcut tek-uçuş kilidi + K3 bayrağı sayesinde **en fazla bir ek tura**
+çöküyor. Yeni bir `Timer` eklemek K68'in yasakladığı şeye yaklaşır ve yeni ölü-tuzak sınıfı doğurur.
+
+**K77/6 — `CursorHint` YOKSAYILIR.** `D6` kilidi: `WireCursor.Xid` `ulong`dur, Dart `int` web'de
+53-bit güvenlidir, **sayıya çevirmek yasaktır**. Hint'i karşılaştırmak metin/BigInt karşılaştırması
+demektir ⇒ yeni kusur sınıfı. Sözleşmenin kendi docstring'i de *"hint, gerçek imlecin yerini tutmaz"*
+diyor. Sinyal **yalnız bir uyandırma zilidir**.
+
+**AYNI OTURUMDA KAPATILAN ÜÇ KUSUR (açılış ölçüm düzeltmesi, denetim turu değil).**
+① **`D1`**: defter `GOREV-R10-rozet-turetme.md` için **13.752** bayt diyordu, diskte **16.156**; kayıt
+spec büyümeden önce yazılmış ve güncellenmemişti. Düzeltme kaydı diskten `os.path.getsize` ile ölçüldü.
+Bu, §8'deki **D1-ÖNLEME borcunun teorik değil aktif** olduğunun kanıtıdır (D1 bu projede 7. kez ısırdı).
+② **`KANIT/R10` repoda YOKTU** — K76 "kabul edildi" demişti ama 77 dosyanın hepsi untracked'di; temiz
+bir klonda R10 **kanıtsızdı**. Commit `2c4d7a1`.
+③ `DURUM.md` §3 hâlâ `flutter test 136/136` diyordu; R10 sonrası **156/156**. Commit `1af620b`.
+
+**BİLEREK KAPATILMAYAN.** `uzak_degisiklik_uygulayici.dart` defterde tur 1 (oturum 34) ve tur 3
+(oturum 35) taşıyor, **tur 2 yok**. Geriye dönük bir tur-2 kaydı uydurmak `bulgu/kapatilan/uretilen`
+alanlarına **sahte sıfır** yazmak olurdu ⇒ ölçüm aracını kasten körleştirmek. **Boşluk beyan edildi,
+`D2` SARI kalıyor.** Aynı ilke ADR 0003'ün `D3`/`D2` kusurları için de geçerlidir (artefakt donmuş).
+
+**AÇIK KALAN SORU (ölçülmedi, "temiz" değil).** `KANIT/slice-3d/09-MUTANT/_start_api.cmd`
+`ASPNETCORE_ENVIRONMENT` **set etmiyor**; `Program.cs` ise `builder.Environment.IsDevelopment()` ile
+`DevCurrentUser` açıyor (K61), aksi hâlde `NullCurrentUser` ⇒ 401. `dotnet run --no-launch-profile`'ın
+ortamı Development'a düşürüp düşürmediği **ölçülmedi**. Oturum 37'de değişken **elle** set edildi ve
+`/v1/tasks` başlıksız **401** / başlıklı **200** ölçüldü — yani K61 kalkanı canlı ve deny-by-default
+çalışıyor, ama `_start_api.cmd`'nin kendi başına doğru ortamı kurup kurmadığı **bilinmiyor**.
+
+
+
 ## DEVİR — oturum 36 → 37 [29 Tem 2026]
 
 **Durum:** `R10` KAPANDI ve KABUL EDİLDİ (**K76**). Bu oturumda `K75` (tasarım kilidi + **K46 açıldı**,
