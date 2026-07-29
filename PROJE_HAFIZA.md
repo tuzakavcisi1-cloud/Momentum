@@ -109,6 +109,66 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## K79 — `G12` SPEC'İ KİLİTLENDİ (29 Tem 2026, oturum 37 · Onur kilitledi)
+
+**Neden `G12` var — K78'in sekiz bulgusundan üçü.** slice-3e iskeleti kabul edildi ama Cowork'ün
+bağımsız doğrulaması şunları ölçtü: ① `signalr_json_sinyal.dart` **307 satır / 10.861 b** ve `flutter test`
+**156/156** — sayı düşmedi ama **artmadı da**, yani protokol kodunun **tek** testi yok; ② `_websocketAc()`
+doğrudan `IOWebSocketChannel.connect(...)` çağırıyor ve **private** olduğu için başka kütüphaneden
+override edilemiyor ⇒ sahte kanal enjekte edilemez, kodun can alıcı kısmı **ölçülemez**; ③ sinyal örneği
+`_UretimKurulumu`'ya konmadığı için `durdur()` çağıracak sahip yok, `StreamController` hiç kapanmıyor.
+Ayrıca `K68` (*"periyodik yoklama YASAK"*) üç dilimdir **prozada** yaşıyor ve `K77/6` (*"`CursorHint`
+YOKSAYILIR"*) bugün yalnız **yorumda** — bir mutant `arguments`'ı okumaya başlasa **hiçbir şey ısırmaz**.
+
+**KİLİTLENEN ALTI KARAR.**
+
+**K79/1 — Kapsam: üç ürün-kodu düzeltmesi + İKİ kapı ailesi.** T1 kanal açıcının enjekte edilebilir
+olması (üretim yolu **değişmez**, yalnız ölçülebilirlik), T2 `durdur()` sahipliği + `_denetleyici.close()`
++ idempotanslık, T3 `kIsWeb` koruması. Sonra T4 `g12_sinyal_kapisi_test.dart` (13 ayak `A1`–`A13`) ve
+T5 `araclar/yoklama-yasagi-kapisi.py` (4 ayak `Y1`–`Y4`, altın küme ≥9). **Biri olmadan öteki kabul
+edilmez** — çünkü birim ailesi düzeltmeler olmadan yazılamaz, statik aile ise iki PAZARLIKSIZ kilidin
+(K68, K77/6) tek mekanik dayanağıdır.
+
+**K79/2 — Web koruması `kIsWeb` ile KAPATMA.** Web'de `baslat()` hiç bağlanmaz, `_durduruldu` **true
+kalır** (sonraki çağrılar da sessizce döner, hiçbir zamanlayıcı kurulmaz), tek satır log bırakır.
+Reddedilen alternatif: koşullu import + `access_token` query — bu, backend'de slice-2b2 `D4`
+deny-by-default middleware'ine ve K61 kalkanına **dokunmak** olurdu.
+
+**K79/3 — `K68` MEKANİKLEŞİYOR (`Y1`).** `src/client/lib` altındaki her `Timer(`/`Timer.periodic(`
+beyaz listede olmak zorunda; bugün meşru tek iki kullanıcı keepalive ve geri çekilme. Liste dışı bir
+zamanlayıcı **ya da** gövdesinde `cekmeTuruCalistir`/`turCalistir`/`SenkronAgi` geçen bir zamanlayıcı ⇒
+KIRMIZI. Bu, radar KIRMIZI'da sunulan **MEKANİKLEŞTİR** şıkkının yazılı gerekçe şartını sağlar: sınıf
+koşan kod olmadan, salt kaynak taramasıyla ölçülebilir.
+
+**K79/4 — 16 mutant: `M58`–`M70` birim (13) + `M71`–`M73` statik (3).** 🔴 **KOLATERAL ISIRIK YASAK.**
+Oturum 36'nın birinci dersi (`G11-A9` ölü tuzağı) buraya kural olarak yazıldı: bir mutantın herhangi bir
+ayağı kırması YETMEZ, **hedeflediği ayağın KENDİSİNİN** kırıldığı ham çıktıda görülmelidir. Koşan-uygulama
+mutantı **YOK** ⇒ K53/3 tavanı (3) harcanmaz.
+
+**K79/5 — Sahte kanal, gerçek protokol.** Birim testleri sahte `WebSocketChannel` kullanır ama **gerçek
+çerçeve baytlarını** besler (`0x1E` ayraçlı, gerçek SignalR JSON gövdeleri). Sahte, protokolü
+basitleştirmez; yalnız taşımayı değiştirir.
+
+**K79/6 — `Random` deterministik.** Geri çekilme ayakları seed'li `Random(42)` ile koşar ve jitter
+*"aralıkta mı"* diye değil **tam beklenen değere** karşı ölçülür. Gerekçe doğrudan K78'dir: builder'ın
+*"6/6 jitter aralığında"* iddiası bir **üst sınır** ölçümüydü (aralık = timer + deneme süresi) ve üçüncü
+aralık alt sınıra yalnız 36 ms uzaktaydı. O zayıflık burada tekrar edilmez. **Beyan edilmiş kırılganlık:**
+ayak Dart'ın `Random` uygulamasına bağlıdır; sürüm değişirse kırılır — bu bilerek kabul edildi.
+
+**BEYAN EDİLMİŞ BORÇ:** `Y3` (`/v1/sync` dizgesi keepalive dosyasında geçemez) ayağının **mutantı yok**;
+dizgeyi dosyaya elle eklemek gerçekçi bir kusur değil, yapay bir enjeksiyon olurdu. Ayak koşar ama
+**ısırdığı ölçülmemiştir**. Gizlenmiyor, spec §3'te yazılı.
+
+**KABUL KRİTERİ 9'A EKLENEN KORUMA:** kanıt dizinine **100 KB'tan büyük dosya konulmaz**, büyük çıktılar
+**kesit + sha** olarak yazılır. Gerekçe ölçüldü: `iddia-kapisi.py` ikili/büyük dosyaları metin gibi tarıyor
+ve `KANIT/slice-3e-iskelet`'te tabloda **sıfır** mutant varken **altı hayalet** buldu (kaynak 2 MB'lık
+`pub-lisans-kapisi.txt` + PNG/sqlite baytları). Aracın onarımı **ayrı ele** (K34-f); bu koruma o onarım
+gelene kadar sınıfın ısırmasını engeller.
+
+**Spec:** `GOREV_CLAUDE_CODE/GOREV-slice-3e-G12.md`.
+
+
+
 ## K78 — slice-3e YÜRÜYEN İSKELET KABUL EDİLDİ (29 Tem 2026, oturum 37 · Onur onayladı)
 
 **Ne kabul edildi.** `GOREV-slice-3e-iskelet.md`'nin T1–T5'i. Claude Code yazdı, **Cowork hiçbir sayısına
