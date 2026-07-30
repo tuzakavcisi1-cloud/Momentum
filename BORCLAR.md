@@ -63,7 +63,6 @@
   ayrıştırır; §3'ün iki hücreli satırları **kapsam dışı**. Boşluk aynı gün ısırdı: §3 `DESIGN.md` v1
   `534DFF68`'i (§9'un **GEÇERSİZ** dediği sha) ve `156/156`'yı (gerçek **171/171**) taşıyordu — ikisi de
   **elle** bulundu, araçla değil. Onarım **ayrı ele (K34-f)**.
-- 🔴 **`araclar/hafiza-dizin.py` K60'I İHLAL EDİYOR** — son satırı `io.open(yol,"w").write(metin)`; hedefi 665 KB'lik arşiv ve o dosyaya yazan **tek** araç. K60 tam da bu desenden doğdu. Onarım **ayrı ele (K34-f)**.
 - 🔴 **`pub-surum-olc.py`'ye ÇÖZÜMLENEBİLİRLİK AYAĞI [Z10b]** — araç **sürümü** ölçüyor,
   **çözülebilirliği** ölçmüyor. Kalkan gelene dek her pin `pub get` ile doğrulanır.
 - 🟡 **`radar.py` R5'in CÜMLESİ KAPSAMINI AŞIYOR** — artefaktın kaydını okur ama *"**projenin** görünen çıktısı %0"* der. Kusur **metinde**; onarım üst akış plugin'inde, **ayrı el** (K34-f).
@@ -83,9 +82,7 @@
   §9'da **donmuş** sha'sını (`66AC9CA3`) bozar ve `11/11` mutantı yeniden koşturmayı gerektirir — bu yüzden
   `oturum-sagligi.py` ve `GOREV-slice-3e-G12.md` ile **aynı beyanlı-kilit** sepetinde: kilit **beyanla** yaşıyor.
 
-- 🔴 **`design-token-kapisi.py` İKİ `D2` BULGUSU — DEVRALINMIŞ [K86, Onur şık (A)].**
-  `g12_sinyal_kapisi_test.dart:157` ve `:357`; `git diff` BOŞ ⇒ A‑7 üretmedi. Kabul kriteri 7
-  **şartlı PASS**. Onarım ayrı ele (K34‑f); kapı her açılışta kırmızı yanar.
+- 🟡 **`hafiza-dizin.py` KILIT DESENİ SONEKİ YUTUYOR [oturum 40, ölçüldü].** `## K83-DÜZELTME —` başlığı indekse **giriyor** ama kilit sütununda **"K83"** görünüyor (KILIT deseni büyük-harf soneki yakalamıyor) ⇒ iki satır kilit "K83", yalnız konuyla ayrışıyor. Kozmetik; checkpoint indekste. Onarım **ayrı ele (K34-f)** — B spec'i Onur'a verildi.
 - 🔴 **`design-token-kapisi.py` AÇILIŞ PROTOKOLÜNDE ÇAĞRILMIYOR — "ÇAĞRILMAYAN KAPI" SINIFI
   AYNI OTURUMDA İKİNCİ KEZ ISIRDI [K86].** Sınıf oturum 39'da adlandırıldı, `sayi-tazeligi.py`
   §2'ye eklendi, bu kapı **borç olarak bırakıldı** ve borç aynı oturumda ısırdı: HEAD'de

@@ -35,7 +35,7 @@
 |---|---|
 | **Backend** | ✅ slice-1 → 3e (3e'de **tek bayt yazılmadı**, ayak 2b2'de bitmişti). `araclar\verify.ps1` ⇒ build **0 uyarı/0 hata** · **test 120/120** · CVE 0 · EXIT 0. |
 | **Veritabanı** | ✅ Docker 29.6.1, `momentum-postgres` Up (healthy) |
-| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Cowork'ün kendi koşumu (session 37, K81): `analyze --fatal-infos` **0** · `flutter test` **171/171** · kapılar `G1`–`G12`; 🔴 `design-token-kapisi.py` HEAD'de **KIRMIZI** (iki `D2`, devralınmış — K86/§4, Onur şık (A) ile şartlı PASS verdi) · `M1`–`M73` mutantların hepsi ısırdı.
+| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Cowork'ün kendi koşumu (session 37, K81): `analyze --fatal-infos` **0** · `flutter test` **171/171** · kapılar `G1`–`G12`; 🟢 `design-token-kapisi.py` **EXIT 0** (iki devralınmış `D2` 4a ile kapandı — K88) · `M1`–`M73` mutantların hepsi ısırdı.
 🟢 **A‑7 KAPANDI (ölçüldü):** `G13`/`G14`/`G15` yeşil · `flutter test` **266/266** · `M74`–`M87` **14/14 ısırdı** · `CM1`–`CM3` cihazda geçti · `content-desc` çift okuma **cihazda kapandı**. 🔴 `DESIGN.md`'de kapanmadı (K46). |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
@@ -48,11 +48,8 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **K86 — A‑7 BUILD BİTTİ ve cihazda doğrulandı.** Kriter 7 şartlı PASS (Onur, şık A).
-🔴 **SIRADAKİ İŞ Onur'un kararı:** ① `design-token-kapisi.py` iki `D2`'nin onarımı
-(ayrı el, K34‑f) · ② **kapı‑tetik tablosu** — hangi kapı hangi olayda koşar
-(`çağrılmayan kapı` sınıfı bu oturumda **iki kez** ısırdı) · ③ çakışma çözüm sayfası
-kırpması (aynı sınıf, başka bileşen) · ④ `DESIGN.md` A‑7 satırının açılması (K46 kilidi).
+🔒 **K88 — 4a+2a KAPANDI (Code, K34-f) ve Cowork'ce doğrulandı (K26).** Kriter 7 artık **tam PASS** (design-token EXIT 0); DIZIN onarıldı (K80–K88 indekste, 107 kayıt).
+🔴 **SIRADAKİ İŞ Onur'un kararı:** ① **kapı-tetik tablosu** — hangi kapı hangi olayda koşar (`çağrılmayan kapı` sınıfı) · ② çakışma çözüm sayfası kırpması (aynı sınıf, başka bileşen) · ③ `DESIGN.md` A-7 satırının açılması (K46 kilidi) · ④ **`hafiza-dizin.py` KILIT deseni soneki yutuyor** (K83-DÜZELTME kilit sütununda "K83"; kozmetik, ayrı el K34-f, B spec'i hazır).
 🟡 Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR (§2 adım 7 ve 9).
 
 ---
@@ -96,7 +93,7 @@ kırpması (aynı sınıf, başka bileşen) · ④ `DESIGN.md` A‑7 satırını
 | `iddia-kapisi.py` **1.1.0** | belgenin **kendi sayı iddiasını** tablosuyla (`I1`, Türkçe sayı sözcükleri dâhil) ve **beyan edilen her mutantın ham kanıtını** KANIT diziniyle (`I2`/`I3`) karşılaştırır; **envanter reddi** (`LISTE_ESIGI=8`) ve **dairesel kanıt yasağı** (özet/hüküm dosyaları kanıt sayılmaz) | **12/12** |
 | `tek-kopya-kapisi.py` **1.1.0** | tek kopya dosyaların **HEAD'e göre regresyonunu** ölçer (`S0`–`S10`); sınıf başına farklı kural: append-only **küçülmez**, kilitli **sapmaz**, canlı **%10 budanabilir**; muafiyet gerekçesiz olamaz, **ölü muafiyeti söyler** | **19/19** |
 | `tek-kopya-mutant.py` | kapının **ölçüm ayağını** gerçek depoda kanıtlar: arşivi 0 bayta düşürür, satır siler, kilitli dosyayı **aynı boyutta** değiştirir, `.tmp` bırakır, UTF-8'i bozar, dosyayı siler — hepsinde kapının **ısırdığını** ölçer | **11/11** |
-| `hafiza-dizin.py` **1.0.0** | `PROJE_HAFIZA.md`'nin başına **türetilmiş** checkpoint dizini yazar; **fikirli** (koşum 2–3'te sha sabit) ve kendi çıktısını doğrular | **7/7** |
+| `hafiza-dizin.py` **1.1.0** | `PROJE_HAFIZA.md`'nin başına **türetilmiş** checkpoint dizini yazar; **fikirli** (koşum 2–3'te sha sabit) ve kendi çıktısını doğrular | **11/11** |
 | `belge-tavan-kapisi.py` **1.0.0** | canlı belge **bayt tavanı + PAY**; `T1` aşım (KIRMIZI) · `T2` dar pay (SARI, eşik %5) · `T0` dosya yok. Tavanı **kendi değiştirmez** (K40) | **9/9** |
 | `oturum-sagligi.py` **1.0.0** | K21'in mekanik kapısı: kanonik eşik (`S1`) · yüzde avı (`S2`) · eşik kopyası (`S3`) · token+payda (`S4`/`S5`, `--transcript` ister, yoksa **OLCULMEDI**) · kimlik tazeliği (`D1`, **yazım anıyla**). Çıkış 4 = kanonik temiz ama sağlık ölçülmedi | **26/26** |
 | `dosya-kimlik.py` | bayt + sha256 + U+FFFD + CRLF | — |
