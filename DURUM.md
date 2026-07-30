@@ -35,10 +35,11 @@
 |---|---|
 | **Backend** | ✅ slice-1 → 3e (3e'de **tek bayt yazılmadı**, ayak 2b2'de bitmişti). `araclar\verify.ps1` ⇒ build **0 uyarı/0 hata** · **test 120/120** · CVE 0 · EXIT 0. |
 | **Veritabanı** | ✅ Docker 29.6.1, `momentum-postgres` Up (healthy) |
-| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Cowork'ün kendi koşumu: `analyze --fatal-infos` **0** · `flutter test` **171/171** · kapılar `G1`–`G12` YEŞİL · `M1`–`M73` mutantların hepsi ısırdı. |
+| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Cowork'ün kendi koşumu (session 37, K81): `analyze --fatal-infos` **0** · `flutter test` **171/171** · kapılar `G1`–`G12`; 🔴 `design-token-kapisi.py` HEAD'de **KIRMIZI** (iki `D2`, devralınmış — K86/§4, Onur şık (A) ile şartlı PASS verdi) · `M1`–`M73` mutantların hepsi ısırdı.
+🟢 **A‑7 KAPANDI (ölçüldü):** `G13`/`G14`/`G15` yeşil · `flutter test` **266/266** · `M74`–`M87` **14/14 ısırdı** · `CM1`–`CM3` cihazda geçti · `content-desc` çift okuma **cihazda kapandı**. 🔴 `DESIGN.md`'de kapanmadı (K46). |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
-| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI**, **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔒 **K83 — Onur şık (4) DURDUR'u kilitledi (30 Tem 2026):** `docs/ADR/0003` ve `GOREV-slice-3b-spec` **park**, oturum görünen çıktıya geçti. **Beyan edilen bedel:** alarm her açılışta yine yanar; kilit ritüeli kısaltır, kusuru kapatmaz. **R8 SUSTU** ama sayaç **1** |
+| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`) — aynı iki artefakt (`docs/ADR/0003`, `GOREV-slice-3b-spec`). 🔒 **K83 — Onur şık (4) DURDUR'u kilitledi (30 Tem 2026):** park yürürlükte, dört-şık ritüeli **tekrarlanmadı** (talimat gereği). **R8 SUSTU** — bu oturumda **197 satır ürün kodu** ölçülerek yazıldı (K86), sayaç bu commit'le **düştü** (K55). |
 | **Git** | **PUSH DAİMA ONUR'DA.** İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR**: `git --no-optional-locks rev-list --left-right --count origin/main...HEAD` |
 
 **Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · .NET 9.0.316 · **Windows masaüstü ☠** · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
@@ -47,33 +48,12 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **OTURUM 39 KİLİTLERİ — K83 (Onur, 30 Tem):** radar **DURDUR** · §8 ⇒ **`BORCLAR.md`** · ürün dilimi **A‑7**.
-🔒 **K84 — `GOREV-A7` spec'i yazıldı.** 🔴 **K85 — BAĞIMSIZ DENETİM (K26) BLOKER BULDU ve spec v4'e revize edildi.**
-
-**Ne oldu (üç ölçüm, hepsi Cowork'ün aleyhine):** ① Claude Code (ayrı el) ölçtü: v3'ün tek çözümü olan
-dikey dönüş **72 kombinasyonun 61'inde kırpmayı kapatmıyor** — Cowork **sorunu ölçüp çözümün
-yeterliliğini hesaplamamıştı** (yeni sınıf: *"çözümün yeterliliği ölçülmedi"*). ② Cowork doğruladı **ve
-ikinci kusuru buldu:** `intrinsic` ölçüm ayağı **sarmayı kırpma sanıyor** (her varyantta 1102,5) ⇒ her
-sarma çözümünü yanlış‑pozitifle reddederdi. ③ Doktrin çelişkisi **gerçekmiş** — eksik halka `maxLines`.
-④ Aritmetik: `3×3×4×2 = 72`, spec "96" diyordu.
-
-🔒 **v4 KİLİTLERİ (Onur):** ölçüm ayağı **`didExceedMaxLines`** (tolerans kaldırıldı) · ürün çözümü
-**kısa görünür dizge + `maxLines` + tam metin `Semantics`'te**. Dizgeler **ölçülerek** seçildi
-(≤2 satır @2.0×): "Bu cihazda" · "Gönderiliyor" · "Çevrimdışı" · "Gönderilmedi".
-🔴 **`content-desc` çift okuma borcu, kısa dizge kararının zorunlu sonucu olarak KAPSAMA GİRDİ**
-(`ExcludeSemantics`, `G15/A13`, `M87`) — hariç tutulan borç, bir sonraki kararın yan etkisinden korunmaz.
-
-**Spec:** `GOREV_CLAUDE_CODE/GOREV-A7-rozet-tasma.md` **v4 · 21.126 b · `9DFC21A5`**
-(v3 `2975E2DB` **GEÇERSİZ**) · `spec-kapi-kapsama.py` **EXIT 0** (`KAPI 3` / `MUTANT 14`, borç yok).
-**Kanıt:** `KANIT/A7/00-OLCUM-kor-kapi.txt` · `01-DENETIM.md` · `02-COZUM-OLCUM.txt` — **üçü de korunur.**
-
-🔴 **SIRADAKİ İŞ: CLAUDE CODE BUILD.** v4 denetimden geçti mi? **Denetim v3'e yapıldı**; v4 iki kilidi
-de o denetimin bulgusundan doğdu ⇒ **K53/1 ikinci tur açmaz**, build başlar. Ortamı **builder kaldırır**
-(K80, §3). Build sırasında yeni bloker çıkarsa **durur ve Onur'a döner**.
-🔴 **R8 SAYACI DÜŞMEDİ** — bu oturumda ürün kodu yazılmadı (denetim bloker verdi). Sayaç **yalnız
-Claude Code'un build commit'iyle** düşer (K55).
-
-🟡 **Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR** (K80 + K82-b) — §2 adım 7 ve 9.
+🔒 **K86 — A‑7 BUILD BİTTİ ve cihazda doğrulandı.** Kriter 7 şartlı PASS (Onur, şık A).
+🔴 **SIRADAKİ İŞ Onur'un kararı:** ① `design-token-kapisi.py` iki `D2`'nin onarımı
+(ayrı el, K34‑f) · ② **kapı‑tetik tablosu** — hangi kapı hangi olayda koşar
+(`çağrılmayan kapı` sınıfı bu oturumda **iki kez** ısırdı) · ③ çakışma çözüm sayfası
+kırpması (aynı sınıf, başka bileşen) · ④ `DESIGN.md` A‑7 satırının açılması (K46 kilidi).
+🟡 Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR (§2 adım 7 ve 9).
 
 ---
 
@@ -148,6 +128,9 @@ Claude Code'un build commit'iyle** düşer (K55).
 - 🔴 **`git`'te `core.autocrlf` AKTİF** — `git restore` LF yazılmış 2.400 baytlık dosyayı **2.800 bayt** geri getirdi (ölçüldü). Çalışma kopyası ↔ HEAD blob **bayt karşılaştırması bu ortamda tek başına KÖRDÜR**; kimlik ölçen her araç LF'e normalize etmelidir.
 - 🔴 **`io.open(yol,"w")` DOSYAYI ÖNCE BOŞALTIR** — encode hatası gelirse dosya **0 bayt** kalır (oturum 31: 542 KB arşiv gitti, `git restore` kurtardı). **Python'da `"\ud83d\udd3b"` iki `\u` kaçışı olarak yazılırsa BİRLEŞMEZ**, yalnız vekil karakter olur ve `encode` patlar; emoji için `\U0001F53B` yaz. Kural: **K60 atomik yazım**.
 - **`flutter test` Desktop Commander kabuğunda ÇÖKÜYOR** — `%PROGRAMFILES(X86)% environment variable not found` (ölçüldü: değişken `os.environ`'da **yok**, dizin diskte **var**). ⇒ alt sürece `PROGRAMFILES(X86)=C:\Program Files (x86)` **enjekte et**; kalkanla test 36/36 geçti. Bu bir **ortam** kusurudur, ürün kusuru değil.
+- 🔴 **`uiautomator dump` uygulama henüz çizilmeden çağrılırsa "null root node" verir ve DOSYA OLUŞMAZ [K86, oturum 40].** Sabit bekleme değil, çıktıda `"dumped to"` dizgesi görünene kadar **yoklanır** (tavanlı).
+- **`flutter` bu makinede `.bat`'tir [K86]** — Python `subprocess` PATHEXT'i çözmez ⇒ doğrudan çağrı `WinError 2` verir; tam yol `C:\src\flutter\bin\flutter.bat` kullanılır.
+- **Commit mesajındaki çift tırnak yasağı yeniden ISIRDI [K86, oturum 40]** — bir commit `pathspec` hatasıyla düştü, ağaç sağlam kaldı; kural aynı kalır (§ üstteki madde).
 
 ---
 

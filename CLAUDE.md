@@ -53,6 +53,14 @@ o sahte oturum sınırından doğmuştur. Kanonik metin+gerekçe: `PROJE_HAFIZA.
 **Ölçemezsen** yeşil de kırmızı da varsayma: ölçemediğini söyle, Onur'a sor. Her büyük iş başında ve her
 checkpoint'te ölçümü **mutlak sayıyla** raporla.
 
+🔴 **KAPSAM [oturum 39'da ÖLÇÜLDÜ, Onur kilitledi]:** bu ölçüm ve bu eşikler **YALNIZ COWORK
+oturumları içindir.** Claude Code'un kendi bağlam göstergesi vardır ve **penceresi farklıdır**
+⇒ `araclar/oturum-sagligi.py` ona **UYGULANMAZ**. Gerekçe K21'in kendi doğuş sebebidir:
+eşikler 1M pencere beyanından türetildi; **başka pencereli bir ele uygulamak paydayı yeniden
+uydurmaktır** — K21-DÜZELTME'nin yasakladığı şeyin ta kendisi. Kural kapsamını beyan
+etmediği için oturum 39'da Cowork bu aracı Claude Code'a koşturttu: **beyan edilmemiş
+kapsam, yanlış ele uygulanır.** Aracın kendisi de kapsamını sormuyor (borç: `BORCLAR.md`).
+
 ## Git — sandbox'tan okuma [ÖLÇÜLDÜ, PAZARLIKSIZ]
 Cowork bağlı diskte **düz `git status` KOŞMAZ**: mount `unlink`'e izin vermediği için git
 `.git/index.lock`'u silemez ve **bayat kilit bırakır** — Onur'un bir sonraki `git add`/`commit`'i

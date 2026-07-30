@@ -19,12 +19,23 @@
 
 - 🔴 **SABİT `sleep` BİR ÖLÇÜM DEĞİLDİR [oturum 35 — KENDİ ölçüm kusurum].** Cihaz doğrulamasında 22 sn bekleyip **yanlış KIRMIZI** verdim; görev birkaç saniye sonra inmişti. Daha kötüsü: kriter 9'un ilk ölçümü (K71) 15 sn ile **geçmişti — o geçiş titizlik değil ŞANSTI.** Cihaz ölçen her betik **koşula kadar yoklamalı** (tavanlı), sabit uyumamalı.
 - 🔴 **`iddia-kapisi.py` İKİLİ DOSYALARI METİN GİBİ TARIYOR [oturum 35].** 89.628 b'lik bir PNG'nin rastgele baytları `\bM\d\b` desenine denk düşüp **dört hayalet kanıt** üretti. Bugün yanlış-pozitif; **tehlikeli yönü ters:** büyük bir ikili dosya `M41` desenine denk düşerse kapı o mutantın kanıtı **varmış gibi** sayar ⇒ **kanıt-kazayla-sağlanır**. Onarım: yalnız metin uzantıları taransın. 🔴 **AYRI ELE (K34-f)** — aracı Cowork yazdı (K67).
-- 🔴 **[K76] Taban rozet metni 1.0× ölçekte BİLE KIRPILIYOR** ("Gönderilmemiş de…", "Çevrimdışısın…"; cihaz PNG'lerinde, oturum 37'de yeniden görüldü). `DESIGN.md` v2 açık kalemi `A-7` ilk koşumda ısırdı; **2.0× (A11Y-4) ÖLÇÜLMEDİ**. Bileşik satırda iki rozet yan yanayken yer daralıyor.
-- 🟡 **[K76] Satırın `content-desc`'i rozet metnini İKİ KEZ taşıyor** (`Semantics(label:)` + `Text` çocuğu) ⇒ ekran okuyucu tekrar okur. · 🟡 **[K76] Cihaz kanıtındaki `zehirli` kuyruk kaydı SQLite'a SEED EDİLDİ** — render gerçek widget ağacı, **sentetik olan veridir**.
+- 🟡 **[K76] Cihaz kanıtındaki `zehirli` kuyruk kaydı SQLite'a SEED EDİLDİ** — render gerçek widget ağacı, **sentetik olan veridir**.
 - 🟡 **`tazelik-muafiyet.json`'daki `BD-6` GEREKÇESİ BAYATLADI [oturum 36].** Muafiyet *"DESIGN.md K46 ile DONDURULMUŞTUR"* diyor; **K46 açıldı** (K75). Muafiyet hâlâ geçerli ama **gerekçesi doğru değil**. 🔴 **AYRI ELE (K34-f)**.
 - 🔴 **`KANIT/slice-3c/02-G2/` GERİ DOĞDU ve ÜRETİCİ KOD DÜZELTİLMEDİ.** `g2_registry_zarf_kapisi_test.dart:64` hâlâ `Directory('../../KANIT/slice-3c/02-G2')` yazıyor. Silmek düzeltme DEĞİLDİR. 🔴 **İkinci yazıcı da ölçüldü:** `g3_ayristirici_kapisi_test.dart:20`. Hiçbir araç *"KANIT dizini ile onu yazan kodun yolu aynı mı?"* diye sormuyor ⇒ sınıf tek vaka değil. Gerekçe: hafıza K71/K78.
 - 🟡 **Son sayfa tam `PageSize` ise BİR BOŞ TUR fazladan koşar** — `hasMore = (changes.Count ==
   PageSize)`, `PageSize=500` sabit. Veri kaybı değil, **maliyet**.
+- 🟡 **`CakismaRozeti` dokunma hedefi cihazda 48,0 dp ÖLÇÜLDÜ** (162 px / density 540);
+  `Checkbox`'ın KENDİ ölçek davranışı hâlâ **[DOĞRULANMADI]** (`G15/A10` yalnız *"≥ 48dp"* der,
+  `Checkbox`'a özgü ölçüm yok). *(K86 — bu maddenin BORCLAR.md'de daha önce "S6" etiketiyle bir
+  karşılığı bulunamadı; yeni madde olarak eklendi, `HUKUM.md`'ye şerh düşüldü.)*
+
+- 🔴 **A‑7 `DESIGN.md`'DE KAPANMADI [K86].** Kırpma ölçülerek düzeltildi (266/266, 14/14
+  mutant, CM1–CM3) ama K46 gereği `DESIGN.md`'ye tek bayt yazılmadı (`18.075 b · 3780ACA4`
+  teyit edildi) ⇒ A‑7 satırı **"ölçüldü / kapanmadı"** olarak durur; açılışı Onur'un ayrı kilidi.
+- 🔴 **ÇAKIŞMA ÇÖZÜM SAYFASI 2.0×'TE KIRPILIYOR [ölçüldü, K86].** `cakisma_rozeti.dart`
+  `_CakismaCozumSayfasi`: `ellipsis` VAR, `maxLines` YOK ⇒ tek satır. A‑7'nin düzelttiği
+  **AYNI SINIF, BAŞKA bileşen**; spec ne dâhil ne hariç etti (`G13` kapsamı rozet alt ağacı).
+  Ekran okuyucuda kayıp YOK, kayıp **görsel**. Yer tutucu — K42‑d adım 3 değiştirecek.
 
 - 🔴 **ÇAĞRILMAYAN KAPI SINIFI [ÖLÇÜLDÜ, oturum 39 — YENİ SINIF].** `sayi-tazeligi.py` bir kapıydı, altın kümesi
   16/16 geçiyordu, **ama açılış protokolünde YOKTU.** Oturum 39 açılışında elle koşuldu ve **KIRMIZI** verdi:
@@ -73,6 +84,22 @@
   regresyon kapısı (`S0`–`S10`) onu izlemiyor ⇒ bu dosya sessizce 0 bayta düşse kapı **susar**. Eklemek aracın
   §9'da **donmuş** sha'sını (`66AC9CA3`) bozar ve `11/11` mutantı yeniden koşturmayı gerektirir — bu yüzden
   `oturum-sagligi.py` ve `GOREV-slice-3e-G12.md` ile **aynı beyanlı-kilit** sepetinde: kilit **beyanla** yaşıyor.
+
+- 🔴 **`design-token-kapisi.py` İKİ `D2` BULGUSU — DEVRALINMIŞ [K86, Onur şık (A)].**
+  `g12_sinyal_kapisi_test.dart:157` ve `:357`; `git diff` BOŞ ⇒ A‑7 üretmedi. Kabul kriteri 7
+  **şartlı PASS**. Onarım ayrı ele (K34‑f); kapı her açılışta kırmızı yanar.
+- 🔴 **`design-token-kapisi.py` AÇILIŞ PROTOKOLÜNDE ÇAĞRILMIYOR — "ÇAĞRILMAYAN KAPI" SINIFI
+  AYNI OTURUMDA İKİNCİ KEZ ISIRDI [K86].** Sınıf oturum 39'da adlandırıldı, `sayi-tazeligi.py`
+  §2'ye eklendi, bu kapı **borç olarak bırakıldı** ve borç aynı oturumda ısırdı: HEAD'de
+  KIRMIZI olduğu hâlde `DURUM.md` §3 "G1–G12 YEŞİL" diyordu. **Kapı-tetik tablosu** kararı
+  Onur'da; `iddia-kapisi.py` ve `hafiza-dizin.py` de çağrılmıyor.
+- 🟡 **`oturum-sagligi.py` KAPSAMINI BEYAN ETMİYOR [K86].** `--transcript` ne verilirse ölçer,
+  "bu el benim işim değil" demez. K21'in kapsamı `CLAUDE.md`'ye yazıldı; **aracın** kapsam
+  ayağı yok ⇒ onarım ayrı ele (K34‑f).
+- 🔴 **SPEC MUTANT TABLOSU, MUTANTI ISIRTACAK AYAĞIN ARİTMETİĞİNİ YAPMAMIŞTI [K86].**
+  `G14/A4`'ün tek kanonik vakası `M75` ve `M77`'ye **KÖRDÜ**. Bu **Cowork'ün kusurudur** ve
+  *"çözümün yeterliliği ölçülmedi"* sınıfının **mutant tablosundaki hâli**; kâğıt turu değil
+  **BUILD** yakaladı (K53/1'i doğrular). Spec'e eklenecek vaka §2/(b) cevabına bağlı.
 
 ### Belge / defter
 
