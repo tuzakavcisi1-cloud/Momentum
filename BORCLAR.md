@@ -82,7 +82,6 @@
   §9'da **donmuş** sha'sını (`66AC9CA3`) bozar ve `11/11` mutantı yeniden koşturmayı gerektirir — bu yüzden
   `oturum-sagligi.py` ve `GOREV-slice-3e-G12.md` ile **aynı beyanlı-kilit** sepetinde: kilit **beyanla** yaşıyor.
 
-- 🟡 **`hafiza-dizin.py` KILIT DESENİ SONEKİ YUTUYOR [oturum 40, ölçüldü].** `## K83-DÜZELTME —` başlığı indekse **giriyor** ama kilit sütununda **"K83"** görünüyor (KILIT deseni büyük-harf soneki yakalamıyor) ⇒ iki satır kilit "K83", yalnız konuyla ayrışıyor. Kozmetik; checkpoint indekste. Onarım **ayrı ele (K34-f)** — B spec'i Onur'a verildi.
 - 🔴 **`design-token-kapisi.py` AÇILIŞ PROTOKOLÜNDE ÇAĞRILMIYOR — "ÇAĞRILMAYAN KAPI" SINIFI
   AYNI OTURUMDA İKİNCİ KEZ ISIRDI [K86].** Sınıf oturum 39'da adlandırıldı, `sayi-tazeligi.py`
   §2'ye eklendi, bu kapı **borç olarak bırakıldı** ve borç aynı oturumda ısırdı: HEAD'de
