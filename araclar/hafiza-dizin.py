@@ -45,7 +45,18 @@ BASLIK = re.compile(
 )
 K_BASLIK = re.compile(r"^[Kk](\d{1,3})")
 OTURUM = re.compile(r"oturum\s*(\d+)", re.I)
-KILIT = re.compile(r"\bK(\d{1,3})(?:-[a-z])?\b")
+# [B, oturum 40] BUYUK-HARF/TURKCE SONEK (K83-DUZELTME) artik TAM yakalanir --
+# eski desen yalniz KUCUK-harf tek harfli soneki (K34-f gibi) tasiyordu ve onu
+# HALA bilerek DISLIYOR (kilit = bare "K34"; arsivde 45 kez kullanilan mevcut
+# davranis BOZULMADI, olculdu -- grep ile dogrulandi).
+KILIT = re.compile(r"\bK(\d{1,3}(?:-[A-ZÇĞİÖŞÜ][A-Za-zÇĞİÖŞÜçğıöşü]*)?)(?:-[a-z])?\b")
+
+
+def _kilit_no(etiket):
+    """Siralama anahtari: sonek ne olursa olsun ONDE gelen sayiyi cikarir
+    (K83-DUZELTME icin de 83)."""
+    m = re.match(r"\d+", etiket[1:])
+    return int(m.group()) if m else 0
 
 
 def _temizle(s):
@@ -105,8 +116,12 @@ def dizin_uret(satirlar):
         o = OTURUM.search(kuyruk)
         kilit_set = {"K" + k for k in KILIT.findall(kuyruk)}
         if kbaslik:
-            kilit_set.add("K" + kbaslik.group(1))
-        kilitler = sorted(kilit_set, key=lambda x: int(x[1:]), reverse=True)
+            # grup1 BASLIK'in KENDI yakaladigi TAM metindir (or. "K83-DUZELTME");
+            # K_BASLIK'in sadece-rakam grubunu KULLANMA -- soneği ORADA kaybederdik
+            # (tam bu bulgu: iki farkli checkpoint kilit sutununda ayni "K83"
+            # gorunuyordu).
+            kilit_set.add(grup1.upper())
+        kilitler = sorted(kilit_set, key=_kilit_no, reverse=True)
         ham.append({"gecici": i, "tur": tur,
                     "oturum": o.group(1) if o else "-",
                     "kilit": " ".join(kilitler[:3]) or "-",
@@ -247,11 +262,28 @@ def altin_kume():
     kontrol("9) 'K<n>-SONEK --' BASLIGI (K83-DUZELTME) indekslenmeli", f, 1)
     yeni_f, _ = dizin_uret(f)
     satir_f = next((s for s in yeni_f if s.startswith("| ") and "CHECKPOINT" in s), None)
-    ok_f = bool(satir_f) and "K83" in satir_f
-    print("\n[%s] 9b) 'K83-DUZELTME' basligindan SAYISAL K83 kilit sutununa cikarilmali"
+    kilit_f = satir_f.split("|")[4].strip() if satir_f else None
+    # [B, oturum 40] ONCE bare "K83" bekliyordu (2a'nin bilinen kozmetik sinir);
+    # ONARIM SONRASI TAM sonek bekleniyor -- iki checkpoint'in kilit sutunu
+    # artik CAKISMAZ (bkz. vaka 10).
+    ok_f = (kilit_f == "K83-DÜZELTME")
+    print("\n[%s] 9b) 'K83-DUZELTME' basligindan TAM sonekli 'K83-DUZELTME' kilit sutununa cikmali"
           % ("GECTI" if ok_f else "KALDI"))
-    print("    satir: %r" % satir_f)
+    print("    kilit sutunu: %r (satir: %r)" % (kilit_f, satir_f))
     gecti, kaldi = (gecti + 1, kaldi) if ok_f else (gecti, kaldi + 1)
+
+    g = ["# Baslik", capa, "",
+         "## K83 — 29 Tem 2026, oturum 39 · radar durdur kilidi", "govde1", "",
+         "## K83-DÜZELTME — 30 Tem 2026, oturum 39 · tarih kusuru duzeltmesi", "govde2"]
+    kontrol("10) GERCEK K83 + K83-DUZELTME AYNI ARSIVDE -- kilit CAKISMAMALI", g, 2)
+    yeni_g, _ = dizin_uret(g)
+    satirlar_g = [s for s in yeni_g if s.startswith("| ") and "CHECKPOINT" in s]
+    kilitler_g = [s.split("|")[4].strip() for s in satirlar_g]
+    ok_g = (kilitler_g == ["K83", "K83-DÜZELTME"])
+    print("\n[%s] 10b) iki satirin kilit sutunu ARTIK AYNI DEGIL (K83 vs K83-DUZELTME)"
+          % ("GECTI" if ok_g else "KALDI"))
+    print("    kilitler: %r" % kilitler_g)
+    gecti, kaldi = (gecti + 1, kaldi) if ok_g else (gecti, kaldi + 1)
 
     print("\n" + "=" * 78)
     print("HUKUM: %d/%d GECTI -- %s" % (gecti, gecti + kaldi,
