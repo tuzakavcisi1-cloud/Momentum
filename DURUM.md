@@ -51,7 +51,8 @@
 ## 4. SIRADAKİ İŞ
 
 🔒 **K89 — ① KAPI-TETİK TABLOSU YAZILDI (oturum 42; Onur şık **B**'yi kilitledi).** Tablo **`KAPILAR.md`**'de (açılışta okunmaz, §2 referansla bağlar); `belge-tavan-kapisi.py` **kapsamına eklendi** ve kapsamın gerçekten **ısırdığı** T0 ile ölçüldü (dosya yokken SARI, `_SILINECEKLER\_t0-kanit-ots42`). Aynı turda dört bayat/eksik satır düzeltildi: §3 docker beyanı (K80 ihlali, ölçümle çürütüldü) · §6 envanteri (2 eksik araç) · §2 adım 7 (`fetch`) · §2 adım 9 (`adb` tam yolu).
-🔴 **SIRADAKİ İŞ Onur'un kararı:** ② çakışma çözüm sayfası kırpması (`cakisma_rozeti.dart` `_CakismaCozumSayfasi`: `ellipsis` var, `maxLines` YOK — A-7'nin aynı sınıfı; K42-d adım 3) · ③ `DESIGN.md` A-7 satırının açılması (K46 kilidi, ayrı onay) · ④ **PUSH** (Onur'da).
+🔒 **K90 — `GOREV-A8` v2 KİLİTLENDİ (oturum 42, Onur iki şıkkı da işaretledi).** ② yeniden tanımlandı: hedef **yer tutucu sayfa DEĞİL**, `lib/sunum`'daki **beş gerçek ekran** (`gorev_satiri` · `bos_durum` · `hata_durumu` ×2 · `yukleme_durumu`) — hepsinde `ellipsis` var, `maxLines` **yok** ⇒ metin sessizce tek satıra iniyor. Çözüm: **`ellipsis` KALIR + açık `maxLines`** (kaydırma yok). Kapı `G16` (4 ayak) + **10 mutant**. Spec: `GOREV_CLAUDE_CODE\GOREV-A8-metin-kaybi-gercek-ekranlar.md`.
+🔴 **SIRADAKİ İŞ: `GOREV-A8` BUILD — Claude Code.** Kabul kriteri 1 **ürün koduyla başlar** (K53/4: iki oturum 0 satır ürün kodu girdi). Sonra: ③ `DESIGN.md` A-7 satırının açılması (K46 kilidi, ayrı onay) · ④ **PUSH** (Onur'da).
 🟡 Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR (§2 adım 7 ve 9).
 
 ---
