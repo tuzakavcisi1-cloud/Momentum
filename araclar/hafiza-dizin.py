@@ -24,16 +24,26 @@ BEYAN EDILMIS SINIRLAR (ciktiya BASILIR):
     katar); dosyaya elle satir eklenirse BAYATLAR -- yeniden kosulmalidir.
 """
 import argparse
+import hashlib
 import io
 import os
 import re
 import sys
 
-SURUM = "1.0.0"
+SURUM = "1.1.0"
 BAS = "<!-- DIZIN:BAS -- MEKANIK URETIM, ELLE DUZENLEME: python araclar/hafiza-dizin.py . -->"
 SON = "<!-- DIZIN:SON -->"
 # "## ⏭ CHECKPOINT (26 Tem 2026 — oturum 29: **K56 — ...**)" gibi basliklar
-BASLIK = re.compile(r"^##\s+(?:\W\s*)?(CHECKPOINT|CHECKPOINT-EK|DEVIR|DEVİR)\b(.*)$", re.I)
+# YA DA dogrudan "## K86 — ..." / "## K83-DUZELTME — ..." basliklari [2a, oturum 40]:
+# eski regex yalniz CHECKPOINT/DEVIR kelimesini taniyordu, "## K<n> --" basliklarini
+# GORMUYORDU -- olculdu (K80, K81, K83, K83-DUZELTME, K84, K85, K86, K87 dizine hic
+# girmiyordu). K<n>(-SONEK) alternatifi EKLENDI, mevcut CHECKPOINT/DEVIR davranisi
+# DEGISTIRILMEDI (alternatifler ayni sirada duruyor).
+BASLIK = re.compile(
+    r"^##\s+(?:\W\s*)?(CHECKPOINT|CHECKPOINT-EK|DEVIR|DEVİR|K\d{1,3}(?:-[^\s—–-]+)?)\b(.*)$",
+    re.I,
+)
+K_BASLIK = re.compile(r"^[Kk](\d{1,3})")
 OTURUM = re.compile(r"oturum\s*(\d+)", re.I)
 KILIT = re.compile(r"\bK(\d{1,3})(?:-[a-z])?\b")
 
@@ -84,11 +94,20 @@ def dizin_uret(satirlar):
         m = BASLIK.match(s)
         if not m:
             continue
+        grup1 = m.group(1)
+        kbaslik = K_BASLIK.match(grup1)
+        # "## K86 --" basligi TUR sutununda "K86" DEGIL "CHECKPOINT" gorunur (mevcut
+        # tur siniflandirmasiyla tutarli); K-numarasi kilit sutununa TASINIR -- aksi
+        # halde grup(1) onu yutar ve kuyrukta (grup 2) hic gorunmez, kilit sutunu
+        # basligin KENDI numarasini KAYBEDER.
+        tur = "CHECKPOINT" if kbaslik else grup1.upper()
         kuyruk = _temizle(m.group(2))
         o = OTURUM.search(kuyruk)
-        kilitler = sorted({"K" + k for k in KILIT.findall(kuyruk)},
-                          key=lambda x: int(x[1:]), reverse=True)
-        ham.append({"gecici": i, "tur": m.group(1).upper(),
+        kilit_set = {"K" + k for k in KILIT.findall(kuyruk)}
+        if kbaslik:
+            kilit_set.add("K" + kbaslik.group(1))
+        kilitler = sorted(kilit_set, key=lambda x: int(x[1:]), reverse=True)
+        ham.append({"gecici": i, "tur": tur,
                     "oturum": o.group(1) if o else "-",
                     "kilit": " ".join(kilitler[:3]) or "-",
                     "konu": kuyruk})
@@ -146,6 +165,31 @@ def dogrula(yeni, beklenen):
     return hatalar
 
 
+def _atomik_yaz(yol, metin):
+    """K60 -- once encode (hata dosyaya DOKUNMADAN patlar), sonra .tmp, sonra UC
+    ADIMLI YEDEKLI TAKAS: bu makinede os.replace WinError 5 verir (DURUM.md SS7).
+    rename(yol->.yedek) -> rename(.tmp->yol) -> sha dogrula -> .yedek sil; adim 2
+    (ya da sha uyusmazligi) patlarsa yedek GERI ALINIR, arsiv asla yarim kalmaz."""
+    veri = metin.encode("utf-8")
+    tmp, yedek = yol + ".tmp", yol + ".yedek"
+    with io.open(tmp, "wb") as f:
+        f.write(veri)
+    beklenen = hashlib.sha256(veri).hexdigest()
+    os.rename(yol, yedek)
+    try:
+        os.rename(tmp, yol)
+        gercek = hashlib.sha256(io.open(yol, "rb").read()).hexdigest()
+        if gercek != beklenen:
+            raise RuntimeError("ATOMIK YAZIM: sha dogrulamasi tutmadi")
+    except Exception:
+        if os.path.exists(yedek):
+            if os.path.exists(yol):
+                os.remove(yol)
+            os.rename(yedek, yol)
+        raise
+    os.remove(yedek)
+
+
 def altin_kume():
     print("=" * 78)
     print("ALTIN KUME -- ARACIN KENDI KANITI (kor kapi yok)")
@@ -184,6 +228,30 @@ def altin_kume():
     kontrol("6) KILIT NUMARALARI cikarilmali (K12, K9)", c, 1)
     d = ["# Baslik", "## CHECKPOINT (oturum 1: capa YOK)", "g"]
     kontrol("7) CAPA SATIRI YOKSA -- cokme yok, dizin yine dogru", d, 1)
+
+    # [2a, oturum 40] "## K<n> --" basligi: eski regex bunu HIC GORMUYORDU (K80,
+    # K81, K83, K83-DUZELTME, K84, K85, K86, K87 dizine girmiyordu, olculdu).
+    e = ["# Baslik", capa, "",
+         "## K87 — 30 Tem 2026, oturum 40 · cagrilmayan kapi ikinci kez isirdi", "govde"]
+    kontrol("8) 'K<n> --' BASLIGI indekslenmeli (eskiden GORULMUYORDU)", e, 1)
+    yeni_e, _ = dizin_uret(e)
+    satir_e = next((s for s in yeni_e if s.startswith("| ") and "CHECKPOINT" in s), None)
+    ok_e = bool(satir_e) and "K87" in satir_e
+    print("\n[%s] 8b) 'K87' basligi TUR=CHECKPOINT ve KILIT sutununda K87 tasimali"
+          % ("GECTI" if ok_e else "KALDI"))
+    print("    satir: %r" % satir_e)
+    gecti, kaldi = (gecti + 1, kaldi) if ok_e else (gecti, kaldi + 1)
+
+    f = ["# Baslik", capa, "",
+         "## K83-DÜZELTME — 30 Tem 2026, oturum 39 · tarih kusuru duzeltmesi", "govde"]
+    kontrol("9) 'K<n>-SONEK --' BASLIGI (K83-DUZELTME) indekslenmeli", f, 1)
+    yeni_f, _ = dizin_uret(f)
+    satir_f = next((s for s in yeni_f if s.startswith("| ") and "CHECKPOINT" in s), None)
+    ok_f = bool(satir_f) and "K83" in satir_f
+    print("\n[%s] 9b) 'K83-DUZELTME' basligindan SAYISAL K83 kilit sutununa cikarilmali"
+          % ("GECTI" if ok_f else "KALDI"))
+    print("    satir: %r" % satir_f)
+    gecti, kaldi = (gecti + 1, kaldi) if ok_f else (gecti, kaldi + 1)
 
     print("\n" + "=" * 78)
     print("HUKUM: %d/%d GECTI -- %s" % (gecti, gecti + kaldi,
@@ -230,7 +298,7 @@ def main():
     elif a.kuru:
         print("  [KURU KOSUM] dizin guncellenecekti, yazilmadi.")
     else:
-        io.open(yol, "w", encoding="utf-8", newline="\n").write(metin)
+        _atomik_yaz(yol, metin)
         print("  DIZIN YAZILDI -- yeni boyut: %d bayt" % os.path.getsize(yol))
     print("  BEYAN EDILMIS SINIR: yalniz BASLIKLAR indekslenir; govde metni ARANMAZ")
     print("  (tam metin icin grep/ripgrep). Satir no'lari dosyaya ELLE satir eklenirse")
