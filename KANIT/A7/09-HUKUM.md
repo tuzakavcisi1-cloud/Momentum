@@ -38,14 +38,28 @@ birebir; v3 `2975E2DB` okunmadı).
 
 **`urun_kodu_satiri` (Cowork deftere bunu işleyecek — K55):**
 
-- **ÜRÜN kodu (`src/client/lib/`): `+197 / −42`, 3 dosya** — `git --no-optional-locks diff --numstat`:
-  `metinler.dart +21/−0` · `gorev_satiri.dart +121/−32` · `senkron_rozeti.dart +55/−10`.
-- **Kapı (test) kodu:** 3 YENİ dosya **27.173 b** (`g13` 9.248 · `g14` 8.524 · `g15` 9.401) + 4 mevcut
-  test dosyası güncellendi.
-- 🔴 **Dürüst ayrım:** `R8`'in tanımı *"repoya giren ÜRÜN kodu; araç/betik/belge SAYILMAZ"* der ama
-  **test kodunu açıkça sınıflandırmaz.** Bu el **yalnız `lib/` altını ÜRÜN sayıp** ikisini **ayrı**
-  raporluyor; hangisinin deftere gireceği Cowork'ün/Onur'un kararıdır. **Tek sayı uydurup belirsizliği
-  gizlemek** bu projede ölçülmüş bir kusur sınıfıdır.
+> ## `urun_kodu_satiri = 197`
+
+🔴 **Bu sayı ELLE YAZILMADI — aracın kendisi git'ten türetti.** Build commit'lendikten **sonra**
+koşuldu:
+
+```
+python araclar\radar.py . --olc-urun-kodu 4fa3203
+  urun yollari : ['src/', 'lib/', 'app/']   haric: ['test/', 'tests/', 'docs/', ...,'araclar/']
+  +121  src/client/lib/sunum/gorev_satiri.dart
+  +55   src/client/lib/sunum/senkron_rozeti.dart
+  +21   src/client/lib/design/metinler.dart
+  (7 dosya HARIC listesi geregi sayilmadi)
+  urun_kodu_satiri = 197
+  "Bu sayiyi deftere OLDUGU GIBI yaz. Elle degistirirsen R8 korlesir."
+```
+
+Elle yaptığım `git diff --numstat` sayımı (`+197 / −42`) bu sonuçla **birebir** tuttu.
+**Aracın *"test/ hariç"* kuralı, benim *"yalnız `lib/` ÜRÜNdür"* okumamı doğruladı** — belirsizlik
+varsayımla değil, **aracı koşarak** kapandı.
+
+- **Kapı (test) kodu — `urun_kodu_satiri`'na DÂHİL DEĞİL, ayrıca raporlanır:** 3 YENİ dosya
+  **27.173 b** (`g13` 9.248 · `g14` 8.524 · `g15` 9.401) + 4 mevcut test dosyası güncellendi.
 - **Üretilmiş iskelet yok** (`flutter create` çağrılmadı); nitelik: **elle yazılmış ürün kodu**.
 
 ---
