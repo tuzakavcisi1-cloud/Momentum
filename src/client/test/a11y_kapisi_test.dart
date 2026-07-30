@@ -31,6 +31,25 @@ const Map<String, String> _fixtureGorunur = {
   'yukleniyor': 'Yükleniyor',
 };
 
+// GOREV-A7 [K85 / spec v4 §4/D-A7-1] -- ROZETIN GORUNUR KISA metinleri.
+// 🔴 UC DOSYA ES ZAMANLI: lib/design/metinler.dart ·
+// araclar/fixture/metinler-kilit.json ("rozetKisaGorunur" grubu) · bu
+// harita. Biri unutulursa asagidaki test ISIRIR -- bu ISIRMA BEKLENEN
+// davranistir ve kapinin CALISTIGININ kanitidir (spec kabul kriteri 3).
+//
+// Neden AYRI harita (`_fixtureGorunur`a eklenmedi): bu uc dizge F6'nin
+// KILITLI 13 dizgesine DAHIL DEGILDIR -- GOREV-slice-3b §T-metin (K59,
+// sha F0C3A75A) "13 dizge" der ve o belge KILITLIDIR; uc dizgeyi
+// `_fixtureGorunur`a katmak o kilitli belgenin sayi iddiasini BAYAT
+// birakirdi (projede olculmus 'bayat-iddia' kusur sinifi). GOREV-R10
+// `gonderilmemisDegisiklik` icin AYNI deseni kurmustu. Spec'in istedigi
+// sey uc dosyanin ES ZAMANLI olmasidir; o kosul burada TAM saglanir.
+const Map<String, String> _fixtureRozetKisa = {
+  'rozetKisaYerel': 'Bu cihazda',
+  'rozetKisaCevrimdisi': 'Çevrimdışı',
+  'rozetKisaGonderilmedi': 'Gönderilmedi',
+};
+
 const Map<String, String> _fixtureDuyuru = {
   'duyuruGorevlerYukleniyor': 'Görevler yükleniyor',
   'duyuruSenkronizeEdildi': 'Senkronize edildi',
@@ -160,6 +179,26 @@ void main() {
       expect(Metinler.birSeylerTersGitti, _fixtureGorunur['birSeylerTersGitti']);
       expect(Metinler.yenidenDene, _fixtureGorunur['yenidenDene']);
       expect(Metinler.yukleniyor, _fixtureGorunur['yukleniyor']);
+    });
+
+    test('rozet kisa gorunur (3) birebir -- GOREV-A7, F6 13 dizgesine DAHIL DEGIL', () {
+      expect(Metinler.rozetKisaYerel, _fixtureRozetKisa['rozetKisaYerel']);
+      expect(Metinler.rozetKisaCevrimdisi, _fixtureRozetKisa['rozetKisaCevrimdisi']);
+      expect(Metinler.rozetKisaGonderilmedi, _fixtureRozetKisa['rozetKisaGonderilmedi']);
+      // Kisa metin TAM metinden GERCEKTEN kisa olmali -- aksi halde
+      // D-A7-1'in butun gerekcesi (236 px'te 2 satir) kaybolur.
+      expect(
+        Metinler.rozetKisaYerel.length,
+        lessThan(Metinler.yalnizcaBuCihazda.length),
+      );
+      expect(
+        Metinler.rozetKisaCevrimdisi.length,
+        lessThan(Metinler.cevrimdisiKaydedildi.length),
+      );
+      expect(
+        Metinler.rozetKisaGonderilmedi.length,
+        lessThan(Metinler.gonderilmemisDegisiklik.length),
+      );
     });
 
     test('semantics duyurusu (5) birebir', () {
@@ -311,7 +350,13 @@ void main() {
       );
       await tester.pump();
       expect(find.text('G5 gercek ekran testi'), findsOneWidget);
-      expect(find.text(Metinler.yalnizcaBuCihazda), findsOneWidget);
+      // GOREV-A7 [K85 / D-A7-1]: gorunur dizge kisaldi, tam metin
+      // Semantics(label:)'da kaldi (olcum G15/A13'te).
+      expect(find.text(Metinler.rozetKisaYerel), findsOneWidget);
+      expect(
+        SenkronRozeti.tamMetinIcin(SenkronDurumTuru.yerel),
+        Metinler.yalnizcaBuCihazda,
+      );
       await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       tutamac.dispose();

@@ -10,6 +10,12 @@
     "yenidenDene": "Yeniden dene",
     "yukleniyor": "Yükleniyor"
   },
+  "_notRozetKisa": "GOREV-A7 [K85 / spec v4 §4/D-A7-1] -- rozetin EKRANDA gorunen kisa metinleri. F6'nin KILITLI 13 dizgesine DAHIL DEGIL (GOREV-R10'un ayni EK deseni); tam metinler 'gorunur' grubunda kalir ve Semantics(label:)'da okunur. 'kuyrukta' icin ayri sabit YOK -- gonderiliyor hem tam hem kisadir.",
+  "rozetKisaGorunur": {
+    "rozetKisaYerel": "Bu cihazda",
+    "rozetKisaCevrimdisi": "Çevrimdışı",
+    "rozetKisaGonderilmedi": "Gönderilmedi"
+  },
   "semanticsDuyurusu": {
     "duyuruGorevlerYukleniyor": "Görevler yükleniyor",
     "duyuruSenkronizeEdildi": "Senkronize edildi",

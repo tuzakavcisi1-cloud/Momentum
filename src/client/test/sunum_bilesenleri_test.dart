@@ -77,7 +77,16 @@ void main() {
         ),
       );
       expect(find.byIcon(Icons.schedule), findsOneWidget);
-      expect(find.text(Metinler.yalnizcaBuCihazda), findsOneWidget);
+      // GOREV-A7 [K85 / D-A7-1]: GORUNUR metin KISALDI (236 px'te 2.0x'te
+      // 2 satir), TAM metin Semantics(label:)'da DEGISMEDEN kaldi -- ekran
+      // okuyucu bilgi KAYBETMEZ. Testin ikinci satiri bunu ISPAT EDER;
+      // yalniz kisa metni sinamak, tam metnin sessizce kaybolmasina izin
+      // verirdi. Semantics agacinin TAM olcumu G15/A13'tedir.
+      expect(find.text(Metinler.rozetKisaYerel), findsOneWidget);
+      expect(
+        SenkronRozeti.tamMetinIcin(SenkronDurumTuru.yerel),
+        Metinler.yalnizcaBuCihazda,
+      );
     });
 
     testWidgets('kuyrukta: donen ok + metin', (tester) async {
@@ -115,7 +124,13 @@ void main() {
         ),
       );
       expect(find.byIcon(Icons.cloud_off), findsOneWidget);
-      expect(find.text(Metinler.cevrimdisiKaydedildi), findsOneWidget);
+      // GOREV-A7 [K85 / D-A7-1]: gorunur "Çevrimdışı" (262,5 px / 2 satir);
+      // tam metin (1102,5 px / 6 satir) Semantics(label:)'da kalir.
+      expect(find.text(Metinler.rozetKisaCevrimdisi), findsOneWidget);
+      expect(
+        SenkronRozeti.tamMetinIcin(SenkronDurumTuru.cevrimdisi),
+        Metinler.cevrimdisiKaydedildi,
+      );
     });
   });
 

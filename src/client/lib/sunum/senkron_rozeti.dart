@@ -29,6 +29,39 @@ class SenkronRozeti extends StatefulWidget {
 
   const SenkronRozeti({super.key, required this.durum});
 
+  /// GOREV-A7 D-A7-2: spec'in `MAX_SATIR`i. Dart adlandirmasi camelCase'dir
+  /// (`constant_identifier_names`, `--fatal-infos` altinda SCREAMING_CASE
+  /// analyzer info uretir) -- deger ve anlam spec ile birebir.
+  ///
+  /// OLCULMUS GEREKCE: yeni kisa dizgelerin hepsi 236 px'te 2.0x'te **2
+  /// satir** (KANIT/A7/02-COZUM-OLCUM.txt); 3 bir EMNIYET PAYIDIR, cunku
+  /// cihaz fontu test fontundan genis olcebilir (spec §8/S3). `ellipsis`
+  /// KALIR: 3 satir da yetmezse kirpma GORUNUR olur ve G13 isirir.
+  /// 🔴 maxLines'i KALDIRMAK `ellipsis`'i fiilen tek satira indirir
+  /// (olculdu, varyant A) -- M84 bunu isirtir.
+  static const int maxSatir = 3;
+
+  /// GOREV-A7 D-A7-1: EKRANDA gorunen KISA metin. `null` ⇒ rozet cizilmez.
+  /// `build` ve `GorevSatiri`nin dikey-donus hesabi AYNI bu fonksiyonu
+  /// cagirir -- kopya esleme YASAK (M77b).
+  static String? metinIcin(SenkronDurumTuru durum) => switch (durum) {
+    SenkronDurumTuru.yerel => Metinler.rozetKisaYerel,
+    SenkronDurumTuru.kuyrukta => Metinler.gonderiliyor,
+    SenkronDurumTuru.senkronize => null,
+    SenkronDurumTuru.cevrimdisi => Metinler.rozetKisaCevrimdisi,
+    SenkronDurumTuru.gonderilmemis => Metinler.rozetKisaGonderilmedi,
+  };
+
+  /// GOREV-A7 D-A7-1: ekran okuyucunun okudugu TAM metin -- F6'nin kilitli
+  /// dizgesidir, DEGISMEZ. Gorunur metin kisaldi, bilgi KAYBOLMADI.
+  static String? tamMetinIcin(SenkronDurumTuru durum) => switch (durum) {
+    SenkronDurumTuru.yerel => Metinler.yalnizcaBuCihazda,
+    SenkronDurumTuru.kuyrukta => Metinler.gonderiliyor,
+    SenkronDurumTuru.senkronize => null,
+    SenkronDurumTuru.cevrimdisi => Metinler.cevrimdisiKaydedildi,
+    SenkronDurumTuru.gonderilmemis => Metinler.gonderilmemisDegisiklik,
+  };
+
   @override
   State<SenkronRozeti> createState() => _SenkronRozetiState();
 }
@@ -83,14 +116,12 @@ class _SenkronRozetiState extends State<SenkronRozeti> {
           context,
           ikon: Icons.schedule,
           renk: MRenk.metinIkincil(context),
-          metin: Metinler.yalnizcaBuCihazda,
         );
       case SenkronDurumTuru.kuyrukta:
         return _rozet(
           context,
           ikon: null,
           renk: MRenk.metinIkincil(context),
-          metin: Metinler.gonderiliyor,
           donenIkon: true,
         );
       case SenkronDurumTuru.senkronize:
@@ -102,27 +133,34 @@ class _SenkronRozetiState extends State<SenkronRozeti> {
           context,
           ikon: Icons.cloud_off,
           renk: MRenk.cevrimdisi(context),
-          metin: Metinler.cevrimdisiKaydedildi,
         );
       case SenkronDurumTuru.gonderilmemis:
         return _rozet(
           context,
           ikon: Icons.edit_outlined,
           renk: MRenk.metinIkincil(context),
-          metin: Metinler.gonderilmemisDegisiklik,
         );
     }
   }
 
+  /// GOREV-A7 D-A7-1. Dizgeler PARAMETRE OLARAK GELMEZ -- bu govde
+  /// `SenkronRozeti.metinIcin`/`tamMetinIcin`i KENDISI cagirir. Gerekce
+  /// M77b: cagiran tarafta ikinci bir esleme tablosu olsaydi, o tablo ile
+  /// `GorevSatiri`nin dikey-donus hesabinin kullandigi tablo SESSIZCE
+  /// ayrisabilirdi. Tek kaynak, iki tuketici.
+  ///
+  /// `!` guvenlidir: iki fonksiyon YALNIZ `senkronize` icin null doner ve o
+  /// durum yukaridaki switch'te `SizedBox.shrink()` ile daha once donmustur.
   Widget _rozet(
     BuildContext context, {
     required IconData? ikon,
     required Color renk,
-    required String metin,
     bool donenIkon = false,
   }) {
+    final kisaMetin = SenkronRozeti.metinIcin(widget.durum)!;
+    final tamMetin = SenkronRozeti.tamMetinIcin(widget.durum)!;
     return Semantics(
-      label: metin,
+      label: tamMetin,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -132,10 +170,17 @@ class _SenkronRozetiState extends State<SenkronRozeti> {
             Icon(ikon, size: MOlcu.ikon, color: renk),
           SizedBox(width: MBosluk.xs),
           Flexible(
-            child: Text(
-              metin,
-              style: MTipo.etiketS.copyWith(color: renk),
-              overflow: TextOverflow.ellipsis,
+            // GOREV-A7 §2/3: gorunur metin ile Semantics(label:) artik FARKLI
+            // dizgeler tasiyor. ExcludeSemantics OLMADAN ekran okuyucu
+            // "Cevrimdisisiniz. Degisiklikler kaydedildi. Cevrimdisi" diye
+            // IKI KEZ okur -- M87 bunu isirtir (G15/A13).
+            child: ExcludeSemantics(
+              child: Text(
+                kisaMetin,
+                style: MTipo.etiketS.copyWith(color: renk),
+                maxLines: SenkronRozeti.maxSatir,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         ],

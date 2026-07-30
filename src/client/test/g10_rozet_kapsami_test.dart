@@ -12,6 +12,7 @@ import 'dart:io';
 import 'package:client/design/metinler.dart';
 import 'package:client/senkron/uzak_degisiklik_uygulayici.dart';
 import 'package:client/sunum/gorev_listesi_ekrani.dart';
+import 'package:client/sunum/senkron_rozeti.dart';
 import 'package:client/veri/ayarlar_deposu.dart';
 import 'package:client/veri/gorev_deposu.dart';
 import 'package:client/veri/hlc.dart';
@@ -182,6 +183,11 @@ void main() {
     // yine de gecerdi (kor). Baslik metninin VAR oldugunu ayrica dogrulamak
     // bu mutant sinifini yakalar.
     expect(find.text('AYAK5 uctan uca gorev'), findsOneWidget);
+    // GOREV-A7 [K85 / D-A7-1]: rozetin GORUNUR dizgesi kisaldi (bkz. AYAK6).
+    // Bu ayak NEGATIF iddiadir: rozet HIC cizilmemeli -- bu yuzden hem kisa
+    // hem tam dizge aranir; yalniz birini aramak, digerinin sizmasina
+    // sessizce izin verirdi.
+    expect(find.text(Metinler.rozetKisaYerel), findsNothing);
     expect(find.text(Metinler.yalnizcaBuCihazda), findsNothing);
     await db.close();
   });
@@ -200,7 +206,13 @@ void main() {
     await tester.pumpWidget(gercekEkranSarmalayici(depo));
     await tester.pumpAndSettle();
 
-    expect(find.text(Metinler.yalnizcaBuCihazda), findsOneWidget);
+    // GOREV-A7 [K85 / D-A7-1]: gorunur dizge "Bu cihazda"ya kisaldi; tam
+    // metin Semantics(label:)'da yasiyor (G15/A13 orada olcer).
+    expect(find.text(Metinler.rozetKisaYerel), findsOneWidget);
+    expect(
+      SenkronRozeti.tamMetinIcin(SenkronDurumTuru.yerel),
+      Metinler.yalnizcaBuCihazda,
+    );
     await db.close();
   });
 }

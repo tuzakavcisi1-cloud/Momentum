@@ -433,7 +433,15 @@ void main() {
 
       expect(find.byType(CakismaRozeti), findsOneWidget);
       expect(find.byType(SenkronRozeti), findsOneWidget);
-      expect(find.text(Metinler.gonderilmemisDegisiklik), findsOneWidget);
+      // GOREV-A7 [K85 / D-A7-1]: gorunur dizge "Gönderilmedi" (315,0 px /
+      // 2 satir); tam metin "Gönderilmemiş değişiklik" (630,0 px / 3 satir)
+      // Semantics(label:)'da kalir. D7'nin ISI iki rozetin BIRLIKTE
+      // cizildigini olcmektir -- dizgenin uzunlugu D7'nin konusu degildir.
+      expect(find.text(Metinler.rozetKisaGonderilmedi), findsOneWidget);
+      expect(
+        SenkronRozeti.tamMetinIcin(SenkronDurumTuru.gonderilmemis),
+        Metinler.gonderilmemisDegisiklik,
+      );
     },
   );
 

@@ -29,6 +29,27 @@ class Metinler {
   static const String duyuruGonderilmemisDegisiklik =
       'Gönderilmemiş değişiklik var';
 
+  // GOREV-A7 [K85 / spec v4 §4/D-A7-1] -- ROZETIN EKRANDA GORUNEN KISA
+  // metinleri. Yukaridaki "Gorunur (8)" grubu DEGISMEDI: o dizgeler artik
+  // Semantics(label:)'da yasiyor ve ekran okuyucu ONLARI okuyor -- bilgi
+  // KAYBI YOKTUR. Burada yasayanlar yalniz GOZLE gorulen kisaltmalardir.
+  //
+  // Neden ayri grup: bunlar F6'nin KILITLI 13 dizgesine DAHIL DEGILDIR
+  // (GOREV-slice-3b §T-metin / K59'un "13 dizge" kilidi bozulmaz) --
+  // GOREV-R10'un `gonderilmemisDegisiklik` icin kurdugu ayni EK deseni.
+  // fixture/metinler-kilit.json'da "rozetKisaGorunur" grubunda aynalanir ve
+  // a11y_kapisi_test.dart bu grubu da BIREBIR sinar (uc dosya es zamanli).
+  //
+  // OLCULDU (flutter_test fontu, 236 px alan, olcek 2.0x -- KANIT/A7/
+  // 02-COZUM-OLCUM.txt): "Bu cihazda" 262,5 px / 2 satir · "Cevrimdisi"
+  // 262,5 / 2 · "Gonderilmedi" 315,0 / 2. Reddedilenler (3 satir):
+  // "Cevrimdisi kaydedildi" 551,3 · "Yalniz bu cihazda" 446,3.
+  // 'kuyrukta' icin AYRI sabit YOKTUR: `gonderiliyor` (315,0 / 2 satir) hem
+  // tam hem kisa metindir; kopya sabit yazmak F6'yi ikiye bolerdi.
+  static const String rozetKisaYerel = 'Bu cihazda';
+  static const String rozetKisaCevrimdisi = 'Çevrimdışı';
+  static const String rozetKisaGonderilmedi = 'Gönderilmedi';
+
   // EK -- F6'nin 13 dizgesine DAHIL DEGIL (G5 fixture karsilastirmasi bunu
   // icermez). Sabit kontrol etiketidir, durum dizgesi degildir; GorevEkleAlani
   // ikon-yalniz ekle dugmesi tasidigindan A11Y-3 (ikon-yalniz buton yasak)
