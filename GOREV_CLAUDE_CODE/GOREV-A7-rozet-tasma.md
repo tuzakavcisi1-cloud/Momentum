@@ -1,9 +1,10 @@
-# GOREV-A7 — ROZET METİN TAŞMASI + 2.0× ÖLÇEK AYAĞI (A11Y‑4)
+# GOREV-A7 — ROZET METİN TAŞMASI + 2.0× ÖLÇEK AYAĞI (A11Y‑4) · **v4**
 
-> **Kilit:** Onur, 30 Tem 2026, oturum 39 — **K83/③** ve bu spec'in üç tasarım şıkkı.
-> **Rol:** bu spec'i **Cowork** yazdı, build **Claude Code**'da. Üreten ≠ denetleyen (K26) ⇒ spec'in
-> kabulü builder'ın beyanıyla değil, aşağıdaki kapıların **koşumuyla** olur.
-> **Biçim:** K81 standardı — kapılar `## 5. KAPILAR` altında `### G<n>`, mutantlar `## 6. MUTANTLAR` altında.
+> **v4 — 30 Tem 2026.** v3, **bağımsız denetimde (K26) BLOKER aldı** ve iki temel kararı değişti.
+> Değişim tarihçesi §1.2'de; **v1–v3 GEÇERSİZDİR.**
+> **Kilit:** Onur — K83/③ + v1'in üç şıkkı + v4'ün iki şıkkı (§1.2.3).
+> **Rol:** spec'i **Cowork** yazdı, denetimi **Claude Code** yaptı (ayrı el, K26), build **Claude Code**'da.
+> **Biçim:** K81 — kapılar `## 5. KAPILAR` altında `### G<n>`, mutantlar `## 6. MUTANTLAR` altında.
 
 ---
 
@@ -11,313 +12,303 @@
 
 `DESIGN.md` açık kalemi **A‑7**: *"İki rozet yan yana durumunda A11Y‑4 (2.0× ölçek) ve A11Y‑1 (48dp)
 yeniden ölçülmedi — dar ekranda taşma [DOĞRULANMADI]"*. Oturum 37 cihaz PNG'lerinde taban rozet metni
-**1.0× ölçekte BİLE** kırpılmış görüldü (*"Gönderilmemiş de…"*, *"Çevrimdışısın…"*), **2.0× hiç ölçülmedi.**
+**1.0× ölçekte BİLE** kırpılmış görüldü.
 
-### 1.1 🔴 KÖK NEDEN: MEVCUT A11Y‑4 KAPISI KÖRDÜR [oturum 39'da ÖLÇÜLDÜ]
+### 1.1 KÖK NEDEN: MEVCUT A11Y‑4 KAPISI KÖRDÜR [ölçüldü, iki bağımsız el teyit etti]
 
-`src/client/test/a11y_kapisi_test.dart:274` gövdesi **üç satırdır**:
+`src/client/test/a11y_kapisi_test.dart:274` gövdesi tek `expect`'tir:
+`expect(tester.takeException(), isNull)`. **`TextOverflow.ellipsis` FlutterError ATMAZ** ⇒ kapı
+*"düzen patladı mı?"* sorar, `DESIGN.md`'nin yasakladığı **kırpmayı** hiç sormaz.
 
-```dart
-testWidgets('A11Y-4: textScaler 2.0 altinda beklenmeyen tasma (FlutterError) yok', (tester) async {
-  await tester.pumpWidget(_vitrinSarmalayici(textScale: 2.0));
-  await tester.pump();
-  expect(tester.takeException(), isNull);
-});
-```
+**Koşarak ölçüldü** (`KANIT/A7/00-OLCUM-kor-kapi.txt`, Cowork): gerçek 320dp ekranda + 2.0×'te metin
+**1102,50 px** istiyor, **104,00 px** alıyor, `takeException()` ⇒ **`null`**. Rozet metninin
+**%90'ından fazlası görünmüyor** ve kapı hiçbir şey söylemiyor.
+**Bağımsız teyit** (`KANIT/A7/01-DENETIM.md` §3, Claude Code): aynı sayı **birebir** üretildi; ayrıca
+*"belki bu kırpma değil sarmadır"* hipotezi **üç ayrı probla çürütüldü** — metin gerçekten tek satıra
+sıkışıyor. **Kör kapı iddiası iki elden geçti ve güçlendi.**
 
-**`TextOverflow.ellipsis` FlutterError ÜRETMEZ.** `takeException()` yalnız `RenderFlex overflow` gibi
-**atılmış** istisnaları görür; ellipsis ise metni **sessizce** kırpar ve hiçbir istisna atmaz. Yani bu kapı
-*"düzen patladı mı?"* diye soruyor, `DESIGN.md`'nin yasakladığı şeyi — **kırpmayı** — hiç sormuyor.
-Kapı **yeşil** kalırken cihaz PNG'sinde kırpma **görünüyordu**; ikisi çelişti ve kimse çelişkiyi ölçmedi.
-**Bu bir kör kapıdır** ve bu spec'in birinci işi onu ısıran bir kapıya çevirmektir.
+### 1.2 🔴 v3'ÜN ÇÖZÜMÜ YETERSİZDİ — BAĞIMSIZ DENETİM BLOKER BULDU
 
-#### 1.1.1 🔴 İDDİA KOD OKUMASIYLA DEĞİL **KOŞARAK** ÖLÇÜLDÜ [oturum 39, Cowork]
+#### 1.2.1 Bulgu (Claude Code, `01-DENETIM.md` §1)
 
-Geçici bir ölçüm dosyası (`_a7_olcum_test.dart`, koşuldu ve `_SILINECEKLER`'e alındı) aynı ağaçta
-**iki şeyi birlikte** ölçtü: mevcut kapının gövdesi (`takeException()`) ve `RenderParagraph` intrinsic
-genişliği. Metin: `Metinler.cevrimdisiKaydedildi` = *"Çevrimdışısınız. Değişiklikler kaydedildi."*
+v3'ün tek ürün çözümü **dikey dönüştü**. Denetim, D‑A7‑2 formülünü birebir uygulayıp 72 kombinasyonu
+hesapladı: **61'i (%85) hâlâ kırpılıyor.** Aritmetik basit ve v3'te **hiç yapılmamıştı** — dikey dönüş
+rozete en fazla `maxWidth − 56 ≈ 264–355 px` verir, `cevrimdisi` dizgesi 2.0×'te **1102,5 px** ister.
+Dikey dönüş *"yarım kırpma"*yı *"biraz daha az kırpma"*ya çevirir, **"kırpma yok"a değil.**
 
-| ölçüm | kurulum | `takeException()` | istenen (px) | ayrılan (px) | kırpıldı? |
-|---|---|---|---|---|---|
-| **1** | 140dp kutu · **2.0×** | **`null`** | **1102,50** | **112,00** | **EVET** |
-| **2** | 600dp kutu · 1.0× | — | 556,50 | **556,50** | hayır |
-| **3** | **gerçek 320dp ekran** · 2.0× · gerçek satır düzeni (`Expanded` başlık + `Flexible` rozet) | **`null`** | **1102,50** | **104,00** | **EVET** |
+🔴 **Bu Cowork'ün kusurudur ve sınıfı adlandırılmıştır: ÇÖZÜMÜN YETERLİLİĞİ ÖLÇÜLMEDİ.** v3 sorunu
+ölçtü (104 px kalıyor), çözümün o sorunu kapatıp kapatmadığını **hesaplamadı**. Bir bölme işlemiydi.
 
-**Üç sonuç, üçü de ölçüm:**
-1. 🔴 **Kör kapı KANITLANDI.** Ölçüm 1 ve 3'te metin ayrılan alanın **~10,6 katını** istiyor — yani rozet
-   metninin **%90'ından fazlası görünmüyor** — ve `takeException()` **`null`** dönüyor. Mevcut
-   `a11y_kapisi_test.dart:274` bu ağaçta **hiçbir şey söylemez**. İddia artık kod okumasına değil
-   **koşmuş bir sayıya** dayanıyor.
-2. 🟢 **`G13`'ün ölçüm ayağı YANLIŞ-POZİTİF ÜRETMİYOR.** Ölçüm 2'de istenen ve ayrılan **birbirine eşit**
-   (556,50 = 556,50) ⇒ kapı geniş alanda **susuyor**. Bu, `G13_TOLERANS = 0.5` seçiminin de gerekçesidir:
-   eşitlik tam çıktığı için toleransın tek işi kayan nokta yuvarlamasıdır, kusur maskelemek değil.
-3. 🔴 **Gerçek satır düzeninde rozete yalnız 104 px kalıyor** (ölçüm 3) — `Expanded` başlık + `Flexible`
-   rozet flex paylaşımının 2.0×'te ne kadar yetersiz olduğunun doğrudan kanıtı (§1.3'ün sayısı).
+#### 1.2.2 Cowork'ün doğrulaması — altı varyant, aynı koşulda (264 px alan, 2.0×, aynı dizge)
 
-> **BEYAN EDİLMİŞ SINIR (§8/S3'ün somut hâli):** 1102,50 px değeri `flutter_test`'in **test fontuyla**
-> ölçülmüştür; cihazın gerçek yazı tipiyle sayı **farklı çıkar**. Kanıtlanan şey mutlak px değeri değil,
-> **oranın büyüklüğü ve kapının sessizliğidir**. Cihazdaki gerçek görünüm `CM1`/`CM2` ile ölçülür.
+| varyant | yükseklik | satır | `didExceedMaxLines` | `intrinsic` |
+|---|---|---|---|---|
+| **A** `maxLines: null` + ellipsis **(v3'ün varsaydığı kod)** | 36,0 | 1,0 | 🔴 **true** | 1102,5 |
+| **B** `maxLines: 10` + ellipsis | 216,0 | 6,0 | 🟢 **false** | 1102,5 |
+| **C** `maxLines: 3` + ellipsis | 108,0 | 3,0 | 🔴 true | 1102,5 |
+| **D** `maxLines: null`, overflow YOK | 216,0 | 6,0 | false | 1102,5 |
+| **E** kısa dizge *"Çevrimdışı"* + `maxLines: 10` | 72,0 | 2,0 | 🟢 **false** | 262,5 |
+| **F** gerçek `Row`+`Flexible` + `maxLines: 10` | 216,0 | 6,0 | 🟢 **false** | — |
 
-### 1.2 🔴 İKİNCİ ÖLÇÜM: DOKTRİN ÇELİŞKİSİ (spec bu ayrımı YAZAR — Onur'un kilidi, şık 1)
+**Üç sonuç:**
+1. **A doğrular denetimi:** `maxLines: null` + `ellipsis` metni tek satıra indiriyor (bu Flutter
+   sürümünde `ellipsis`, `maxLines` verilmemişse fiilen `maxLines: 1` gibi davranıyor).
+2. **B/F kırpmayı kapatıyor** (`didExceedMaxLines = false`) ve `ellipsis` yerinde kaldığı için
+   `a11y_statik_tasma_test.dart` de geçer — ama bedeli **6 satır / 216 px**.
+3. 🔴 **`intrinsic` HER varyantta 1102,5** — B/D/F'de kırpma **yokken** de. Yani v3'ün ölçüm ayağı
+   **sarmayı kırpma sanıyor**; her sarma çözümünü yanlış‑pozitifle reddederdi.
 
-- `a11y_statik_tasma_test.dart` **`TextOverflow.ellipsis`'i ZORUNLU** kılar (M16'nın öğrettiği: `maxLines`
-  tek başına yetmez, `overflow` verilmezse Flutter varsayılanı `clip`'tir ⇒ **sessiz** kırpma).
-- `DESIGN.md` **kırmızı çizgi 4**: *"Sabit yükseklikli metin kutusu yok — metin ölçeği 2.0×'te kırpma yasak"*.
+#### 1.2.3 Onur'un v4 kilitleri (30 Tem 2026)
 
-İki kural **çelişmiyor ama hiçbir yerde AYRILMAMIŞ**. Kanonik ayrım — bundan sonra geçerli:
+| # | v3 (geçersiz) | **v4 (yürürlükte)** |
+|---|---|---|
+| ölçüm ayağı | `intrinsic <= size + 0.5` | **`didExceedMaxLines == false` hüküm verir**; `intrinsic`/`size` yalnız **teşhis için raporlanır**. `G13_TOLERANS` **kaldırıldı** (boolean eşik istemez). |
+| ürün çözümü | yalnız dikey dönüş | **kısa görünür dizge + `maxLines` + tam metin `Semantics(label:)`'da** (dikey dönüş **korunur** ama tek başına yeterli sayılmaz). |
+
+🔴 **v3 §8/S2 `didExceedMaxLines`'ı *"maxLines zorunluluğu getirdiği için"* reddetmişti. Ölçüm bunu
+çürüttü:** `maxLines` çözümün **parçası**, engeli değil. Reddin gerekçesi yanlıştı.
+
+### 1.3 DOKTRİN ÇELİŞKİSİ GERÇEKTİ — v3'ÜN "ÇELİŞMİYOR" DEĞERLENDİRMESİ YANLIŞTI
+
+v3 §1.2 *"iki kural çelişmiyor, sadece ayrılmamış"* diyordu. Ölçüm gösterdi ki `overflow: ellipsis`
+**`maxLines` verilmediğinde sarmayı fiilen engeller** ⇒ statik kapının ellipsis zorunluluğu, kırpma
+yasağıyla **doğrudan çatışıyordu**. Kanonik ayrım (v4):
 
 | kural | ne ölçer | kapı |
 |---|---|---|
-| **Ellipsis zorunluluğu** | *"kırpma SESSİZ olmasın"* — son çare göstergesi | `a11y_statik_tasma_test.dart` (statik) |
-| **Kırpma yasağı** | *"kırpma HİÇ OLMASIN"* — tasarım hedefi | **`G13` (bu spec, yeni)** |
+| **`overflow: ellipsis` zorunlu** | *"kırpma SESSİZ olmasın"* (M16: `clip` sessizdir) | `a11y_statik_tasma_test.dart` |
+| **`maxLines` AÇIKÇA verilir** | *"ellipsis sarmayı öldürmesin"* — **v4'te doğdu** | **`G13/A3`** |
+| **kırpma yasağı** | *"kırpma HİÇ OLMASIN"* | **`G13/A1`** (`didExceedMaxLines`) |
 
-**Ellipsis'in varlığı bir başarı ölçüsü değildir; bir emniyet ağıdır.** İkisi de kalır: statik kapı ağın
-delinmediğini, `G13` ağa hiç düşülmediğini ölçer.
+**Üçü birlikte tutarlıdır; ilk ikisi tek başına çatışır.** Eksik halka `maxLines`'tı.
 
-### 1.3 🔴 ÜÇÜNCÜ ÖLÇÜM: KUSURUN MEKANİZMASI KODDA GÖRÜNÜR
+### 1.4 MEKANİZMA (kodda görünür)
 
-`src/client/lib/sunum/gorev_satiri.dart:47‑68`:
-
-```dart
-Expanded(child: Text(gorev.baslik, ..., overflow: TextOverflow.ellipsis)),   // flex: 1, TIGHT
-SizedBox(width: MBosluk.s),
-if (cakismaVarMi) ...[ const CakismaRozeti(), SizedBox(width: MBosluk.xs) ], // 48dp SABİT
-Flexible(child: SenkronRozeti(durum: senkronDurumu)),                        // flex: 1, LOOSE
-```
-
-Başlık `Expanded` (tight, flex 1), rozet `Flexible` (loose, flex 1) ⇒ kalan boşluk **eşit** bölünür.
-Rozet metni (`MTipo.etiketS`, 13 px) 2.0×'te **26 px**'e çıkar; *"Çevrimdışısınız. Değişiklikler
-kaydedildi."* gibi bir dizge o paya **hiçbir dar ekranda** sığmaz ⇒ `SenkronRozeti._rozet`'in
-`Flexible(Text(..., ellipsis))`'i kırpar. **Bileşik satırda** (`cakismaVarMi == true`) sabit 48dp'lik
-`CakismaRozeti` + `MBosluk.xs` daha da yer alır ⇒ pay küçülür, kırpma kesinleşir.
+`gorev_satiri.dart:47‑68` — başlık `Expanded` (tight, flex 1), rozet `Flexible` (loose, flex 1) ⇒
+kalan boşluk **eşit** bölünür. `senkron_rozeti.dart:134‑139` — `Flexible(Text(..., ellipsis))`,
+**`maxLines` YOK** ⇒ tek satır + kırpma.
 
 ---
 
 ## 2. KAPSAM
 
 **DAHİL:**
-1. `G13` — kırpma ölçümü (`RenderParagraph` intrinsic genişliği; Onur'un kilidi, şık 1).
-2. `G14` — dar alanda **dikey dönüş** (Onur'un kilidi, şık 2) + geniş alanda yatay kalma (yanlış‑pozitif).
-3. `G15` — **bileşik satır** (çakışma + taban yan yana) ve dikeyde **A11Y‑1 (48dp)** korunması.
-4. `M74`–`M81` mutantları (statik + widget ⇒ **tavansız**, K53/3) ve `CM1`–`CM3` cihaz mutantları (**tavan 3**).
-5. `DurumVitrini`'ne **bileşik satır örneği** (çakışma + `gonderilmemis`) — hem PNG hem widget testi için tek kaynak.
+1. `G13` kırpma kapısı (`didExceedMaxLines`) · `G14` dikey dönüş · `G15` bileşik satır + A11Y‑1/6/7.
+2. **F6 görünür dizgelerinin kısaltılması** (§4/D‑A7‑1) — üç dosyada **eşzamanlı**: `metinler.dart` ·
+   `araclar/fixture/metinler-kilit.json` · `a11y_kapisi_test.dart`'ın gömülü `_fixtureGorunur` haritası.
+3. 🔴 **`content-desc` ÇİFT OKUMA — v4'te KAPSAMA GİRDİ.** v3'te Onur bunu hariç tutmuştu; **kısa dizge
+   kararı onu zorunlu kıldı:** görünür metin ile `Semantics(label:)` artık **farklı** dizgeler taşıyor
+   ⇒ `ExcludeSemantics` olmadan ekran okuyucu *"Çevrimdışısınız. Değişiklikler kaydedildi. Çevrimdışı"*
+   diye **iki kez** okur. Bu, hariç tutulan borcun **kötüleşmiş hâli** olurdu. Çözüm tek satırlıktır
+   (§4/D‑A7‑1) ve **eski borcu da kapatır**.
+4. `M74`–`M86` (statik/widget ⇒ **tavansız**, K53/3) + `CM1`–`CM3` (cihaz ⇒ **tavan 3**).
+5. `DurumVitrini`'ne bileşik satır örneği (çakışma + `gonderilmemis`).
 
 **HARİÇ (bilinçli, gerekçeli):**
-- 🔴 **`content-desc` çift okuma** (`Semantics(label:)` + `Text` çocuğu ⇒ ekran okuyucu tekrar okur).
-  Onur bunu **bu dilimden çıkardı**; borç `BORCLAR.md`'de **açık kalır**. Bu dilimde ona dokunulmaz.
-- **Başlık metninin kırpılması KABUL EDİLİR.** Gerekçe: dikey dönüşten sonra başlık **tam satır genişliği**
-  alır; buna rağmen sığmayan başlık ellipsis ile kırpılır ve bu bilgi kaybı **değildir** (görevin kimliği
-  bağlamdan ve dokunmayla açılan içerikten okunur), oysa *"Gönderilmemiş de…"* **anlamsızdır**. `G13`
-  bu yüzden **yalnız rozet alt ağacını** ölçer — beyan edilmiş sınır, §8/S1.
-- **Web ayağı.** `flutter test --platform chrome` bu ortamda sonuç üretmiyor (iki ölçüm: 7 dk ve 9,8 dk)
-  ⇒ web `[DOĞRULANMADI]` kalır. `textScaler` davranışı web'de farklı olabilir (`DESIGN.md` A‑5).
-- **iOS.** Mac yok ⇒ CI‑only.
-- **Yeni token.** `K46` gereği `DESIGN.md`'ye **tek bayt yazılmaz** ⇒ eşik **mevcut** token'lardan türetilir
-  (`MOlcu.dokunmaHedefi`, `MOlcu.ikon`, `MBosluk.*`). Yeni `MOlcu` sembolü eklemek `design-token-kapisi.py`
-  `D1`/`D3` yüzeyini büyütür ve K46'yı açar — **YASAK**.
+- **Başlık metninin kırpılması KABUL EDİLİR.** `G13` yalnız **rozet alt ağacını** ölçer (§8/S1).
+- **Web ayağı** — `flutter test --platform chrome` bu ortamda sonuç üretmiyor ⇒ `[DOĞRULANMADI]`.
+- **iOS** — Mac yok, CI‑only. · **RTL** — uygulama genelinde yok; bu spec yeni bir RTL kusuru açmıyor
+  ama RTL desteği **bu dilimin konusu değil** (`01-DENETIM.md` §7).
+- **Yeni token** — K46: `DESIGN.md`'ye tek bayt yazılmaz; eşik mevcut token'lardan türetilir.
 
 ---
 
 ## 3. ORTAM — **BUILDER KALDIRIR, COWORK ÖLÇER** [K80, PAZARLIKSIZ]
 
-`CM1`–`CM3` cihaz kanıtı ister. Builder şu sırayı **kendi** kaldırır ve her adımı **koşula kadar yoklar**
-(🔴 **sabit `sleep` bir ölçüm değildir** — oturum 35'te 22 sn beklenip yanlış KIRMIZI verildi):
-
-1. **Emülatör:** `flutter emulators --launch <avd>` ya da `emulator.exe -avd <avd>`; ardından
-   `adb devices` çıktısında `device` durumu **görülene kadar** yoklanır (tavan: 180 sn, yoklama 3 sn).
-2. **`flutter run -d <cihaz>`** ile `DurumVitrini` açılır.
-3. 🟢 **`docker` ve backend BU DİLİMDE GEREKMEZ — beyan edilmiş sadeleştirme.** Gerekçe ölçüldü:
-   `DurumVitrini` rozet durumlarını **sentetik** kurar (`vitrin/durum_vitrini.dart`), yani A‑7 görünümü
-   canlı sunucu olmadan üretilebilir. **Bu bir istisna değil, kapsam ölçümüdür:** eğer builder bileşik
-   satırı canlı veriyle üretmeyi seçerse **o zaman** `docker start momentum-postgres` (healthy görülene
-   kadar yoklanır) → backend ayrı süreçte **`ASPNETCORE_ENVIRONMENT=Development` AÇIKÇA set edilerek**
-   (yoksa `NullCurrentUser` ⇒ her istek **401**, K61) sırası **zorunlu** hâle gelir.
-4. 🔴 **PID, cihaz adı ve "çalışıyor" beyanı hiçbir belgeye YAZILMAZ — ÖLÇÜLÜR** (`adb devices`,
-   `docker ps`, `netstat -ano | findstr :5298`). Kanıt dosyası **ölçüm çıktısını** taşır, beyanı değil.
+1. **Emülatör:** `flutter emulators --launch <avd>`; `adb devices` çıktısında `device` **görülene kadar**
+   yoklanır (tavan 180 sn, 3 sn aralık). 🔴 **Sabit `sleep` bir ölçüm değildir.**
+2. `flutter run -d <cihaz>` ile `DurumVitrini`.
+3. 🟢 **docker + backend BU DİLİMDE GEREKMEZ** — `DurumVitrini` rozet durumlarını **sentetik** kurar.
+   Canlı veri seçilirse: `docker start momentum-postgres` (healthy görülene kadar yoklanır) → backend
+   ayrı süreçte **`ASPNETCORE_ENVIRONMENT=Development` AÇIKÇA set** (yoksa her istek **401**, K61).
+4. 🔴 **PID / cihaz adı / "çalışıyor" beyanı hiçbir belgeye YAZILMAZ — ÖLÇÜLÜR.**
 
 ---
 
-## 4. ÜRÜN DEĞİŞİKLİĞİ — TASARIM KİLİDİ
+## 4. ÜRÜN DEĞİŞİKLİĞİ — TASARIM KİLİDİ (Onur, v4)
 
-### D‑A7‑1 · Metin eşlemesi dışa açılır (tek kaynak korunur)
+### D‑A7‑1 · Görünür dizge KISALIR, tam metin `Semantics`'te kalır, çift okuma `ExcludeSemantics` ile biter
 
-`SenkronRozeti`'ne **`static String? metinIcin(SenkronDurumTuru durum)`** eklenir; `build` **aynı**
-fonksiyonu kullanır (kopya eşleme **YASAK** — `M77b` bunu ısırtır). `senkronize` için `null` döner
-(o durumda rozet çizilmez: `SizedBox.shrink`, gürültü azaltma). Metin sabitleri **`metinler.dart`'ta
-kalır** — `a11y_statik_tasma_test.dart`'ın F6 ham‑literal kapısı bozulmaz.
+**Ölçülmüş bütçe:** dikey dönüşten sonra 320dp ekranda rozet metnine **236 px** kalır; hedef 2.0×'te
+**en fazla 2 satır**. Aşağıdaki sayılar `flutter_test` fontuyla **ölçüldü** (tahmin yok):
 
-### D‑A7‑2 · Dikey dönüş eşiği (`GorevSatiri`, `LayoutBuilder`)
+| durum | görünür metin (**YENİ**) | intrinsic @2.0× | satır | `Semantics(label:)` — **tam metin, DEĞİŞMEZ** |
+|---|---|---|---|---|
+| `yerel` | **"Bu cihazda"** | 262,5 | 2,0 | "Yalnızca bu cihazda" *(498,8 → 3 satır)* |
+| `kuyrukta` | "Gönderiliyor" **(değişmez)** | 315,0 | 2,0 | "Gönderiliyor" |
+| `cevrimdisi` | **"Çevrimdışı"** | 262,5 | 2,0 | "Çevrimdışısınız. Değişiklikler kaydedildi." *(1102,5 → 6 satır)* |
+| `gonderilmemis` | **"Gönderilmedi"** | 315,0 | 2,0 | "Gönderilmemiş değişiklik" *(630,0 → 3 satır)* |
 
-`build`, `LayoutBuilder` ile sarılır ve şu **ölçümü** yapar (tahmin yok, hepsi token veya ölçüm):
+Reddedilen adaylar (**ölçüldü, 3 satır**): "Çevrimdışı kaydedildi" 551,3 · "Yalnız bu cihazda" 446,3.
 
-```
-rozetMetni      = SenkronRozeti.metinIcin(senkronDurumu)            // null ⇒ dönüş GEREKMEZ
-rozetMetinGen   = TextPainter(TextSpan(rozetMetni, MTipo.etiketS),
-                              textScaler: MediaQuery.textScalerOf(context),
-                              textDirection: TextDirection.ltr,
-                              maxLines: 1)..layout()  ⇒ .maxIntrinsicWidth   // dispose() ZORUNLU
-rozetIstedigi   = rozetMetinGen + MOlcu.ikon + MBosluk.xs
-sabitler        = MOlcu.dokunmaHedefi + MBosluk.s + MBosluk.s
-                  + (cakismaVarMi ? MOlcu.dokunmaHedefi + MBosluk.xs : 0)
-baslikAsgari    = MOlcu.dokunmaHedefi * 2                            // 96dp — YENİ TOKEN DEĞİL, katı
-DIKEY  ⇔  sabitler + baslikAsgari + rozetIstedigi > constraints.maxWidth
-```
-
-**Dikey düzen** (`DIKEY == true`):
-
-```
-Row(
-  Semantics(label: baslik, Checkbox(...)),          // 48dp dokunma hedefi KORUNUR
-  SizedBox(width: MBosluk.s),
-  Expanded(child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Text(baslik, style: MTipo.govdeM..., overflow: TextOverflow.ellipsis),
-      SizedBox(height: MBosluk.xs),
-      Row(mainAxisSize: MainAxisSize.min, children: [
-        if (cakismaVarMi) ...[ const CakismaRozeti(), SizedBox(width: MBosluk.xs) ],
-        Flexible(child: SenkronRozeti(durum: senkronDurumu)),
-      ]),
-    ])),
+**Uygulama:**
+```dart
+Semantics(
+  label: tamMetin,                       // F6 dizgesi — DEĞİŞMEZ, ekran okuyucu bunu okur
+  child: Row(mainAxisSize: MainAxisSize.min, children: [
+    Icon(...),
+    SizedBox(width: MBosluk.xs),
+    Flexible(child: ExcludeSemantics(     // ÇİFT OKUMAYI BİTİREN SATIR
+      child: Text(kisaMetin, style: MTipo.etiketS.copyWith(color: renk),
+                  maxLines: MAX_SATIR, overflow: TextOverflow.ellipsis),
+    )),
+  ]),
 )
 ```
+`SenkronRozeti`'ne **`static String? metinIcin(SenkronDurumTuru)`** (görünür kısa metin) ve
+**`static String? tamMetinIcin(SenkronDurumTuru)`** eklenir; `build` **aynı** fonksiyonları kullanır —
+kopya eşleme **YASAK** (`M77b`). Her iki dizge de **`metinler.dart`'ta** yaşar (F6 tek kaynak kuralı).
 
-**Yatay düzen** (`DIKEY == false`): bugünkü ağaç **birebir korunur** (regresyon yüzeyi sıfır).
+### D‑A7‑2 · `maxLines` AÇIKÇA verilir
 
-🔴 **`overflow: TextOverflow.ellipsis` HER `Text`'te KALIR.** Dikey dönüş kırpmayı *gereksiz* kılar,
-`ellipsis` ise *emniyet ağıdır* (§1.2). Kaldırmak `a11y_statik_tasma_test.dart`'ı kırar — `M80` bunu ısırtır.
+`MAX_SATIR = 3`, `senkron_rozeti.dart`'ta **`const`**. Gerekçe **ölçülmüş**: yeni dizgelerin hepsi
+236 px'te **2 satır**; 3 bir emniyet payıdır (cihaz fontu test fontundan geniş ölçebilir — §8/S3).
+`overflow: TextOverflow.ellipsis` **KALIR** — 3 satır da yetmezse kırpma **görünür** olur ve `G13`
+ısırır. 🔴 **`maxLines`'ı kaldırmak `ellipsis`'i tek satıra indirir** (varyant A) — `M84` bunu ısırtır.
+
+### D‑A7‑3 · Dikey dönüş (v3'ten korundu, ama artık **tek** çözüm değil)
+
+`GorevSatiri` `LayoutBuilder` ile sarılır:
+```
+rozetIstedigi = TextPainter(kisaMetin, MTipo.etiketS, textScaler: MediaQuery.textScalerOf(context),
+                            maxLines: 1)..layout() ⇒ .maxIntrinsicWidth
+                + MOlcu.ikon + MBosluk.xs                       // dispose() ZORUNLU
+sabitler      = MOlcu.dokunmaHedefi + MBosluk.s + MBosluk.s
+                + (cakismaVarMi ? MOlcu.dokunmaHedefi + MBosluk.xs : 0)
+baslikAsgari  = MOlcu.dokunmaHedefi * 2                          // 96dp — yeni token DEĞİL
+DIKEY ⇔ sabitler + baslikAsgari + rozetIstedigi > constraints.maxWidth
+```
+Dikey düzende başlık üstte, rozet satırı altta (`Column`, `crossAxisAlignment: start`); `Checkbox` ve
+`CakismaRozeti` kendi 48dp'lerini korur. **Amacı kırpmayı önlemek değil** (onu `D‑A7‑1`+`D‑A7‑2`
+yapıyor), **satır yüksekliğini düşürmektir**: rozet tam genişlik alınca 2 satır yerine 1 satıra sığar.
 
 ---
 
 ## 5. KAPILAR
 
-### G13 · KIRPMA ÖLÇÜMÜ — ROZET METNİ SIĞMIYORSA KAPI ISIRIR
+### G13 · KIRPMA KAPISI — `didExceedMaxLines`
 
 **Dosya:** `src/client/test/g13_rozet_tasma_kapisi_test.dart` · **tür:** widget testi (cihaz istemez).
-
-**Ölçüm ayağı (Onur'un kilidi, şık 1):** her rozet `Text` düğümünün render nesnesi alınır ve
-**intrinsic genişliği kendi ayrılmış genişliğiyle** karşılaştırılır:
 
 ```dart
 final rp = tester.renderObject<RenderParagraph>(find.descendant(
     of: find.byType(SenkronRozeti), matching: find.byType(Text)));
-final istenen = rp.getMaxIntrinsicWidth(double.infinity);
-expect(istenen, lessThanOrEqualTo(rp.size.width + G13_TOLERANS),
-       reason: 'rozet metni KIRPILDI: istenen=$istenen, ayrılan=${rp.size.width}');
+expect(rp.didExceedMaxLines, isFalse,
+       reason: 'rozet metni KIRPILDI · intrinsic=${rp.getMaxIntrinsicWidth(double.infinity)} '
+               'ayrilan=${rp.size.width} yukseklik=${rp.size.height}');
 ```
-
-**`G13_TOLERANS = 0.5` — dosyada `const` olarak KİLİTLİ.** Gerekçe: yalnız kayan nokta yuvarlamasını
-soğurur. `M81` toleransı gevşetmenin kapıyı körleştirdiğini ısırtır.
-
-| ayak | ölçüm | beklenen |
-|---|---|---|
-| **A1** | `textScale ∈ {1.0, 1.5, 2.0}` × `genişlik ∈ {320, 360, 411}` × `durum ∈ {yerel, kuyrukta, cevrimdisi, gonderilmemis}` × `cakismaVarMi ∈ {false, true}` — **96 kombinasyon**, hepsinde rozet `Text` intrinsic ≤ ayrılan | kırpma **YOK** |
-| **A2** | `senkronize` durumunda rozet çizilmez (`SizedBox.shrink`) ⇒ ölçülecek `Text` **yok**, kapı **susar** ama *"ölçtüm"* de **demez** (`skip` değil, açık `isEmpty` beyanı) | boş küme, hüküm YOK |
-
-### G14 · DİKEY DÖNÜŞ — DAR ALANDA İNER, GENİŞ ALANDA İNMEZ
-
-**Dosya:** `src/client/test/g14_dikey_donus_kapisi_test.dart` · **tür:** widget testi.
+🔴 **Hüküm YALNIZ `didExceedMaxLines`'tan gelir.** `intrinsic`/`size`/`height` hata mesajında
+**raporlanır ama hüküm vermez** — ölçüldü: sarma varken `intrinsic` büyük kalır (§1.2.2/B).
 
 | ayak | ölçüm | beklenen |
 |---|---|---|
-| **A4** | `320dp` + `2.0×` + `gonderilmemis` ⇒ `GorevSatiri` altında `Column` **VAR** | **DİKEY** |
-| **A5** | `800dp` + `1.0×` + `yerel` ⇒ `GorevSatiri` altında `Column` **YOK** (yanlış‑pozitif kontrolü) | **YATAY** |
-| **A6** | Eşik **deterministik**: aynı girdi iki kez `pump` edilince aynı düzen (titreme yok) | kararlı |
-| **A7** | `senkronize` (metin `null`) ⇒ `320dp` + `2.0×`'te bile **YATAY** kalır (ölçülecek metin yok) | **YATAY** |
-| **A8** | **STATİK:** `lib/sunum` altındaki her `TextPainter(` çağrısının aynı gövdesinde `.dispose()` bulunur (kaynak taraması, `a11y_statik_tasma_test.dart` deseni) | eşleşme tam |
+| **A1** | `textScale ∈ {1.0, 1.5, 2.0}` × `genişlik ∈ {320, 360, 411}` × `durum ∈ {yerel, kuyrukta, cevrimdisi, gonderilmemis}` × `cakismaVarMi ∈ {false, true}` = **72 kombinasyon** (3×3×4×2; v3'ün "96"sı **yanlıştı**) | `didExceedMaxLines` her birinde **false** |
+| **A2** | `senkronize` ⇒ rozet çizilmez (`SizedBox.shrink`) ⇒ ölçülecek `Text` **yok**; kapı susar ama *"ölçtüm"* **demez** (açık `isEmpty` beyanı) | boş küme |
+| **A3** | **STATİK:** `lib/sunum` altındaki her rozet `Text`'i `maxLines` **taşır** — kaynak taraması. Gerekçe §1.3: `ellipsis` + `maxLines` yokluğu sarmayı öldürür | eşleşme tam |
 
-### G15 · BİLEŞİK SATIR + A11Y‑1 (48dp) DİKEYDE DE KORUNUR
+### G14 · DİKEY DÖNÜŞ
 
-**Dosya:** `src/client/test/g15_bilesik_satir_kapisi_test.dart` · **tür:** widget testi.
+**Dosya:** `src/client/test/g14_dikey_donus_kapisi_test.dart` · widget testi.
 
 | ayak | ölçüm | beklenen |
 |---|---|---|
-| **A9** | `cakismaVarMi=true` + `gonderilmemis`, `320dp`, `2.0×` ⇒ **her iki rozet de** ağaçta (`CakismaRozeti` **ve** `SenkronRozeti`) | ikisi de var |
-| **A10** | Aynı kurulumda `Checkbox` ve `CakismaRozeti` dokunma hedefi **≥ `MOlcu.dokunmaHedefi`** (`tester.getSize`) | ≥ 48dp |
-| **A11** | **A11Y‑6:** dikey düzende rozet **görünür metin düğümü KORUNUR** (`Text` bulunur) — metin gizlenerek çözüm **YASAK** | `Text` var |
-| **A12** | **A11Y‑7 regresyonu:** durum geçişinde `SemanticsService.sendAnnouncement` bir kez çağrılır (`G11` davranışı **bozulmamış**) | 171/171 korunur |
+| **A4** | `320dp` + `2.0×` + `gonderilmemis` ⇒ `GorevSatiri` altında `Column` **VAR** | DİKEY |
+| **A5** | `800dp` + `1.0×` + `yerel` ⇒ `Column` **YOK** (yanlış‑pozitif kontrolü) | YATAY |
+| **A6** | Aynı girdi iki kez `pump` ⇒ aynı düzen (titreme yok) | kararlı |
+| **A7** | `senkronize` (metin `null`) ⇒ `320dp`+`2.0×`'te bile YATAY | YATAY |
+| **A8** | **STATİK:** `lib/sunum`'daki her `TextPainter(` çağrısının gövdesinde `.dispose()` var | eşleşme tam |
+
+### G15 · BİLEŞİK SATIR · A11Y‑1 · A11Y‑6 · A11Y‑7 · **ÇİFT OKUMA**
+
+**Dosya:** `src/client/test/g15_bilesik_satir_kapisi_test.dart` · widget testi.
+
+| ayak | ölçüm | beklenen |
+|---|---|---|
+| **A9** | `cakismaVarMi=true` + `gonderilmemis`, `320dp`, `2.0×` ⇒ her iki rozet de ağaçta | ikisi de var |
+| **A10** | `Checkbox` ve `CakismaRozeti` dokunma hedefi ≥ `MOlcu.dokunmaHedefi` | ≥ 48dp |
+| **A11** | **A11Y‑6:** rozetin **görünür `Text`'i KORUNUR** (metni gizleyerek çözüm YASAK) | `Text` var |
+| **A12** | **A11Y‑7 regresyonu:** durum geçişinde duyuru bir kez (G11 davranışı bozulmamış) | korunur |
+| **A13** | 🔴 **ÇİFT OKUMA:** rozetin semantics düğümünde **tam metin BİR KEZ** geçer; kısa görünür metin semantics ağacında **YOK** (`ExcludeSemantics`) | tek etiket |
 
 ---
 
 ## 6. MUTANTLAR
 
-Statik + widget mutantları **tavansız** (K53/3 — saniyeler sürer). Cihaz mutantları **tavan 3**.
-
 | # | mutasyon | ısırması BEKLENEN | tür |
 |---|---|---|---|
-| **M74** | `LayoutBuilder` kaldırılır, düz `Row` bırakılır (bugünkü kod) | `G13/A1` **ve** `G14/A4` | widget |
-| **M75** | `baslikAsgari = 0` (eşik gevşetilir) | `G13/A1` (320dp/2.0×'te kırpma döner) | widget |
-| **M76** | `DIKEY` daima `true` (eşik hep tetikler) | `G14/A5` (geniş ekranda yatay olmalı) | widget |
-| **M77** | `TextPainter`'a `textScaler` verilmez (1.0× varsayılır) | `G13/A1` yalnız `2.0×` sütununda | widget |
-| **M77b** | `metinIcin` yerine `build` içinde **kopya** eşleme yazılır ve biri değiştirilir | `G14/A4` (eşik yanlış dizgeyle ölçer) | widget |
-| **M78** | Rozet metni `Text` yerine yalnız `Semantics(label:)` yapılır (metin gizlenir) | `G15/A11` | widget |
+| **M74** | `LayoutBuilder` kaldırılır, düz `Row` | `G14/A4` | widget |
+| **M75** | `baslikAsgari = 0` | `G14/A4` | widget |
+| **M76** | `DIKEY` daima `true` | `G14/A5` | widget |
+| **M77** | `TextPainter`'a `textScaler` verilmez | `G14/A4` (2.0× sütunu) | widget |
+| **M77b** | `metinIcin`/`tamMetinIcin` yerine `build` içinde **kopya** eşleme, biri değiştirilir | `G14/A4` veya `G15/A13` | widget |
+| **M78** | Rozetin görünür `Text`'i kaldırılır, yalnız `Semantics` kalır | `G15/A11` | widget |
 | **M79** | Dikey düzende `CakismaRozeti` düşürülür | `G15/A9` | widget |
-| **M80** | `overflow: TextOverflow.ellipsis` kaldırılır | **`a11y_statik_tasma_test.dart`** (mevcut kapı) — §1.2 ayrımının kanıtı | statik |
-| **M81** | `G13_TOLERANS = 0.5` → `100.0` | `M74` ile **birlikte** koşulur: gevşek tolerans `A1`'i **körleştirir** ⇒ bu mutant kapının **kendi eşiğini** kilitler | widget |
-| **M82** | `Checkbox` dikey düzende `SizedBox(width: 24)` içine alınır | `G15/A10` (48dp) | widget |
-| **M83** | `gorev_satiri.dart`'taki `TextPainter` `dispose()` satırı silinir | `G14/A8` (statik tarama) | statik |
-| **CM1** | Cihazda `320dp` genişlik + sistem yazı tipi ölçeği **2.0×** (`adb shell settings put system font_scale 2.0`), `DurumVitrini` bileşik satırı ⇒ **PNG**: rozet metni **tam** görünür | görsel kanıt | cihaz |
-| **CM2** | Aynı cihazda `font_scale 1.0` ⇒ **PNG**: düzen **yatay** (dönüşün koşullu olduğunun kanıtı) | görsel kanıt | cihaz |
-| **CM3** | Cihazda dikey düzende `CakismaRozeti`'ne dokunulur ⇒ çözüm sayfası açılır (48dp hedef **gerçekten** dokunulabilir) | etkileşim kanıtı | cihaz |
+| **M80** | `overflow: TextOverflow.ellipsis` kaldırılır | **`a11y_statik_tasma_test.dart`** (§1.3 ayrımı) | statik |
+| **M82** | `Checkbox` dikeyde `SizedBox(width: 24)` içine alınır | `G15/A10` | widget |
+| **M83** | `TextPainter` `dispose()` satırı silinir | `G14/A8` | statik |
+| **M84** | 🔴 `maxLines: MAX_SATIR` **kaldırılır** (v3'ün hâli) | **`G13/A1`** (varyant A: tek satır + kırpma) **ve** `G13/A3` | widget |
+| **M85** | `MAX_SATIR = 1` yapılır | `G13/A1` | widget |
+| **M86** | Görünür dizge tam metne geri döndürülür (*"Çevrimdışısınız…"*) | **`G13/A1`** (6 satır > `MAX_SATIR` 3 ⇒ kırpma) | widget |
+| **M87** | `ExcludeSemantics` kaldırılır | **`G15/A13`** (çift okuma) | widget |
+| **CM1** | Cihazda `320dp` + `font_scale 2.0`, bileşik satır ⇒ **PNG**: rozet metni tam görünür | görsel | cihaz |
+| **CM2** | Aynı cihazda `font_scale 1.0` ⇒ **PNG**: düzen yatay | görsel | cihaz |
+| **CM3** | Dikey düzende `CakismaRozeti`'ne dokunulur ⇒ çözüm sayfası açılır | etkileşim | cihaz |
 
-> 🔴 **`font_scale` ayarı test SONUNDA `1.0`'a GERİ ALINIR** — bırakılan sistem ayarı sonraki dilimin
-> ölçümünü sessizce bozar (bu projede *"bayat ortam"* sınıfı üç kez ısırdı).
+> 🔴 **`font_scale` test SONUNDA `1.0`'a GERİ ALINIR** ve geri alındığı **ölçülür**
+> (`adb shell settings get system font_scale`). Bırakılan ayar sonraki dilimin ölçümünü sessizce bozar.
+> 🔴 **v3'ün `M81`'i (tolerans gevşetme) DÜŞTÜ** — `G13_TOLERANS` kaldırıldı, ısırtacak eşik yok.
 
 ## 6b. MUTANT BORCU
 
-**YOK — bu spec'te mutantsız kural bırakılmadı.** İlk taslakta iki borç yazılıydı; **ölçüm ikisini de
-gereksiz kıldı:** ① `G14/A8` (`TextPainter.dispose`) *"sızıntı raporlaması deterministik değil"* diye
-borçlanmıştı — ayak **statik kaynak taramasına** çevrildi ve `M83` ile deterministik hâle geldi;
-② `G13/A3` (`CakismaRozeti` metin taşımaz) bir **kapsam beyanıydı**, kapı ayağı değil ⇒ §8/S8'e taşındı.
-🔴 **Ölçülmüş ders:** ilk taslak bu bölümü **tablo** olarak yazmıştı; `spec-kapi-kapsama.py` yalnız
-`- KURAL: <ad> | GEREKCE: <...>` **satır biçimini** okur ⇒ borç beyanı **hiç ayrıştırılmadı** ve araç
-sessizce *"borç yok"* saydı. Bu **K81'in aynı sınıfı** (aracın kabul etmediği belge biçimi) ve kusur
-spec'i yazan eldedir. Bugün borç olmadığı için zarar doğmadı; **borç yazılacak olsaydı sessizce kaybolurdu.**
-
-## 7. KABUL KRİTERLERİ (sırayla; her biri **ölçüm çıktısıyla** kanıtlanır)
-
-1. `cd src/client && flutter analyze --fatal-infos` ⇒ **0** sorun.
-2. `flutter test` ⇒ **mevcut 171 test BOZULMAZ** + `G13`/`G14`/`G15` yeşil. Toplam sayı **çıktıdan okunur**,
-   ezberden yazılmaz (`sayi-tazeligi.py` bu sınıfı ölçüyor).
-3. `M74`–`M82` **tek tek** uygulanır, ilgili kapının **ısırdığı** ölçülür, mutasyon **geri alınır**.
-   Her mutant için `KANIT/A7/06-MUTANT/M<n>.txt` → mutasyon farkı + **başarısız test çıktısı**.
-4. `M80` koşulurken **`a11y_statik_tasma_test.dart`** ısırmalı (mevcut kapı) — §1.2 ayrımının kanıtı.
-5. **Ortam** §3'e göre builder tarafından kaldırılır; `adb devices` çıktısı `KANIT/A7/00-ortam.txt`.
-6. `CM1`–`CM3` PNG/çıktıları `KANIT/A7/07-CIHAZ/`. **`font_scale` geri alındığı ölçülür** (`adb shell
-   settings get system font_scale` ⇒ `1.0`).
-7. `python araclar\spec-kapi-kapsama.py GOREV_CLAUDE_CODE\GOREV-A7-rozet-tasma.md` ⇒ **kapsama tam**
-   (borçlar §6b'de gerekçeli). 🔴 Araç **dizin kabul etmez** — **spec dosyasının yoluyla** çağrılır (K81).
-8. `python araclar\design-token-kapisi.py .` ⇒ `D0`–`D6` **yeşil**; **yeni token eklenmediği** ölçülür (K46).
-9. `python araclar\iddia-kapisi.py .` ⇒ bu spec'in beyan ettiği her mutantın **ham kanıtı** `KANIT/A7/`
-   altında bulunur. 🔴 **Bilinen yanlış‑pozitif:** araç ikili dosyaları metin gibi tarıyor (`BORCLAR.md`)
-   ⇒ PNG'lerden **hayalet kanıt** üretebilir; bu **beklenen** ve raporda **ayrıca beyan edilir**.
-10. Kapanışta `DURUM.md` §3 ve `DESIGN.md` A‑7 satırı **ölçülen** sonuca göre güncellenir. `DESIGN.md`
-    değişikliği **K46 kapsamındadır** ⇒ **Onur'un ayrı kilidi olmadan `DESIGN.md`'ye tek bayt YAZILMAZ**;
-    yazılamıyorsa A‑7 *"kapandı"* **denmez**, `BORCLAR.md`'de **ölçüldü/kapanmadı** olarak durur.
+**YOK.** Her kapı ayağının en az bir mutantı var. *(Biçim notu: bu bölüm okunacaksa
+`spec-kapi-kapsama.py` yalnız `- KURAL: <ad> | GEREKCE: <...>` **satır biçimini** ayrıştırır — tablo
+yazmak borcu sessizce görünmez kılar; v3'te bu olmuştu, K81'in aynı sınıfı.)*
 
 ---
 
-## 8. BEYAN EDİLMİŞ SINIRLAR (gizlenmiş sınır kabul edilmez — §4/K40)
+## 7. KABUL KRİTERLERİ
 
-- **S1 · `G13` yalnız rozet alt ağacını ölçer.** Başlık `Text`'i **kapsam dışıdır** (§2 gerekçesi).
-  Uzun başlık 2.0×'te hâlâ kırpılır ve bu **kabul edilmiştir**.
-- **S2 · `RenderParagraph.getMaxIntrinsicWidth` bir Flutter render API'sidir.** Sürüm yükseltmesinde
-  davranışı değişebilir; kapı o zaman **kırılır ve bu görünür olur** (sessizleşmez). Alternatif ayak
-  (`didExceedMaxLines`) `maxLines` zorunluluğu getirdiği için **reddedildi** (Onur'un kilidi).
-- **S3 · Widget testi cihazın yazı tipini kullanmaz.** `flutter_test` varsayılan test fontu (Ahem benzeri)
-  taşır ⇒ intrinsic genişlikler **cihazdakiyle birebir aynı değildir**. Bu yüzden `CM1`/`CM2` **cihazda**
-  ölçülür; `G13` **eşiğin doğru tarafta** olduğunu, cihaz mutantı **gerçek görünümü** kanıtlar. İkisi
-  birbirinin yerine geçmez.
-- **S4 · `320/360/411dp` kümesi bir ÖRNEKLEMDİR**, tüm cihaz genişliklerinin kanıtı değildir. 411dp
-  yaygın bir Android genişliği, 320dp pratik alt sınır olarak seçildi; **ara değerler ölçülmedi.**
-- **S5 · Web `[DOĞRULANMADI]`** (§2). `textScaler` ve font çözümü web'de farklı olabilir (`DESIGN.md` A‑5).
-- **S6 · `content-desc` çift okuma bu dilimde ÇÖZÜLMEZ** ve `G15/A11` onu **maskeleyebilir**: A11Y‑6 için
-  *"görünür metin korunuyor"* derken, aynı metnin `Semantics(label:)`'da **ikinci kez** bulunduğunu
-  ölçmez. Borç `BORCLAR.md`'de **açık**.
-- **S7 · `baslikAsgari = MOlcu.dokunmaHedefi * 2` (96dp) bir TASARIM SEÇİMİDİR**, ölçülmüş bir eşik
-  değildir. Mevcut token'ın katı olarak yazıldı çünkü K46 yeni token yasağı yürürlükte. Eşiğin *doğru*
-  değeri `CM1`/`CM2` PNG'leriyle **sınanır**; yanlışsa düzeltme **Onur'un kilidini** ister.
+1. `flutter analyze --fatal-infos` ⇒ **0**.
+2. `flutter test` ⇒ mevcut testler + `G13`/`G14`/`G15` yeşil. **Toplam sayı ÇIKTIDAN okunur.**
+   🔴 F6 dizgeleri değiştiği için `find.text` kullanan mevcut testlerin bir kısmı **kırılacaktır** —
+   bunlar **görünür kısa metne** göre düzeltilir; `Semantics` etiketini sınayan testler **değişmez**.
+3. **Üç dosya EŞZAMANLI güncellenir**: `metinler.dart` · `araclar/fixture/metinler-kilit.json` ·
+   `a11y_kapisi_test.dart`'ın gömülü `_fixtureGorunur` haritası. Biri unutulursa F6 kapısı ısırır —
+   **bu ısırma beklenen davranıştır ve kapının çalıştığının kanıtıdır.**
+4. `M74`–`M87` tek tek uygulanır, ilgili kapının **ısırdığı** ölçülür, mutasyon **geri alınır**
+   ⇒ `KANIT/A7/06-MUTANT/M<n>.txt` (mutasyon farkı + **başarısız test çıktısı**).
+5. `CM1`–`CM3` ⇒ `KANIT/A7/07-CIHAZ/`; `font_scale` geri alındığı **ölçülür**.
+6. `python araclar\spec-kapi-kapsama.py GOREV_CLAUDE_CODE\GOREV-A7-rozet-tasma.md` ⇒ **EXIT 0**
+   🔴 **dizin verme** — araç `.` ile `Permission denied` verir (K81).
+7. `python araclar\design-token-kapisi.py .` ⇒ `D0`–`D6` yeşil, **yeni token eklenmediği** ölçülür (K46).
+8. `KANIT/A7/00-OLCUM-kor-kapi.txt` ve `01-DENETIM.md` **korunur** — silinmez, üzerine yazılmaz.
+9. Kapanışta `DESIGN.md` A‑7 satırı güncellenecekse: **K46 gereği Onur'un ayrı kilidi olmadan
+   `DESIGN.md`'ye tek bayt YAZILMAZ.** Yazılamıyorsa A‑7 *"kapandı"* **denmez**, `BORCLAR.md`'de
+   **"ölçüldü/kapanmadı"** olarak durur.
+
+---
+
+## 8. BEYAN EDİLMİŞ SINIRLAR
+
+- **S1 · `G13` yalnız rozet alt ağacını ölçer.** Başlık kırpılması kabul edilir.
+- **S2 · `RenderParagraph.didExceedMaxLines` ve `getMaxIntrinsicWidth` Flutter render API'leridir.**
+  Ortam **ölçüldü**: Flutter 3.44.6 · Dart 3.12.2, ikisi de çalışıyor (`01-DENETIM.md` §3).
+  Sürüm yükseltmesinde kırılabilir; kırılırsa **görünür** olur, sessizleşmez.
+- **S3 · Widget testi cihaz fontunu kullanmaz.** Tüm px değerleri `flutter_test` fontuyla ölçüldü;
+  cihazda **farklı çıkar**. `MAX_SATIR = 3`'ün 1 satırlık emniyet payı bu belirsizlik içindir.
+  Gerçek görünüm `CM1`/`CM2` ile ölçülür; ikisi birbirinin yerine geçmez.
+- **S4 · `320/360/411dp` bir ÖRNEKLEMDİR**, tüm genişliklerin kanıtı değil. Ara değerler ölçülmedi.
+- **S5 · Web `[DOĞRULANMADI]`** — `textScaler` ve font çözümü web'de farklı olabilir (`DESIGN.md` A‑5).
+- **S6 · `Checkbox`'ın `textScaler` davranışı [DOĞRULANMADI].** `D‑A7‑3` onu sabit 48dp sayıyor;
+  Flutter'da `Checkbox` normalde ölçekten etkilenmez ama bu **koşularak doğrulanmadı**
+  (`01-DENETIM.md` §7). Düşük risk; `CM1` dolaylı doğrular.
+- **S7 · `baslikAsgari = 96dp` bir TASARIM SEÇİMİDİR**, ölçülmüş eşik değil. Mevcut token'ın katı
+  olarak yazıldı çünkü K46 yeni token yasağı yürürlükte.
+- **S8 · `CakismaRozeti` görünür metin taşımaz** (yalnız `Semantics(label:)`) ⇒ `G13` onu ölçmez.
+  Kapsam beyanıdır, kusur değil.
+- **S9 · Kısa dizgeler bir COPY KARARIDIR.** Ölçüm hangi dizgelerin **sığmadığını** söyler, hangi
+  kelimenin **doğru** olduğunu söylemez. Seçilen dört metin Onur'un kilidini taşır; değişirse
+  ölçüm (§4/D‑A7‑1 tablosu) **yeniden koşulur**, ezberden güncellenmez.
 
 ---
 
@@ -325,15 +316,16 @@ spec'i yazan eldedir. Bugün borç olmadığı için zarar doğmadı; **borç ya
 
 ```
 KANIT/A7/
-  00-ortam.txt          adb devices + (varsa) docker ps + netstat ÖLÇÜMÜ
-  00-OLCUM-kor-kapi.txt Cowork'un §1.1.1 olcumu (kor kapi kaniti) -- builder BU DOSYAYI SILMEZ
-  01-analyze.txt        flutter analyze --fatal-infos
-  02-test.txt           flutter test (toplam sayı ÇIKTIDAN)
-  05-KAPI/              G13 / G14 / G15 koşum çıktıları
-  06-MUTANT/            M74..M82 — mutasyon farkı + BAŞARISIZ test çıktısı
-  07-CIHAZ/             CM1..CM3 PNG + adb font_scale get/put kayıtları
-  09-HUKUM.md           madde madde PASS/FAIL + net karar
+  00-OLCUM-kor-kapi.txt   Cowork'un kor kapi olcumu (KORUNUR)
+  01-DENETIM.md           Claude Code'un bagimsiz denetimi, BLOKER (KORUNUR)
+  02-COZUM-OLCUM.txt      Cowork'un alti varyant + dizge olcumu (KORUNUR)
+  00-ortam.txt            adb devices + (varsa) docker ps + netstat OLCUMU
+  01-analyze.txt          flutter analyze --fatal-infos
+  02-test.txt             flutter test (toplam sayi CIKTIDAN)
+  05-KAPI/                G13 / G14 / G15 kosum ciktilari
+  06-MUTANT/              M74..M87 — mutasyon farki + BASARISIZ test ciktisi
+  07-CIHAZ/               CM1..CM3 PNG + font_scale get/put kayitlari
+  09-HUKUM.md             madde madde PASS/FAIL + net karar
 ```
 
-🔴 **Büyük ham çıktı dosyası (>200 KB) KANIT'a YAZILMAZ** — kesit + `sha256` yeterlidir
-(`BORCLAR.md`: 1,9 MB ve 2 MB'lık iki dosya portfolyo yükü olarak kayıtlı).
+🔴 **>200 KB ham çıktı KANIT'a YAZILMAZ** — kesit + `sha256` yeterlidir.

@@ -47,18 +47,33 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **OTURUM 39 KİLİTLERİ — K83 (Onur, 30 Tem 2026):** ① radar KIRMIZI ⇒ şık **(4) DURDUR** · ② §8 ⇒ **`BORCLAR.md`** · ③ ürün kodu dilimi **A‑7** (rozet metin taşması + 2.0× ölçek; `content-desc` çift okuma **HARİÇ**).
-🔒 **K84 — `GOREV_CLAUDE_CODE/GOREV-A7-rozet-tasma.md` YAZILDI** (22.818 b). Onur üç tasarım şıkkını kilitledi: ölçüm ayağı **`RenderParagraph` intrinsic genişliği** · ürün çözümü **dar alanda dikey dönüş** · doktrin çelişkisi **spec'te ayrılır, iki kapı da kalır**. `spec-kapi-kapsama.py` ⇒ **EXIT 0** (`KAPI 3` / `MUTANT 11`, mutant borcu **YOK**).
-🔴 **KÖR KAPI KOŞARAK ÖLÇÜLDÜ** (`KANIT/A7/00-OLCUM-kor-kapi.txt`): `a11y_kapisi_test.dart:274` metnin ayrılan alanın **~10,6 katını** istediği ağaçta `takeException()` ⇒ **`null`**. Rozet metninin **%90'ından fazlası görünmüyor** ve mevcut kapı **hiçbir şey söylemiyor**. Ölçüm 2 (600dp/1.0×) istenen = ayrılan **birebir** ⇒ yeni ölçüm ayağı **yanlış‑pozitif üretmiyor**.
+🔒 **OTURUM 39 KİLİTLERİ — K83 (Onur, 30 Tem):** radar **DURDUR** · §8 ⇒ **`BORCLAR.md`** · ürün dilimi **A‑7**.
+🔒 **K84 — `GOREV-A7` spec'i yazıldı.** 🔴 **K85 — BAĞIMSIZ DENETİM (K26) BLOKER BULDU ve spec v4'e revize edildi.**
 
-🔴 **SIRADAKİ İŞ — SIRAYLA:**
-1. **BAĞIMSIZ DENETİM (K26).** Spec'i Cowork yazdı ⇒ **kendi denetçisini spawn EDEMEZ**. Denetim **ayrı elden** gelir; sonra **red-team EN SON**, sonra **KİLİT**.
-2. **CLAUDE CODE BUILD.** Ortamı **builder kaldırır** (K80): emülatör → `flutter run`; canlı veri seçilirse docker + backend + **`ASPNETCORE_ENVIRONMENT=Development`** (K61 ⇒ yoksa 401). **Sabit `sleep` ölçüm değildir.**
-3. **`G13`/`G14`/`G15` kapı numaraları REZERVE** — başka dilim bu numaraları kullanmaz.
+**Ne oldu (üç ölçüm, hepsi Cowork'ün aleyhine):** ① Claude Code (ayrı el) ölçtü: v3'ün tek çözümü olan
+dikey dönüş **72 kombinasyonun 61'inde kırpmayı kapatmıyor** — Cowork **sorunu ölçüp çözümün
+yeterliliğini hesaplamamıştı** (yeni sınıf: *"çözümün yeterliliği ölçülmedi"*). ② Cowork doğruladı **ve
+ikinci kusuru buldu:** `intrinsic` ölçüm ayağı **sarmayı kırpma sanıyor** (her varyantta 1102,5) ⇒ her
+sarma çözümünü yanlış‑pozitifle reddederdi. ③ Doktrin çelişkisi **gerçekmiş** — eksik halka `maxLines`.
+④ Aritmetik: `3×3×4×2 = 72`, spec "96" diyordu.
 
-🔴 **R8 ISIRDI VE YAPISALDIR.** Radar: *"son 2 oturumda (oturum [38, 39]) tek satır ÜRÜN kodu girmedi"*. `urun_kodu_satiri` tanımı gereği (K55) **spec/araç/belge SAYILMAZ**; Cowork'ün rolü spec yazmaktır ⇒ **Cowork oturumu R8'i kendi başına ASLA kapatamaz.** Sayaç **yalnız Claude Code'un build commit'iyle** düşer. Radar'ın *"yapısal kalıcı kırmızı"* sınıfının **ikinci vakası** — borç `BORCLAR.md`'de.
+🔒 **v4 KİLİTLERİ (Onur):** ölçüm ayağı **`didExceedMaxLines`** (tolerans kaldırıldı) · ürün çözümü
+**kısa görünür dizge + `maxLines` + tam metin `Semantics`'te**. Dizgeler **ölçülerek** seçildi
+(≤2 satır @2.0×): "Bu cihazda" · "Gönderiliyor" · "Çevrimdışı" · "Gönderilmedi".
+🔴 **`content-desc` çift okuma borcu, kısa dizge kararının zorunlu sonucu olarak KAPSAMA GİRDİ**
+(`ExcludeSemantics`, `G15/A13`, `M87`) — hariç tutulan borç, bir sonraki kararın yan etkisinden korunmaz.
 
-🟡 **Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR** (K80 + K82-b) — §2 adım 7 ve 9. **Push Onur'dadır.**
+**Spec:** `GOREV_CLAUDE_CODE/GOREV-A7-rozet-tasma.md` **v4 · 21.126 b · `9DFC21A5`**
+(v3 `2975E2DB` **GEÇERSİZ**) · `spec-kapi-kapsama.py` **EXIT 0** (`KAPI 3` / `MUTANT 14`, borç yok).
+**Kanıt:** `KANIT/A7/00-OLCUM-kor-kapi.txt` · `01-DENETIM.md` · `02-COZUM-OLCUM.txt` — **üçü de korunur.**
+
+🔴 **SIRADAKİ İŞ: CLAUDE CODE BUILD.** v4 denetimden geçti mi? **Denetim v3'e yapıldı**; v4 iki kilidi
+de o denetimin bulgusundan doğdu ⇒ **K53/1 ikinci tur açmaz**, build başlar. Ortamı **builder kaldırır**
+(K80, §3). Build sırasında yeni bloker çıkarsa **durur ve Onur'a döner**.
+🔴 **R8 SAYACI DÜŞMEDİ** — bu oturumda ürün kodu yazılmadı (denetim bloker verdi). Sayaç **yalnız
+Claude Code'un build commit'iyle** düşer (K55).
+
+🟡 **Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR** (K80 + K82-b) — §2 adım 7 ve 9.
 
 ---
 
