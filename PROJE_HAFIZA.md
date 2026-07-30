@@ -113,6 +113,20 @@
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
 
+## K87 — 30 Tem 2026, oturum 40 · **A‑7 BUILD K26 İLE BAĞIMSIZ DOĞRULANDI (COWORK)** · üç Onur kararı · BORCLAR budandı
+
+**Ölçen:** Cowork, Code'un beyanına güvenmeden (K26). `C:\dev\Momentum` · `main`. Kanıt: `KANIT/A7/` + kök `HUKUM.md` (Cowork şerhi).
+
+**1. A‑7 BUILD — her iddia ölçüldü, aşırı-iddia YOK.** `flutter analyze --fatal-infos` 0/EXIT 0 · `flutter test` **266/266**/EXIT 0 (ikisi de YENİDEN koşuldu) · kapı dosya-başı **G13 76 · G14 7 · G15 11 = 94** (172+94=266) · `spec-kapi-kapsama` EXIT 0 (KAPI 3/MUTANT 14) · **14/14 mutant** EXIT 1/ISIRDI/REVERT-OK; iki ön-mutasyon sha (`e9dbb328` gorev_satiri, `d75b5ddb` senkron_rozeti) CANLI dosyalarla birebir · **M85 bağımsız yeniden koşuldu** (temiz→`maxSatir=1`→ISIRDI +37−39→geri alma→bayt-özdeş) · cihaz uiautomator content-desc **tek-okuma** + PNG kırpmasız/Türkçe sağlam · `09-HUKUM.md` 9 kriter = **8 PASS + 1 ŞARTLI** (kriter 7 devralınmış D2). Hüküm kendi kapsam-dışı/kozmetik hatalarını beyan ediyor.
+
+**2. Üç Onur kararı.** (a) **_fixtureRozetKisa → şık (a) onaylandı**: kısa görünür dizge kümesi 13 tam dizgeden semantik olarak ayrı; yeni test (`rozet kisa gorunur (3) birebir`) unutmayı ısırtıyor; (b) kilitli slice-3b spec'i (`F0C3A75A`) değiştirmeyi ister → YAPILMADI; kod zaten (a). (b) **Sayı çelişkisi → `uretilen=2` DOĞRU, değişmedi**: radar'da `uretilen`=o tur yüzeye çıkan yeni kusur (D5 sürekli-0'ı ısırır) = 2 majör yeni sınıf (kör-mutant + çağrılmayan-kapı), devralınmışı içermez; 0 (A‑7 kendi-kod D2) ve 6 (BORCLAR madde) AYRI metrik → kategori hatası, gerçek çelişki değil; `PROJE_RADAR.jsonl` satırı değişmedi. (c) **Bayat DIZIN → kök neden ÖLÇÜLDÜ**: `hafiza-dizin.py` BASLIK regex'i yalnız `## CHECKPOINT/DEVİR` yakalar; `## K<n> —` (K80/K81/K83–K87) görülmez; kopyada re-run bayt-özdeş (`DADC42AF`) ⇒ faydasız; **kör araç** → **2a Code'a devredildi (K34-f)**.
+
+**3. BORCLAR.md budandı (K40, Onur).** belge-tavan T2 SARI'ydı (15.823/16.384, pay 561). Üç kapanmış/kabul-edilmiş kalem çıkarıldı: ① 🟢 tek-kopya S10 beyan-sınır (M2b'de yaşar) ② 🟡 M2b tersi ölçümü (çözülmüş gözlem) ③ `cmd /v:on` M4 iddiası (çürütülmüş). **15.823→15.204 b, pay +1.180, belge-tavan YEŞİL (ölçüldü).**
+
+**4. Code'a devir (K34-f) + push.** 2a: `hafiza-dizin.py` regex+K60 onarımı. 4a: `g12_sinyal_kapisi_test.dart:157/:357` iki D2. Kriter-7 kırmızısı ve DIZIN, 2a/4a bitene dek açık. **PUSH ONUR'DA** (bu commit dahil).
+
+---
+
 ## K86 — 30 Tem 2026, oturum 40 · **A‑7 BUILD BİTTİ VE CİHAZDA DOĞRULANDI** · v4'ün iki kilidi tuttu · kriter 7 şartlı PASS · K21'in KAPSAMI beyan edildi
 
 **Ölçülen:** `C:\dev\Momentum` · `main` · HEAD `d8dc60d` (build `bb9e1aa`, oturum başı `4fa3203`)
