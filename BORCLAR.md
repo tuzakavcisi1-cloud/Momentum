@@ -38,13 +38,12 @@
   Ekran okuyucuda kayıp YOK, kayıp **görsel**. Yer tutucu — K42‑d adım 3 değiştirecek.
 
 - 🔴 **ÇAĞRILMAYAN KAPI SINIFI [ÖLÇÜLDÜ, oturum 39 — YENİ SINIF].** `sayi-tazeligi.py` bir kapıydı, altın kümesi
-  16/16 geçiyordu, **ama açılış protokolünde YOKTU.** Oturum 39 açılışında elle koşuldu ve **KIRMIZI** verdi:
-  `DURUM.md` iki yerde `oturum-sagligi.py 25/25` diyordu, araç fiilen **26** vaka taşıyor. Kör kapı değil —
-  **çağrılmayan kapı**; sonucu aynı: ölçüm var, hüküm görülmüyor. `sayi-tazeligi.py` §2'ye **EKLENDİ**, ama
-  **sınıf kapanmadı:** `design-token-kapisi.py` (18/18, `DESIGN.md` ↔ Dart token sözleşmesi — **canlı** bir kapı),
-  `iddia-kapisi.py` ve `hafiza-dizin.py` de açılışta **çağrılmıyor**. Hangi kapının hangi olayda (açılış /
-  checkpoint / dilim kapanışı) koşacağını **hiçbir yer beyan etmiyor** ⇒ protokol elin hafızasına bağlı.
-  Onarım bir *araç* değil, bir **kapı-tetik tablosu**; kapsam kararı **Onur'da**.
+  16/16 geçiyordu, **ama açılış protokolünde YOKTU** ⇒ ölçüm var, hüküm görülmüyor (`DURUM.md` iki yerde
+  `oturum-sagligi.py 25/25` diyordu, gerçek **26**). 🟢 **K89'DA MEKANİKLEŞTİ [oturum 42]:** `KAPILAR.md`
+  her kapının **olay + ortam** eşlemesini tek yerde beyan ediyor. 🔴 **SINIF KAPANMADI:** ① tabloyu **zorlayan
+  bir kapı yok** (`kapi-tetik-kapisi.py`, sınıf tabloya rağmen ısırdığında yazılır) ② `design-token-kapisi.py`,
+  `iddia-kapisi.py`, `hafiza-dizin.py` hâlâ §2'nin **numaralı listesinde değil** — tablo bunu **beyan ediyor,
+  düzeltmiyor**.
 
 ### Araç / kapı
 
@@ -77,16 +76,23 @@
   *"çağrılmayan kapı"* sınıfının kardeşi: **ölçülmeyen kapsam, ölçülmeyen kapıdır.** Bu oturumda kapsamın fiilen
   ısırdığı **dört diskte-koşan mutantla** kanıtlandı (`T1` tavan+1 b · `T2` pay 684 b · gerçek boyut sessiz ·
   `T0` dosya yok) — ama bu **tek seferlik el kanıtıdır**, kümede yaşamıyor. Onarım **ayrı ele (K34-f)**.
+  🔴 **OTURUM 42'DE AYNEN TEKRARLANDI:** kapsama `KAPILAR.md` eklendi ve altın küme yine **9/9** kaldı;
+  eklemenin ısırdığı yalnız **el ile** ölçüldü (`KAPILAR.md`'siz bir kökte `T0` SARI ⇒ `_SILINECEKLER\_t0-kanit-ots42`).
 - 🟡 **`BORCLAR.md` `tek-kopya-kapisi.py` KAPSAMINDA DEĞİL [oturum 39].** Yeni bir **canlı** belge doğdu ve
   regresyon kapısı (`S0`–`S10`) onu izlemiyor ⇒ bu dosya sessizce 0 bayta düşse kapı **susar**. Eklemek aracın
   §9'da **donmuş** sha'sını (`66AC9CA3`) bozar ve `11/11` mutantı yeniden koşturmayı gerektirir — bu yüzden
   `oturum-sagligi.py` ve `GOREV-slice-3e-G12.md` ile **aynı beyanlı-kilit** sepetinde: kilit **beyanla** yaşıyor.
+  🔴 **`KAPILAR.md` DE AYNI SEPETE GİRDİ [oturum 42, K89]** — sepette artık **dört** kalem var; `belge-tavan`
+  onu ölçüyor ama **regresyonunu ölçen yok**. Sepet büyüdükçe *"kaç canlı belge kapısız?"* sorusu ucuzlamıyor.
 
 - 🔴 **`design-token-kapisi.py` AÇILIŞ PROTOKOLÜNDE ÇAĞRILMIYOR — "ÇAĞRILMAYAN KAPI" SINIFI
-  AYNI OTURUMDA İKİNCİ KEZ ISIRDI [K86].** Sınıf oturum 39'da adlandırıldı, `sayi-tazeligi.py`
-  §2'ye eklendi, bu kapı **borç olarak bırakıldı** ve borç aynı oturumda ısırdı: HEAD'de
-  KIRMIZI olduğu hâlde `DURUM.md` §3 "G1–G12 YEŞİL" diyordu. **Kapı-tetik tablosu** kararı
-  Onur'da; `iddia-kapisi.py` ve `hafiza-dizin.py` de çağrılmıyor.
+  AYNI OTURUMDA İKİNCİ KEZ ISIRDI [K86].** HEAD'de KIRMIZI olduğu hâlde `DURUM.md` §3
+  "G1–G12 YEŞİL" diyordu. K89'da `KAPILAR.md` bu kapının tetiğini **beyan etti**
+  (*açılış-nöbetçi*) ama §2'nin **numaralı listesine eklenmedi** — ekleme kararı Onur'da.
+- 🔴 **İKİ ÖLÇÜM GERİLEMESİ — AYNI TURDA KAPANDI, SINIF AÇIK [K89-DÜZELTME, oturum 42].**
+  ① `oturum-sagligi.py` kimlik bloğunu *"dosya"+"kimlik"* geçen **İLK** satırdan bulur; K89'un
+  `dosya-kimlik` sözcüğü çapayı **çaldı** ② `_SILINECEKLER` altındaki kanıt **kopyaları** `DESIGN.md`
+  adını çoğalttı (araç **FS'i** yürür, git'i değil). İkisi de onarıldı; **varsayımları ölçen kapı YOK**.
 - 🟡 **`oturum-sagligi.py` KAPSAMINI BEYAN ETMİYOR [K86].** `--transcript` ne verilirse ölçer,
   "bu el benim işim değil" demez. K21'in kapsamı `CLAUDE.md`'ye yazıldı; **aracın** kapsam
   ayağı yok ⇒ onarım ayrı ele (K34‑f).
@@ -109,8 +115,8 @@
 - 🔴 **DEFTERDE `D2` BOŞLUĞU BİLEREK AÇIK BIRAKILDI [oturum 37].** `uzak_degisiklik_uygulayici.dart` defterde tur 1 (oturum 34) ve tur 3 (oturum 35) taşıyor, **tur 2 YOK**. Geriye dönük kayıt uydurmak `bulgu/kapatilan/uretilen` alanlarına **sahte sıfır** yazmak olurdu ⇒ ölçüm aracını kasten körleştirmek. Boşluk **beyan edildi**, `D2` SARI kalıyor.
 - 🟡 **`_start_api.cmd` `ASPNETCORE_ENVIRONMENT` SET ETMİYOR [oturum 37, ÖLÇÜLMEDİ].** `Program.cs` `IsDevelopment()` ile `DevCurrentUser` açıyor (K61), aksi hâlde `NullCurrentUser` ⇒ 401. `dotnet run --no-launch-profile`'ın ortamı Development'a düşürüp düşürmediği **ölçülmedi**; oturum 37'de değişken **elle** set edilerek koşuldu ve `/v1/tasks` başlıksız **401** / başlıklı **200** ölçüldü.
 
-- 🔴 **`_start_api.cmd` KANIT DİYE GÖSTERİLİYOR AMA VERSİYON KONTROLÜNDE DEĞİL [ölçüldü, oturum 38].** `CLAUDE.md` K80, `KANIT/slice-3d/09-MUTANT/_start_api.cmd`'yi *"Claude Code ortamı zaten kaldırabiliyor"*un kanıtı sayıyor; dosya `git status`'ta **`??`**. Temiz bir klonda doktrinin gösterdiği kanıt **YOK**. Ya commit'lenir ya atıf düzeltilir — repo değişikliği, karar **Onur'da**.
-- 🟡 **İZLENMEYEN DOSYA SAYISI: 77 [yeniden ölçüldü, oturum 39 — oturum 38'de 92'ydi].** `KANIT/R9/_tmp_*` · `KANIT/slice-3d/09-MUTANT/_tmp_*` · `KANIT/slice-3c/02-G2/` · `src/client/test/_debug_join_test.dart` + `_tmp_sqlite_version_test.dart`. 🔴 **`.gitignore` deseni ÖNERİLMEDİ**, gerekçesi ölçüldü: `_` önekli bazı dosyalar doktrinin **kanıtıdır** (üstteki madde) — geniş desen kanıtı gizler. İki ölü test dosyası **`void main() {}`** ⇒ **0 test bildiriyor**, `171/171` bozulmamış: *şüphe ölçümle ÇÜRÜTÜLDÜ*. Silme **Onur'da** (sandbox silemiyor).
+- 🔴 **`_start_api.cmd` KANIT DİYE GÖSTERİLİYOR AMA VERSİYON KONTROLÜNDE DEĞİL [ölçüldü, oturum 38].** `CLAUDE.md` K80 `KANIT/slice-3d/09-MUTANT/_start_api.cmd`'yi kanıt sayıyor; dosya `git status`'ta **`??`** ⇒ temiz klonda kanıt **YOK**. Ya commit'lenir ya atıf düzeltilir — karar **Onur'da**. 🔴 **İKİNCİ VAKA [ölçüldü, oturum 42]:** bu dosyanın kendisi *"…`HUKUM.md`'ye şerh düşüldü"* diyor; kök `HUKUM.md` de `git status`'ta **`??`**. Onur oturum 42'de **karar vermemeyi** seçti ⇒ sınıf **iki vakayla, beyan edilmiş sınır** olarak durur.
+- 🟡 **İZLENMEYEN DOSYA: 78 [oturum 42; 39'da 77, 38'de 92 — fark kök `HUKUM.md`].** `KANIT/**/_tmp_*` · `KANIT/slice-3c/02-G2/` · iki `src/client/test/_*`. 🔴 **`.gitignore` deseni ÖNERİLMEDİ:** `_` önekli bazı dosyalar doktrinin **kanıtıdır** (üstteki madde), geniş desen onları gizler. İki ölü test `void main() {}` ⇒ 0 test (şüphe **ölçümle çürütüldü**). Silme **Onur'da**.
 - 🔴 **RADAR YAPISAL OLARAK KALICI KIRMIZI [ölçüldü, oturum 38].** `radar.py`'de defter kaydını **park/kapatma mekanizması YOK** (`urun_kodu_haric` yalnız ürün-kodu sayımına ait). `docs/ADR/0003` (9 tur) ve `GOREV-slice-3b-spec` (7 tur) kayıtları **asla iyileşemez** ⇒ hüküm her açılışta KIRMIZI, dört-şık ritüeli her oturum aynı cevabı üretir. **Sürekli yanan alarm kör kapıya dönüşür.** Onarım `radar.py`'de ⇒ K57-b bayt-özdeşliğini bozar ⇒ **üst akış plugin'i + AYRI EL (K34-f)**. 🔒 **K83 (Onur, 29 Tem 2026):** bu KIRMIZI'ya karşı şık **(4) DURDUR** kilitlendi — kâğıt artefaktlar park, oturum görünen çıktıya geçti. **Borç KAPANMADI:** kilit ritüeli kısaltır, alarmı söndürmez.
 - 🟡 **`iddia-kapisi.py` HAYALET KANIT SINIFI İKİNCİ KEZ ISIRDI [K78].** `KANIT/slice-3e-iskelet`'te tabloda **sıfır** mutant varken **altı** hayalet buldu (`M111, M6, M7, M8, M8p, M9`) — kaynak 2 MB'lık `pub-lisans-kapisi.txt` + PNG/sqlite baytları. Aynı dizindeki o 2 MB'lık dosya ayrıca portfolyo yüküdür.
 

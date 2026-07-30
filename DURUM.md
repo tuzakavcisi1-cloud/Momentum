@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı şu an **hiçbir kapı zorlamıyor** (beyan edilmiş zayıf kontrol, ilk ısırışta araç yazılır).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 30 Tem 2026, **oturum 39 açılışı** — §8 `BORCLAR.md`ye ayrıldı (K83), `oturum-sagligi.py`nin altın küme sayısı **ölçülerek** düzeltildi, §2ye `sayi-tazeligi.py` eklendi. *(Oturum 38 açılışında yapılan iş — §8in `G12`/`K81` sonrası budanması — arşivdedir.)*
+> **Son güncelleme:** 30 Tem 2026, **oturum 42** — `KAPILAR.md` doğdu (**K89**, kapı-tetik tablosu; §2 referansla bağlar), §3 docker beyanı K80 gereği **ölçüme** çevrildi, §6 envanteri **18 → 20** satır, §2/7ye `fetch` ve §2/9a `adb` tam yolu eklendi. *(Oturum 39–41de yapılan iş arşivdedir.)*
 
 ---
 
@@ -22,10 +22,12 @@
 4. `python araclar\sayi-tazeligi.py .` 🔴 **[oturum 39'da EKLENDİ — ölçülmüş gerekçe]** Bu kapı protokolde **YOKTU** ve elle koşulduğunda **KIRMIZI** verdi: `oturum-sagligi.py` için **bayat** bir altın-küme sayısı yazılıydı, ölçülen gerçek **26**. **Çağrılmayan kapı, kör kapı kadar kördür.** Sınıfın kalanı `BORCLAR.md`'de açık.
 5. `python araclar\oturum-sagligi.py --altin-kume` (**26/26**, EXIT 0) → `python araclar\oturum-sagligi.py .`
 6. `python araclar\radar.py --altin-kume` (EXIT 0) → `python araclar\radar.py .` — **KIRMIZI ise yeni tur YASAK**; dört şık Onur'a sunulur, **varsayılan DEVRET**. *(30 Tem 2026'dan beri yürürlükteki kilit: **K83 / DURDUR** — §4.)*
-7. `git --no-optional-locks log --oneline -1` + `rev-list --left-right --count origin/main...HEAD` + `status --porcelain` + `Test-Path .git\index.lock`. 🔴 **Son commit ve push durumu hiçbir belgeye YAZILMAZ, burada ÖLÇÜLÜR (K82-b).**
+7. **ÖNCE** `git --no-optional-locks fetch origin`, sonra `log --oneline -1` + `rev-list --left-right --count origin/main...HEAD` + `status --porcelain` + `Test-Path .git\index.lock`. 🔴 **Son commit ve push durumu hiçbir belgeye YAZILMAZ, burada ÖLÇÜLÜR (K82-b).** 🔴 **`fetch` ATLANIRSA "0 geri" BİR ÖLÇÜM DEĞİL, BAYAT BİR YEREL REFERANSTIR [oturum 42'de ölçüldü: `.git\FETCH_HEAD` **29 Tem 17:01** yazıyordu ⇒ karşılaştırılan `origin/main` ~24 saat bayattı].**
 8. **Oturum sağlığını KENDİ oturum-id'nle ÖLÇ.** Cowork'te transcript **BULUTTADIR** (`/root/.claude/projects/*/<oturum-id>.jsonl`) ⇒ araç **bulutta** `--transcript` ile koşulur. Windows'taki koşum `S4`'ü **OLCULMEDI** der ve **bu yeşil DEĞİLDİR**.
-9. **Ortamı ÖLÇ** (K80): `docker ps` · `netstat -ano | findstr :5298` · `adb devices`. 🔴 Sonuç **hiçbir belgeye yazılmaz** — beyan bayatlar, ölçüm bayatlamaz.
+9. **Ortamı ÖLÇ** (K80): `docker ps` · `netstat -ano | findstr :5298` · **`adb`**. 🔴 **`adb` PATH'TE YOK [oturum 42'de ölçüldü] ⇒ TAM YOLLA çağrılır:** `C:\Users\gulci\AppData\Local\Android\Sdk\platform-tools\adb.exe devices`. K86'nın *"`flutter` bu makinede `.bat`"* dersinin aynısı: **çözülemeyen ad, sessizce atlanan adımdır.** 🔴 Sonuç **hiçbir belgeye yazılmaz** — beyan bayatlar, ölçüm bayatlamaz.
 10. §4'teki **SIRADAKİ İŞ**'ten devam et.
+
+> 🔴 **Hangi kapı HANGİ OLAYDA ve HANGİ ORTAMDA koşar: `KAPILAR.md` (kapı-tetik tablosu, K89).** Açılışta **okunmaz**; sıra burada, eşleme orada. *Beyan edilmiş zayıf kontrol: tabloyu zorlayan bir kapı henüz yok.*
 
 ---
 
@@ -34,13 +36,13 @@
 | alan | durum |
 |---|---|
 | **Backend** | ✅ slice-1 → 3e (3e'de **tek bayt yazılmadı**, ayak 2b2'de bitmişti). `araclar\verify.ps1` ⇒ build **0 uyarı/0 hata** · **test 120/120** · CVE 0 · EXIT 0. |
-| **Veritabanı** | ✅ Docker 29.6.1, `momentum-postgres` Up (healthy) |
+| **Veritabanı** | PostgreSQL / Docker; konteyner adı **`momentum-postgres`**. 🔴 **ÇALIŞMA DURUMU BURAYA YAZILMAZ — §2 adım 9'da ÖLÇÜLÜR (K80).** *(Oturum 42: bu hücre `✅ … Up (healthy)` diyordu; ölçüm `docker ps -a` ⇒ **`Exited (255)`** çıktı. K80'i doğuran bayat-PID vakasının ikinci kopyasıydı.)* |
 | **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Cowork'ün kendi koşumu (session 37, K81): `analyze --fatal-infos` **0** · `flutter test` **171/171** · kapılar `G1`–`G12`; 🟢 `design-token-kapisi.py` **EXIT 0** (iki devralınmış `D2` 4a ile kapandı — K88) · `M1`–`M73` mutantların hepsi ısırdı.
 🟢 **A‑7 KAPANDI (ölçüldü):** `G13`/`G14`/`G15` yeşil · `flutter test` **266/266** · `M74`–`M87` **14/14 ısırdı** · `CM1`–`CM3` cihazda geçti · `content-desc` çift okuma **cihazda kapandı**. 🔴 `DESIGN.md`'de kapanmadı (K46). |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
 | **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`) — aynı iki artefakt (`docs/ADR/0003`, `GOREV-slice-3b-spec`). 🔒 **K83 — Onur şık (4) DURDUR'u kilitledi (30 Tem 2026):** park yürürlükte, dört-şık ritüeli **tekrarlanmadı** (talimat gereği). **R8 SUSTU** — bu oturumda **197 satır ürün kodu** ölçülerek yazıldı (K86), sayaç bu commit'le **düştü** (K55). |
-| **Git** | **PUSH DAİMA ONUR'DA.** İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR**: `git --no-optional-locks rev-list --left-right --count origin/main...HEAD` |
+| **Git** | **PUSH DAİMA ONUR'DA.** İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR** — komut ve **`fetch` şartı yalnız §2 adım 7'de**; buraya **kopyalanmaz** (kanonik-kopya kusuru bu projede beş kez ısırdı). |
 
 **Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · .NET 9.0.316 · **Windows masaüstü ☠** · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
 
@@ -48,8 +50,8 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **K88 — 4a+2a KAPANDI (Code, K34-f) ve Cowork'ce doğrulandı (K26).** Kriter 7 artık **tam PASS** (design-token EXIT 0); DIZIN onarıldı (K80–K88 indekste, 107 kayıt). B (`hafiza-dizin.py` KILIT-sonek çakışması) KAPANDI (`e538846`, Cowork doğruladı: K83-DÜZELTME tam · altın küme 13/13).
-🔴 **SIRADAKİ İŞ Onur'un kararı:** ① **kapı-tetik tablosu** — hangi kapı hangi olayda koşar (`çağrılmayan kapı` sınıfı) · ② çakışma çözüm sayfası kırpması (aynı sınıf, başka bileşen) · ③ `DESIGN.md` A-7 satırının açılması (K46 kilidi).
+🔒 **K89 — ① KAPI-TETİK TABLOSU YAZILDI (oturum 42; Onur şık **B**'yi kilitledi).** Tablo **`KAPILAR.md`**'de (açılışta okunmaz, §2 referansla bağlar); `belge-tavan-kapisi.py` **kapsamına eklendi** ve kapsamın gerçekten **ısırdığı** T0 ile ölçüldü (dosya yokken SARI, `_SILINECEKLER\_t0-kanit-ots42`). Aynı turda dört bayat/eksik satır düzeltildi: §3 docker beyanı (K80 ihlali, ölçümle çürütüldü) · §6 envanteri (2 eksik araç) · §2 adım 7 (`fetch`) · §2 adım 9 (`adb` tam yolu).
+🔴 **SIRADAKİ İŞ Onur'un kararı:** ② çakışma çözüm sayfası kırpması (`cakisma_rozeti.dart` `_CakismaCozumSayfasi`: `ellipsis` var, `maxLines` YOK — A-7'nin aynı sınıfı; K42-d adım 3) · ③ `DESIGN.md` A-7 satırının açılması (K46 kilidi, ayrı onay) · ④ **PUSH** (Onur'da).
 🟡 Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR (§2 adım 7 ve 9).
 
 ---
@@ -100,8 +102,12 @@
 | `mcp-arac-probe.py` | MCP'nin **gerçek** araç listesi (`tools/list`) | — |
 | `pub-surum-olc.py` | pub.dev `/api` sürüm + advisory | — |
 | `lisans-yokla.py` | lisansın hangi uçta olduğunu ölçer | — |
+| `yoklama-yasagi-kapisi.py` | slice-3e `G12/T5`: **yoklama yasağı** (K68) + sinyal protokolü statik kapısı `Y1`–`Y4`; `Y3`'ün mutantı **yok** (beyan edilmiş borç) | **15/15** |
+| `web-varlik-indir.py` | Drift web ikililerini indirir, sha256'yı `web-varlik.sha256` **pinine** karşı ölçer (TOFU; sürüm karşılaştırması YAPMAZ) | **4/4** |
 | `adr-kapi-taramasi.py` | ADR 0003 kapısı (**dondurulmuş**, dokunma) | — |
 | `verify.ps1` | backend build+test+CVE zinciri | — |
+
+🔴 **ENVANTER OTURUM 42'DE SAYILDI: `araclar\` altında 20 dosya (19 `.py` + `verify.ps1`), tablo 20 satır.** Bu iki satır önceki envanterde **YOKTU** ve `yoklama-yasagi-kapisi.py` §5'te atıf alan **canlı bir kapıydı** — *envanterde olmayan kapı tetiklenemez*; `KAPILAR.md`'nin varlık sebebi budur.
 
 ---
 
