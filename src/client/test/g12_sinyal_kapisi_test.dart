@@ -154,7 +154,7 @@ void main() {
 
       // "planlanir" -- bir sonraki negotiate cagrisi gercekten gelir (tier0 ~1sn).
       final oncekiSayi = o.negotiateCagriSayisi;
-      await Future<void>.delayed(const Duration(milliseconds: 1400));
+      await Future<void>.delayed(const Duration(milliseconds: 1400)); // [DESIGN-LITERAL: SignalR tier0 yeniden-baglanma test zamanlamasi (~1sn), tasarim tokeni degil]
       expect(o.negotiateCagriSayisi, greaterThan(oncekiSayi));
       await o.sinyal.durdur();
     });
@@ -354,7 +354,7 @@ void main() {
 
       final oncekiSayi = o.negotiateCagriSayisi;
       // sunucu bir sey gonderse bile (kanal zaten kapali) yeni deneme OLMAZ.
-      await Future<void>.delayed(const Duration(milliseconds: 1500));
+      await Future<void>.delayed(const Duration(milliseconds: 1500)); // [DESIGN-LITERAL: kanal kapali dogrulama bekleme suresi (test zamanlamasi), tasarim tokeni degil]
       expect(o.negotiateCagriSayisi, oncekiSayi); // yeniden baglanma DENENMEDI.
 
       // ikinci durdur() PATLAMAZ (idempotent).
