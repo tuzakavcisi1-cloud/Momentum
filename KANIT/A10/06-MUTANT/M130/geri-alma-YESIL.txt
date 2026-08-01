@@ -1,0 +1,2 @@
+﻿=== G18/d (geri alma sonrasi) -- usesCleartextTraffic (0 eslesme BEKLENIR) [DUZELTILMIS KOMUT] ===
+EXIT=1

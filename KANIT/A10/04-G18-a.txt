@@ -1,0 +1,3 @@
+﻿--- G18/a (debug networkSecurityConfig, VAR olmali) ---
+        android:networkSecurityConfig="@xml/network_security_config" >
+EXIT=0

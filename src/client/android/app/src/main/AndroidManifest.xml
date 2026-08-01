@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- GOREV-A10 Y1: SenkronDongusu/HttpSenkronAgi'nin senkron sunucusuna
+         ulasabilmesi icin gerekli. debug/profile manifestleri ayni izni
+         BIREBIR AYNI OZNITELIKLERLE tasidigindan manifest merger tek
+         elemana indirger, uyari uretmez. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="client"
         android:name="${applicationName}"

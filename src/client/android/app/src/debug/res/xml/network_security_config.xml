@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A10 Y2: yalniz DEBUG kaynak kumesinde yasar. targetSdk >= 28 platform
+  katmaninda cleartext'i varsayilan KAPALI yapar; _senkronSunucuUrl duz HTTP
+  (http://10.0.2.2:5298) konustugu icin debug/profile derlemesinde acikca
+  izin verilir. release BU DOSYAYI HIC GORMEZ (main/ referans tasimaz).
+  BEYAN EDILMIS SINIR (spec SS0/SS8-1): dart:io HttpClient Android'in Java
+  ag yiginini kullanmaz; bu bayragin Dart isteklerine gercekten uygulanip
+  uygulanmadigi bu depoda OLCULMEDI.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

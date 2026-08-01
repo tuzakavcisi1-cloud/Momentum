@@ -9,6 +9,7 @@ import 'ag/signalr_json_sinyal.dart';
 import 'design/tema.dart';
 import 'sunum/gorev_listesi_ekrani.dart';
 import 'veri/ayarlar_deposu.dart';
+import 'veri/ayarlari_hazirla.dart';
 import 'veri/gorev_deposu.dart';
 import 'veri/hlc.dart';
 import 'veri/senkron_dongusu.dart';
@@ -23,6 +24,11 @@ const String _senkronSunucuUrl = String.fromEnvironment(
   'SENKRON_SUNUCU_URL',
   defaultValue: 'http://10.0.2.2:5298',
 );
+
+/// GOREV-A10 Y3: derleme-zamani `DEV_USER_ID` ezmesi -- iki cihazi ayni
+/// kullanici yapmanin yolu (bugune kadar `devUserId` her kurulumda
+/// rastgeleydi). Uygulamasi ayarlari_hazirla.dart'taki fonksiyona devredilir.
+const String devUserIdEzmesi = String.fromEnvironment('DEV_USER_ID');
 
 void main() async {
   // F7: flutter_driver bayrak korumali -- agac sarsimi bunu surum
@@ -87,7 +93,7 @@ class _UretimKurulumu {
 Future<_UretimKurulumu> _uretimKurulumOlustur() async {
   final db = Veritabani();
   final ayarlarDeposu = AyarlarDeposu(db, idUret: uretimIdUret);
-  final ayarlar = await ayarlarDeposu.yukleVeyaOlustur();
+  final ayarlar = await ayarlariHazirla(db, ayarlarDeposu, ezme: devUserIdEzmesi);
   final hlc = HlcUretici(
     simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
     clientId: ayarlar.clientId,
@@ -119,7 +125,7 @@ Future<_UretimKurulumu> _uretimKurulumOlustur() async {
 
   // GOREV-slice-3e T3: gercek zamanli sinyal -- K77/5 dogrudan esleme, EK
   // debounce/zamanlayici/kuyruk YOK. `_senkronSunucuUrl`den YENIDEN turetilir,
-  // ikinci bir `String.fromEnvironment` EKLENMEZ.
+  // SENKRON_SUNUCU_URL icin IKINCI bir derleme-zamani ortam okumasi EKLENMEZ.
   final sinyal = SignalrJsonSinyal(
     sunucuTabanUrl: _senkronSunucuUrl,
     actorId: ayarlar.devUserId,

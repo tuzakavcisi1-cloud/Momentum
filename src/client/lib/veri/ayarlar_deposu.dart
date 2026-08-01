@@ -111,10 +111,14 @@ class AyarlarDeposu {
     );
   }
 
-  /// slice-3d D7/4 (Ö4, SINIR): uretimde CAGRILMAZ -- `G1`'in kullanici-
-  /// degisimi ayagini OLCULEBILIR kilmak icin genel API'de duran bir yol
-  /// (bugun kullanici degistiren bir akis yok). Yalniz `devUserId` yazar,
-  /// imlece DOKUNMAZ.
+  /// GOREV-A10 Y3: artik `ayarlariHazirla()`'nin (d) adiminda CAGRILIYOR --
+  /// GUID bicimli `DEV_USER_ID` derleme-zamani ezmesi mevcut `devUserId`'den
+  /// FARKLIYSA, AYNI transaction icinde `gorevler` + `senkron_kuyrugu` da
+  /// silinir (Onur kilidi, spec A10 SS3/d): aksi halde eski kullanicinin
+  /// bekleyen op'lari yeni kimlikle sunucuya itilir. Bu fonksiyon yalniz
+  /// `devUserId` yazar, imlece DOKUNMAZ -- imlec + `uzak_alan_durumu`
+  /// sifirlamasi `ayarlariHazirla()`'nin (e) adiminda `yukleVeyaOlustur()`'u
+  /// YENIDEN cagirarak MEVCUT D7/4 mekanizmasina devredilir.
   Future<void> devUserIdDegistir(String yeni) async {
     await (_db.update(_db.ayarlar)..where((t) => t.id.equals(1))).write(
       AyarlarCompanion(devUserId: Value(yeni)),
