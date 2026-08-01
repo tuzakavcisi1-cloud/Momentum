@@ -37,10 +37,10 @@
 |---|---|
 | **Backend** | ✅ slice-1 → 3e (3e'de **tek bayt yazılmadı**, ayak 2b2'de bitmişti). `araclar\verify.ps1` ⇒ build **0 uyarı/0 hata** · **test 120/120** · CVE 0 · EXIT 0. |
 | **Veritabanı** | PostgreSQL / Docker; konteyner adı **`momentum-postgres`**. 🔴 **ÇALIŞMA DURUMU BURAYA YAZILMAZ — §2 adım 9'da ÖLÇÜLÜR (K80).** *(Oturum 42: bu hücre `✅ … Up (healthy)` diyordu; ölçüm `docker ps -a` ⇒ **`Exited (255)`** çıktı. K80'i doğuran bayat-PID vakasının ikinci kopyasıydı.)* |
-| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 + A7/A8/A9 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Kapılar **`G1`–`G16`** + `design-token-kapisi.py` + `iddia-kapisi.py` **1.2.0**. Ölçülen mutantlar: **`M1`–`M108`** (dilim dilim) + A9b'nin **14** kanıtı; 🔴 **`M119` ISIRMIYOR** — `D5` kör kapı borcu (§4). Son koşumlar **Cowork'ün kendisi** (K26): `flutter test` **476/476** · `G16` **208** (A9 kabulü) · `analyze --fatal-infos` **0** (K81 koşumu). 🔴 A‑7 `DESIGN.md`'de kapanmadı (K46). Tur tur anlatım **arşivde** (K73). |
+| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 + A7/A8/A9 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Kapılar **`G1`–`G16`** + `design-token-kapisi.py` + `iddia-kapisi.py` **1.2.0**. Ölçülen mutantlar: **`M1`–`M108`** (dilim dilim) + A9b'nin **14** kanıtı; 🔴 **`M119` ISIRMIYOR** — `D5` kör kapı borcu (§4). Son koşumlar **Cowork'ün kendisi** (K26): `flutter test` **481/481** (A10 ile 476→481) · `analyze --fatal-infos` **0** · **release APK derlendi** (bu depoda ilk kez, K106). 🔴 A‑7 `DESIGN.md`'de kapanmadı (K46). Tur tur anlatım **arşivde** (K73). |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
-| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR.** *(1 Ağu 2026'da ısırdı: bu satır "aynı iki artefakt" diyordu, ölçüm **11 kırmızı artefakt** verdi — ikisi oturum 42'nin kendi ürettiği R3'tür. Sayı yazan satır bayatlar, ölçüme atan satır bayatlamaz: K82-b'nin radar hâli.)* 🔒 **K83 — Onur şık (4) DURDUR'u kilitledi (30 Tem 2026):** park yürürlükte, dört-şık ritüeli **tekrarlanmadı** (talimat gereği). **R8 SUSTU** — bu oturumda **197 satır ürün kodu** ölçülerek yazıldı (K86), sayaç bu commit'le **düştü** (K55). |
+| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR** *(bu satır bir kez "aynı iki artefakt" dedi, ölçüm **11** verdi: sayı yazan satır bayatlar, ölçüme atan bayatlamaz — K82-b)*. 🔒 **K83 — Onur DURDUR'u kilitledi:** park yürürlükte, dört-şık ritüeli **tekrarlanmaz**. 🔴 **`R8` DURUMU DA YAZILMAZ, ÖLÇÜLÜR:** K104'te **ısırdı** (44–45 sıfır), K106'da **düştü**; sayı daima `--olc-urun-kodu <sha>` ile **git'ten** türetilir (K55). |
 | **Git** | **PUSH DAİMA ONUR'DA.** İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR** — komut ve **`fetch` şartı yalnız §2 adım 7'de**; buraya **kopyalanmaz** (kanonik-kopya kusuru bu projede beş kez ısırdı). |
 
 **Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · .NET 9.0.316 · **Windows masaüstü ☠** · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
@@ -49,32 +49,28 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **K89–K100 — KAPANDI (oturum 42–44).** `KAPILAR.md` doğdu · `GOREV-A8` v2 · `GOREV-A9` v3 · **`GOREV-A9b` v2**
-(**30.046 b · `AF624471`**) kilitlendi · K97'de **K34-f ÖLÇÜLDÜ** (`iddia-kapisi.py`'yi Cowork yazdı ⇒ onaran el
-Claude Code) · 🟢 **`A9` KABUL ve KAPANDI** (K100, 1 Ağu 2026; Cowork builder'ın çıktılarını **okumadan** ölçtü —
-K26; `araclar/iddia-kapisi.py` altın küme **26/26**, A9/A8/A7 üçü de EXIT 0, 14 mutant kanıtı). Tam anlatım **arşivde** (K73 doktrini).
+🔒 **K89–K100 KAPANDI (oturum 42–44):** `KAPILAR.md` · `GOREV-A8` v2 · `GOREV-A9` v3 · `GOREV-A9b` v2
+(**30.046 b · `AF624471`**) · **A9 KABUL**. Anlatım **arşivde** (K73).
 
-🔴 **`R8` SERT DURAK ISIRDI (K104, bu açılışta).** Oturum 44–45'te **sıfır** ürün kodu; bağımsız doğrulama
-`radar.py . --olc-urun-kodu HEAD~3` ⇒ **`urun_kodu_satiri = 0`**. Radarın **kendi** tanımı `araclar/`'ı
-**ürün dışı** sayar (`VARSAYILAN_URUN_HARIC`) ⇒ **`GOREV-A9c` (araç onarımı) bu durağı DÜŞÜRMEZ**; sıraya
-alındı (v3 **19.497 b · `D88312F6`**, Onur kilidi bekliyor). Sert durak, oturumun **ürün koduyla** başlamasını
-zorladı — K53/4'ün ilk gerçek uygulaması.
-🔒 **`GOREV-A10` v2 KİLİTLENDİ (K105 · Onur, 1 Ağu 2026) — 26.126 b · `8AD6CA10`, §9'da.** Ürün kodu turu: INTERNET izni
-`src/main`'e · **debug-only** `network_security_config.xml` · `DEV_USER_ID` ezmesi. **Tek** denetim turu **iki
-mercekle** koştu (**20 ayrık bulgu / 7 bloker**; *"mimariyi değiştiren bloker YOK"* ⇒ K53/1 ikinci tur
-**AÇILMADI**). Kapı **`G17`–`G21`**, mutant **`M125`–`M135`**, koşan-derleme mutantı **3/3 tavan dolu**.
-🔒 Onur kilitledi: ① GUID olmayan ezme ⇒ `ArgumentError` (ölçüldü: backend `Guid.TryParse` ⇒ **401**)
-② ezme uygulanınca `gorevler` + `senkron_kuyrugu` **da** sıfırlanır (ölçüldü: D7/4 yalnız imleç + `uzak_alan_durumu`).
-🟡 `D5` kör kapı borcu, A9b hassaslaştırma denetimi ve `vaka 20b` notu: gerekçeler **arşivde** (K100 · K102 · K104).
+🟢 **`GOREV-A10` KABUL EDİLDİ (K106) — `R8` DÜŞTÜ.** `R8` sert durağı bu oturumun açılışında ısırdı (oturum 44–45
+**sıfır** ürün kodu) ve oturumu **ürün koduyla** başlamaya zorladı — K53/4'ün ilk gerçek uygulaması. `GOREV-A9c`
+bir **araç** onarımı olduğu için durağı düşürmüyordu (radar `araclar/`'ı ürün dışı sayar) ⇒ **sıraya alındı**
+(v3 **19.497 b · `D88312F6`**, Onur kilidi bekliyor). Spec **26.126 b · `8AD6CA10`** kilitlendi (K105, §9);
+build **Cowork'ün kendi ölçümüyle** kabul edildi (K26, beyana güvenilmedi): `--olc-urun-kodu 23116d0` ⇒ **80
+satır** · analyze **0** · **test 481/481** · **temiz release derlemesi** EXIT 0 · `aapt2` **37.0.0** ile APK'da
+**INTERNET var** · release birleştirilmiş manifestinde `networkSecurityConfig` **YOK** (pozitif kontrollü) ·
+kapsam sızması **yok** · 11 mutantın **44** kanıt dosyası. Kapılar **`G17`–`G21`**, mutantlar **`M125`–`M135`**.
+🔴 **YENİ BORÇ — `.gitignore` KAYNAK KÜMESİ YUTUYOR:** satır 22 `[Dd]ebug/` **ve** satır 23 `[Rr]elease/`,
+`android/app/src/<debug|release>/` altındaki **her yeni dosyayı sessizce** yok sayıyor (`git check-ignore -v` ile
+ölçüldü; A10'un iki dosyası `add -f` ile girdi). **Onur kilidi bekliyor** — desenler `bin/`+`obj/`'ye çapalanmalı.
+🟡 `D5` kör kapı, A9b hassaslaştırma ve `vaka 20b`: gerekçeler **arşivde** (K100 · K102 · K104 · K106).
 
-🟢 **① `.NET 10` GEÇİŞİ — ADIM 1–5 KAPANDI (oturum 45, K102).** `global.json` **78 b** (`9.0.316` +
-`rollForward: latestPatch`) yazıldı, SDK **10.0.302** kuruldu (Onur) ve **pin ISIRIYOR**: repo içinde
-`dotnet --version` **9.0.316**, repo dışında **10.0.302**, `--list-sdks` **iki satır**. `verify.ps1` **üç kez**
-koştu (pin sonrası ×2 + SDK 10 sonrası ×1), **üçü de EXIT 0**: 0 uyarı/0 hata · **120/120** · CVE 0.
+🟢 **① `.NET 10` ADIM 1–5 KAPANDI (K102).** `global.json` pini **ISIRIYOR** (repo içi 9.0.316 / dışı 10.0.302);
+`verify.ps1` üç kez EXIT 0. Ayrıntı **arşivde**.
 🔴 **KALAN ADIM 6 — geçiş spec'i:** `global.json` → **10.0.302** · `TargetFramework` → **net10.0** ·
 paketler 10.x. Ölçülen tek ciddi risk **`Mediator` 3.0.2** (source generator, kararlı .NET 10 sürümü
 yok); `Npgsql` EF sağlayıcı **10.0.3** hazır. .NET 9 **STS** desteği **10 Kasım 2026**'da biter.
-**② A10** — spec **v2 HAZIR** (yukarıda). 🔴 *"Geliştirme modunda `devUserId` alanı"* ifadesi **DARALTILDI**:
+**② A10 ✅ KAPANDI (K106).** 🔴 *"Geliştirme modunda `devUserId` alanı"* ifadesi **DARALTILDI**:
 çalışma-zamanı UI alanı **değil**, derleme-zamanı `--dart-define` ezmesi (A10 §8/5) — kullanıcı değiştirmek
 **yeniden derleme + kurulum** ister → **③ gerçek cihazda uçtan uca senkron kanıtı** (en büyük ölçülmemiş iddia;
 kendi ortam maddesini **taşıyacak**, K80: `pm clear` + `ASPNETCORE_ENVIRONMENT` + dış arayüzde dinleme)
@@ -160,6 +156,7 @@ migration **7 dosya / 1.390 satır** (sıfırdan) + `Testcontainers.PostgreSql` 
 - 🔴 **`python` stdout bu makinede cp1254** — `⇒` gibi bir karakter yazdıran betik `UnicodeEncodeError` ile **kabuğu öldürüyor** (ölçüldü: PowerShell süreci komut ortasında düştü). Zorunlu: `sys.stdout.reconfigure(encoding="utf-8", errors="replace")`. Kusur **stdout**'ta, dosyada değil.
 - **`device_stage_files` BAYAT KOPYA sunabiliyor** (oturum 28; 30'da tekrarlanmadı) ⇒ stage'lenenin **sha'sını karşılaştır**; tutmuyorsa `read_file` kullan.
 - 🔴 **YOL SAF ASCII KALMAK ZORUNDA [K56].** Türkçe karakter dört zinciri kırdı (`build_runner`, `flutter analyze`, AGP, `.ps1`). Boşluk suçsuz, junction çözmez. Ayrıntı: `KANIT/slice-3b/ORTAM-YOL-KISITI.txt`.
+- 🔴 **`findstr` AYNI DOSYADA bir dizgeyi bulup diğerini KAÇIRABİLİYOR [ölçüldü, oturum 46].** `.gitignore`'da `"Dd"` ve `"bin"` **bulundu**, *aynı satırlardaki* `"ebug"` ve `"npm"` **bulunamadı**; dosyanın **bayt-özdeş kopyası** başka adla arandığında ikisi de bulundu (dosya UTF-8, LF, BOM'suz — Python ile ölçüldü). Ayrıca `/s` **çıplak dizin** yolu (wildcard'sız) verilirse **sessizce 0** döner. ⇒ **`findstr` ile YOKLUK ölçen her ayak, AYNI dosyada bir VARLIK pozitif kontrolü koşmak ZORUNDADIR** (A10 `G18/b` · `G18/d` · `G21/b` bu oturumda böyle doğrulandı).
 - **Git Bash/MSYS, `cmd /c`'deki `/c`'yi POSIX yol sanıp `C:/` diye YENİDEN YAZIYOR** ⇒ ham `cmd /c` içeren komutlar **PowerShell'den** koşulur.
 - **Başka bir el çalışırken `git add -A` YASAK** — commit'lenmemiş işini kör alır (ölçüldü: `dee6dbc`). Yol belirterek `git add <yol>` yap.
 - **`flutter test --platform chrome` bu ortamda SONUÇ ÜRETMİYOR** (iki ölçüm: 7 dk ve 9,8 dk) ⇒ web test ayağı `[DOĞRULANMADI]`.
