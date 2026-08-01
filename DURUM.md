@@ -52,11 +52,35 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **K89 · K90 · K91 — KAPANDI (oturum 42).** `KAPILAR.md` doğdu (kapı-tetik tablosu) · `GOREV-A8` v2 kilitlendi · A8 build'i **kabul edildi** (Cowork'ün kendi koşumuyla, K26). Tam anlatım **arşivde** — K73 doktrini: kapanan iş §4'te tek satıra iner.
-🔒 **K92 — SIRADAKİ İŞ KİLİTLENDİ (1 Ağu 2026, oturum 43; Onur ⑤'i işaretledi):** ⑤ `_CakismaCozumSayfasi` (A8'in beyanlı hariciydi; K42-d adım 3) · ③ `DESIGN.md` A‑7/A‑8 satırlarının açılması (K46 kilidi, ayrı onay) · ⑥ `.gitignore` / ölü `_*` test husk'ları (silme Onur'da) 🔴 **④ PUSH LİSTEDEN DÜŞTÜ** — 1 Ağu 2026 açılışında `fetch` sonrası `origin/main...HEAD` **0/0** ölçüldü; bu satır bir daha push durumu **taşımaz** (K82-b).
-🔒 **K93 — `GOREV-A9` v3 KİLİTLENDİ (1 Ağu 2026, oturum 43).** ⑤'in spec'i: `GOREV_CLAUDE_CODE\GOREV-A9-cakisma-cozum-metin-kaybi.md`. Bir (1) bağımsız denetim turu **üç mercekle** koştu (Flutter tekniği · ölçülebilirlik · doktrin) ⇒ **15 bloker + 22 major**; v2 yazıldı; bir **kapanış doğrulaması** iki ağır bulgu daha üretti ⇒ v3. **K53/1 gereği kâğıt turu KAPANDI, kalan belirsizlik BUILD'e devredildi.** 🔴 **Ölçülmüş düzeltme:** ⑤'in *"K42-d adım 3"* etiketi **BAYATTIR** — §3 slice-3b→3e + R9/R10'un BİTTİĞİNİ kaydediyor, yani K42-d'nin 3. ve 4. adımı tamamlandı ve **SS2'yi getirmedi**; SS2'nin **sahibi yoktur** (A9 §8/S10).
-🔒 **K94 — `A9` ÜRÜN+KAPI KABUL, DİLİM KAPANMADI (1 Ağu 2026).** 13/14 kriter Cowork'ün **kendi koşumuyla** yeşil; **kriter 12 (`iddia-kapisi.py`) KIRMIZI ve AÇIK**. Kapı **5 bulgu üretti, beşi de yanlış-pozitif, gerçek bulgu 0** (2×`I1` deyim/tarihsel cümle · 3×`I3` başka testlerin kimlikleri). Onur **şık (b)**'yi kilitledi: **araç onarılır** — `I3` eşlemesi **dosya adından** yapılır (hayalet sınıfı ölür), `I1`'e **`iddia-muafiyet.json`** (satır-sha anahtarlı, gerekçeli, gürültülü, ≤3 tavanlı). Onaran el **Cowork** (K34-f). 🔴 **A9 ancak kapı GERÇEKTEN yeşil olunca kapanır** — kırmızı beyanla yutulmaz.
-🔒 **K95 — YOL HARİTASI KİLİTLERİ (Onur, 1 Ağu 2026).** ① **Repo public** ⇒ iOS CI maliyeti **0**. ② **`SS2` YAPILACAK ama DAR:** tek ekran, yerel↔uzak sürüm yan yana, farklı alanlar vurgulu, **iki buton** (*Benimkini tut* / *Onlarınkini al*); alan-bazlı birleştirme · üç-yollu merge · çakışma geçmişi **KAPSAM DIŞI**. ③ **Kimlik KAPSAM DIŞI** — `ICurrentUser` dikişi + üretimde varsayılan-reddetme + mutant zaten var; sınır **`ADR 0004`** ile beyan edilir (**≤ 8 KB**, tek denetim turu, kod iddiası yok — `ADR 0003`'ün 242 KB / 9 tur / 0 satır kod tuzağına ikinci kez düşülmez). Ölçülmüş ek gerekçe: repo public ⇒ OAuth gizli anahtarı repoya konamaz ⇒ kimlik eklemek projeyi **klonlayıp çalıştırılamaz** hâle getirirdi. ④ **iOS iskelesi + CI, `SS2`'den ÖNCE.**
+🔒 **K89–K93 — KAPANDI (oturum 42–43).** `KAPILAR.md` doğdu (kapı-tetik tablosu) · `GOREV-A8` v2 ve
+`GOREV-A9` v3 kilitlendi, ikisi de build'den kabulle geçti. Tam anlatım **arşivde** (K73 doktrini).
+🔒 **K94 — `A9` ÜRÜN+KAPI KABUL, DİLİM KAPANMADI.** 13/14 kriter Cowork'ün **kendi koşumuyla** yeşil;
+**kriter 12 (`iddia-kapisi.py`) AÇIK**. Kapı 5 bulgu üretti, **beşi de yanlış-pozitif**, gerçek bulgu 0.
+🔴 **A9 ancak kapı GERÇEKTEN yeşil olunca kapanır** — kırmızı beyanla yutulmaz.
+🔒 **K95 — YOL HARİTASI (Onur).** ① repo **public** ⇒ iOS CI maliyeti **0** ② **`SS2` DAR kapsamla
+YAPILACAK** (tek ekran, yerel↔uzak yan yana, iki buton; alan-bazlı merge ve geçmiş KAPSAM DIŞI)
+③ **kimlik KAPSAM DIŞI**, sınır `ADR 0004` ile beyan edilir (**≤ 8 KB**, tek denetim turu, kod iddiası yok)
+④ **iOS iskelesi + CI, `SS2`'den ÖNCE.**
+🔒 **K97 — K34-f ÖLÇÜLDÜ: `iddia-kapisi.py`'yi COWORK YAZDI.** `ebf7f62` commit'i aracı `PROJE_HAFIZA.md`
+(+212 satır) · `DURUM.md` · `PROJE_RADAR.jsonl` ile **birlikte** taşıyor; hafıza yazmak Cowork'ün işidir.
+⇒ **Onaran el CLAUDE CODE.** K94'ün *"commit biçiminden Claude Code yazdı"* çıkarımı **ÇÜRÜDÜ**
+(`sayi-tazeligi.py` ilk commit'i de İngilizce ve o da Cowork ürünü).
+
+🔴 **SIRADAKİ İŞ — K98/K99: `GOREV-A9b` v2 KİLİTLENDİ (Onur, 1 Ağu 2026, oturum 44).**
+Spec: `GOREV_CLAUDE_CODE\GOREV-A9b-iddia-kapisi-onarim.md` — **30.046 b · `AF624471`**.
+Bir denetim turu **iki mercekle** koştu ⇒ **14 bloker + 14 majör**; dördü mimariyi değiştirdi
+(`D0` saf çekirdek ayrımı ve `D7` seviye-duyarlı `_vaka()` bu yüzden doğdu; kriter 2 **yanlışlanamaz**
+olduğu için satır sayımına çevrildi; mevcut altın kümede **boş bir vaka** olduğu ölçüldü).
+**Build CLAUDE CODE'da** ⇒ `iddia-kapisi.py` **1.2.0** + `iddia-muafiyet.json` + altın küme **12 → 26**
++ mutant **M109–M122**; kanıtlar `KANIT\A9b\` altına. Sonra **Cowork 14 kriteri kendi koşumuyla ölçer**
+(K26) ve `iddia-kapisi.py <A9 spec> --kanit KANIT\A9` **EXIT 0** verince **A9 KAPANIR**.
+🔒 **Onur'un iki alt kilidi (1 Ağu 2026):** ① **`I3` SARI kalır** — koruma kabul kriterinde (satır sayımı)
+yaşar, kapının kendi EXIT'inde değil; severity değişimi ayrı doktrin kararıdır ② `I1` muafiyetinin borcu
+**`iddia-muafiyet.json` içinde** kalır, `BORCLAR.md`'ye **yazılmaz** (kanonik-kopya riski + T2 payı).
+🔴 **BEYAN EDİLMİŞ ZAYIF KONTROL:** bu spec `tek-kopya-kapisi.py` kapsamına **EKLENMEDİ** — eklemek o
+aracın kilitli sha'sını bozar ve 11/11 mutantı yeniden koşturur (`GOREV-slice-3e-G12.md` ile **aynı**
+beyanlı-kilit durumu, K79). Kilit **beyanla** yaşıyor; mekanik kapı A9b kabulünde.
+
 🟡 Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR (§2 adım 7 ve 9).
 
 ---
