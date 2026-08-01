@@ -61,20 +61,44 @@ class _CakismaRozetiState extends State<CakismaRozeti> {
 
   void _cozumSayfasiniAc(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const _CakismaCozumSayfasi()),
+      MaterialPageRoute(builder: (_) => const CakismaCozumSayfasi()),
     );
   }
 }
 
-/// Yer tutucu -- gercek cakisma cozumu K42-d adim 3'te gelir (SS2 YOK).
-class _CakismaCozumSayfasi extends StatelessWidget {
-  const _CakismaCozumSayfasi();
+/// GOREV-A9 [K93]: yer tutucu -- gercek cakisma cozumu (SS2) AYRI bir
+/// dilimdir; K42-d'nin dort adimi tamamlandi ve SS2'yi getirmedi -- sahibi
+/// HENUZ YOK (spec SS1/S10, BORCLAR.md'ye Cowork tasir).
+///
+/// GOREV-A9 [K93]: public + `{super.key}` -- iki ZORUNLU gerekce: (1)
+/// `g16_metin_kaybi_kapisi_test.dart` bu sinifi `package:` uzerinden PUBLIC
+/// olarak kurmak zorunda (private sinif test edilemez); (2)
+/// `use_key_in_widget_constructors` linti YALNIZ public siniflarda isirir --
+/// alt cizgi kalsaydi `key` almayan kurucu `--fatal-infos` altinda KIRMIZI
+/// verirdi.
+class CakismaCozumSayfasi extends StatelessWidget {
+  const CakismaCozumSayfasi({super.key});
+
+  /// GOREV-A9 [K93/spec SS4/Y6]: 🔒 SABIT, OLCULMEZ. `AppBar` basligi
+  /// `_kMaxTitleTextScaleFactor = 1.34`'e kelepceli oldugu icin izgaranin
+  /// 1.5x/2.0x ayaklari oraya ULASMAZ; "en kucuk N" kurali uygulansa N=2
+  /// cikar ve 2 satir 64 dp toolbar'da SESSIZCE kesilir (spec SS0/2, SS8/S1).
+  static const int kCakismaBasligiMaxSatir = 1;
+
+  /// GOREV-A9 [K93/spec SS4/Y7]: OLCULDU (KANIT/A9/00-OLCUM.txt, probe) --
+  /// izgaranin DOKUZ noktasinin HEPSINDE didExceedMaxLines==false veren EN
+  /// KUCUK N.
+  static const int kCakismaGovdesiMaxSatir = 6;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(Metinler.duyuruCakismaVar, overflow: TextOverflow.ellipsis),
+        title: const Text(
+          Metinler.duyuruCakismaVar,
+          overflow: TextOverflow.ellipsis,
+          maxLines: kCakismaBasligiMaxSatir,
+        ),
       ),
       body: Center(
         child: Padding(
@@ -84,6 +108,7 @@ class _CakismaCozumSayfasi extends StatelessWidget {
             style: MTipo.govdeM.copyWith(color: MRenk.metin(context)),
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
+            maxLines: kCakismaGovdesiMaxSatir,
           ),
         ),
       ),

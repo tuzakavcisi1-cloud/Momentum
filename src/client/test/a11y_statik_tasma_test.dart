@@ -12,52 +12,105 @@ library;
 // Bu yuzden ZORUNLU olan overflow: TextOverflow.ellipsis'in KENDISIDIR (maxLines
 // bunun YERINE GECMEZ, onunla BIRLIKTE kullanilabilir). dart:io kullanir --
 // @TestOn('vm') PAZARLIKSIZDIR (web'de dart:io yok).
+//
+// GOREV-A9 [K93/spec SS5/G5] -- GENISLETME: R1 (mevcut, degismez) + R2 (YENI:
+// ellipsis tasiyan HER govde maxLines de tasir) + R4 (YENI: pozitif kontrol --
+// tarayicinin bulduğu Text( aday sayisi = 8, arac kendini kanitlar). R3 (govde
+// toplayicinin KENDISI dogru topluyor mu) ayri bir test DEGILDIR -- yalniz
+// mutantlarla (M105/M107) sinanir (spec SS7 kriter 4'un sayi hesabi: yalniz
+// R2+R4 +2 test ekler).
+//
+// ORTAK GOVDE TOPLAYICI (R1/R2/R4 UCU DE KULLANIR, kopyalanmaz -- kanonik-kopya
+// bu projede bes kez isirdi): parantez-derinligi ile Text(/Text.rich( govdesini
+// toplar, YORUMLARI (`//`dan sonrasi) ATAR -- F6 testinin (asagida) yontemiyle
+// AYNI. Pencere 25 satir (mevcut sinir, spec S9 -- DEGISTIRILMEZ).
 
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-void main() {
-  test('lib/sunum ve lib/vitrin altindaki her Text( cagrisi korunakli (overflow/maxLines)', () {
-    final kok = Directory('lib');
-    final dosyalar = <File>[
-      ...Directory('${kok.path}/sunum').listSync(recursive: true).whereType<File>(),
-      ...Directory('${kok.path}/vitrin').listSync(recursive: true).whereType<File>(),
-    ].where((f) => f.path.endsWith('.dart')).toList();
+/// Tek bir `Text(`/`Text.rich(` cagrisi: konum + rapor icin ORIJINAL ilk
+/// satir + kural kontrolu icin YORUMDAN ARINMIS govde.
+class _TextCagrisi {
+  final String dosyaYolu;
+  final int satirNo; // 1-based
+  final String ilkSatirHam; // orijinal (yorumlu) ilk satir, rapor icin
+  final String govde; // yorumdan arinmis govde, kural kontrolu icin
 
+  const _TextCagrisi({
+    required this.dosyaYolu,
+    required this.satirNo,
+    required this.ilkSatirHam,
+    required this.govde,
+  });
+}
+
+List<File> _taranacakDosyalar() {
+  final kok = Directory('lib');
+  return <File>[
+    ...Directory('${kok.path}/sunum').listSync(recursive: true).whereType<File>(),
+    ...Directory('${kok.path}/vitrin').listSync(recursive: true).whereType<File>(),
+  ].where((f) => f.path.endsWith('.dart')).toList();
+}
+
+final RegExp _textCagriDeseni = RegExp(r'\bText(\.rich)?\s*\(');
+
+/// GOREV-A9 [K93]: R1 VE R2'NIN (VE R4'UN) ORTAK govde toplayicisi.
+/// `pencere` parametresi M105/M107'nin sinadigi ayardir (varsayilan 25).
+List<_TextCagrisi> _textCagrilariniTopla(File dosya, {int pencere = 25}) {
+  final satirlarHam = dosya.readAsLinesSync();
+  // Yorumdan arindirilmis satirlar -- INDEX korunur (satir numaralari kaymaz).
+  final satirlarTemiz = satirlarHam.map((s) {
+    final k = s.indexOf('//');
+    return k < 0 ? s : s.substring(0, k);
+  }).toList();
+
+  final sonuc = <_TextCagrisi>[];
+  for (var i = 0; i < satirlarTemiz.length; i++) {
+    if (!_textCagriDeseni.hasMatch(satirlarTemiz[i])) continue;
+    // Text(...) cagrisi genelde birden fazla satira yayilir -- kapanan
+    // parantezi bulana kadar (basit derinlik sayaci ile) govdeyi topla.
+    var derinlik = 0;
+    var basladi = false;
+    final govde = StringBuffer();
+    for (var j = i; j < satirlarTemiz.length && j < i + pencere; j++) {
+      final satir = satirlarTemiz[j];
+      govde.writeln(satir);
+      for (final ch in satir.split('')) {
+        if (ch == '(') {
+          derinlik++;
+          basladi = true;
+        } else if (ch == ')') {
+          derinlik--;
+        }
+      }
+      if (basladi && derinlik <= 0) break;
+    }
+    sonuc.add(
+      _TextCagrisi(
+        dosyaYolu: dosya.path,
+        satirNo: i + 1,
+        ilkSatirHam: satirlarHam[i].trim(),
+        govde: govde.toString(),
+      ),
+    );
+  }
+  return sonuc;
+}
+
+void main() {
+  test('R1: lib/sunum ve lib/vitrin altindaki her Text( cagrisi korunakli (overflow/maxLines)', () {
+    final dosyalar = _taranacakDosyalar();
     expect(dosyalar, isNotEmpty, reason: 'lib/sunum + lib/vitrin taranacak dosya bulunamadi');
 
     final korunmasizlar = <String>[];
-    final textCagrisi = RegExp(r'\bText(\.rich)?\s*\(');
-
     for (final dosya in dosyalar) {
-      final satirlar = dosya.readAsLinesSync();
-      for (var i = 0; i < satirlar.length; i++) {
-        if (!textCagrisi.hasMatch(satirlar[i])) continue;
-        // Text(...) cagrisi genelde birden fazla satira yayilir -- kapanan
-        // parantezi bulana kadar (basit derinlik sayaci ile) govdeyi topla.
-        var derinlik = 0;
-        var basladi = false;
-        final govde = StringBuffer();
-        for (var j = i; j < satirlar.length && j < i + 25; j++) {
-          final satir = satirlar[j];
-          govde.writeln(satir);
-          for (final ch in satir.split('')) {
-            if (ch == '(') {
-              derinlik++;
-              basladi = true;
-            } else if (ch == ')') {
-              derinlik--;
-            }
-          }
-          if (basladi && derinlik <= 0) break;
-        }
-        final metin = govde.toString();
+      for (final cagri in _textCagrilariniTopla(dosya)) {
         // maxLines TEK BASINA YETMEZ (M16): overflow:ellipsis OLMADAN maxLines,
         // Flutter varsayilani TextOverflow.clip'e duser -- SESSIZ kirpma.
-        final korunakli = metin.contains('TextOverflow.ellipsis');
+        final korunakli = cagri.govde.contains('TextOverflow.ellipsis');
         if (!korunakli) {
-          korunmasizlar.add('${dosya.path}:${i + 1}: ${satirlar[i].trim()}');
+          korunmasizlar.add('${cagri.dosyaYolu}:${cagri.satirNo}: ${cagri.ilkSatirHam}');
         }
       }
     }
@@ -71,6 +124,58 @@ void main() {
           '${korunmasizlar.join('\n')}',
     );
   });
+
+  test('R2: ellipsis tasiyan her govde maxLines de tasir (GOREV-A9, sinif kapisi)', () {
+    final dosyalar = _taranacakDosyalar();
+    expect(dosyalar, isNotEmpty, reason: 'lib/sunum + lib/vitrin taranacak dosya bulunamadi');
+
+    final ihlaller = <String>[];
+    for (final dosya in dosyalar) {
+      for (final cagri in _textCagrilariniTopla(dosya)) {
+        final ellipsisVar = cagri.govde.contains('TextOverflow.ellipsis');
+        if (!ellipsisVar) continue; // R1'in konusu, R2'nin degil.
+        final maxLinesVar = RegExp(r'\bmaxLines\s*:').hasMatch(cagri.govde);
+        if (!maxLinesVar) {
+          ihlaller.add('${cagri.dosyaYolu}:${cagri.satirNo}: ${cagri.ilkSatirHam}');
+        }
+      }
+    }
+
+    expect(
+      ihlaller,
+      isEmpty,
+      reason:
+          'Asagidaki Text() cagrilari TextOverflow.ellipsis tasiyor ama maxLines '
+          'TASIMIYOR -- ellipsis TEK BASINA metni fiilen tek satira indirir ve '
+          'fazlasini SESSIZCE atar (B3, KANIT/A7):\n'
+          '${ihlaller.join('\n')}',
+    );
+  });
+
+  test(
+    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 8 (arac kendini kanitlar)',
+    () {
+      final dosyalar = _taranacakDosyalar();
+      final adaylar = <String>[];
+      for (final dosya in dosyalar) {
+        for (final cagri in _textCagrilariniTopla(dosya)) {
+          adaylar.add('${cagri.dosyaYolu}:${cagri.satirNo}');
+        }
+      }
+      // OLCULDU (GOREV-A9, oturum 43): bos_durum 1 * cakisma_rozeti 2 *
+      // gorev_satiri 1 * hata_durumu 2 * senkron_rozeti 1 * yukleme_durumu 1
+      // = 8. Taban DEGISIRSE bu test KIRMIZI olur ve taban BILEREK guncellenir
+      // -- "olcum araci ONCE KENDINI kanitlar" doktrininin bu kapidaki karsiligi.
+      expect(
+        adaylar.length,
+        8,
+        reason:
+            'Text( aday sayisi 8 DEGIL -- ya tarayici bozuldu (regex hic '
+            'eslesmiyor ⇒ R1/R2 kor) ya taban degisti (yeni bir Text( eklendi/'
+            'silindi). Bulunanlar:\n${adaylar.join('\n')}',
+      );
+    },
+  );
 
   test(
     'metin: F6 dizgeleri lib/sunum + lib/vitrin icinde HAM LITERAL olarak TEKRARLANMAMIS '
