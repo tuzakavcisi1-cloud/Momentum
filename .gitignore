@@ -95,3 +95,17 @@ $RECYCLE.BIN/
 
 # ---- Onur elle silecek (Cowork tasidi, K66/5) ----
 _SILINECEKLER/
+
+# --- K108 / oturum 47: KANIT altindaki HAM ARTIKLAR (OLCULEREK eklendi) ---
+# OLCUM (K107 yontemi -- bir yok-sayma kuralinin NEYI KORUDUGU da olculur):
+#   git ls-files -i -c -X <aday>  =>  0 IZLENEN dosya yutuluyor
+#   git ls-files -o -i -X <aday>  =>  69 izlenmeyen artik susuyor
+#   git ls-files KANIT/slice-3d/09-MUTANT  =>  40 IZLENEN kanit dosyasi ZATEN VAR,
+#   yani susturulan kume gercek kanit degil, ham yakalamadir.
+# DIKKAT -- REDDEDILEN ADAY: KANIT/**/_baseline/  IKI IZLENEN dosyayi
+#   (KANIT/R9/_baseline/*.orig) yutuyordu. K107 tuzaginin aynisi; uygulanmadan olculdu.
+KANIT/**/_tmp_*
+KANIT/**/_commit_msg*.txt
+KANIT/**/_defter_ekle*.py
+KANIT/**/_ozet*.py
+KANIT/**/_gitignore_olc.py
