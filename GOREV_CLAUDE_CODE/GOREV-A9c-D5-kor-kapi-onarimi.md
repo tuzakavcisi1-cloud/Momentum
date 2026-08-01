@@ -1,5 +1,16 @@
 # GOREV — `araclar/iddia-kapisi.py` **1.2.0 → 1.3.0** · `D5` KÖR KAPI onarımı · **v2**
 
+> 🔒 **KİLİTLİ — Onur onayladı, 2 Ağu 2026, oturum 47 (K109).** Bu dosyaya **tek bayt yazılmaz**;
+> değişen her bayt **kilidi bozar**. Kilitli kimlik `DURUM.md` §9 (DONMUŞ KİMLİKLER) tablosunda tutulur
+> ve **bu kilit satırı eklendikten SONRA** ölçülmüştür. Builder değişiklik gerekiyorsa **yazmaz, Onur'a sorar**.
+> 🔴 **KİLİT ÖNCESİ ÖLÇÜM (beyana güvenilmedi):** kilit satırından önceki kimlik **19.497 b · `D88312F6`**
+> — devir notunun iddiasıyla birebir tuttu. `spec-kapi-kapsama.py` **EXIT 0**: KAPI `G18` · KURAL `D8` ·
+> MUTANT `M119`/`M123`/`M124`; **mutantsız kapı yok**, gerekçesiz borç yok.
+> 🔴 **K108 UYUMU:** bu spec'in kapısı bundan böyle **`A9c/G18`** diye anılır. `A10/G18` (*cleartext yalnız
+> debug*) ile **ADI aynı, KENDİSİ farklıdır**; çakışma oturum 47'de ölçüldü, kapı kimliği **spec-yerel**
+> ilan edildi (K108) ve `araclar/kapi-ad-teklik-kapisi.py` ile mekanikleştirildi. **Yeniden numaralandırma
+> YAPILMADI** — ölçüm, dizinin doğru ucunun bu spec olduğunu gösterdi (`A9b/G17` → `A9c/G18`).
+>
 > **Yazan el:** Cowork (tasarım). **Yapan el:** Claude Code. **K34-f gereği ayrıdır** — `iddia-kapisi.py`'yi
 > Cowork yazdı (K97, `ebf7f62`) ⇒ **onaran el Claude Code'dur.** Bu spec Onur kilitlemeden verilmez.
 >

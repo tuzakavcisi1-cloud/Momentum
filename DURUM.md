@@ -56,8 +56,8 @@
 🟢 **`GOREV-A10` KABUL EDİLDİ (K106) · `.gitignore` tuzağı KAPANDI (K107 · Onur kilidi).** Ölçüm ve anlatım
 K73 gereği **arşivde**: `R8` açılışta ısırdı → build kabulüyle **düştü**; build **Cowork'ün kendi koşumuyla**
 kabul edildi (K26). Kapılar **`A10/G17`–`A10/G21`**, mutantlar **`M125`–`M135`**; sayılar §3'te ÖLÇÜLÜR.
-🔴 **`GOREV-A9c` KİLİT BEKLİYOR** (v3 **19.497 b · `D88312F6`**; `spec-kapi-kapsama` EXIT 0). Bir **araç**
-onarımı olduğu için `R8`'i düşürmez — radar `araclar/`'ı ürün dışı sayar.
+🟢 **`GOREV-A9c` KİLİTLENDİ (K109)** — kimlik **§9'da**; iş **Claude Code'a hazır** (K34-f). 🔴 Bir **araç**
+onarımı olduğu için `R8`'i düşürmez ⇒ **oturum 48 ÜRÜN koduyla başlamak zorunda.**
 🟡 `D5` kör kapı, A9b hassaslaştırma ve `vaka 20b`: gerekçeler **arşivde** (K100 · K102 · K104 · K106).
 
 🟢 **① `.NET 10` ADIM 1–5 KAPANDI (K102).** `global.json` pini **ISIRIYOR** (repo içi 9.0.316 / dışı 10.0.302);
@@ -196,8 +196,9 @@ python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GO
 | `araclar/adr-kapi-taramasi.py` | 50.582 | `A22841F2` | **K34-f** tutuyor; ADR donduruldu |
 | `araclar/tek-kopya-kapisi.py` | **17.259** | **`66AC9CA3`** | K70'te kapsam genişledi; değişiklikten sonra **mutant kümesi 11/11 yeniden koştu** |
 
-| `GOREV-slice-3e-G12.md` | **12.623** | **`BDB3630E`** | 🔒 **K79 kilidi**. 🔴 **BEYAN EDİLMİŞ ZAYIF KONTROL:** `tek-kopya-kapisi.py` kapsamına **HENÜZ EKLENMEDİ** (eklemek aracın kilitli sha'sını bozar + 11/11 mutantı yeniden koşturur); kilit **beyanla** yaşıyor, mekanik kapı `G12` kabulünde |
-| `GOREV-A10-cihaz-on-kosullari.md` | **26.126** | **`8AD6CA10`** | 🔒 **K105 kilidi (v2, Onur onayladı 1 Ağu 2026)** — `04E49CC9` (v1) ve `A947CC1E` (kilit satırı ÖNCESİ v2) **GEÇERSİZDİR**. 🔴 **AYNI ZAYIF KONTROL, BEYAN EDİLDİ:** `tek-kopya-kapisi.py` kapsamına **EKLENMEDİ** — eklemek aracın kilitli sha'sını bozar + 11/11 mutantı yeniden koşturur ve **`R8` yürürlükteyken araç turu AÇILAMAZ**; kilit **beyanla** yaşıyor, kapsam A10 kabulünde ürün koduyla **birlikte** eklenir |
+| `GOREV-slice-3e-G12.md` | **12.623** | **`BDB3630E`** | 🔒 **K79 kilidi**. 🔴 Beyanlı-kilit sepetinde — gerekçe ve sepetin tamamı `BORCLAR.md`'de (tek kopya) |
+| `GOREV-A10-cihaz-on-kosullari.md` | **26.126** | **`8AD6CA10`** | 🔒 **K105 kilidi (v2, Onur onayladı 1 Ağu 2026)** — `04E49CC9` (v1) ve `A947CC1E` (kilit satırı ÖNCESİ v2) **GEÇERSİZDİR**. 🔴 Beyanlı-kilit sepetinde — gerekçe `BORCLAR.md`'de. Kapıları **`A10/G17`–`A10/G21`** (K108) |
+| `GOREV-A9c-D5-kor-kapi-onarimi.md` | **20.600** | **`53ED7838`** | 🔒 **K109 kilidi (Onur onayladı 2 Ağu 2026)** — kilit satırı **ÖNCESİ** `D88312F6` (19.497 b) **GEÇERSİZDİR**. Kapısı **`A9c/G18`** (K108; `A10/G18` ile adı aynı, kendisi farklı). 🔴 Beyanlı-kilit sepetinde — gerekçe `BORCLAR.md`'de |
 
 ⚠ **Kimlik `sha256`+bayttır, satır DEĞİL** ve **DAİMA son yazımdan SONRA** ölçülür.
 
