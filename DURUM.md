@@ -58,18 +58,25 @@ K26; `araclar/iddia-kapisi.py` altın küme **26/26**, A9/A8/A7 üçü de EXIT 0
 iki ayağı da sabitin **ADINI** ve eski metnin **yokluğunu** ölçüyor, **SAYISAL DEĞERİNİ ölçmüyor**. Değer
 altın küme çıktısına **basılıyor** (`LISTE_ESIGI_PIN_VAKALARI=(16, 17) [D5]`) ama hiçbir kriter o satırı
 **okumuyor** ⇒ fark **görünür, ölçülmez**. `GOREV-A9b` §6b'nin *"BORÇ YOK"* iddiası **çürüdü**.
-**Ucuz onarım (kilitlenmedi):** kriter 11'e üçüncü ayak — altın küme çıktısında değer dizgesi aranır.
-🟡 **İKİNCİ AÇIK KALEM:** builder M121/M122 için altın kümeyi **yeniden tasarladı** (vaka 10, 20b ve 24'e
-ayırt edici kayıtlar). *Hassaslaştırma mı, testi mutanta uydurmak mı* — **Cowork ölçmedi**;
-`KANIT\A9b\02-MUTANT\00-DOGRULAMA.txt` okunmayı bekliyor.
+🟢 **ONARIM TASARLANDI VE KİLİTLENDİ (K102 · Onur şık A).** Ucuz onarım (kriter 11'e üçüncü `findstr`)
+**REDDEDİLDİ**: kilitli spec'i değiştirir, kapı **kâğıtta** kalır, `(16,17)`'yi ikinci yere kopyalar.
+Yerine sabit **YÜK TAŞITICI** olur — `_vaka()` `pin` etiketi alır, vaka 16/17 taşır, yeni **vaka 27**
+sabiti etiketlerle karşılaştırır ⇒ `M119` **mekanik** düşer. Spec **`GOREV-A9c`** (11.981 b · `53CBF517`);
+`spec-kapi-kapsama` ve `iddia-kapisi` **EXIT 0**. 🔴 Onur kilitlemeden Claude Code'a **VERİLMEZ**;
+kabulde altın küme **26 → 27** olacağı için §4/§6'daki sayı iddiaları güncellenir.
+🟢 **İKİNCİ AÇIK KALEM KAPANDI (K102):** builder'ın M121/M122 için altın kümeye eklediği ayırt edici
+kayıtlar **HASSASLAŞTIRMADIR**, *testi mutanta uydurma* değil — kilitli spec §6 beklenen `[KALDI]`
+kümelerini **build'den 3,7 saat ÖNCE** yazmıştı (spec 14:39, kanıt 18:21) ve spec sha'sı değişmedi.
+Eklenen kayıtlar `I1`'in **dosya-kapsamı** ve `D7`'nin **seviye-duyarlılığı** sözleşmelerini sınıyor.
+🟡 Kalan tek not: **vaka 20b iki bağımsız şeyi** ölçüyor (beyan edilmiş, `GOREV-A9c` §8'de borç).
 
-🔴 **SIRADAKİ İŞ — ① `.NET 10` GEÇİŞİ (A10'dan ÖNCE, Onur onayladı).** .NET 9 **STS** ve desteği
-**10 Kasım 2026**'da bitiyor; .NET 8 de **aynı gün** bitiyor ⇒ hedef **.NET 10 LTS (Kasım 2028)**.
-Sıra **pazarlıksız**: `global.json` ile SDK **9.0.316**'ya pinle → `verify.ps1` yeşil mi ölç →
-`winget install Microsoft.DotNet.SDK.10` (Onur) → `dotnet --version` **hâlâ 9.0.316** demeli →
-`verify.ps1` yeniden → geçiş spec'i. 🔴 **`global.json` YOK; SDK 10 kurulunca `TreatWarningsAsErrors=true`
-yüzünden mevcut yeşil build KIRILIR.** Ölçülen tek ciddi paket riski: **`Mediator` 3.0.2** (source
-generator, kararlı .NET 10 sürümü yok). `Npgsql` sağlayıcı **10.0.3 hazır**.
+🟢 **① `.NET 10` GEÇİŞİ — ADIM 1–5 KAPANDI (oturum 45, K102).** `global.json` **78 b** (`9.0.316` +
+`rollForward: latestPatch`) yazıldı, SDK **10.0.302** kuruldu (Onur) ve **pin ISIRIYOR**: repo içinde
+`dotnet --version` **9.0.316**, repo dışında **10.0.302**, `--list-sdks` **iki satır**. `verify.ps1` **üç kez**
+koştu (pin sonrası ×2 + SDK 10 sonrası ×1), **üçü de EXIT 0**: 0 uyarı/0 hata · **120/120** · CVE 0.
+🔴 **KALAN ADIM 6 — geçiş spec'i:** `global.json` → **10.0.302** · `TargetFramework` → **net10.0** ·
+paketler 10.x. Ölçülen tek ciddi risk **`Mediator` 3.0.2** (source generator, kararlı .NET 10 sürümü
+yok); `Npgsql` EF sağlayıcı **10.0.3** hazır. .NET 9 **STS** desteği **10 Kasım 2026**'da biter.
 **② A10** — debug `network_security_config.xml` · `INTERNET` iznini `src/main`'e · geliştirme modunda
 `devUserId` alanı → **③ gerçek cihazda uçtan uca senkron kanıtı** (projenin en büyük ölçülmemiş iddiası)
 → ④ iOS iskelesi + CI → ⑤ `SS2` (dar) → ⑥ web borcu + release → ⑦ `ADR 0004` + vitrin.
