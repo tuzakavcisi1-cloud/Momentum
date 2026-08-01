@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` **1.0.0** zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**.
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 1 Ağu 2026, **oturum 45** — açılış protokolü **9 adım** koştu; `T2` SARI ısırdı ⇒ **K73 budaması (K101)**: §3/§4/§8 tarihçesi arşive taşındı ve **iki ölü *"araç YOK"* beyanı** düzeltildi (`oturum-sagligi.py` **1.0.0** ve `belge-tavan-kapisi.py` **1.0.0** VARDIR ve koştular). *(Oturum 39–44te yapılan iş arşivdedir.)*
+> **Son güncelleme:** 1 Ağu 2026, **oturum 46 (K104)** — açılış **9 adım** koştu, **`R8` SERT DURAK ISIRDI** (oturum 44–45 sıfır ürün kodu) ⇒ oturum **ürün koduyla** başladı: `GOREV-A10` v2 yazıldı, tek denetim turu **iki mercekle** koştu, Onur **iki tasarım kararını** kilitledi. *(Oturum 39–45te yapılan iş arşivdedir.)*
 
 ---
 
@@ -54,21 +54,18 @@
 Claude Code) · 🟢 **`A9` KABUL ve KAPANDI** (K100, 1 Ağu 2026; Cowork builder'ın çıktılarını **okumadan** ölçtü —
 K26; `araclar/iddia-kapisi.py` altın küme **26/26**, A9/A8/A7 üçü de EXIT 0, 14 mutant kanıtı). Tam anlatım **arşivde** (K73 doktrini).
 
-🔴 **AÇIK BORÇ — `D5` KÖR KAPI (K100'de ölçüldü).** **M119** hiçbir mekanik kapıyı düşürmüyor: kriter 11'in
-iki ayağı da sabitin **ADINI** ve eski metnin **yokluğunu** ölçüyor, **SAYISAL DEĞERİNİ ölçmüyor**. Değer
-altın küme çıktısına **basılıyor** (`LISTE_ESIGI_PIN_VAKALARI=(16, 17) [D5]`) ama hiçbir kriter o satırı
-**okumuyor** ⇒ fark **görünür, ölçülmez**. `GOREV-A9b` §6b'nin *"BORÇ YOK"* iddiası **çürüdü**.
-🟢 **ONARIM TASARLANDI VE KİLİTLENDİ (K102 · Onur şık A).** Ucuz onarım (kriter 11'e üçüncü `findstr`)
-**REDDEDİLDİ**: kilitli spec'i değiştirir, kapı **kâğıtta** kalır, `(16,17)`'yi ikinci yere kopyalar.
-Yerine sabit **YÜK TAŞITICI** olur — `_vaka()` `pin` etiketi alır, vaka 16/17 taşır, yeni **vaka 27**
-sabiti etiketlerle karşılaştırır ⇒ `M119` **mekanik** düşer. Spec **`GOREV-A9c`** (11.981 b · `53CBF517`);
-`spec-kapi-kapsama` ve `iddia-kapisi` **EXIT 0**. 🔴 Onur kilitlemeden Claude Code'a **VERİLMEZ**;
-kabulde altın küme **26 → 27** olacağı için §4/§6'daki sayı iddiaları güncellenir.
-🟢 **İKİNCİ AÇIK KALEM KAPANDI (K102):** builder'ın M121/M122 için altın kümeye eklediği ayırt edici
-kayıtlar **HASSASLAŞTIRMADIR**, *testi mutanta uydurma* değil — kilitli spec §6 beklenen `[KALDI]`
-kümelerini **build'den 3,7 saat ÖNCE** yazmıştı (spec 14:39, kanıt 18:21) ve spec sha'sı değişmedi.
-Eklenen kayıtlar `I1`'in **dosya-kapsamı** ve `D7`'nin **seviye-duyarlılığı** sözleşmelerini sınıyor.
-🟡 Kalan tek not: **vaka 20b iki bağımsız şeyi** ölçüyor (beyan edilmiş, `GOREV-A9c` §8'de borç).
+🔴 **`R8` SERT DURAK ISIRDI (K104, bu açılışta).** Oturum 44–45'te **sıfır** ürün kodu; bağımsız doğrulama
+`radar.py . --olc-urun-kodu HEAD~3` ⇒ **`urun_kodu_satiri = 0`**. Radarın **kendi** tanımı `araclar/`'ı
+**ürün dışı** sayar (`VARSAYILAN_URUN_HARIC`) ⇒ **`GOREV-A9c` (araç onarımı) bu durağı DÜŞÜRMEZ**; sıraya
+alındı (v3 **19.497 b · `D88312F6`**, Onur kilidi bekliyor). Sert durak, oturumun **ürün koduyla** başlamasını
+zorladı — K53/4'ün ilk gerçek uygulaması.
+🟢 **`GOREV-A10` YAZILDI — v2 (25.783 b · `A947CC1E`), KİLİT BEKLİYOR.** Ürün kodu turu: INTERNET izni
+`src/main`'e · **debug-only** `network_security_config.xml` · `DEV_USER_ID` ezmesi. **Tek** denetim turu **iki
+mercekle** koştu (**20 ayrık bulgu / 7 bloker**; *"mimariyi değiştiren bloker YOK"* ⇒ K53/1 ikinci tur
+**AÇILMADI**). Kapı **`G17`–`G21`**, mutant **`M125`–`M135`**, koşan-derleme mutantı **3/3 tavan dolu**.
+🔒 Onur kilitledi: ① GUID olmayan ezme ⇒ `ArgumentError` (ölçüldü: backend `Guid.TryParse` ⇒ **401**)
+② ezme uygulanınca `gorevler` + `senkron_kuyrugu` **da** sıfırlanır (ölçüldü: D7/4 yalnız imleç + `uzak_alan_durumu`).
+🟡 `D5` kör kapı borcu, A9b hassaslaştırma denetimi ve `vaka 20b` notu: gerekçeler **arşivde** (K100 · K102 · K104).
 
 🟢 **① `.NET 10` GEÇİŞİ — ADIM 1–5 KAPANDI (oturum 45, K102).** `global.json` **78 b** (`9.0.316` +
 `rollForward: latestPatch`) yazıldı, SDK **10.0.302** kuruldu (Onur) ve **pin ISIRIYOR**: repo içinde
@@ -77,8 +74,10 @@ koştu (pin sonrası ×2 + SDK 10 sonrası ×1), **üçü de EXIT 0**: 0 uyarı/
 🔴 **KALAN ADIM 6 — geçiş spec'i:** `global.json` → **10.0.302** · `TargetFramework` → **net10.0** ·
 paketler 10.x. Ölçülen tek ciddi risk **`Mediator` 3.0.2** (source generator, kararlı .NET 10 sürümü
 yok); `Npgsql` EF sağlayıcı **10.0.3** hazır. .NET 9 **STS** desteği **10 Kasım 2026**'da biter.
-**② A10** — debug `network_security_config.xml` · `INTERNET` iznini `src/main`'e · geliştirme modunda
-`devUserId` alanı → **③ gerçek cihazda uçtan uca senkron kanıtı** (projenin en büyük ölçülmemiş iddiası)
+**② A10** — spec **v2 HAZIR** (yukarıda). 🔴 *"Geliştirme modunda `devUserId` alanı"* ifadesi **DARALTILDI**:
+çalışma-zamanı UI alanı **değil**, derleme-zamanı `--dart-define` ezmesi (A10 §8/5) — kullanıcı değiştirmek
+**yeniden derleme + kurulum** ister → **③ gerçek cihazda uçtan uca senkron kanıtı** (en büyük ölçülmemiş iddia;
+kendi ortam maddesini **taşıyacak**, K80: `pm clear` + `ASPNETCORE_ENVIRONMENT` + dış arayüzde dinleme)
 → ④ iOS iskelesi + CI → ⑤ `SS2` (dar) → ⑥ web borcu + release → ⑦ `ADR 0004` + vitrin.
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026).** Reddedilmedi; kapı **iki koşul birlikte** sağlanınca
