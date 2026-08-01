@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` **1.0.0** zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**.
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 1 Ağu 2026, **oturum 46 (K104)** — açılış **9 adım** koştu, **`R8` SERT DURAK ISIRDI** (oturum 44–45 sıfır ürün kodu) ⇒ oturum **ürün koduyla** başladı: `GOREV-A10` v2 yazıldı, tek denetim turu **iki mercekle** koştu, Onur **iki tasarım kararını** kilitledi. *(Oturum 39–45te yapılan iş arşivdedir.)*
+> **Son güncelleme:** 1 Ağu 2026, **oturum 46 (K104)** — açılış **9 adım** koştu, **`R8` SERT DURAK ISIRDI** (oturum 44–45 sıfır ürün kodu) ⇒ oturum **ürün koduyla** başladı: `GOREV-A10` v2 yazıldı, tek denetim turu **iki mercekle** koştu, Onur **iki tasarım kararını** kilitledi ve **K105'te spec'i KİLİTLEDİ** (26.126 b · `8AD6CA10`, §9). *(Oturum 39–45te yapılan iş arşivdedir.)*
 
 ---
 
@@ -59,7 +59,7 @@ K26; `araclar/iddia-kapisi.py` altın küme **26/26**, A9/A8/A7 üçü de EXIT 0
 **ürün dışı** sayar (`VARSAYILAN_URUN_HARIC`) ⇒ **`GOREV-A9c` (araç onarımı) bu durağı DÜŞÜRMEZ**; sıraya
 alındı (v3 **19.497 b · `D88312F6`**, Onur kilidi bekliyor). Sert durak, oturumun **ürün koduyla** başlamasını
 zorladı — K53/4'ün ilk gerçek uygulaması.
-🟢 **`GOREV-A10` YAZILDI — v2 (25.783 b · `A947CC1E`), KİLİT BEKLİYOR.** Ürün kodu turu: INTERNET izni
+🔒 **`GOREV-A10` v2 KİLİTLENDİ (K105 · Onur, 1 Ağu 2026) — 26.126 b · `8AD6CA10`, §9'da.** Ürün kodu turu: INTERNET izni
 `src/main`'e · **debug-only** `network_security_config.xml` · `DEV_USER_ID` ezmesi. **Tek** denetim turu **iki
 mercekle** koştu (**20 ayrık bulgu / 7 bloker**; *"mimariyi değiştiren bloker YOK"* ⇒ K53/1 ikinci tur
 **AÇILMADI**). Kapı **`G17`–`G21`**, mutant **`M125`–`M135`**, koşan-derleme mutantı **3/3 tavan dolu**.
@@ -202,6 +202,7 @@ python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GO
 | `araclar/tek-kopya-kapisi.py` | **17.259** | **`66AC9CA3`** | K70'te kapsam genişledi; değişiklikten sonra **mutant kümesi 11/11 yeniden koştu** |
 
 | `GOREV-slice-3e-G12.md` | **12.623** | **`BDB3630E`** | 🔒 **K79 kilidi**. 🔴 **BEYAN EDİLMİŞ ZAYIF KONTROL:** `tek-kopya-kapisi.py` kapsamına **HENÜZ EKLENMEDİ** (eklemek aracın kilitli sha'sını bozar + 11/11 mutantı yeniden koşturur); kilit **beyanla** yaşıyor, mekanik kapı `G12` kabulünde |
+| `GOREV-A10-cihaz-on-kosullari.md` | **26.126** | **`8AD6CA10`** | 🔒 **K105 kilidi (v2, Onur onayladı 1 Ağu 2026)** — `04E49CC9` (v1) ve `A947CC1E` (kilit satırı ÖNCESİ v2) **GEÇERSİZDİR**. 🔴 **AYNI ZAYIF KONTROL, BEYAN EDİLDİ:** `tek-kopya-kapisi.py` kapsamına **EKLENMEDİ** — eklemek aracın kilitli sha'sını bozar + 11/11 mutantı yeniden koşturur ve **`R8` yürürlükteyken araç turu AÇILAMAZ**; kilit **beyanla** yaşıyor, kapsam A10 kabulünde ürün koduyla **birlikte** eklenir |
 
 ⚠ **Kimlik `sha256`+bayttır, satır DEĞİL** ve **DAİMA son yazımdan SONRA** ölçülür.
 

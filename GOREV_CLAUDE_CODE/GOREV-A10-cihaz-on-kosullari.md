@@ -1,5 +1,9 @@
 # GOREV-A10 — Gerçek cihaz ön koşulları (INTERNET izni · cleartext yapılandırması · `DEV_USER_ID` ezmesi)
 
+> 🔒 **KİLİTLİ — Onur onayladı, 1 Ağu 2026, oturum 46 (K105).** Bu dosyaya **tek bayt yazılmaz**;
+> değişen her bayt **kilidi bozar**. Kilitli kimlik `DURUM.md` §9 (DONMUŞ KİMLİKLER) tablosunda tutulur
+> ve **bu kilit satırı eklendikten SONRA** ölçülmüştür. Builder değişiklik gerekiyorsa **yazmaz, Onur'a sorar**.
+>
 > **v2 · 1 Ağu 2026 · Cowork yazdı (tasarım) · KODU CLAUDE CODE YAZAR (K26 · K34-f).**
 > 🔴 **v1 (12.151 b · `04E49CC9`) GEÇERSİZDİR.** **TEK** denetim turu (K53/1) **iki bağımsız mercekle** koştu
 > (teknik denetçi 12 + red-team 13 = **ham 25 bulgu, ham 10 bloker etiketi**; **BEŞ mükerrer çift** ayıklanınca
