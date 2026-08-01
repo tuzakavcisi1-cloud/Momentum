@@ -40,7 +40,7 @@
 | **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Cowork'ün kendi koşumu (session 37, K81): `analyze --fatal-infos` **0** · `flutter test` **171/171** · kapılar `G1`–`G12`; 🟢 `design-token-kapisi.py` **EXIT 0** (iki devralınmış `D2` 4a ile kapandı — K88) · `M1`–`M73` mutantların hepsi ısırdı.
 🟢 **A‑7 KAPANDI (ölçüldü):** `G13`/`G14`/`G15` yeşil · `M74`–`M87` **14/14 ısırdı** · `CM1`–`CM3` cihazda geçti. 🔴 `DESIGN.md`'de kapanmadı (K46).
 🟢 **A‑8 KAPANDI (Cowork BAĞIMSIZ doğruladı, K26):** `lib/sunum`'daki **beş** metin kaybı kapandı (adlandırılmış `maxLines` sabitleri; `ellipsis` **korundu**). Yeni kapı **`G16`** (`A1`–`A4`, 9 noktalı ölçek×genişlik ızgarası) · `M88`–`M97` **10/10** · `flutter test` **428/428** (Cowork kendi koştu) · regresyon **122/122**.
-🟢 **A‑9 KABUL (ürün+kapı) — Cowork BAĞIMSIZ ölçtü (K26):** `CakismaCozumSayfasi` public + iki adlandırılmış `maxLines` (`Y6=1` sabit, `Y7=6` **ölçüldü**) · `G5`'e **sınıf kapısı** `R2` + **pozitif kontrol** `R4` (aday sayısı 8) · `G16`'ya `_y6`/`_y7` + kod-içi kapsam koruması `A0` · `flutter test` **476/476** ve `G16` **208** (A0 1·A1 45·A2 63·A3 54·A4 45) Cowork'ün kendi koşumu · `M98`–`M108` **11/11**. 🔴 **KAPANMADI: kriter 12 AÇIK** (§4/K94). |
+🟢 **A‑9 KABUL (ürün+kapı) — Cowork BAĞIMSIZ ölçtü (K26):** `CakismaCozumSayfasi` public + iki adlandırılmış `maxLines` (`Y6=1` sabit, `Y7=6` **ölçüldü**) · `G5`'e **sınıf kapısı** `R2` + **pozitif kontrol** `R4` (aday sayısı 8) · `G16`'ya `_y6`/`_y7` + kod-içi kapsam koruması `A0` · `flutter test` **476/476** ve `G16` **208** (A0 1·A1 45·A2 63·A3 54·A4 45) Cowork'ün kendi koşumu · `M98`–`M108` **11/11**. 🟢 **A9 KAPANDI (K100, 1 Ağu 2026):** kriter 12 Cowork'ün kendi koşumuyla yeşil — `iddia-kapisi.py` **1.2.0** `EXIT 0`, `I3` **0**, `[KIRMIZI] I1` **0**, muafiyet **2**. |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
 | **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR.** *(1 Ağu 2026'da ısırdı: bu satır "aynı iki artefakt" diyordu, ölçüm **11 kırmızı artefakt** verdi — ikisi oturum 42'nin kendi ürettiği R3'tür. Sayı yazan satır bayatlar, ölçüme atan satır bayatlamaz: K82-b'nin radar hâli.)* 🔒 **K83 — Onur şık (4) DURDUR'u kilitledi (30 Tem 2026):** park yürürlükte, dört-şık ritüeli **tekrarlanmadı** (talimat gereği). **R8 SUSTU** — bu oturumda **197 satır ürün kodu** ölçülerek yazıldı (K86), sayaç bu commit'le **düştü** (K55). |
@@ -52,34 +52,43 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **K89–K93 — KAPANDI (oturum 42–43).** `KAPILAR.md` doğdu (kapı-tetik tablosu) · `GOREV-A8` v2 ve
-`GOREV-A9` v3 kilitlendi, ikisi de build'den kabulle geçti. Tam anlatım **arşivde** (K73 doktrini).
-🔒 **K94 — `A9` ÜRÜN+KAPI KABUL, DİLİM KAPANMADI.** 13/14 kriter Cowork'ün **kendi koşumuyla** yeşil;
-**kriter 12 (`iddia-kapisi.py`) AÇIK**. Kapı 5 bulgu üretti, **beşi de yanlış-pozitif**, gerçek bulgu 0.
-🔴 **A9 ancak kapı GERÇEKTEN yeşil olunca kapanır** — kırmızı beyanla yutulmaz.
-🔒 **K95 — YOL HARİTASI (Onur).** ① repo **public** ⇒ iOS CI maliyeti **0** ② **`SS2` DAR kapsamla
-YAPILACAK** (tek ekran, yerel↔uzak yan yana, iki buton; alan-bazlı merge ve geçmiş KAPSAM DIŞI)
-③ **kimlik KAPSAM DIŞI**, sınır `ADR 0004` ile beyan edilir (**≤ 8 KB**, tek denetim turu, kod iddiası yok)
-④ **iOS iskelesi + CI, `SS2`'den ÖNCE.**
-🔒 **K97 — K34-f ÖLÇÜLDÜ: `iddia-kapisi.py`'yi COWORK YAZDI.** `ebf7f62` commit'i aracı `PROJE_HAFIZA.md`
-(+212 satır) · `DURUM.md` · `PROJE_RADAR.jsonl` ile **birlikte** taşıyor; hafıza yazmak Cowork'ün işidir.
-⇒ **Onaran el CLAUDE CODE.** K94'ün *"commit biçiminden Claude Code yazdı"* çıkarımı **ÇÜRÜDÜ**
-(`sayi-tazeligi.py` ilk commit'i de İngilizce ve o da Cowork ürünü).
+🔒 **K89–K93 · K94 · K95 — KAPANDI (oturum 42–44).** `KAPILAR.md` doğdu · `GOREV-A8` v2 ve `GOREV-A9` v3
+kilitlendi · A9 ürün+kapı kabul edildi. Tam anlatım **arşivde** (K73 doktrini).
+🔒 **K97 — K34-f ÖLÇÜLDÜ: `iddia-kapisi.py`'yi COWORK YAZDI** (`ebf7f62` aracı hafıza+durum+defterle
+**birlikte** taşıyor) ⇒ **onaran el CLAUDE CODE**. K94'ün *"Claude Code yazdı"* çıkarımı **ÇÜRÜDÜ**.
+🔒 **K98 · K99 — `GOREV-A9b` v2 KİLİTLENDİ** (**30.046 b · `AF624471`**); bir denetim turu **iki mercekle**
+koştu ⇒ 14 bloker, dördü mimariyi değiştirdi (`D0` saf çekirdek ayrımı · `D7` seviye-duyarlı `_vaka()`).
+🟢 **K100 — `A9b` KABUL, `A9` KAPANDI (1 Ağu 2026).** Cowork **builder'ın çıktılarını okumadan** ölçtü (K26):
+`iddia-kapisi.py` altın kümesi **26/26** · A9/A8/A7 üçü de **EXIT 0** · sayı-tazeliği · kapı-kapsama · öz-tutarlılık · tek-kopya ·
+belge-tavan **hepsi EXIT 0** · 14 mutant kanıtı yerinde · `.git\index.lock` **yok**.
 
-🔴 **SIRADAKİ İŞ — K98/K99: `GOREV-A9b` v2 KİLİTLENDİ (Onur, 1 Ağu 2026, oturum 44).**
-Spec: `GOREV_CLAUDE_CODE\GOREV-A9b-iddia-kapisi-onarim.md` — **30.046 b · `AF624471`**.
-Bir denetim turu **iki mercekle** koştu ⇒ **14 bloker + 14 majör**; dördü mimariyi değiştirdi
-(`D0` saf çekirdek ayrımı ve `D7` seviye-duyarlı `_vaka()` bu yüzden doğdu; kriter 2 **yanlışlanamaz**
-olduğu için satır sayımına çevrildi; mevcut altın kümede **boş bir vaka** olduğu ölçüldü).
-**Build CLAUDE CODE'da** ⇒ `iddia-kapisi.py` **1.2.0** + `iddia-muafiyet.json` + altın küme **12 → 26**
-+ mutant **M109–M122**; kanıtlar `KANIT\A9b\` altına. Sonra **Cowork 14 kriteri kendi koşumuyla ölçer**
-(K26) ve `iddia-kapisi.py <A9 spec> --kanit KANIT\A9` **EXIT 0** verince **A9 KAPANIR**.
-🔒 **Onur'un iki alt kilidi (1 Ağu 2026):** ① **`I3` SARI kalır** — koruma kabul kriterinde (satır sayımı)
-yaşar, kapının kendi EXIT'inde değil; severity değişimi ayrı doktrin kararıdır ② `I1` muafiyetinin borcu
-**`iddia-muafiyet.json` içinde** kalır, `BORCLAR.md`'ye **yazılmaz** (kanonik-kopya riski + T2 payı).
-🔴 **BEYAN EDİLMİŞ ZAYIF KONTROL:** bu spec `tek-kopya-kapisi.py` kapsamına **EKLENMEDİ** — eklemek o
-aracın kilitli sha'sını bozar ve 11/11 mutantı yeniden koşturur (`GOREV-slice-3e-G12.md` ile **aynı**
-beyanlı-kilit durumu, K79). Kilit **beyanla** yaşıyor; mekanik kapı A9b kabulünde.
+🔴 **AÇIK BORÇ — `D5` KÖR KAPI (K100'de ölçüldü).** **M119** hiçbir mekanik kapıyı düşürmüyor: kriter 11'in
+iki ayağı da sabitin **ADINI** ve eski metnin **yokluğunu** ölçüyor, **SAYISAL DEĞERİNİ ölçmüyor**. Değer
+altın küme çıktısına **basılıyor** (`LISTE_ESIGI_PIN_VAKALARI=(16, 17) [D5]`) ama hiçbir kriter o satırı
+**okumuyor** ⇒ fark **görünür, ölçülmez**. `GOREV-A9b` §6b'nin *"BORÇ YOK"* iddiası **çürüdü**.
+**Ucuz onarım (kilitlenmedi):** kriter 11'e üçüncü ayak — altın küme çıktısında değer dizgesi aranır.
+🟡 **İKİNCİ AÇIK KALEM:** builder M121/M122 için altın kümeyi **yeniden tasarladı** (vaka 10, 20b ve 24'e
+ayırt edici kayıtlar). *Hassaslaştırma mı, testi mutanta uydurmak mı* — **Cowork ölçmedi**;
+`KANIT\A9b\02-MUTANT\00-DOGRULAMA.txt` okunmayı bekliyor.
+
+🔴 **SIRADAKİ İŞ — ① `.NET 10` GEÇİŞİ (A10'dan ÖNCE, Onur onayladı).** .NET 9 **STS** ve desteği
+**10 Kasım 2026**'da bitiyor; .NET 8 de **aynı gün** bitiyor ⇒ hedef **.NET 10 LTS (Kasım 2028)**.
+Sıra **pazarlıksız**: `global.json` ile SDK **9.0.316**'ya pinle → `verify.ps1` yeşil mi ölç →
+`winget install Microsoft.DotNet.SDK.10` (Onur) → `dotnet --version` **hâlâ 9.0.316** demeli →
+`verify.ps1` yeniden → geçiş spec'i. 🔴 **`global.json` YOK; SDK 10 kurulunca `TreatWarningsAsErrors=true`
+yüzünden mevcut yeşil build KIRILIR.** Ölçülen tek ciddi paket riski: **`Mediator` 3.0.2** (source
+generator, kararlı .NET 10 sürümü yok). `Npgsql` sağlayıcı **10.0.3 hazır**.
+**② A10** — debug `network_security_config.xml` · `INTERNET` iznini `src/main`'e · geliştirme modunda
+`devUserId` alanı → **③ gerçek cihazda uçtan uca senkron kanıtı** (projenin en büyük ölçülmemiş iddiası)
+→ ④ iOS iskelesi + CI → ⑤ `SS2` (dar) → ⑥ web borcu + release → ⑦ `ADR 0004` + vitrin.
+
+🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026).** Reddedilmedi; kapı **iki koşul birlikte** sağlanınca
+açılır: ① cihaz senkron kanıtı kapandı ② hedef şirket yığını belli oldu ve MSSQL orada standart.
+Ölçülen maliyet: Infrastructure **16 dosya / 1.388 satır** (ham SQL ağırlıklı, **63** Postgres sözdizimi) +
+migration **7 dosya / 1.390 satır** (sıfırdan) + `Testcontainers.PostgreSql` → `MsSql`. **Domain etkilenmez**
+(`Rule3`). En riskli parça `FOR UPDATE SKIP LOCKED` → `UPDLOCK/READPAST` ve **mutantının yeniden kanıtı**.
+🔴 **YENİ BORÇ — README YOK.** Repo public, klonlayana **tek satır talimat yok**; bu, dışarıdan gelen
+*"Docker zor iş"* itirazının **haklı çekirdeği**. `BORCLAR.md` budanırken eklenecek.
 
 🟡 Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR (§2 adım 7 ve 9).
 
@@ -121,7 +130,7 @@ beyanlı-kilit durumu, K79). Kilit **beyanla** yaşıyor; mekanik kapı A9b kabu
 | `design-token-kapisi.py` **0.2.0** | `DESIGN.md` ↔ Dart token kapısı `D0`–`D6` (D1 sıkılaştırma + D5 + D6 T8'de) | **18/18** |
 | `pub-cve-kapisi.py` (G2) | `pubspec.lock` ↔ `/advisories`; `withdrawn` atar, `ignored_advisories` **yutmaz** | **8/8** |
 | `pub-lisans-kapisi.py` (G3) | `pubspec.lock` ↔ `/metrics` SPDX; *bilinmeyen ≠ temiz*; **metin-kanıtlı eşleşme** (`lisans-eslesme.json`, kanıtsız eşleşme KIRMIZI) | **6/6** |
-| `iddia-kapisi.py` **1.1.0** | belgenin **kendi sayı iddiasını** tablosuyla (`I1`, Türkçe sayı sözcükleri dâhil) ve **beyan edilen her mutantın ham kanıtını** KANIT diziniyle (`I2`/`I3`) karşılaştırır; **envanter reddi** (`LISTE_ESIGI=8`) ve **dairesel kanıt yasağı** (özet/hüküm dosyaları kanıt sayılmaz) | **12/12** |
+| `iddia-kapisi.py` **1.2.0** [A9b] | saf çekirdek (`kanit_topla`/`denetle`); kanıt eşlemesi **yalnız HAM dosya adından** (`I2`/`I3`), dairesel-kanıt filtresi ad-içi arar, envanter reddi (`LISTE_ESIGI=8`, iki yönlü pinli); `I1` artık **satır-sha keyli, dosya-kapsamlı** muafiyet alabiliyor (`iddia-muafiyet.json`) | **26/26** |
 | `tek-kopya-kapisi.py` **1.1.0** | tek kopya dosyaların **HEAD'e göre regresyonunu** ölçer (`S0`–`S10`); sınıf başına farklı kural: append-only **küçülmez**, kilitli **sapmaz**, canlı **%10 budanabilir**; muafiyet gerekçesiz olamaz, **ölü muafiyeti söyler** | **19/19** |
 | `tek-kopya-mutant.py` | kapının **ölçüm ayağını** gerçek depoda kanıtlar: arşivi 0 bayta düşürür, satır siler, kilitli dosyayı **aynı boyutta** değiştirir, `.tmp` bırakır, UTF-8'i bozar, dosyayı siler — hepsinde kapının **ısırdığını** ölçer | **11/11** |
 | `hafiza-dizin.py` **1.1.0** | `PROJE_HAFIZA.md`'nin başına **türetilmiş** checkpoint dizini yazar; **fikirli** (koşum 2–3'te sha sabit) ve kendi çıktısını doğrular | **13/13** |

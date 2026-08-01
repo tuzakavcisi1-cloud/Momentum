@@ -1,0 +1,18 @@
+[
+  {
+    "kod": "I1",
+    "dosya": "GOREV_CLAUDE_CODE/GOREV-A9-cakisma-cozum-metin-kaybi.md",
+    "satir_sha": "cce0b4ffe9dde600",
+    "ham_sha": "0bc7b762c7481f87",
+    "borc": "ARAC-YANLIS-POZITIFI",
+    "gerekce": "A9 spec satir 307 bir DEYIMDIR; Turkcede 'bir' burada sayi degil belirsiz tanimliktir. Kapinin I1 ayagi deyimi toplam iddiasindan ayirt edemiyor. Olculdu: bu kalip tum GOREV_CLAUDE_CODE/*.md icinde YALNIZ o dosyada geciyor, yani sinif tekrar etmiyor; regex daraltmak kapsama kaybi olurdu. Satir degisirse bu muafiyet OLUR."
+  },
+  {
+    "kod": "I1",
+    "dosya": "GOREV_CLAUDE_CODE/GOREV-A9-cakisma-cozum-metin-kaybi.md",
+    "satir_sha": "ed463e260d56e1ed",
+    "ham_sha": "640c19cffa2167a8",
+    "borc": "ARAC-YANLIS-POZITIFI",
+    "gerekce": "A9 spec satir 18, o spec'in 0. bolumunde REDDEDILEN v1'in ne yaptigini anlatan TARIHSEL bir cumledir; yururlukteki tablonun toplami degildir. Kapi tarihsel anlatimi yururlukteki iddiadan ayirt edemiyor. Satir degisirse bu muafiyet OLUR."
+  }
+]
