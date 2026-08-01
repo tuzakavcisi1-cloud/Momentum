@@ -17,10 +17,13 @@ secrets.json
 key.properties
 
 # ---- .NET / ASP.NET Core ----
+# K107 (oturum 46, Onur kilidi): `[Dd]ebug/` ve `[Rr]elease/` SILINDI.
+# Olculdu: bin/Debug ve obj/Release ZATEN yukaridaki bin/ ve obj/ ile yakalaniyor;
+# o iki desen bu depoda tek bir .NET ciktisini bile korumuyordu (git status --ignored
+# ile sayildi: 0 eslesme) ama Android'in `android/app/src/debug|release/` KAYNAK
+# kumelerini SESSIZCE yutuyordu -- A10'un iki dosyasi `git add -f` ile girmek zorunda kaldi.
 bin/
 obj/
-[Dd]ebug/
-[Rr]elease/
 x64/
 x86/
 *.user

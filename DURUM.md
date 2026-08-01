@@ -60,9 +60,10 @@ build **Cowork'ün kendi ölçümüyle** kabul edildi (K26, beyana güvenilmedi)
 satır** · analyze **0** · **test 481/481** · **temiz release derlemesi** EXIT 0 · `aapt2` **37.0.0** ile APK'da
 **INTERNET var** · release birleştirilmiş manifestinde `networkSecurityConfig` **YOK** (pozitif kontrollü) ·
 kapsam sızması **yok** · 11 mutantın **44** kanıt dosyası. Kapılar **`G17`–`G21`**, mutantlar **`M125`–`M135`**.
-🔴 **YENİ BORÇ — `.gitignore` KAYNAK KÜMESİ YUTUYOR:** satır 22 `[Dd]ebug/` **ve** satır 23 `[Rr]elease/`,
-`android/app/src/<debug|release>/` altındaki **her yeni dosyayı sessizce** yok sayıyor (`git check-ignore -v` ile
-ölçüldü; A10'un iki dosyası `add -f` ile girdi). **Onur kilidi bekliyor** — desenler `bin/`+`obj/`'ye çapalanmalı.
+🟢 **`.gitignore` TUZAĞI KAPANDI (K107 · Onur kilidi).** `[Dd]ebug/` + `[Rr]elease/` **silindi**: ölçüm bu iki
+desenin depoda **tek bir** dosya bile yakalamadığını (`--ignored=matching` ile sayıldı: **0**), buna karşılık
+`android/app/src/<debug|release>/` kaynak kümelerini **sessizce yuttuğunu** gösterdi. `bin/`+`obj/` .NET çıktısını
+zaten kapsıyor (ölçüldü). Silme sonrası yok sayılan küme **değişmedi**; Android kaynak kümeleri artık **görünür**.
 🟡 `D5` kör kapı, A9b hassaslaştırma ve `vaka 20b`: gerekçeler **arşivde** (K100 · K102 · K104 · K106).
 
 🟢 **① `.NET 10` ADIM 1–5 KAPANDI (K102).** `global.json` pini **ISIRIYOR** (repo içi 9.0.316 / dışı 10.0.302);
