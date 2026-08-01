@@ -131,6 +131,14 @@ class GorevSatiri extends StatelessWidget {
     );
   }
 
+  /// GOREV-A8 [K90/spec SS4/Y1]: liste satirinda tek satir DOGRU davranistir
+  /// -- sabit, OLCULMEZ (S1). Kayip KABUL EDILIR; `Semantics(label:
+  /// gorev.baslik)` (satir 125) tam metni tasir. `ellipsis` TEK BASINA
+  /// metni FIILEN tek satira indirdigi icin (B3, KANIT/A7) bugunku FIILI
+  /// davranis zaten budur -- degisiklik ORTUK olani ACIK yapar, duzen
+  /// DEGISMEZ (G13/G14/G15 risk almaz).
+  static const int kGorevSatiriBaslikMaxSatir = 1;
+
   Widget _baslik(BuildContext context) {
     return Text(
       gorev.baslik,
@@ -141,6 +149,7 @@ class GorevSatiri extends StatelessWidget {
             : TextDecoration.none,
       ),
       overflow: TextOverflow.ellipsis,
+      maxLines: kGorevSatiriBaslikMaxSatir,
     );
   }
 

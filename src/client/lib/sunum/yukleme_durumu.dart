@@ -14,6 +14,10 @@ class YuklenmeDurumu extends StatefulWidget {
 }
 
 class _YuklenmeDurumuState extends State<YuklenmeDurumu> {
+  /// GOREV-A8 [K90/spec SS4/Y5]: OLCULDU (KANIT/A8/00-OLCUM.txt), izgaranin
+  /// en kotu noktasinda (320dp x 2.0x).
+  static const int kYuklemeDurumuMaxSatir = 2;
+
   bool _duyuruYapildi = false;
 
   @override
@@ -43,6 +47,7 @@ class _YuklenmeDurumuState extends State<YuklenmeDurumu> {
             Text(
               Metinler.yukleniyor,
               overflow: TextOverflow.ellipsis,
+              maxLines: kYuklemeDurumuMaxSatir,
               style: MTipo.govdeM.copyWith(color: MRenk.metinIkincil(context)),
             ),
           ],
