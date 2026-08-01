@@ -1,8 +1,8 @@
 # DURUM.md — Momentum · CANLI DURUM (her oturumun TEK zorunlu okuması)
 
-> **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı şu an **hiçbir kapı zorlamıyor** (beyan edilmiş zayıf kontrol, ilk ısırışta araç yazılır).
+> **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` **1.0.0** zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**.
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 30 Tem 2026, **oturum 42** — `KAPILAR.md` doğdu (**K89**, kapı-tetik tablosu; §2 referansla bağlar), §3 docker beyanı K80 gereği **ölçüme** çevrildi, §6 envanteri **18 → 20** satır, §2/7ye `fetch` ve §2/9a `adb` tam yolu eklendi. *(Oturum 39–41de yapılan iş arşivdedir.)*
+> **Son güncelleme:** 1 Ağu 2026, **oturum 45** — açılış protokolü **9 adım** koştu; `T2` SARI ısırdı ⇒ **K73 budaması (K101)**: §3/§4/§8 tarihçesi arşive taşındı ve **iki ölü *"araç YOK"* beyanı** düzeltildi (`oturum-sagligi.py` **1.0.0** ve `belge-tavan-kapisi.py` **1.0.0** VARDIR ve koştular). *(Oturum 39–44te yapılan iş arşivdedir.)*
 
 ---
 
@@ -37,10 +37,7 @@
 |---|---|
 | **Backend** | ✅ slice-1 → 3e (3e'de **tek bayt yazılmadı**, ayak 2b2'de bitmişti). `araclar\verify.ps1` ⇒ build **0 uyarı/0 hata** · **test 120/120** · CVE 0 · EXIT 0. |
 | **Veritabanı** | PostgreSQL / Docker; konteyner adı **`momentum-postgres`**. 🔴 **ÇALIŞMA DURUMU BURAYA YAZILMAZ — §2 adım 9'da ÖLÇÜLÜR (K80).** *(Oturum 42: bu hücre `✅ … Up (healthy)` diyordu; ölçüm `docker ps -a` ⇒ **`Exited (255)`** çıktı. K80'i doğuran bayat-PID vakasının ikinci kopyasıydı.)* |
-| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Cowork'ün kendi koşumu (session 37, K81): `analyze --fatal-infos` **0** · `flutter test` **171/171** · kapılar `G1`–`G12`; 🟢 `design-token-kapisi.py` **EXIT 0** (iki devralınmış `D2` 4a ile kapandı — K88) · `M1`–`M73` mutantların hepsi ısırdı.
-🟢 **A‑7 KAPANDI (ölçüldü):** `G13`/`G14`/`G15` yeşil · `M74`–`M87` **14/14 ısırdı** · `CM1`–`CM3` cihazda geçti. 🔴 `DESIGN.md`'de kapanmadı (K46).
-🟢 **A‑8 KAPANDI (Cowork BAĞIMSIZ doğruladı, K26):** `lib/sunum`'daki **beş** metin kaybı kapandı (adlandırılmış `maxLines` sabitleri; `ellipsis` **korundu**). Yeni kapı **`G16`** (`A1`–`A4`, 9 noktalı ölçek×genişlik ızgarası) · `M88`–`M97` **10/10** · `flutter test` **428/428** (Cowork kendi koştu) · regresyon **122/122**.
-🟢 **A‑9 KABUL (ürün+kapı) — Cowork BAĞIMSIZ ölçtü (K26):** `CakismaCozumSayfasi` public + iki adlandırılmış `maxLines` (`Y6=1` sabit, `Y7=6` **ölçüldü**) · `G5`'e **sınıf kapısı** `R2` + **pozitif kontrol** `R4` (aday sayısı 8) · `G16`'ya `_y6`/`_y7` + kod-içi kapsam koruması `A0` · `flutter test` **476/476** ve `G16` **208** (A0 1·A1 45·A2 63·A3 54·A4 45) Cowork'ün kendi koşumu · `M98`–`M108` **11/11**. 🟢 **A9 KAPANDI (K100, 1 Ağu 2026):** kriter 12 Cowork'ün kendi koşumuyla yeşil — `iddia-kapisi.py` **1.2.0** `EXIT 0`, `I3` **0**, `[KIRMIZI] I1` **0**, muafiyet **2**. |
+| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 + A7/A8/A9 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Kapılar **`G1`–`G16`** + `design-token-kapisi.py` + `iddia-kapisi.py` **1.2.0**. Ölçülen mutantlar: **`M1`–`M108`** (dilim dilim) + A9b'nin **14** kanıtı; 🔴 **`M119` ISIRMIYOR** — `D5` kör kapı borcu (§4). Son koşumlar **Cowork'ün kendisi** (K26): `flutter test` **476/476** · `G16` **208** (A9 kabulü) · `analyze --fatal-infos` **0** (K81 koşumu). 🔴 A‑7 `DESIGN.md`'de kapanmadı (K46). Tur tur anlatım **arşivde** (K73). |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
 | **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR.** *(1 Ağu 2026'da ısırdı: bu satır "aynı iki artefakt" diyordu, ölçüm **11 kırmızı artefakt** verdi — ikisi oturum 42'nin kendi ürettiği R3'tür. Sayı yazan satır bayatlar, ölçüme atan satır bayatlamaz: K82-b'nin radar hâli.)* 🔒 **K83 — Onur şık (4) DURDUR'u kilitledi (30 Tem 2026):** park yürürlükte, dört-şık ritüeli **tekrarlanmadı** (talimat gereği). **R8 SUSTU** — bu oturumda **197 satır ürün kodu** ölçülerek yazıldı (K86), sayaç bu commit'le **düştü** (K55). |
@@ -52,15 +49,10 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **K89–K93 · K94 · K95 — KAPANDI (oturum 42–44).** `KAPILAR.md` doğdu · `GOREV-A8` v2 ve `GOREV-A9` v3
-kilitlendi · A9 ürün+kapı kabul edildi. Tam anlatım **arşivde** (K73 doktrini).
-🔒 **K97 — K34-f ÖLÇÜLDÜ: `iddia-kapisi.py`'yi COWORK YAZDI** (`ebf7f62` aracı hafıza+durum+defterle
-**birlikte** taşıyor) ⇒ **onaran el CLAUDE CODE**. K94'ün *"Claude Code yazdı"* çıkarımı **ÇÜRÜDÜ**.
-🔒 **K98 · K99 — `GOREV-A9b` v2 KİLİTLENDİ** (**30.046 b · `AF624471`**); bir denetim turu **iki mercekle**
-koştu ⇒ 14 bloker, dördü mimariyi değiştirdi (`D0` saf çekirdek ayrımı · `D7` seviye-duyarlı `_vaka()`).
-🟢 **K100 — `A9b` KABUL, `A9` KAPANDI (1 Ağu 2026).** Cowork **builder'ın çıktılarını okumadan** ölçtü (K26):
-`iddia-kapisi.py` altın kümesi **26/26** · A9/A8/A7 üçü de **EXIT 0** · sayı-tazeliği · kapı-kapsama · öz-tutarlılık · tek-kopya ·
-belge-tavan **hepsi EXIT 0** · 14 mutant kanıtı yerinde · `.git\index.lock` **yok**.
+🔒 **K89–K100 — KAPANDI (oturum 42–44).** `KAPILAR.md` doğdu · `GOREV-A8` v2 · `GOREV-A9` v3 · **`GOREV-A9b` v2**
+(**30.046 b · `AF624471`**) kilitlendi · K97'de **K34-f ÖLÇÜLDÜ** (`iddia-kapisi.py`'yi Cowork yazdı ⇒ onaran el
+Claude Code) · 🟢 **`A9` KABUL ve KAPANDI** (K100, 1 Ağu 2026; Cowork builder'ın çıktılarını **okumadan** ölçtü —
+K26; `araclar/iddia-kapisi.py` altın küme **26/26**, A9/A8/A7 üçü de EXIT 0, 14 mutant kanıtı). Tam anlatım **arşivde** (K73 doktrini).
 
 🔴 **AÇIK BORÇ — `D5` KÖR KAPI (K100'de ölçüldü).** **M119** hiçbir mekanik kapıyı düşürmüyor: kriter 11'in
 iki ayağı da sabitin **ADINI** ve eski metnin **yokluğunu** ölçüyor, **SAYISAL DEĞERİNİ ölçmüyor**. Değer
@@ -104,8 +96,8 @@ migration **7 dosya / 1.390 satır** (sıfırdan) + `Testcontainers.PostgreSql` 
 - **K53** — Verimlilik reformu: kâğıt denetim turu tavanı **1** · radar KIRMIZI'da varsayılan **DEVRET** · koşan-uygulama-mutant tavanı **3** · iki oturum 0 ürün kodu = **sert durak (`R8` — K57'de `R7`'den yeniden adlandırıldı)** · hafıza bölündü.
 - **K60** — **Tek kopya dosyaya yazan her betik ATOMİK yazar:** önce `metin.encode("utf-8")` (hata dosyaya **dokunmadan** patlar), sonra `.tmp`, en son takas. Gerekçe ucuz değil: oturum 31'de `io.open(yol,"w")` `PROJE_HAFIZA.md`'yi **önce boşalttı** ⇒ 542 KB arşiv 0 bayta düştü; kurtaran **şanstı** (`git restore`). ✅ Kapısı var: `tek-kopya-kapisi.py`. **Beyan edilen sınır:** kapı hasarı **önlemez**, sessiz kalmasını imkânsız kılar. 🔴 **oturum 34 EKİ:** bu makinede `os.replace` `WinError 5` veriyor ⇒ takas **üç adımlı yedekli** yapılır (§7).
 - **K57‑b** — `araclar/radar.py` **plugin 0.2.0 ile BAYT-ÖZDEŞ** (`46E3A8BC`); proje-yerel not **eklenmez** ⇒ sapma **tek sha ile** ölçülür.
-- **K58** — `DURUM.md` tavanı **12 → 32 KB**. Gerekçe okuma kapasitesi **değil**: ① R4 freni, ② dikkat (3,5k token okunur, 40k *göz gezdirilir*). Gevşetmenin dayanağı: bayat-atıf sınıfı **mekanikleşti**. 🔴 Tavanı **hiçbir kapı zorlamıyor** — beyan edilmiş **zayıf kontrol**; ilk ısırışta `belge-tavan-kapisi.py` yazılır. Ayrıca `PROJE_HAFIZA.md`'ye **mekanik dizin** (`hafiza-dizin.py`); **yeni checkpoint `<!-- DIZIN:SON -->` ALTINA** eklenir.
-- 🔴 **`araclar/oturum-sagligi.py` YOK — K21'in MEKANİK KAPISI EKSİK [K21-DÜZELTME, oturum 34].** Kural artık mutlak eşikli ve tek kanonik yerde, ama *"özet kanonik değerden sapmış mı?"* sorusunu **hiçbir araç sormuyor** — kanonik-kopya sınıfı bu projede beş kez ısırdı. Araç: transcript'ten **mutlak** token okur, rengi mutlak eşikten hesaplar, paydaya DOKUNMAZ, `CLAUDE.md`'nin K21 bloğunu kanonik değerlerle karşılaştırır, **payda yanlışlama testini** koşar. Altın küme: bilerek bozulmuş bir özet satırını yakalamalı. **Build'den sonra ilk ARAÇ işi** (K44-a; şimdi yazılmadı çünkü `R8` sert durağı yeni araç turunu da yasaklıyor — Onur'un kilidi: F1+F2+F4 şimdi, F3 build sonrası).
+- **K58** — `DURUM.md` tavanı **12 → 32 KB**. Gerekçe okuma kapasitesi **değil**: ① R4 freni, ② dikkat (3,5k token okunur, 40k *göz gezdirilir*). Gevşetmenin dayanağı: bayat-atıf sınıfı **mekanikleşti**. 🟢 Tavanı artık `belge-tavan-kapisi.py` **1.0.0** (altın küme **9/9**) zorluyor ve §2 adım 3'te koşuyor — zayıf kontrol **KAPANDI**; ilk ısırışı oturum 39'da (`T2`), ikincisi oturum 45'te oldu. Ayrıca `PROJE_HAFIZA.md`'ye **mekanik dizin** (`hafiza-dizin.py`); **yeni checkpoint `<!-- DIZIN:SON -->` ALTINA** eklenir.
+- 🟢 **K21'in mekanik kapısı ARTIK VAR:** `araclar/oturum-sagligi.py` **1.0.0**, altın küme **26/26**; oturum 45 açılışında koştu — `S4` = **136.192 token** (🟢), payda yanlışlama testi ısırmadı. 🔴 **Bu satır oturum 45'e kadar *"araç YOK"* diyordu — ölü beyan, K101'de budandı.** Kalan borç (*"alıntı ≠ beyan"* yanlış-pozitifi, K97/§2b): `BORCLAR.md`.
 - **K55** — Başka bir el çalışırken `git add -A` **YASAK**; `urun_kodu_satiri` = *"o oturumda repoya giren ürün kodu, **hangi el olursa olsun**"*.
 - **K56** — Kanonik kök **saf ASCII** (`C:\dev\Momentum`); `android.overridePathCheck` **eklenmez**, junction **kullanılmaz**.
 - **K46** — `DESIGN.md`'ye **tek bayt yazılmaz** (BD‑1…BD‑7 borçları açık).
@@ -177,11 +169,9 @@ migration **7 dosya / 1.390 satır** (sıfırdan) + `Testcontainers.PostgreSql` 
 
 ## 8. AÇIK BORÇLAR → **`BORCLAR.md`**
 
-🔴 **Bu bölüm 30 Tem 2026'da (oturum 39, Onur'un kilidi K83) `BORCLAR.md`'ye TAŞINDI.** Ölçülmüş gerekçe:
-`belge-tavan-kapisi.py` **T2 SARI** verdi — `DURUM.md` **31.744 / 32.768 b**, pay yalnız **1.024 b** (eşik 1.638)
-⇒ bir sonraki checkpoint tavanı **AŞACAKTI**. Taşınan blok **10.395 b**; **açılışta okunan bayt 31.744 → 21.349**.
-Toplam bayt azalmadı — azalan şey **her oturumun okumak zorunda olduğu** bayttır; kazanç budur, başka bir şey değil.
-`BORCLAR.md` **açılışta okunmaz**, kendi tavanını taşır ve `belge-tavan-kapisi.py` kapsamındadır.
+🔴 **Bu bölüm 30 Tem 2026'da (oturum 39, kilit K83) `BORCLAR.md`'ye TAŞINDI.** Kazanç toplam bayt değil, **her
+oturumun okumak zorunda olduğu** bayttır (31.744 → 21.349). `BORCLAR.md` açılışta **okunmaz**, kendi tavanını
+taşır, `belge-tavan-kapisi.py` kapsamındadır. Ölçüm ve gerekçenin tamamı **arşivde** (K83).
 
 ---
 
