@@ -36,17 +36,25 @@ VARSAYILAN_KAPSAM = [
     ("DURUM.md", 32768, "K58 -- R4 freni + dikkat; 12 KB'den yukseltildi"),
     ("CLAUDE.md", 32768, "acilista TAM okunur; DURUM.md ile ayni gerekce"),
     ("DESIGN.md", 32768, "K46 ile donduruldu; tavan yine de olculur"),
-    ("BORCLAR.md", 16384, "K83 -- DURUM.md 8'den ayrildi, acilista OKUNMAZ. Tavan "
-     "DURUM.md'nin YARISI ve bu bilinclidir: bu listenin buyumesi borcun "
-     "kapanmadigi sinyalidir, kapinin isirmasi DOGRU davranistir"),
+    ("BORCLAR.md", 24576, "K83 -- DURUM.md 8'den ayrildi, acilista OKUNMAZ. Tavan "
+     "DURUM.md'nin YARISI idi (16384) ve bu bilincliydi: listenin buyumesi borcun "
+     "kapanmadigi sinyalidir. OTURUM 49'DA 24576'YA YUKSELTILDI (Onur) -- OLCULMUS "
+     "GEREKCE: (1) oturum 48 budamayi OLCTU, 2 kalem kapandi 2 yeni dogdu, net +258 b "
+     "=> budama bu dosyada ISE YARAMIYOR; (2) dosyada bolum basligi ('## ') YOK ve "
+     "yalniz 4 satir kapanma isareti tasiyor => arsivlenecek olu kutle de YOK; "
+     "(3) pay 212 b'ye dustugu icin kapi artik borcun KAPANMASINA degil "
+     "KAYDEDILMESINE baski yapiyordu -- oturum 49 dort YENI olculmus borc uretti ve "
+     "hicbiri yazilamadi. Gorunur borcu gorunmez yapan bir esik, uzun listeden KOTUDUR. "
+     "BEYAN EDILMIS BEDEL: bu bir GEVSETMEDIR; karsiliginda K40'in 'esik degistiren "
+     "altin kumeye vaka ekler' sarti bu turda MEKANIKLESTI (vaka 10)."),
     ("KAPILAR.md", 16384, "K89 -- kapi-tetik tablosu; DURUM.md 2'den ayrildi (Onur, sik B), "
-     "acilista OKUNMAZ. Tavan BORCLAR.md ile ayni: bu tablo buyurse kapi sayisi "
-     "degil ANLATIM buyumus demektir. BEYAN EDILMIS SINIR: bu eklemeyi altin kume "
+     "acilista OKUNMAZ. Tavan ORTAM.md ile ayni (16 KB; BORCLAR.md oturum 49'da 24 KB'ye cikti, bu tablo CIKMADI): bu tablo buyurse kapi sayisi "
+     "degil ANLATIM buyumus demektir. OLU BEYAN KAPANDI [oturum 49] -- eskiden burada su yaziyordu: bu eklemeyi altin kume "
      "KANITLAMAZ (kume VARSAYILAN_KAPSAM'a dokunmuyor, kayitli borc); kapsamin "
-     "isirdigi oturum 42'de dosya yokken T0 ile el ile olculdu"),
+     "isirdigi oturum 42'de dosya yokken T0 ile el ile olculmustu. VAKA 10 ARTIK KAPSAM TABLOSUNDAKI HER TAVANI PINLIYOR => K89'dan beri tasinan o borc KAPANDI"),
     ("ORTAM.md", 16384, "Oturum 49 -- DURUM.md 7'den ayrildi (Onur kilitledi). BORCLAR/KAPILAR'dan "
      "FARKI: bu dosya ACILISTA OKUNUR (DURUM.md 2 adim 1), cunku basvuru degil OPERASYONEL bir "
-     "mayin listesidir. Tavan onlarla ayni (16 KB) ve bu bilinclidir: bu liste buyurse mayin "
+     "mayin listesidir. Tavan KAPILAR.md ile ayni (16 KB) -- BORCLAR.md ile DEGIL, o oturum 49'da 24 KB oldu -- ve bu bilinclidir: bu liste buyurse mayin "
      "sayisi degil ANLATIM buyumus demektir -- mekaniklesen madde SILINIR (K73). Kapsam eklemesi "
      "kor kalmasin diye T1 mutantiyla olculdu (M138): 17000 b'lik ORTAM.md ile kapi KIRMIZI verdi"),
 ]
@@ -157,6 +165,44 @@ def altin_kume():
        bekle_hukum="KIRMIZI")
     kp("9) SIFIR BAYT -- pay tavana esit, SUSMALI (bu kapinin isi DEGIL; S1 tek-kopya'nin)",
        [_o(bayt=0)], (), ("T1", "T2"), bekle_hukum="YESIL")
+
+    # --- 10) K40 MEKANIKLESTI [oturum 49] ------------------------------------
+    # K40: "Esik degistiren, ALTIN KUMEYE YENI VAKA EKLEMEK ZORUNDADIR -- esigi
+    # gevsetip altin kumeyi guncellememek olcum aracini kasten korlestirmektir."
+    # Bu vaka o sarti PROZADAN KAPIYA tasir: kapsam tablosundaki HER tavan burada
+    # PINLIDIR. Bir esigi degistiren el bu satiri da degistirmek ZORUNDADIR, yoksa
+    # aracin kendi altin kumesi KIRMIZI verir ve degisiklik sessizce gecemez.
+    # AYRICA: K89'dan beri yazili olan "altin kume VARSAYILAN_KAPSAM'a dokunmuyor,
+    # kayitli borc" beyani BU VAKAYLA KAPANIR.
+    BEKLENEN_KAPSAM = {
+        "DURUM.md": 32768,
+        "CLAUDE.md": 32768,
+        "DESIGN.md": 32768,
+        "BORCLAR.md": 24576,   # oturum 49'da 16384'ten yukseltildi (Onur)
+        "KAPILAR.md": 16384,
+        "ORTAM.md": 16384,     # oturum 49'da dogdu
+    }
+    olculen = {y: tv for y, tv, _ in VARSAYILAN_KAPSAM}
+    ok10 = (olculen == BEKLENEN_KAPSAM)
+    print("\n[%s] 10) KAPSAM TAVANLARI PINLI -- K40'in mekanik hali" % ("GECTI" if ok10 else "KALDI"))
+    print("    beklenen: %s" % sorted(BEKLENEN_KAPSAM.items()))
+    print("    olculen : %s" % sorted(olculen.items()))
+    if not ok10:
+        eksik = set(BEKLENEN_KAPSAM.items()) - set(olculen.items())
+        fazla = set(olculen.items()) - set(BEKLENEN_KAPSAM.items())
+        print("    SAPMA -> beklenip bulunmayan: %s | bulunup beklenmeyen: %s"
+              % (sorted(eksik), sorted(fazla)))
+        print("    K40: esigi degistiren el BU VAKAYI da guncellemek ZORUNDADIR.")
+    gecti, kaldi = (gecti + 1, kaldi) if ok10 else (gecti, kaldi + 1)
+
+    # --- 11) YENI TAVANIN SINIR DAVRANISI (gercek kapsam degeriyle) -----------
+    _borclar_tavan = olculen.get("BORCLAR.md", 0)
+    kp("11) BORCLAR.md YENI TAVANINDA bir bayt asim -- T1 isirmali",
+       [_o(yol="BORCLAR.md", tavan=_borclar_tavan, bayt=_borclar_tavan + 1)],
+       ("T1",), (), bekle_hukum="KIRMIZI")
+    kp("12) BORCLAR.md yeni tavanin cok altinda (eski tavanin ustunde) -- SUSMALI",
+       [_o(yol="BORCLAR.md", tavan=_borclar_tavan, bayt=17000)],
+       (), ("T1", "T2"), bekle_hukum="YESIL")
 
     print("\n" + "=" * 78)
     print("HUKUM: %d/%d GECTI -- %s" % (gecti, gecti + kaldi,
