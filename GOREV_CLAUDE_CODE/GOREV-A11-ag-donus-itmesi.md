@@ -1,4 +1,4 @@
-# GOREV-A11 v2.2 — AĞ-DÖNÜŞ İTMESİ (`D0` DARALTMASI) + `Y1` KAÇAĞININ KAPATILMASI
+# GOREV-A11 v2.3 — AĞ-DÖNÜŞ İTMESİ (`D0` DARALTMASI) + `Y1` KAÇAĞININ KAPATILMASI
 
 > **Durum:** KİLİT ADAYI (v2). Onur **dört** kilit verdi (2 Ağu 2026, oturum 49).
 > **Build: Claude Code. Ölçüm/denetim: Cowork (K26).** Araç onarımı bilerek **yazan elden ayrı ele**
@@ -139,7 +139,7 @@ sahte ağın çağrı sayacı ile **birlikte** ölçülür.
 | `j` | 🔴 **`D-A11-4`:** 12 ardışık **taşıma** hatası ⇒ satır **`bekliyor`** kalır, `denemeSayisi` **artmaz**, rozet **`cakisma` OLMAZ** |
 | `k` | 🔴 **`D-A11-4` sınırı [v2.1'de `400` → `401` DÜZELTİLDİ]:** ardışık **`401`** ⇒ `denemeSayisi` **artar**, 9'da satır **`zehirli`** + `sonHataKodu='deneme-tavani'` + rozet `cakisma`. **Bu ayak `A11`'in en riskli yan etkisini ölçer:** `D-A11-4` taşıma ve `5xx`'i sayaçtan muaf tuttuğuna göre, sayacı canlı tutan **başka bir yol kalmalıdır** — yoksa `_denemeTavani = 8` **ölü kod** olur ve zehirli-op koruması sessizce kaybolur |
 | `l` | 🔴 **`D-A11-2`/3:** bekleyen 60 s'lik zamanlayıcı varken **yeni yerel yazma** ⇒ iptal edilir, yeni deneme **2 s**'de |
-| `m` | 🔴 **[v2.2 — builder ikinci kez yakaladı] ÇOK-YUVARLAKLI TUR:** tur **retry'dan** gelir (indeks > 0), sahte ağ **1. çağrıda** `SenkronBasarili` + `hasMore: true` + **dolu sayfa**, **2. çağrıda** taşıma hatası ⇒ yeni `planla()` **2 s**'den başlar (başarı dalı `sifirla()` çizelgeyi sıfırladı). `sifirla()` olmadan **5 s** olurdu. Seed sabit ⇒ **kesin eşitlik** |
+| `m` | 🔴 **[v2.3 — builder ÜÇÜNCÜ kez yakaladı] ÇOK-YUVARLAKLI TUR, `hasMore` İLE DEĞİL TOPLU GÖNDERİM TAVANIYLA.** Kurulum: **101 bekleyen op** (`_bekleyenleriSec()` `..limit(100)` taşır, `:220`) ve tur **retry'dan** gelir (indeks > 0). 1. yuvarlak: 100 op gider, `SenkronBasarili` (**`hasMore` GEREKMEZ**) ⇒ `:182` `sifirla()` ⇒ indeks **0**. 2. yuvarlak: `_bekleyenleriSec()` **kalan 1 op**'u seçer ⇒ `secilenler` **BOŞ DEĞİL** ⇒ taşıma hatası ⇒ `:205` guard'ı **geçer** ⇒ `planla()` **2 s**'den. `M142` ile indeks 1'de kalır ⇒ **5 s**. Seed sabit ⇒ **kesin eşitlik**. 🔴 **v2.2'nin `hasMore` kurulumu ERİŞİLEMEZDİ:** 1. sayfada tek op `Applied` olup silindiğinden 2. yuvarlakta `secilenler` **boş** kalıyor ve `:205`'in `secilenler.isNotEmpty` guard'ı `planla()`'yı **hiç çağırmıyordu** |
 
 ### G23 — `Y1` KAÇAK KAPISI (statik; `yoklama-yasagi-kapisi.py` altın kümesi)
 
@@ -270,6 +270,18 @@ kapsamına **bilerek alınmamıştır** (üç araç onarımı bir dilime sığma
    Kabul kriteri 6'nın *kural* bacağı bu spec için **hiçbir şey ölçmez**. Borç; `A11` kapsamında değil.
 6. **Çakışma rozeti ve çift yönün kabul kriterleri** bu dilimin konusu değildir.
 7. `duzenle`/`sil` yolları `onYerelYazma` sarmalayıcısına hâlâ bağlı değil (oturum 48 borcu).
+12. 🔴 **v2.3 ERRATA — BUILDER ÜÇÜNCÜ KEZ YAKALADI (`G22`/`m` erişilemezdi).** v2.2'nin
+    `hasMore`'lu kurulumunda 1. sayfadaki tek op `Applied` olup **silindiği** için 2. yuvarlakta
+    `_bekleyenleriSec()` **boş** dönüyor; `:205`'teki `if (kuyrugaBak && secilenler.isNotEmpty)`
+    guard'ı `planla()`'yı **hiç çağırmıyordu**. Senaryo **101 op**'a çevrildi (toplu gönderim
+    tavanı `..limit(100)`, `:220`) — böylece 2. yuvarlakta **gerçekten bekleyen** bir op olur.
+    🔴 **BUILDER'IN "kapıyı genişlet — yalnız `kuyrugaBak` yeterli" ŞIKKI REDDEDİLDİ.** Guard'ı
+    `secilenler.isNotEmpty`'siz bırakmak, **kuyruk boşken retry planlanmasına** izin verirdi ve
+    bu, `D-A11-1`'in Onur'a sunulan **daraltma gerekçesini çürütürdü**: *"yeniden deneme yalnız
+    gönderilmemiş iş varken koşar ⇒ boştaki maliyeti sıfırdır."* Ayrıca *"cümle DB durumuna
+    değil turun türüne atıfta bulunur diye YORUMLANIR"* demek, **kilitli bir kararı kodla
+    yeniden yorumlamaktır** — `slice-3d` §1'in yasağı: *bir karar yanlışsa kodla değil, Onur'un
+    kilidiyle değişir.* **Kapı doğrudur; hatalı olan benim senaryomdu.**
 10. 🔴 **v2.2 ERRATA — BUILDER İKİNCİ KEZ YAKALADI (`M142` eşdeğer mutant).** v2'de `M142`
     `G22`/`d`'ye bağlıydı; builder ölçtü: `d`'de başarıdan sonraki hata **dışarıdan** gelen bir
     `turCalistir()`'den doğar ve o giriş noktası (`:98-100`) çizelgeyi **zaten koşulsuz sıfırlar**
