@@ -68,7 +68,7 @@ kırık) · **A10** (**K106**; *"`devUserId` alanı"* derleme-zamanı `--dart-de
 🟢 **⑤ `A11` KABUL EDİLDİ (K121, oturum 50 · Onur kilitledi).** Sekiz kriterin sekizi de **ölçülerek**
 geçti (hepsi **Cowork'ün kendi koşumu**, K26; kanıt `KANIT/A11/`, hüküm `07-KABUL-HUKMU.md`):
 `analyze` **0** · `flutter test` **500/500** · **`M139`–`M155` 17/17 ISIRDI** (üç dosya bayt-özdeş,
-temiz koşum tekrar EXIT 0) · altın küme **26/26** · `spec-kapi-kapsama` **0** · `verify.ps1` **EXIT 0**
+temiz koşum tekrar EXIT 0) · `yoklama-yasagi-kapisi.py` altın küme **26/26** · `spec-kapi-kapsama.py` **0** · `verify.ps1` **EXIT 0**
 (build 0/0 · test 120/120 · CVE 0) · cihazda uçtan uca **186 s çevrimdışı → `T1`+4 s'de boşaldı**.
 🔴 **Yolda İKİ kusur ölçüldü ve kapatıldı:** ① `M141` **hayatta kaldı**, eşdeğerlik **yanlışlandı**
 (prob + orijinal kod EXIT 0, prob + `M141` EXIT 1) ⇒ `A11/G22`/`c` **kördü**, `c2` doğdu ② kriter 7 ile
