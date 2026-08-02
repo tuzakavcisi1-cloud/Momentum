@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` **1.0.0** zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**.
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 2 Ağu 2026, **oturum 48 (K111 — .NET 10)** — açılışın 10 adımı da koştu; **kapı adı çakışması ÖLÇÜLDÜ** (`A9b/G17` ≠ `A10/G17`, `A10/G18` ≠ `A9c/G18`), Onur **K108'i kilitledi**, `kapi-ad-teklik-kapisi.py` yazıldı ve **§2 adım 4b** olarak protokole bağlandı. *(Oturum 39–46'da yapılan iş arşivdedir.)*
+> **Son güncelleme:** 2 Ağu 2026, **oturum 48 (K111 .NET 10 · K112 cihaz senkron)** — açılışın 10 adımı da koştu; **kapı adı çakışması ÖLÇÜLDÜ** (`A9b/G17` ≠ `A10/G17`, `A10/G18` ≠ `A9c/G18`), Onur **K108'i kilitledi**, `kapi-ad-teklik-kapisi.py` yazıldı ve **§2 adım 4b** olarak protokole bağlandı. *(Oturum 39–46'da yapılan iş arşivdedir.)*
 
 ---
 
@@ -65,8 +65,12 @@ hizalaması** çıktı. Geçiş **ATOMİKTİR** — ara durum `CS0023` ile kır�
 Kanıt `KANIT/net10-adim6/`; ayrıntı arşivde (K111); paket borçları `BORCLAR.md`'de.
 **② A10 ✅ KAPANDI (K106).** 🔴 *"Geliştirme modunda `devUserId` alanı"* ifadesi **DARALTILDI**:
 çalışma-zamanı UI alanı **değil**, derleme-zamanı `--dart-define` ezmesi (A10 §8/5) — kullanıcı değiştirmek
-**yeniden derleme + kurulum** ister → **③ gerçek cihazda uçtan uca senkron kanıtı** (en büyük ölçülmemiş iddia;
-kendi ortam maddesini **taşıyacak**, K80: `pm clear` + `ASPNETCORE_ENVIRONMENT` + dış arayüzde dinleme)
+**yeniden derleme + kurulum** ister.
+🟢 **③ YÜRÜYEN İSKELET KOŞTU (K112, oturum 48):** emülatörde oluşturulan görev **PostgreSQL'e ulaştı**
+(iki vaka, 14,4 s / 23,5 s) · `entityId` **UUIDv7** · rozet senkrondan sonra **düştü** · K61 kalkanı ve
+SignalR **canlı**. Kanıt `KANIT/ucuncu-cihaz-senkron/`. 🔴 **AYNI KOŞUMDA BULGU: yerel yazma İTMEYİ
+tetiklemiyor** — *"Yenile"* yalnız çekme koşar, itme **yalnız açılışta**; kapsam boşluğu, **kilit Onur'da**.
+🔴 **ÖLÇÜLMEYEN:** çift yön (sunucu→cihaz) · çevrimdışı/çakışma · **fiziksel cihaz** (yalnız emülatör).
 → ④ iOS iskelesi + CI → ⑤ `SS2` (dar) → ⑥ web borcu + release → ⑦ `ADR 0004` + vitrin.
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026).** Reddedilmedi; **iki koşul birlikte** sağlanınca açılır:
