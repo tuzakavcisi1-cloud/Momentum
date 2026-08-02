@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` **1.0.0** zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**.
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 2 Ağu 2026, **oturum 47 (K108)** — açılışın 10 adımı da koştu; **kapı adı çakışması ÖLÇÜLDÜ** (`A9b/G17` ≠ `A10/G17`, `A10/G18` ≠ `A9c/G18`), Onur **K108'i kilitledi**, `kapi-ad-teklik-kapisi.py` yazıldı ve **§2 adım 4b** olarak protokole bağlandı. *(Oturum 39–46'da yapılan iş arşivdedir.)*
+> **Son güncelleme:** 2 Ağu 2026, **oturum 48 (K111 — .NET 10)** — açılışın 10 adımı da koştu; **kapı adı çakışması ÖLÇÜLDÜ** (`A9b/G17` ≠ `A10/G17`, `A10/G18` ≠ `A9c/G18`), Onur **K108'i kilitledi**, `kapi-ad-teklik-kapisi.py` yazıldı ve **§2 adım 4b** olarak protokole bağlandı. *(Oturum 39–46'da yapılan iş arşivdedir.)*
 
 ---
 
@@ -44,7 +44,7 @@
 | **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR** *(bu satır bir kez "aynı iki artefakt" dedi, ölçüm **11** verdi: sayı yazan satır bayatlar, ölçüme atan bayatlamaz — K82-b)*. 🔒 **K83 — Onur DURDUR'u kilitledi:** park yürürlükte, dört-şık ritüeli **tekrarlanmaz**. 🔴 **`R8` DURUMU DA YAZILMAZ, ÖLÇÜLÜR:** K104'te **ısırdı** (44–45 sıfır), K106'da **düştü**; sayı daima `--olc-urun-kodu <sha>` ile **git'ten** türetilir (K55). |
 | **Git** | **PUSH DAİMA ONUR'DA.** İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR** — komut ve **`fetch` şartı yalnız §2 adım 7'de**; buraya **kopyalanmaz** (kanonik-kopya kusuru bu projede beş kez ısırdı). |
 
-**Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · .NET 9.0.316 · **Windows masaüstü ☠** · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
+**Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · **.NET 10.0.302** (K111; 9.0.316 de kurulu) · **Windows masaüstü ☠** · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
 
 ---
 
@@ -53,29 +53,25 @@
 🔒 **K89–K100 KAPANDI (oturum 42–44):** `KAPILAR.md` · `GOREV-A8` v2 · `GOREV-A9` v3 · `GOREV-A9b` v2
 (**30.046 b · `AF624471`**) · **A9 KABUL**. Anlatım **arşivde** (K73).
 
-🟢 **`GOREV-A10` KABUL EDİLDİ (K106) · `.gitignore` tuzağı KAPANDI (K107 · Onur kilidi).** Ölçüm ve anlatım
-K73 gereği **arşivde**: `R8` açılışta ısırdı → build kabulüyle **düştü**; build **Cowork'ün kendi koşumuyla**
-kabul edildi (K26). Kapılar **`A10/G17`–`A10/G21`**, mutantlar **`M125`–`M135`**; sayılar §3'te ÖLÇÜLÜR.
-🟢 **`GOREV-A9c` KİLİTLENDİ (K109)** — kimlik **§9'da**; iş **Claude Code'a hazır** (K34-f). 🔴 Bir **araç**
-onarımı olduğu için `R8`'i düşürmez ⇒ **oturum 48 ÜRÜN koduyla başlamak zorunda.**
+🟢 **`GOREV-A10` KABUL (K106) · `.gitignore` tuzağı KAPANDI (K107).** Kapılar **`A10/G17`–`A10/G21`**,
+mutantlar **`M125`–`M135`**; anlatım arşivde. 🟢 **`GOREV-A9c` KİLİTLİ (K109)**, iş **Claude Code'a
+hazır** (K34-f) — araç onarımı olduğu için `R8`'i düşürmez.
 🟡 `D5` kör kapı, A9b hassaslaştırma ve `vaka 20b`: gerekçeler **arşivde** (K100 · K102 · K104 · K106).
 
-🟢 **① `.NET 10` ADIM 1–5 KAPANDI (K102).** `global.json` pini **ISIRIYOR** (repo içi 9.0.316 / dışı 10.0.302);
-`verify.ps1` üç kez EXIT 0. Ayrıntı **arşivde**.
-🔴 **KALAN ADIM 6 — geçiş spec'i:** `global.json` → **10.0.302** · `TargetFramework` → **net10.0** ·
-paketler 10.x. Ölçülen tek ciddi risk **`Mediator` 3.0.2** (source generator, kararlı .NET 10 sürümü
-yok); `Npgsql` EF sağlayıcı **10.0.3** hazır. .NET 9 **STS** desteği **10 Kasım 2026**'da biter.
+🟢 **① `.NET 10` GEÇİŞİ KAPANDI (K111, oturum 48 · Onur kilitledi).** Spec YAZILMADAN, **koşan deneyle**:
+`net10.0` + SDK **10.0.302** · `verify.ps1` **EXIT 0** (build 0/0 · test 120/120 · CVE 0) · commit
+`a20e290`+`a0aed23`. Kâğıttaki *"Mediator riski"* **çürüdü**; gerçek engeller **CVE pini** ve **sağlayıcı
+hizalaması** çıktı. Geçiş **ATOMİKTİR** — ara durum `CS0023` ile kırık (izole mutant kanıtlı).
+Kanıt `KANIT/net10-adim6/`; ayrıntı arşivde (K111); paket borçları `BORCLAR.md`'de.
 **② A10 ✅ KAPANDI (K106).** 🔴 *"Geliştirme modunda `devUserId` alanı"* ifadesi **DARALTILDI**:
 çalışma-zamanı UI alanı **değil**, derleme-zamanı `--dart-define` ezmesi (A10 §8/5) — kullanıcı değiştirmek
 **yeniden derleme + kurulum** ister → **③ gerçek cihazda uçtan uca senkron kanıtı** (en büyük ölçülmemiş iddia;
 kendi ortam maddesini **taşıyacak**, K80: `pm clear` + `ASPNETCORE_ENVIRONMENT` + dış arayüzde dinleme)
 → ④ iOS iskelesi + CI → ⑤ `SS2` (dar) → ⑥ web borcu + release → ⑦ `ADR 0004` + vitrin.
 
-🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026).** Reddedilmedi; kapı **iki koşul birlikte** sağlanınca
-açılır: ① cihaz senkron kanıtı kapandı ② hedef şirket yığını belli oldu ve MSSQL orada standart.
-Ölçülen maliyet: Infrastructure **16 dosya / 1.388 satır** (ham SQL ağırlıklı, **63** Postgres sözdizimi) +
-migration **7 dosya / 1.390 satır** (sıfırdan) + `Testcontainers.PostgreSql` → `MsSql`. **Domain etkilenmez**
-(`Rule3`). En riskli parça `FOR UPDATE SKIP LOCKED` → `UPDLOCK/READPAST` ve **mutantının yeniden kanıtı**.
+🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026).** Reddedilmedi; **iki koşul birlikte** sağlanınca açılır:
+① cihaz senkron kanıtı kapandı ② hedef şirket yığını MSSQL. Ölçülen maliyet, `Rule3` ve en riskli parça
+(`FOR UPDATE SKIP LOCKED` → `UPDLOCK/READPAST`) **arşivde**.
 🔴 **YENİ BORÇ — README YOK.** Klonlayana **tek satır talimat yok**; dışarıdan gelen *"Docker zor iş"*
 itirazının **haklı çekirdeği**. 🔴 *"Repo public"* iddiası oturum 47'de **ÇÜRÜDÜ**: buluttan anonim
 `git ls-remote` ⇒ *could not read Username*. Görünürlük **yazılmaz, ölçülür**.
@@ -88,6 +84,9 @@ itirazının **haklı çekirdeği**. 🔴 *"Repo public"* iddiası oturum 47'de 
 
 - **K77 · K78 · K79 · K81 — slice-3e KAPANDI** (iskelet **K78**, `G12` **K81**; ikisi de Cowork'ün kendi koşumuyla, K26). Tasarım/spec kilitleri K73 gereği **çekildi**; kurallar bugün `G12`'nin 15 ayağında (`A1`–`A13` + `A7b`/`A13b`), `araclar/yoklama-yasagi-kapisi.py`'nin `Y1`–`Y4`'ünde ve `M58`–`M73`+`M71b` mutantlarında **koşuyor**. 🔴 **Yaşayan üç beyan:** ① `Y1` **sembol bazlı** (`K79/3` K81'de daraltıldı) ve gövde kuralı beyaz listedekiler **dâhil** herkese uygulanır ② `CursorHint` **yoksayılır** (`D6`) — sinyal yalnız uyandırma zili ③ web'de sinyal **`kIsWeb` ile kapalı**, web ayağı **`[DOĞRULANMADI]`**. 🔴 **İki açık borç:** `Y3`'ün mutantı yok · `G12` kriter 8 **UYGULANMAZ** (biçim standardı `CLAUDE.md`'de). Gerekçeler: hafıza K77–K81.
 - **K76 · K75 · K74 · K71** — **`R9` ve `R10` KABUL EDİLDİ**; tasarım/spec kilitleri K73 gereği §5'ten **ÇEKİLDİ** ve bugün prozada değil `G10`/`G11` kapılarında + `M41`–`M57` mutantlarında **koşuyor**. 🔴 **Yaşayan iki beyan edilmiş sınır:** ① `D2` kural 3'ün `K != 'yerel'` istisnası — kolonu hâlâ `'yerel'` olan ESKİ satırlar sunucuda olsa da *"Yalnızca bu cihazda"* der; ② `R9` öncesi inmiş satırlar `'yerel'` KALIR (migration yasak). 🔴 **`K46` AÇIK** (kapsam: bileşik satır + `gonderilmemis`) ⇒ `DESIGN.md` **v2**. Gerekçeler: hafıza K71/K74/K75/K76.
+- 🔒 **K111 — .NET 10 (Onur kilitledi, 2 Ağu 2026):** çatı `net10.0`, SDK pini `10.0.302`. Kural bugün prozada
+  değil **`verify.ps1`'de ve `global.json` pininde** koşuyor. Geçiş **ATOMİK** (ara durum ölçülerek kırık bulundu);
+  `LangVersion=latest` riski + kapsam dışı paketler + geçici CVE pini `BORCLAR.md`'de. Gerekçe: hafıza K111.
 - 🔒 **K108 — KAPI KİMLİĞİ SPEC-YERELDİR** (Onur kilitledi, 2 Ağu 2026): atıf **daima** kapsam önekli (`A10/G18`). Ölçülmüş gerekçe: `A9b/G17` ≠ `A10/G17`, `A10/G18` ≠ `A9c/G18` (iki farklı kapı, aynı ad; ikisi de kabul edilmiş işin içindeydi) ve dilim spec'lerinin **ilk sekiz kapı kimliği en baştan dilim-yereldi** ⇒ *"küresel dizi"* varsayımı hiç doğru olmamıştı. Hiçbir kilit bozulmadı. Kapısı **var**: `kapi-ad-teklik-kapisi.py` (§6), açılışta **§2 adım 4b**.
 - **K73** — **Bir dilimin tasarım/spec kilitleri, dilim KABUL EDİLDİĞİNDE §5'ten çekilir** ve tek satırlık atıfla temsil edilir; çünkü o andan sonra kural **prozada değil KAPIDA** yaşar (K53 doktrini). Arşivde hiçbir şey silinmez. 🔴 Kapısı **olmayan** kilit çekilemez — bu yüzden `K72` §5'te DURUYOR (`G10` henüz yok).
 - **slice-3b (K57·K59) · slice-3c (K62–K66) · slice-3d (K68–K70) kilitleri** — hepsi **KABUL EDİLDİ** ⇒ K73 gereği §5'ten **ÇEKİLDİ**. Kurallar (`D0`–`D9`, `P1`–`P7`, `A2`/`G` ayakları) bugün prozada değil **kapılarda ve 40 mutantta koşuyor**; spec kimlikleri §9'da, sapma her açılışta `tek-kopya-kapisi.py` ile ölçülür. 🔴 `P6`/`D4` **K72** ile daraltıldı, düzeltmesi **K74** ile kabul edildi (kapısı `G10`). Gerekçeler: hafıza K57–K74.
