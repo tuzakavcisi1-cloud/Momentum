@@ -9,10 +9,24 @@ NEDEN VAR (G12 K79/3):
   kapisi YOKTU. Bu arac dort ayagi (Y1-Y4) MEKANIK olarak olcer:
 
     Y1 -- src/client/lib altinda HER `Timer(`/`Timer.periodic(` cagrisi
-          YALNIZ beyaz listedeki dosyada (signalr_json_sinyal.dart)
-          olabilir. Ayrica HANGI dosyada olursa olsun, govdesinde
-          `cekmeTuruCalistir`/`turCalistir`/`SenkronAgi` gecen bir
-          zamanlayici KIRMIZI'dir (K68'in ta kendisi -- periyodik cekme).
+          YALNIZ beyaz listedeki dosyada (signalr_json_sinyal.dart) VEYA
+          (dosya, sembol) beyaz listesinde (K81) olabilir. Ayrica HANGI
+          dosyada olursa olsun, govdesinde `cekmeTuruCalistir`/`turCalistir`/
+          `SenkronAgi`/`_yuvarlakDongusu` gecen bir zamanlayici KIRMIZI'dir
+          (K68'in ta kendisi -- periyodik cekme).
+          [D-A11-3, K116] `Future.delayed(`/`Future<...>.delayed(` cagrilari
+          DA taranir -- Timer'in ayni yoklama deseni bu sekilde de yazilabilir.
+          Future.delayed icin BEYAZ LISTE sarti YOK (heryerde mesru kullanimi
+          var, ör. animasyon/debounce) -- yalniz govde kurali uygulanir.
+          GOVDE KURALI cagrinin KENDI PARANTEZINDEN kapsayan FONKSIYON/KAPANIS
+          gövdesine tasindi: `while (true) { await Future.delayed(d); await
+          cekmeTuruCalistir(); }` ve `Future.delayed(d).then((_) =>
+          cekmeTuruCalistir())` gibi iki en dogal yoklama bicimi eski (yalniz
+          cagrinin kendi parantezine bakan) kurallada KACARDI.
+          ISTISNA (D-A11-5): `itme_yeniden_deneme.dart::ItmeYenidenDeneme`
+          sembolunde `turCalistir` GOVDE kuralindan MUAFTIR (yeniden deneme
+          bunu CAGIRMAK ZORUNDADIR) -- `cekmeTuruCalistir`/`SenkronAgi`/
+          `_yuvarlakDongusu` o sembolde BILE yasak kalir.
     Y2 -- signalr_json_sinyal.dart'ta `arguments`/`cursorHint` dizgeleri
           YALNIZ yorum satirinda gecebilir (K77/6 -- CursorHint yoksayilir).
     Y3 -- signalr_json_sinyal.dart icinde `/v1/sync` dizgesi -- KOD
@@ -47,7 +61,7 @@ import os
 import re
 import sys
 
-SURUM = "0.1.0"
+SURUM = "0.2.0"
 
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -66,8 +80,18 @@ BEYAZ_LISTE_DOSYA = "signalr_json_sinyal.dart"   # Y2/Y3/Y4 hala DOSYA bazli
 BEYAZ_LISTE_SEMBOL = {
     ("signalr_json_sinyal.dart", "SignalrJsonSinyal"),   # keepalive + geri cekilme
     ("senkron_rozeti.dart", "_DonenOkState"),            # donen ok animasyonu (sunum)
+    ("itme_yeniden_deneme.dart", "ItmeYenidenDeneme"),   # [D-A11-5/K116] itme geri cekilmeli retry
 }
-YASAKLI_GOVDE_TANIMLAYICILAR = ("cekmeTuruCalistir", "turCalistir", "SenkronAgi")
+YASAKLI_GOVDE_TANIMLAYICILAR = (
+    "cekmeTuruCalistir", "turCalistir", "SenkronAgi", "_yuvarlakDongusu",
+)
+# [D-A11-5] O sembolde BILE `turCalistir` izinlidir (retry BUNU cagirmak
+# zorundadir) -- digger uc tanimlayici (cekmeTuruCalistir/SenkronAgi/
+# _yuvarlakDongusu) istisnasiz yasak KALIR. Baska hicbir sembole istisna
+# TANINMAZ (K81 "govde kurali beyaz listedekiler DAHIL herkese uygulanir").
+GOVDE_ISTISNA_SEMBOL = {
+    ("itme_yeniden_deneme.dart", "ItmeYenidenDeneme"): {"turCalistir"},
+}
 DEV_BASLIK_LITERAL = "X-Momentum-Dev-User"
 LIB_ALT_YOLU = os.path.join("src", "client", "lib")
 
@@ -140,6 +164,46 @@ def timer_cagrilari_bul(metin):
     return sonuc
 
 
+def future_delayed_cagrilari_bul(metin):
+    """[D-A11-3] [baslangic_idx, ...] -- her `Future.delayed(`/`Future<...>.delayed(` icin.
+
+    Timer'dan FARKLI: BEYAZ LISTE sarti yok (asagida `_y1`), yalniz govde
+    kurali uygulanir -- bu yuzden burada cagrinin govdesini DEGIL, yalniz
+    KONUMUNU donduruyoruz; govde `kapsayan_fonksiyon_govdesi_bul` ile ayrica
+    hesaplanir.
+    """
+    return [m.start() for m in re.finditer(r"\bFuture(?:<[^>]*>)?\.delayed\s*\(", metin)]
+
+
+def kapsayan_fonksiyon_govdesi_bul(metin, idx):
+    """[D-A11-3] `idx`'i iceren EN KUCUK `{...}` blogunu dondurur.
+
+    Govde kuralinin yeni gozlem alani: cagrinin KENDI parantezi degil,
+    KAPSAYAN fonksiyon/kapanis govdesidir -- `while (true) { await
+    Future.delayed(d); await cekmeTuruCalistir(); }` ve
+    `Future.delayed(d).then((_) => cekmeTuruCalistir())` gibi cagrinin
+    PARANTEZI DISINDA ayri bir ifade/zincir olarak yazilmis yoklama
+    bicimlerini yakalamak icin GEREKLI (D-A11-3/2). Geriye dogru tarayarak
+    (kapanan `}` derinligi ARTIRIR, acilan `{` derinlik 0'dayken HEDEFTIR)
+    en yakin sarici `{` bulunur, sonra ileri eslenir. Sarici blok yoksa
+    dosyanin BASINDAN cagriya kadar olan metin dondurulur (beyan edilmis
+    sinir: dosya-koku fonksiyonlari icin gövde biraz genis olabilir).
+    """
+    derinlik = 0
+    i = idx - 1
+    while i >= 0:
+        c = metin[i]
+        if c == "}":
+            derinlik += 1
+        elif c == "{":
+            if derinlik == 0:
+                kapa_idx = _esleseni_bul(metin, i, "{", "}")
+                return metin[i:kapa_idx + 1] if kapa_idx is not None else metin[i:]
+            derinlik -= 1
+        i -= 1
+    return metin[:idx]
+
+
 def fonksiyon_govdesi_bul(metin, imza_regex):
     """Imzayla eslesen ilk GERCEK TANIMIN govdesini dondurur (yoksa None).
 
@@ -181,33 +245,57 @@ def _kapsayan_bildirim(metin, idx):
 
 # ============================== AYAKLAR =======================================
 
+def _govde_kuralini_uygula(bulgular, yol, temel, sembol, govde, cagri_turu):
+    """[D-A11-3] Kapsayan govdede yasakli tanimlayici ara; (dosya,sembol)
+    icin GOVDE_ISTISNA_SEMBOL'de tanimli istisnalari ATLA (D-A11-5)."""
+    istisna = GOVDE_ISTISNA_SEMBOL.get((temel, sembol), frozenset())
+    for yasakli in YASAKLI_GOVDE_TANIMLAYICILAR:
+        if yasakli in istisna:
+            continue
+        if yasakli in govde:
+            bulgular.append(("Y1", yol,
+                              "YOKLAMA SUPHESI: %s::%s -- %s govdesinde '%s' geciyor"
+                              % (temel, sembol, cagri_turu, yasakli)))
+
+
 def _y1(dosyalar):
-    """K68 + K81: Timer/Timer.periodic SEMBOL beyaz listesi + yasakli govde taramasi.
+    """K68 + K81 + D-A11-3 (K116): Timer/Timer.periodic SEMBOL beyaz listesi +
+    yasakli govde taramasi + `Future.delayed` govde taramasi.
 
     K81 PAZARLIKSIZ: govde kurali beyaz listedekiler DAHIL HER zamanlayiciya
     uygulanir. Eski surumde beyaz liste disindaki dosya `continue` ile atlaniyordu;
     olculdu (M71): senkron ceken bir Timer yalniz "beyaz liste disi" diye
     raporlaniyor, "YOKLAMA SUPHESI" bacagi gercek depoda HIC kosmuyordu.
+
+    D-A11-3 iki genisleme ekler: (1) `Future.delayed` de taranir -- ayni
+    yoklama deseni Timer'siz de yazilabilir; BEYAZ LISTE sarti Future.delayed
+    icin YOK (heryerde mesru kullanimi var), yalniz govde kurali uygulanir.
+    (2) govde kuralinin gozlem alani cagrinin KENDI parantezinden KAPSAYAN
+    fonksiyon/kapanis govdesine tasindi (`kapsayan_fonksiyon_govdesi_bul`) --
+    aksi halde `while (true) { await Future.delayed(d); await
+    cekmeTuruCalistir(); }` ve `Future.delayed(d).then((_) =>
+    cekmeTuruCalistir())` KACAR (D-A11-3/2).
     """
     bulgular = []
     izin = ", ".join("%s::%s" % p for p in sorted(BEYAZ_LISTE_SEMBOL))
     for yol, icerik in sorted(dosyalar.items()):
         temiz_metin = yorum_disi_metin(icerik)
-        cagrilar = timer_cagrilari_bul(temiz_metin)
-        if not cagrilar:
-            continue
         temel = os.path.basename(yol)
-        for idx, govde in cagrilar:
+
+        timer_cagrilari = timer_cagrilari_bul(temiz_metin)
+        for idx, _ in timer_cagrilari:
             sembol = _kapsayan_bildirim(temiz_metin, idx)
             if (temel, sembol) not in BEYAZ_LISTE_SEMBOL:
                 bulgular.append(("Y1", yol,
                                  "BEYAZ LISTE DISI: %s::%s -- izinli: %s"
                                  % (temel, sembol, izin)))
-            for yasakli in YASAKLI_GOVDE_TANIMLAYICILAR:
-                if yasakli in govde:
-                    bulgular.append(("Y1", yol,
-                                     "YOKLAMA SUPHESI: %s::%s -- Timer govdesinde '%s' geciyor"
-                                     % (temel, sembol, yasakli)))
+            govde = kapsayan_fonksiyon_govdesi_bul(temiz_metin, idx)
+            _govde_kuralini_uygula(bulgular, yol, temel, sembol, govde, "Timer")
+
+        for idx in future_delayed_cagrilari_bul(temiz_metin):
+            sembol = _kapsayan_bildirim(temiz_metin, idx)
+            govde = kapsayan_fonksiyon_govdesi_bul(temiz_metin, idx)
+            _govde_kuralini_uygula(bulgular, yol, temel, sembol, govde, "Future.delayed")
     return bulgular
 
 
@@ -344,12 +432,16 @@ _TEMIZ_DIGER = """class Baska {
 """
 
 
-def _fixture(sinyal=None, diger=None, rozet=None):
+def _fixture(sinyal=None, diger=None, rozet=None, itme=None, senkron=None):
     d = {"src/client/lib/ag/signalr_json_sinyal.dart": sinyal or _TEMIZ_SINYAL}
     if diger is not None:
         d["src/client/lib/veri/gorev_deposu.dart"] = diger
     if rozet is not None:
         d["src/client/lib/sunum/senkron_rozeti.dart"] = rozet
+    if itme is not None:
+        d["src/client/lib/veri/itme_yeniden_deneme.dart"] = itme
+    if senkron is not None:
+        d["src/client/lib/veri/senkron_dongusu.dart"] = senkron
     return d
 
 
@@ -483,6 +575,92 @@ def altin_kume():
         _fixture(diger=_TEMIZ_DIGER, rozet="import 'dart:async';\nclass _DonenOkState {\n  void baslat() {\n    Timer.periodic(Duration(seconds: 1), (_) { dongu.cekmeTuruCalistir(); });\n  }\n}\n"),
         ["Y1"],
         icermeli="YOKLAMA SUPHESI",
+    )
+
+    # ---- D-A11-3 (K116) ile eklenen on vaka (G23/a-j) ----
+    _vaka(
+        sonuclar,
+        "16) D-A11-3/a -- Future.delayed(d, () => cekmeTuruCalistir()) -- ISIRMALI",
+        _fixture(diger="class Baska {\n  void yap() {\n    Future.delayed(Duration(seconds: 2), () => cekmeTuruCalistir());\n  }\n}\n"),
+        ["Y1"],
+        icermeli="YOKLAMA SUPHESI",
+    )
+
+    _vaka(
+        sonuclar,
+        "17) D-A11-3/b -- Future<void>.delayed(...) + SenkronAgi govdede -- ISIRMALI",
+        _fixture(diger="class Baska {\n  void yap() {\n    Future<void>.delayed(Duration(seconds: 2), () {\n      SenkronAgi x = SenkronAgi();\n    });\n  }\n}\n"),
+        ["Y1"],
+        icermeli="YOKLAMA SUPHESI",
+    )
+
+    _vaka(
+        sonuclar,
+        "18) D-A11-3/c -- while(true){await Future.delayed; await cekmeTuruCalistir();} -- ISIRMALI (kapsayan govde)",
+        _fixture(diger="class Baska {\n  Future<void> yap() async {\n    while (true) {\n      await Future.delayed(Duration(seconds: 2));\n      await cekmeTuruCalistir();\n    }\n  }\n}\n"),
+        ["Y1"],
+        icermeli="YOKLAMA SUPHESI",
+    )
+
+    _vaka(
+        sonuclar,
+        "19) D-A11-3/d -- Future.delayed(d).then((_) => cekmeTuruCalistir()) -- ISIRMALI (kapsayan govde)",
+        _fixture(diger="class Baska {\n  void yap() {\n    Future.delayed(Duration(seconds: 2)).then((_) => cekmeTuruCalistir());\n  }\n}\n"),
+        ["Y1"],
+        icermeli="YOKLAMA SUPHESI",
+    )
+
+    _vaka(
+        sonuclar,
+        "20) D-A11-3/e (D-A11-5 istisnasi) -- ItmeYenidenDeneme::Timer + turCalistir -- SUSMALI",
+        _fixture(itme="import 'dart:async';\nclass ItmeYenidenDeneme {\n  Timer? _zamanlayici;\n  void planla() {\n    _zamanlayici = Timer(const Duration(seconds: 2), () {\n      turCalistir();\n    });\n  }\n}\n"),
+        [],
+    )
+
+    _vaka(
+        sonuclar,
+        "21) D-A11-3/f -- ItmeYenidenDeneme::Timer + cekmeTuruCalistir -- ISIRMALI (daraltma, muafiyet degil)",
+        _fixture(itme="import 'dart:async';\nclass ItmeYenidenDeneme {\n  Timer? _zamanlayici;\n  void planla() {\n    _zamanlayici = Timer(const Duration(seconds: 2), () {\n      cekmeTuruCalistir();\n    });\n  }\n}\n"),
+        ["Y1"],
+        icermeli="YOKLAMA SUPHESI",
+    )
+
+    _vaka(
+        sonuclar,
+        "22) D-A11-3/g -- ItmeYenidenDeneme::Timer + _yuvarlakDongusu(kuyrugaBak:false) -- ISIRMALI (ozel metot kacagi)",
+        _fixture(itme="import 'dart:async';\nclass ItmeYenidenDeneme {\n  Timer? _zamanlayici;\n  void planla() {\n    _zamanlayici = Timer(const Duration(seconds: 2), () {\n      _yuvarlakDongusu(kuyrugaBak: false);\n    });\n  }\n}\n"),
+        ["Y1"],
+        icermeli="YOKLAMA SUPHESI",
+    )
+
+    _vaka(
+        sonuclar,
+        "23) D-A11-3/h -- itme_yeniden_deneme.dart'ta BASKA sinifta Timer -- ISIRMALI (dosya butunu affedilmez)",
+        _fixture(itme="import 'dart:async';\nclass ItmeYenidenDeneme {\n  void planla() {}\n}\n\nclass _BaskaSinif {\n  void baslat() {\n    Timer.periodic(Duration(seconds: 1), (_) {});\n  }\n}\n"),
+        ["Y1"],
+        icermeli="BEYAZ LISTE DISI",
+    )
+
+    _vaka(
+        sonuclar,
+        "24) D-A11-3/i -- ilgisiz Future.delayed (animasyon) -- SUSMALI (yanlis-pozitif kontrolu)",
+        _fixture(diger="class Baska {\n  void animasyonGecikmesi() {\n    Future.delayed(Duration(milliseconds: 300), () {\n      print('animasyon bitti');\n    });\n  }\n}\n"),
+        [],
+    )
+
+    _vaka(
+        sonuclar,
+        "25) D-A11-3/j -- ilgisiz .then zinciri (senkron sembolu gecmiyor) -- SUSMALI (yanlis-pozitif kontrolu)",
+        _fixture(diger="class Baska {\n  void baskaSeyYap() {\n    Future.delayed(Duration(seconds: 1)).then((_) {\n      print('ilgisiz is bitti');\n    });\n  }\n}\n"),
+        [],
+    )
+
+    _vaka(
+        sonuclar,
+        "26) A11/G24/c -- SenkronDongusu BEYAZ LISTEYE GIRMEMISTIR: o sinifa Timer eklenirse ISIRMALI",
+        _fixture(senkron="import 'dart:async';\nclass SenkronDongusu {\n  void baslat() {\n    Timer.periodic(Duration(seconds: 2), (_) {});\n  }\n}\n"),
+        ["Y1"],
+        icermeli="BEYAZ LISTE DISI",
     )
 
     cizgi = "=" * 78

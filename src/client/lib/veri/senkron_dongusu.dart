@@ -4,6 +4,7 @@
 // adlandirilmis argumanla cagirmayi imkansizlastirirdi.
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:drift/drift.dart';
 
@@ -12,6 +13,7 @@ import '../senkron/kuyruk_tabani.dart';
 import '../senkron/uzak_degisiklik_uygulayici.dart';
 import 'ayarlar_deposu.dart';
 import 'hlc.dart';
+import 'itme_yeniden_deneme.dart';
 import 'veritabani.dart';
 
 /// GOREV-slice-3c T6 + slice-3d T6/T7: senkron dongusu -- D4 (tek uçuş,
@@ -29,6 +31,7 @@ class SenkronDongusu {
   final String _clientId;
   final String _devUserId;
   final UzakDegisiklikUygulayici _uygulayici;
+  late final ItmeYenidenDeneme _itmeYenidenDeneme;
 
   String? _mevcutCursorJson;
 
@@ -37,6 +40,11 @@ class SenkronDongusu {
   // yutulan çekme tetikleyicisi BU bayrakla hatırlanır -- sayaç DEĞİLDİR,
   // devam eden tur bitince BİR KEZ yeniden koşar ve temizlenir.
   bool _cekmeBekliyor = false;
+  // GOREV-A11 D-A11-6: `_itmeYenidenDeneme`'nin KENDİ tetiklediği turCalistir()
+  // çağrısını DIŞARIDAN gelen (taze niyet taşıyan) çağrılardan ayırt eder --
+  // yalnız bu bayrak `false` iken çizelge sıfırlanır (aksi hâlde retry KENDİ
+  // ilerlemesini her seferinde 2 s'ye sıfırlardı).
+  bool _yenidenDenemeIcinden = false;
 
   SenkronDongusu({
     required Veritabani db,
@@ -50,6 +58,10 @@ class SenkronDongusu {
     // için bir gözlemci sarmalayıcı enjekte eder) -- üretimde her zaman null,
     // SenkronDongusu KENDİ örneğini kurar.
     UzakDegisiklikUygulayici? uygulayici,
+    // Test-görünür (GOREV-A11 G22, D-A11-2/1 -- seed sabit ⇒ kesin eşitlik
+    // ölçülsün, pencere değil) -- üretimde her zaman null, ItmeYenidenDeneme
+    // KENDİ Random()'ini kurar.
+    Random? itmeYenidenDenemeRastgele,
   }) : _db = db,
        _agi = agi,
        _ayarlarDeposu = ayarlarDeposu,
@@ -61,15 +73,38 @@ class SenkronDongusu {
            UzakDegisiklikUygulayici(
              db,
              kuyrukTabaniSaglayici: (entityId, alan) => kuyrukEnBuyuk(db, entityId, alan),
-           );
+           ) {
+    _itmeYenidenDeneme = ItmeYenidenDeneme(
+      turCalistir: () {
+        _yenidenDenemeIcinden = true;
+        return turCalistir();
+      },
+      rastgele: itmeYenidenDenemeRastgele,
+    );
+  }
 
   /// D4 PAZARLIKSIZ: aynı anda en fazla BİR tur (itme YA DA çekme). Zaten
   /// devam eden bir tur varsa (hangi türden olursa olsun) yeni bir tur
   /// BAŞLATMAZ, aynı Future'ı döndürür.
+  ///
+  /// GOREV-A11 D-A11-2/3: bu çağrı `_itmeYenidenDeneme`'nin KENDİ zamanlayıcı
+  /// tetiklemesi DEĞİLSE (yani DIŞARIDAN -- açılış/elleYenile/onYerelYazma --
+  /// geldiyse) taze niyet sayılır ve bekleyen retry çizelgesi SIFIRLANIR.
   Future<void> turCalistir() {
+    final yenidenDenemeIcindenGeldi = _yenidenDenemeIcinden;
+    _yenidenDenemeIcinden = false;
     final devamEden = _devamEdenTur;
     if (devamEden != null) return devamEden;
+    if (!yenidenDenemeIcindenGeldi) {
+      _itmeYenidenDeneme.sifirla();
+    }
     return _kilitliBaslat(() => _yuvarlakDongusu(kuyrugaBak: true));
+  }
+
+  /// GOREV-A11 D-A11-2/4 (DURMA) + G22/i. [SINIR, GOREV §9/3] üretimde bunu
+  /// çağıran bir yaşam döngüsü kancası YOK -- bugün yalnız testte anlamlıdır.
+  void durdur() {
+    _itmeYenidenDeneme.durdur();
   }
 
   /// slice-3d D0: kuyrukta bekleyen satır olup olmadığına BAKMAZ -- gövdeyi
@@ -142,6 +177,10 @@ class SenkronDongusu {
 
       switch (sonuc) {
         case SenkronBasarili(:final govdeJson):
+          if (kuyrugaBak) {
+            // GOREV-A11 D-A11-2/3: basarili itme -- retry cizelgesi SIFIRLANIR.
+            _itmeYenidenDeneme.sifirla();
+          }
           devamGerekli = await _basariliYanitIsle(govdeJson, secilenler);
           if (devamGerekli) {
             bosaltmaSayaci++;
@@ -149,13 +188,22 @@ class SenkronDongusu {
           }
         // devam -- sonraki turda kuyrugaBak ise _bekleyenleriSec() yeniden sorgulanir.
         case SenkronHttpHatasi(:final durumKodu):
-          await _httpHatasiIsle(durumKodu, secilenler);
+          await _httpHatasiIsle(durumKodu, secilenler, itmeBaglamindaMi: kuyrugaBak);
           return; // D9: 4xx/401/5xx sonrasi devam etmenin anlami yok.
         case SenkronAgHatasi():
+          // GOREV-A11 D-A11-4: TASIMA HATASI -- op sunucuya hic ulasmamistir,
+          // degerlendirilmemistir ⇒ denemeSayisi ARTMAZ.
           await _bekliyorGeriDondurVeDenemeArtir(
             secilenler,
             basariRozeti: 'cevrimdisi',
+            sayaciArtir: false,
           );
+          if (kuyrugaBak && secilenler.isNotEmpty) {
+            // D-A11-1: kuyrukta bekleyen satir varken basarisiz bir ITME
+            // turu -- tavanli geri cekilmeyle yeniden denenir. Cekme HICBIR
+            // kosulda buraya girmez (D0 daraltmasinin TEK istisnasi budur).
+            _itmeYenidenDeneme.planla();
+          }
           return;
       }
     }
@@ -292,16 +340,37 @@ class SenkronDongusu {
 
   /// D9: 401 hariç HER 4xx -- tur DURUR, `denemeSayisi` ARTMAZ, satırlar
   /// `bekliyor` kalır. 401 ve 5xx ise ağ hatasıyla AYNI muameleyi görür.
+  ///
+  /// GOREV-A11 D-A11-4 [B3]: bu sınıflandırma DARALTILDI -- `5xx` (sunucu
+  /// op'u reddetmedi, hizmet VEREMEDİ) artık `denemeSayisi`'nı ARTIRMAZ
+  /// (öncesinde 401 ile aynı yoldan artıyordu; `D-A11-2` çizelgesiyle 9.
+  /// başarısızlık ~5 dakikada gelip satırı KALICI zehirlerdi). `401` bu
+  /// dilimin KAPSAMI DIŞINDADIR -- eski (artıran) davranışı KORUR. 4xx
+  /// (401 hariç) sınıflandırması D9'un KİLİTLİ hâliyle DEĞİŞMEDEN kalır.
+  /// D-A11-2/5: yalnız taşıma hatası ve 5xx yeniden DENENİR -- 401 ve diğer
+  /// 4xx (408/429 dâhil) `ItmeYenidenDeneme.planla()`yı HİÇ görmez.
   Future<void> _httpHatasiIsle(
     int durumKodu,
-    List<SenkronKuyruguRow> gonderilenler,
-  ) async {
-    if (durumKodu == 401 || durumKodu >= 500) {
+    List<SenkronKuyruguRow> gonderilenler, {
+    required bool itmeBaglamindaMi,
+  }) async {
+    if (durumKodu == 401) {
       await _bekliyorGeriDondurVeDenemeArtir(
         gonderilenler,
         basariRozeti: 'cevrimdisi',
         sonHataKodu: 'http-$durumKodu',
+        sayaciArtir: true,
       );
+    } else if (durumKodu >= 500) {
+      await _bekliyorGeriDondurVeDenemeArtir(
+        gonderilenler,
+        basariRozeti: 'cevrimdisi',
+        sonHataKodu: 'http-$durumKodu',
+        sayaciArtir: false, // D-A11-4
+      );
+      if (itmeBaglamindaMi && gonderilenler.isNotEmpty) {
+        _itmeYenidenDeneme.planla(); // D-A11-2/5
+      }
     } else {
       await _db.transaction(() async {
         for (final satir in gonderilenler) {
@@ -323,14 +392,32 @@ class SenkronDongusu {
   /// D9: ağ hatası/zaman aşımı VE 401/5xx için ortak yol -- `bekliyor`,
   /// `denemeSayisi++`; `denemeSayisi > 8` ⇒ `zehirli` + `deneme-tavani`
   /// (D9 kirmizi uyari: denemeSayisi ÖLÜ SAYAÇ OLAMAZ).
+  ///
+  /// GOREV-A11 D-A11-4 [B3]: `sayaciArtir: false` -- taşıma hatası/5xx için --
+  /// satır `bekliyor` kalır, `denemeSayisi` VE tavan kontrolü hiç DEVREYE
+  /// GİRMEZ (sunucu op'u DEĞERLENDİRMEMİŞTİR ⇒ sayaç bu bilgiyi taşımaz).
   Future<void> _bekliyorGeriDondurVeDenemeArtir(
     List<SenkronKuyruguRow> satirlar, {
     required String basariRozeti,
     String? sonHataKodu,
+    required bool sayaciArtir,
   }) async {
     if (satirlar.isEmpty) return; // cekme turu (ops:[]) icin denenecek satir yok.
     await _db.transaction(() async {
       for (final satir in satirlar) {
+        if (!sayaciArtir) {
+          await (_db.update(_db.senkronKuyrugu)..where(
+                (t) => t.opId.equals(satir.opId),
+              ))
+              .write(
+                SenkronKuyruguCompanion(
+                  durum: const Value('bekliyor'),
+                  sonHataKodu: Value(sonHataKodu),
+                ),
+              );
+          await _rozetYaz(satir.entityId, basariRozeti);
+          continue;
+        }
         final yeniDeneme = satir.denemeSayisi + 1;
         if (yeniDeneme > _denemeTavani) {
           await (_db.update(_db.senkronKuyrugu)..where(

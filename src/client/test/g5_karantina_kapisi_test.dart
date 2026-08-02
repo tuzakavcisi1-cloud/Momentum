@@ -288,33 +288,46 @@ void main() {
     expect(gorev.senkronDurumu, 'cakisma');
   });
 
-  test('D9: HTTP 500 / zaman asimi -- bekliyor, denemeSayisi++, rozet cevrimdisi', () async {
-    await depo.ekle('http 500 testi');
-    final agi500 = SahteSenkronAgi(
-      davranis: (govde, cagriNo) async => const SenkronHttpHatasi(500),
-    );
-    await donguOlustur(agi500).turCalistir();
-    var satir = (await db.select(db.senkronKuyrugu).get()).single;
-    expect(satir.durum, 'bekliyor');
-    expect(satir.denemeSayisi, 1);
-    var gorev = (await db.select(db.gorevler).get()).single;
-    expect(gorev.senkronDurumu, 'cevrimdisi');
+  test(
+    'GOREV-A11 D-A11-4: HTTP 500 / zaman asimi -- bekliyor, denemeSayisi ARTMAZ, rozet cevrimdisi',
+    () async {
+      // [K116] Bu testin ONCEKI hali (A11 ONCESI) denemeSayisi++ bekliyordu
+      // -- D-A11-4 tam da BUNU daraltti: taşıma hatasi/5xx sunucuya HIC
+      // ulasmamis/degerlendirilmemistir, D-A11-2 cizelgesiyle 9. basarisizlik
+      // ~5 dk'da gelip satiri KALICI zehirlerdi (duzeltme, duzeltmediginden
+      // KOTU olurdu). 401-disi-4xx zaten hic artirmiyordu (asagidaki 400
+      // testi); 401 bu dilimin KAPSAMI DISINDA, eski davranisi KORUR.
+      await depo.ekle('http 500 testi');
+      final agi500 = SahteSenkronAgi(
+        davranis: (govde, cagriNo) async => const SenkronHttpHatasi(500),
+      );
+      await donguOlustur(agi500).turCalistir();
+      var satir = (await db.select(db.senkronKuyrugu).get()).single;
+      expect(satir.durum, 'bekliyor');
+      expect(satir.denemeSayisi, 0);
+      var gorev = (await db.select(db.gorevler).get()).single;
+      expect(gorev.senkronDurumu, 'cevrimdisi');
 
-    final agiAg = SahteSenkronAgi(
-      davranis: (govde, cagriNo) async => SenkronAgHatasi(Exception('zaman asimi')),
-    );
-    await donguOlustur(agiAg).turCalistir();
-    satir = (await db.select(db.senkronKuyrugu).get()).single;
-    expect(satir.durum, 'bekliyor');
-    expect(satir.denemeSayisi, 2);
-    gorev = (await db.select(db.gorevler).get()).single;
-    expect(gorev.senkronDurumu, 'cevrimdisi');
-  });
+      final agiAg = SahteSenkronAgi(
+        davranis: (govde, cagriNo) async => SenkronAgHatasi(Exception('zaman asimi')),
+      );
+      await donguOlustur(agiAg).turCalistir();
+      satir = (await db.select(db.senkronKuyrugu).get()).single;
+      expect(satir.durum, 'bekliyor');
+      expect(satir.denemeSayisi, 0, reason: 'D-A11-4: tasima hatasi da ARTIRMAZ');
+      gorev = (await db.select(db.gorevler).get()).single;
+      expect(gorev.senkronDurumu, 'cevrimdisi');
+    },
+  );
 
-  test('D9: denemeSayisi 9a ulasir -- durum=zehirli, sonHataKodu=deneme-tavani', () async {
+  test('D9: denemeSayisi 9a ulasir -- durum=zehirli, sonHataKodu=deneme-tavani (401, D-A11-4 disi)', () async {
+    // [K116] Onceden 503 kullaniyordu; D-A11-4 5xx'i bu sayactan MUAF
+    // tuttugu icin artik BURADA 401 kullanilir -- 401 D-A11-4'un KAPSAMI
+    // DISINDA oldugu icin eski (artiran) davranisi hala tasir ve deneme-tavani
+    // mekanizmasinin CANLI kaldigini kanitlar.
     await depo.ekle('deneme tavani testi');
     final agi = SahteSenkronAgi(
-      davranis: (govde, cagriNo) async => const SenkronHttpHatasi(503),
+      davranis: (govde, cagriNo) async => const SenkronHttpHatasi(401),
     );
     final dongu = donguOlustur(agi);
     for (var i = 0; i < 9; i++) {
