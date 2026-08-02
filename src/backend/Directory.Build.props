@@ -3,12 +3,13 @@
   <!--
     Central build settings for ALL backend production projects (Momentum.Domain,
     Momentum.Application, Momentum.Infrastructure, Momentum.Api).
-    ADR 0001 K-H1: net9, nullable, warnings-as-errors, Roslyn analyzers, NuGet audit,
+    ADR 0001 K-H1: net10 (K111, olculmus gecis, oturum 48), nullable, warnings-as-errors,
+    Roslyn analyzers, NuGet audit,
     and the BannedApiAnalyzers gate (DateTime.* is banned in production code).
   -->
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
