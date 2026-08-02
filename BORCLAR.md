@@ -3,9 +3,13 @@
 > 🔴 **AÇILIŞTA OKUNMAZ.** Bu dosya `DURUM.md` §8'den **30 Tem 2026'da (oturum 39, Onur'un kilidi K83)** ayrıldı.
 > Açılış protokolü **`DURUM.md` + `CLAUDE.md`** ile sınırlıdır; burası yalnız **iş bir borca dokunduğunda** açılır
 > (`PROJE_HAFIZA.md` ayrımının aynısı).
-> **TAVAN: ≤ 16.384 b.** Gerekçe `DURUM.md`'nin tavanından **farklıdır ve büyümeyi ÖDÜLLENDİRMEZ:** bu liste
+> **TAVAN: ≤ 24.576 b** 🔴 **[K117, oturum 49 — Onur; ESKİ 16.384 GEÇERSİZDİR].** Gerekçe `DURUM.md`'nin
+> tavanından **farklıdır ve büyümeyi ÖDÜLLENDİRMEZ:** bu liste
 > büyüdüğünde kapının ısırması **doğru sinyaldir** — borç kapanmıyor demektir. Ayrım anındaki içerik **10.395 b**.
 > Eşik değişikliği K40 gereği **Onur'dan** gelir ve `belge-tavan-kapisi.py`'nin altın kümesine vaka eklemeyi zorunlu kılar.
+> 🟢 **K117'de bu şart MEKANİKLEŞTİ:** aracın **vaka 10**'u kapsam tablosundaki **her tavanı pinler**; eşiği
+> değiştirip altın kümeyi güncellemeyen el artık **KIRMIZI** alır. Yükseltmenin ölçülmüş gerekçesi ve
+> **beyan edilmiş bedeli** (bu bir gevşetmedir) `PROJE_HAFIZA.md` **K117**'dedir.
 > **Kapanan kalem buradan ÇIKARILIR**, gerekçesi `PROJE_HAFIZA.md`'ye yazılır (K71 emsali). Kapanmış bir kalemi
 > burada aramak **bayat okuma üretir**.
 
@@ -16,6 +20,19 @@
 > aramak bayat okuma üretir; gerekçesi arşivdedir.
 
 ### Ürün / kod
+
+- 🔴 **`SenkronDongusu.durdur()` YOK ve üretimde yaşam-döngüsü kancası da yok [oturum 49].**
+  `senkron_dongusu.dart`'ta `durdur`/`dispose` **yalnız yorumlarda** geçiyor; `main.dart` `dongu`'yu
+  uygulama ömrü boyunca tutar. `GOREV-A11` bir `durdur()` **istiyor** ama onu çağıracak kanca
+  **eklemiyor** ⇒ `A11/G22`/`i` (yetim zamanlayıcı yok) bugün **yalnız testte** anlamlı olacak.
+- 🔴 **SİNYAL KEEPALIVE'İ CANLILIK ÖLÇMÜYOR [oturum 49'da ölçüldü].** `signalr_json_sinyal.dart`
+  15 s'de bir `{"type":6}` **gönderiyor** ama sunucu yanıtına **zaman aşımı yok** ⇒ ölü ama "açık"
+  görünen bir soket sessizce sinyal taşımayı bırakabilir. **Ölçülmedi.** Aynı turda ölçülen komşu
+  gerçek: uçak modunda soket **hiç kopmadı** (emülatör NAT'ı kurulu bağlantıyı koruyor) ⇒
+  **yeniden bağlanma yolu bu depoda HİÇ egzersiz edilmedi**, gerçek cihazda `[DOĞRULANMADI]`.
+- 🟡 **`408`/`429` YENİDEN DENENMİYOR [K116 kapsam dışı].** Bugün `_httpHatasiIsle` onları
+  *401-olmayan 4xx* dalına atıp rozeti `cakisma` yapıyor. *Yeniden denenebilir* ilan etmek
+  **`D9`'un kilitli sınıflandırmasına** dokunur; Onur `A11`'de onu kilitlemedi. Ayrı dilim.
 
 - 🟡 **K113 SARMALAYICISI `duzenle`/`sil` YOLLARINI KAPSAMIYOR.** O iki yol bugün arayüzde kullanıcıya
   **açık değil**; açılırlarsa `_yerelYaz()`'dan geçmeleri ZORUNLUDUR, yoksa K112 boşluğu geri döner.
@@ -56,6 +73,16 @@
   düzeltmiyor**.
 
 ### Araç / kapı
+
+- 🔴 **`spec-kapi-kapsama.py`'NİN KURAL YARISI ÖLÜ [oturum 49'da ölçüldü · spec YAZILDI: `A12`].**
+  Kural envanterini **yalnız §5 tablolarının ilk sütunundan** ve **yalnız** `D<TEK HANE>` ·
+  `A11Y-<hane>` · sabit `kontrast`/`metin` biçimlerinde çıkarıyor (`:52-83`); deseni `\bD(\d)\b`
+  olduğu için **`D10` bile görünmez**. `K108` kapı kimliklerini spec-yerel ilan ettiğinden yeni
+  spec'ler kendi karar adlarını kullanıyor (`D-A11-1`…) ⇒ araç **`KURAL (0)`** yazıp **EXIT 0**
+  veriyor: *"mutantsız kural yok"* hükmü **boşluğa** veriliyor. Borç mekanizması da ölü —
+  `A11` ve `A12`'nin §6b'leri **hayalet borç** (`S6`) alıp §9'a taşınmak zorunda kaldı.
+  🟢 Onarım spec'i **`GOREV-A12-kural-envanteri.md`** hazır; patlama yarıçapı **ölçüldü: 0** (22 spec).
+  **Kapanış koşulu:** `A12` kabul edilir ve `A11`/`A12` §9'daki iki sınır §6b'ye **geri taşınabilir**.
 
 - 🟡 **`_start_api.cmd` `ASPNETCORE_ENVIRONMENT` borcu ÖLÇÜLEMEDİ [oturum 48'de DENENDİ].** Aynı depoda
   ikinci bir `dotnet run` örneği, birincinin **dll'leri kilitlemesi** yüzünden derlenemiyor (`MSB3027`) ⇒
