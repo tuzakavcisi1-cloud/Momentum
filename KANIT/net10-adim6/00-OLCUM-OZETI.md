@@ -10,7 +10,7 @@ SDK'lar: `9.0.316` + `10.0.302` · Windows / PowerShell.
 
 | # | değişiklik | sonuç | kanıt |
 |---|---|---|---|
-| BAZ | yok (net9.0, SDK 9.0.316) | ✅ VERIFY PASSED · build 0/0 · test **120/120** · CVE 0 | `01-BAZ-net9-verify.log` |
+| BAZ | yok (net9.0, SDK 9.0.316) | ✅ VERIFY PASSED · build 0/0 · test **120/120** · CVE 0 | `01-BAZ-net9-verify.txt` |
 | A1 | `global.json` → 10.0.302, TF **net9.0 kaldı** | 🔴 **BUILD KIRIK** — `CS0023` ×2 (`OrSetProperties.cs` 35, 86) | `02-A1-...-KIRIK.log` |
 | A2 | TF → **net10.0**, paketler 9.x | ✅ build 0 uyarı / 0 hata | `03-A2-...-build.log` |
 | A3 | (A2 üstüne) tam verify | ✅ **PASSED** · test **120/120** · CVE 0 | `04-A3-...-GECTI.log` |
