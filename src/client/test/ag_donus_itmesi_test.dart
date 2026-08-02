@@ -229,6 +229,43 @@ void main() {
   );
 
   test(
+    'G22/c2: bekleyen retry timer + DISARIDAN basarili tur -- sifirla() IPTAL ETMELI',
+    () async {
+      final k = await kurulumYap();
+      await k.depo.ekle('c2 iptal ayagi');
+
+      fakeAsync((async) {
+        var cagriSayisi = 0;
+        final agi = SahteSenkronAgi(
+          davranis: (govde, cagriNo) async {
+            cagriSayisi++;
+            if (cagriSayisi == 1) return SenkronAgHatasi(Exception('tasima hatasi'));
+            return _basariliYanit(govde);
+          },
+        );
+        final dongu = donguOlustur(k, agi, rastgele: Random(3));
+
+        unawaited(dongu.turCalistir());
+        async.elapse(Duration.zero);
+        expect(cagriSayisi, 1);
+        expect(async.pendingTimers, isNotEmpty, reason: 'retry planlanmis olmali');
+
+        // Timer HENUZ ATESLEMEDI -- disaridan taze cagri geliyor.
+        unawaited(dongu.turCalistir());
+        async.elapse(Duration.zero);
+        expect(cagriSayisi, 2, reason: 'disaridan gelen tur kosmus olmali');
+        expect(
+          async.pendingTimers,
+          isEmpty,
+          reason: 'sifirla() bekleyen retry timer ini IPTAL ETMELIYDI',
+        );
+      });
+
+      await k.db.close();
+    },
+  );
+
+  test(
     'G22/d: basari sonrasi yeni op + hata -- ilk yeniden deneme YINE 2s (cizelge sifirlandi)',
     () async {
       final k = await kurulumYap();
