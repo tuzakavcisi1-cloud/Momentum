@@ -27,7 +27,7 @@
 - 🟡 **`CakismaRozeti` dokunma hedefi cihazda 48,0 dp ÖLÇÜLDÜ** (162 px / density 540);
   `Checkbox`'ın KENDİ ölçek davranışı hâlâ **[DOĞRULANMADI]** (`G15/A10` yalnız *"≥ 48dp"* der,
   `Checkbox`'a özgü ölçüm yok). *(K86 — bu maddenin BORCLAR.md'de daha önce "S6" etiketiyle bir
-  karşılığı bulunamadı; yeni madde olarak eklendi, `HUKUM.md`'ye şerh düşüldü.)*
+  karşılığı bulunamadı; yeni madde olarak eklendi, `KANIT/A8/10-HUKUM-K86-isleme.md`'ye şerh düşüldü.)*
 
 - 🔴 **A‑7 `DESIGN.md`'DE KAPANMADI [K86].** Kırpma ölçülerek düzeltildi (266/266, 14/14
   mutant, CM1–CM3) ama K46 gereği `DESIGN.md`'ye tek bayt yazılmadı (`18.075 b · 3780ACA4`
