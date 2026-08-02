@@ -1,4 +1,4 @@
-# GOREV-A11 v2 — AĞ-DÖNÜŞ İTMESİ (`D0` DARALTMASI) + `Y1` KAÇAĞININ KAPATILMASI
+# GOREV-A11 v2.1 — AĞ-DÖNÜŞ İTMESİ (`D0` DARALTMASI) + `Y1` KAÇAĞININ KAPATILMASI
 
 > **Durum:** KİLİT ADAYI (v2). Onur **dört** kilit verdi (2 Ağu 2026, oturum 49).
 > **Build: Claude Code. Ölçüm/denetim: Cowork (K26).** Araç onarımı bilerek **yazan elden ayrı ele**
@@ -66,8 +66,10 @@ gitmez.** Düzeltme, düzeltmediği kusurdan **daha kötü** olurdu.
 
 **KİLİT:** `denemeSayisi` *"bu op sunucuda kabul edilemiyor"* sayacıdır. **Taşıma hatasında op
 sunucuya HİÇ ULAŞMAMIŞTIR ⇒ değerlendirilmemiştir ⇒ sayaç ARTMAZ.** `5xx` de artırmaz (sunucu
-op'u reddetmedi, hizmet veremedi). **`4xx`/uygulama reddi sayacı ARTIRMAYA DEVAM EDER** — zehirli-op
-koruması **olduğu gibi kalır**.
+op'u reddetmedi, hizmet veremedi). 🔴 **[v2.1 DÜZELTMESİ — builder yakaladı]** **`401` sayacı ARTIRMAYA DEVAM EDER** ve zehirli-op
+korumasını **tek başına canlı tutan yol budur**. **`401`-dışı `4xx` (400/408/429…) zaten HİÇ
+artırmıyordu** — `D9`'un **kilitli** hâli budur (`slice-3d` §3:215-216, `K70` ile kilitli dosya) ve
+**değişmeden kalır**. v2'nin *"4xx sayacı artırmaya devam eder"* cümlesi **YANLIŞTI**.
 🔴 Bu **`D9`'un daraltılmasıdır** ve `A11` öncesinde de bir kusurdu; yalnız itme seyrek tetiklendiği
 için **görünmüyordu**. `A11` onu görünür ve kaçınılmaz yapardı.
 
@@ -135,7 +137,7 @@ sahte ağın çağrı sayacı ile **birlikte** ölçülür.
 | `h` | yeniden deneme boyunca gönderilen her gövdede **`ops` boş değil** (çekme yok) |
 | `i` | `durdur()` sonrası +300 s ⇒ **`pendingTimers` BOŞ** (yetim zamanlayıcı yok) |
 | `j` | 🔴 **`D-A11-4`:** 12 ardışık **taşıma** hatası ⇒ satır **`bekliyor`** kalır, `denemeSayisi` **artmaz**, rozet **`cakisma` OLMAZ** |
-| `k` | 🔴 **`D-A11-4` sınırı:** ardışık **`400`** ⇒ `denemeSayisi` **artar**, tavanda satır **`zehirli`** olur (zehirli-op koruması bozulmadı) |
+| `k` | 🔴 **`D-A11-4` sınırı [v2.1'de `400` → `401` DÜZELTİLDİ]:** ardışık **`401`** ⇒ `denemeSayisi` **artar**, 9'da satır **`zehirli`** + `sonHataKodu='deneme-tavani'` + rozet `cakisma`. **Bu ayak `A11`'in en riskli yan etkisini ölçer:** `D-A11-4` taşıma ve `5xx`'i sayaçtan muaf tuttuğuna göre, sayacı canlı tutan **başka bir yol kalmalıdır** — yoksa `_denemeTavani = 8` **ölü kod** olur ve zehirli-op koruması sessizce kaybolur |
 | `l` | 🔴 **`D-A11-2`/3:** bekleyen 60 s'lik zamanlayıcı varken **yeni yerel yazma** ⇒ iptal edilir, yeni deneme **2 s**'de |
 
 ### G23 — `Y1` KAÇAK KAPISI (statik; `yoklama-yasagi-kapisi.py` altın kümesi)
@@ -184,7 +186,7 @@ sahte ağın çağrı sayacı ile **birlikte** ölçülür.
 | **M150** | 🔴 Yasak kümesinden `_yuvarlakDongusu`'nu çıkar | `A11/G23`/`g` | özel metotla periyodik çekme yeşil geçer ⇒ **KIRMIZI** |
 | **M151** | 🔴 `SenkronDongusu`'nu beyaz listeye ekle | `A11/G24`/`c` | senkron çekirdeği muaf olur ⇒ **KIRMIZI** |
 | **M152** | 🔴 Taşıma hatasında `denemeSayisi`'nı **artır** (`D-A11-4` iptal) | `A11/G22`/`j` | 12 hatada `zehirli` + `cakisma` ⇒ **KIRMIZI** |
-| **M153** | 🔴 `4xx`'te `denemeSayisi` artışını **kaldır** (aşırı daraltma) | `A11/G22`/`k` | zehirli-op koruması ölür ⇒ **KIRMIZI** |
+| **M153** | 🔴 [v2.1] `401` dalındaki `sayaciArtir: true`'yu **`false`** yap (aşırı daraltma) | `A11/G22`/`k` | sayacı artıran **son** yol da kapanır, `denemeSayisi` **ölü sayaç** olur ⇒ **KIRMIZI** |
 | **M154** | 🔴 Yerel yazmada çizelge sıfırlamayı kaldır | `A11/G22`/`l` | yeni görev 60 s bekler ⇒ **KIRMIZI** |
 | **M155** | 🔴 `Y1` **her** `Future.delayed`'ı ısırsın (aşırı genişleme) | `A11/G23`/`i`,`j` | animasyon gecikmesi ısırılır ⇒ **KIRMIZI** (kapı gürültüye dönüşmedi) |
 
@@ -267,6 +269,14 @@ kapsamına **bilerek alınmamıştır** (üç araç onarımı bir dilime sığma
    Kabul kriteri 6'nın *kural* bacağı bu spec için **hiçbir şey ölçmez**. Borç; `A11` kapsamında değil.
 6. **Çakışma rozeti ve çift yönün kabul kriterleri** bu dilimin konusu değildir.
 7. `duzenle`/`sil` yolları `onYerelYazma` sarmalayıcısına hâlâ bağlı değil (oturum 48 borcu).
+9. 🔴 **v2.1 ERRATA — BU SPEC'İN KENDİ HATASI, BUILDER YAKALADI.** v2'nin `G22`/`k` ve `M153`
+   maddeleri `400` durum kodunu kullanıyordu ve `D9`'un **kilitli** sınıflandırmasıyla doğrudan
+   çelişiyordu (`401`-dışı `4xx`'te `denemeSayisi` **artmaz**). Üç bağımsız kanıt: `slice-3d` §3
+   satır 215-216 (`K70` kilitli) · `g5_karantina_kapisi_test.dart`'taki **mevcut ve GEÇEN**
+   *'D9: HTTP 400'* testi (`denemeSayisi == 0`) · `senkron_dongusu.dart` `_httpHatasiIsle`.
+   `401`'e düzeltildi. 🔴 **Not: "ayağı ATLA" ŞIKKI REDDEDİLDİ** — atlamak, `D-A11-4`'ün en riskli
+   yan etkisini (*sayaç ölür mü?*) **ölçüsüz** bırakırdı. Ayak yanlış değildi, **durum kodu**
+   yanlıştı. **Bu kayıt, `K26`'nın ters yönde çalıştığının kanıtıdır: builder spec yazarını denetledi.**
 8. 🔴 **`G22`/`h` üretimde daha zayıftır:** `K3` bayrağı devam eden tur bitince `cekmeTuruCalistir()`
    koşturabilir ⇒ ayak *"yeniden deneme yolunda çekme yok"* iddiasını **yutulan tetikleyici
    olmayan** temiz kurulumda ölçer. Beyan edilmiştir.
