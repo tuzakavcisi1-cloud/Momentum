@@ -71,7 +71,13 @@ K61 kalkanı ve SignalR **canlı** (401/401/200). 🔴 K112 bulgusu: *yerel yazm
 (60 s + *"Yenile"* 40 s hiç gitmedi) ⇒ K113 yaması: `onYerelYazma` + `elleYenile` **itme+çekme**;
 sonuç **2,1 s**. Kapı 4 ayak, **M136/M137 ısırıyor**; `analyze` temiz, test **485/485**. Yan ürün:
 çift yön de **görüldü** (kabul kriterleri ölçülmedi). Kanıt `KANIT/ucuncu-cihaz-senkron/`.
-🔴 **ÖLÇÜLMEYEN:** çevrimdışı/çakışma · **fiziksel cihaz** (yalnız emülatör) · CI.
+🟢 **④ ÇEVRİMDIŞI AYAĞI ÖLÇÜLDÜ (K115) — ve bir BULGU verdi.** Çevrimdışı CRUD çalışıyor, rozet
+doğru, **30 s sızıntı yok**, `Yenile` ile **2,2 s**. 🔴 Ama **ağ geri geldiğinde kuyruk kendiliğinden
+boşalmıyor** (ön planda 90 s): itmenin *"ağ geri geldi"* tetikleyicisi **hiç tasarlanmamış**.
+Onur **dört kilit** verdi ⇒ **K116**; `GOREV-A11-ag-donus-itmesi.md` **v2 yazıldı ve Claude Code'a
+hazır** (bağımsız denetim v1'de **altı bloker** buldu, hepsi karşılandı).
+🔴 **ÖLÇÜLMEYEN:** çakışma rozeti · çift yönün kabul kriterleri · **fiziksel cihaz** (yalnız
+emülatör; NAT kurulu soketi koruduğu için SignalR yeniden bağlanma yolu **hiç egzersiz edilmedi**) · CI.
 → ④ iOS iskelesi + CI → ⑤ `SS2` (dar) → ⑥ web borcu + release → ⑦ `ADR 0004` + vitrin.
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026).** Reddedilmedi; **iki koşul birlikte** sağlanınca açılır:
@@ -93,6 +99,15 @@ itirazının **haklı çekirdeği**. 🔴 *"Repo public"* iddiası oturum 47'de 
   değil **`verify.ps1`'de ve `global.json` pininde** koşuyor. Geçiş **ATOMİK** (ara durum ölçülerek kırık bulundu);
   `LangVersion=latest` riski + kapsam dışı paketler + geçici CVE pini `BORCLAR.md`'de. Gerekçe: hafıza K111.
 - 🔒 **K108 — KAPI KİMLİĞİ SPEC-YERELDİR** (Onur kilitledi, 2 Ağu 2026): atıf **daima** kapsam önekli (`A10/G18`). Ölçülmüş gerekçe: `A9b/G17` ≠ `A10/G17`, `A10/G18` ≠ `A9c/G18` (iki farklı kapı, aynı ad; ikisi de kabul edilmiş işin içindeydi) ve dilim spec'lerinin **ilk sekiz kapı kimliği en baştan dilim-yereldi** ⇒ *"küresel dizi"* varsayımı hiç doğru olmamıştı. Hiçbir kilit bozulmadı. Kapısı **var**: `kapi-ad-teklik-kapisi.py` (§6), açılışta **§2 adım 4b**.
+- 🔒 **K116 — `D0` DARALTILDI + `Y1` KAÇAĞI KİLİTLENDİ (Onur, 2 Ağu 2026):** `D0` artık *"periyodik
+  **ÇEKME** yasak"*tır; **tek istisna** kuyrukta bekleyen satır varken **başarısız İTMEnin** tavanlı geri
+  çekilmeyle yeniden denenmesidir. Yanında üç kilit: **taşıma hatası `denemeSayisi`'nı ARTIRMAZ**
+  (yoksa >5 dk kesinti kuyruğu **kalıcı zehirler** — bağımsız denetim ölçtü, düzeltme kusurdan kötü
+  olurdu) · retry **kendi dosyasında/sınıfında** yaşar (`ItmeYenidenDeneme`; yoksa `Y1` beyaz listesi
+  **senkron çekirdeğinin tamamını** muaf kılardı) · `Y1` gövde kuralı **kapsayan fonksiyona** taşınır
+  (`Future.delayed` + `while`/`.then` kaçakları). 🔴 **`GOREV-slice-3d-cekme.md`'ye DOKUNULMAZ** (K70
+  kilitli) ⇒ oradaki `D0` metni **bilerek bayat bırakıldı**; kanonik metin burasıdır. Kapılar
+  **`A11/G22`–`A11/G24`**, mutantlar **`M139`–`M155`**. İş **Claude Code'a hazır**. Gerekçe: hafıza K116.
 - **K73** — **Bir dilimin tasarım/spec kilitleri, dilim KABUL EDİLDİĞİNDE §5'ten çekilir** ve tek satırlık atıfla temsil edilir; çünkü o andan sonra kural **prozada değil KAPIDA** yaşar (K53 doktrini). Arşivde hiçbir şey silinmez. 🔴 Kapısı **olmayan** kilit çekilemez — bu yüzden `K72` §5'te DURUYOR (`G10` henüz yok).
 - **slice-3b (K57·K59) · slice-3c (K62–K66) · slice-3d (K68–K70) kilitleri** — hepsi **KABUL EDİLDİ** ⇒ K73 gereği §5'ten **ÇEKİLDİ**. Kurallar (`D0`–`D9`, `P1`–`P7`, `A2`/`G` ayakları) bugün prozada değil **kapılarda ve 40 mutantta koşuyor**; spec kimlikleri §9'da, sapma her açılışta `tek-kopya-kapisi.py` ile ölçülür. 🔴 `P6`/`D4` **K72** ile daraltıldı, düzeltmesi **K74** ile kabul edildi (kapısı `G10`). Gerekçeler: hafıza K57–K74.
 - **K61** — **Dev-kimlik kalkanı (şık 1) KİLİTLİ:** yalnız `Development`'ta `DevCurrentUser` (**`X-Momentum-Dev-User`** → `UserId`; başlık yok/bozuk ⇒ 401, sessiz varsayılan kullanıcı YOK); **üretimde `NullCurrentUser` korunur ve bunu bir MUTANT kanıtlar** (`Production` ⇒ 401). `UserId` ⟂ `ClientId`. ADR 0003 **donmuş kalır** (K41). Beyan edilen sınır: bu bir kimlik **çözümü değil**, ölçüm **iskelesidir**.
