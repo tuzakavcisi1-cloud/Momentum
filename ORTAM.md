@@ -1,0 +1,36 @@
+# ORTAM.md — Momentum · KANLA YAZILI ORTAM UYARILARI
+
+> 🔴 **BU DOSYA AÇILIŞTA TAM OKUNUR** (`DURUM.md` §2 adım 1). `BORCLAR.md` ve `KAPILAR.md`'den
+> **farkı budur:** onlar başvuru malzemesidir, bu liste **operasyoneldir** — okunmadan yazılan komut
+> mayına basar. Ölçülmüş gerekçe: aşağıdaki maddelerin her biri bu projede **en az bir kez ısırdı**.
+> **Tavan: ≤ 16 KB** (`belge-tavan-kapisi.py` kapsamında). Aşarsa budanmaz — **mekanikleşen madde
+> silinir**: bir mayın kapıya dönüştüğü an burada yaşamayı bırakır (K73 doktrini).
+> **Kaynak:** `DURUM.md` §7'den **2 Ağu 2026 (oturum 49)** ayrıldı, Onur kilitledi. §7 numarası ve
+> başlığı `DURUM.md`'de **yönlendirici olarak DURUYOR** — `DURUM.md §7`'ye adıyla atıf yapan
+> **6 canlı satır ölçüldü** (`DURUM.md`:13 · `KAPILAR.md`:30 · `GOREV-A8`:54,208 · `GOREV-A9`:369 ·
+> `GOREV-A9b`:318,320); bölümü silmek `kanonik-kopya`nın kardeşi **sarkan atıf** sınıfını doğururdu.
+
+---
+
+- 🔴 **COWORK BULUTTA UTC İLE KOŞUYOR — TARİH ONUR'UN TAKVİMİNDEN 3 SAAT GERİDE [ÖLÇÜLDÜ, oturum 39].** Oturum bağlamı *"Today's date: 2026-07-29"* diyordu; aynı anda cihazda `Get-Date` **2026-07-30 00:50 +03:00** ölçtü (bulut UTC 21:50). **00:00–03:00 arası her oturum bir gün geriye tarih yazar.** Bu oturum bu kusuru fiilen üretti: `K83` checkpoint'i ve defter kaydı `2026-07-29` yazdı, `oturum-sagligi.py`'nin `D1` **zaman ayağı** yakaladı (*"kayıt 29 Tem, dosya 30 Tem'de yazılmış"*) ⇒ append-only iki dosyaya **düzeltme kaydı** girmek zorunda kalındı. 🔴 **Kural: tarih ortam beyanından OKUNMAZ, cihazdan ÖLÇÜLÜR** — `Get-Date -Format 'yyyy-MM-dd'`. Onur'un devir notu doğru tarihi taşıyordu; **bulut yanlıştı, insan doğruydu.**
+- **Claude Code DAİMA `Momentum` kökünden açılır** (üstten açarsan `.mcp.json` görünmez, dart MCP yüklenmez).
+- **Cowork→PowerShell köprüsü `$` değişkenlerini SİLİYOR** ve iç içe tırnakları bozuyor ⇒ `$` gönderme, **Python betiği yaz**.
+- **Commit mesajına ÇİFT TIRNAK yazma** (PowerShell argümanı böler, commit sessizce düşer); sonra `git log --oneline -1` ile SHA'yı doğrula.
+- **git'te `--no-optional-locks` ZORUNLU.** Commit **yalnız Desktop Commander** ile; `device_bash`/mount **YASAK**. **PUSH ONUR'DA.**
+- 🔴 **`cmd /c "... & echo %ERRORLEVEL%"` KÖRDÜR — SAHTE `EXIT=0` VERİR [ölçüldü, oturum 33].** `%VAR%` **ayrıştırma anında**, komut koşmadan önce genişler. Bu kusurla üç kapı sahte `0` bildirdi; radar gerçekte **2** dönüyordu. **DOĞRUSU: `cmd /v:on /c "... & echo !ERRORLEVEL!"`.** Kör kapı sınıfının **ölçüm katmanındaki** hâli: yeşil gördüğünü sanan el, hiç koşmamış bir kapıyı geçmiş sayar.
+- **Cowork↔masaüstü köprüsü oturum ORTASINDA düşebilir** (`device not connected to the bridge`; oturum 34'te internet kesintisinde oldu, `mcp__remote-devices__*` araçlarının **tamamı** düştü). Uzun hafıza yazımını tek parçada yapma; ölçümleri köprüden **bağımsız** bir yere (Cowork projesi) de yaz. K60 *dosyanın* yarım kalmasını engeller, **oturumun** yarım kalmasını engellemez.
+- 🔴 **`os.replace` bu makinede `WinError 5` verebilir** — hedef de kaynak da **kilitli olmadığı hâlde** (ölçüldü: her ikisi de `rename` edilebiliyor, hedef `r+b` açılıyor). Windows'un klasör/fidye koruması *var olan dosyayı değiştir* desenini engelliyor, düz `rename`'e izin veriyor. **Çalışan yol:** `rename(hedef→.yedek)` → `rename(.tmp→hedef)` → **sha doğrula** → `.yedek` sil (adım 2 patlarsa yedek geri alınır). K60'ın atomik takası bu makinede **üç adımlı yedekli takas**tır.
+- 🔴 **`python` stdout bu makinede cp1254** — `⇒` gibi bir karakter yazdıran betik `UnicodeEncodeError` ile **kabuğu öldürüyor** (ölçüldü: PowerShell süreci komut ortasında düştü). Zorunlu: `sys.stdout.reconfigure(encoding="utf-8", errors="replace")`. Kusur **stdout**'ta, dosyada değil.
+- **`device_stage_files` BAYAT KOPYA sunabiliyor** (oturum 28; 30'da tekrarlanmadı) ⇒ stage'lenenin **sha'sını karşılaştır**; tutmuyorsa `read_file` kullan.
+- 🔴 **YOL SAF ASCII KALMAK ZORUNDA [K56].** Türkçe karakter dört zinciri kırdı (`build_runner`, `flutter analyze`, AGP, `.ps1`). Boşluk suçsuz, junction çözmez. Ayrıntı: `KANIT/slice-3b/ORTAM-YOL-KISITI.txt`.
+- 🔴 **`findstr` AYNI DOSYADA bir dizgeyi bulup diğerini KAÇIRABİLİYOR [ölçüldü, oturum 46].** `.gitignore`'da `"Dd"` ve `"bin"` **bulundu**, *aynı satırlardaki* `"ebug"` ve `"npm"` **bulunamadı**; dosyanın **bayt-özdeş kopyası** başka adla arandığında ikisi de bulundu (dosya UTF-8, LF, BOM'suz — Python ile ölçüldü). Ayrıca `/s` **çıplak dizin** yolu (wildcard'sız) verilirse **sessizce 0** döner. ⇒ **`findstr` ile YOKLUK ölçen her ayak, AYNI dosyada bir VARLIK pozitif kontrolü koşmak ZORUNDADIR** (`A10/G18/b` · `A10/G18/d` · `A10/G21/b` bu oturumda böyle doğrulandı).
+- **Git Bash/MSYS, `cmd /c`'deki `/c`'yi POSIX yol sanıp `C:/` diye YENİDEN YAZIYOR** ⇒ ham `cmd /c` içeren komutlar **PowerShell'den** koşulur.
+- **Başka bir el çalışırken `git add -A` YASAK** — commit'lenmemiş işini kör alır (ölçüldü: `dee6dbc`). Yol belirterek `git add <yol>` yap.
+- **`flutter test --platform chrome` bu ortamda SONUÇ ÜRETMİYOR** (iki ölçüm: 7 dk ve 9,8 dk) ⇒ web test ayağı `[DOĞRULANMADI]`.
+- **pub.dev HTML sayfaları BAYAT** — kanıt yalnız `/api/` ucudur (spec Z10). · `.ps1`'e Türkçe yol literali yazma. · `kasif` skill'ini **Cowork çağıramaz**; Onur `/kasif` yazar.
+- 🔴 **`git`'te `core.autocrlf` AKTİF** — `git restore` LF yazılmış 2.400 baytlık dosyayı **2.800 bayt** geri getirdi (ölçüldü). Çalışma kopyası ↔ HEAD blob **bayt karşılaştırması bu ortamda tek başına KÖRDÜR**; kimlik ölçen her araç LF'e normalize etmelidir.
+- 🔴 **`io.open(yol,"w")` DOSYAYI ÖNCE BOŞALTIR** — encode hatası gelirse dosya **0 bayt** kalır (oturum 31: 542 KB arşiv gitti, `git restore` kurtardı). **Python'da `"\ud83d\udd3b"` iki `\u` kaçışı olarak yazılırsa BİRLEŞMEZ**, yalnız vekil karakter olur ve `encode` patlar; emoji için `\U0001F53B` yaz. Kural: **K60 atomik yazım**.
+- **`flutter test` Desktop Commander kabuğunda ÇÖKÜYOR** — `%PROGRAMFILES(X86)% environment variable not found` (ölçüldü: değişken `os.environ`'da **yok**, dizin diskte **var**). ⇒ alt sürece `PROGRAMFILES(X86)=C:\Program Files (x86)` **enjekte et**; kalkanla test 36/36 geçti. Bu bir **ortam** kusurudur, ürün kusuru değil.
+- 🔴 **`uiautomator dump` uygulama henüz çizilmeden çağrılırsa "null root node" verir ve DOSYA OLUŞMAZ [K86, oturum 40].** Sabit bekleme değil, çıktıda `"dumped to"` dizgesi görünene kadar **yoklanır** (tavanlı).
+- **`flutter` bu makinede `.bat`'tir [K86]** — Python `subprocess` PATHEXT'i çözmez ⇒ doğrudan çağrı `WinError 2` verir; tam yol `C:\src\flutter\bin\flutter.bat` kullanılır.
+- **Commit mesajındaki çift tırnak yasağı yeniden ISIRDI [K86, oturum 40]** — bir commit `pathspec` hatasıyla düştü, ağaç sağlam kaldı; kural aynı kalır (§ üstteki madde).

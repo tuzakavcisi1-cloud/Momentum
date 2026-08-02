@@ -44,6 +44,7 @@ VARSAYILAN_KAPSAM = [
     ("PROJE_RADAR.jsonl", "append_only"),
     ("DURUM.md", "canli"),
     ("CLAUDE.md", "canli"),
+    ("ORTAM.md", "canli"),  # oturum 49 -- DURUM.md 7'den ayrildi; canli => mesru budama %10
     ("DESIGN.md", "kilitli"),
     ("GOREV_CLAUDE_CODE/GOREV-slice-3b-istemci-iskeleti.md", "kilitli"),
     ("GOREV_CLAUDE_CODE/GOREV-slice-3c-senkron.md", "kilitli"),  # K64 -- v2 onaylandi

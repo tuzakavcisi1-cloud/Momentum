@@ -44,6 +44,11 @@ VARSAYILAN_KAPSAM = [
      "degil ANLATIM buyumus demektir. BEYAN EDILMIS SINIR: bu eklemeyi altin kume "
      "KANITLAMAZ (kume VARSAYILAN_KAPSAM'a dokunmuyor, kayitli borc); kapsamin "
      "isirdigi oturum 42'de dosya yokken T0 ile el ile olculdu"),
+    ("ORTAM.md", 16384, "Oturum 49 -- DURUM.md 7'den ayrildi (Onur kilitledi). BORCLAR/KAPILAR'dan "
+     "FARKI: bu dosya ACILISTA OKUNUR (DURUM.md 2 adim 1), cunku basvuru degil OPERASYONEL bir "
+     "mayin listesidir. Tavan onlarla ayni (16 KB) ve bu bilinclidir: bu liste buyurse mayin "
+     "sayisi degil ANLATIM buyumus demektir -- mekaniklesen madde SILINIR (K73). Kapsam eklemesi "
+     "kor kalmasin diye T1 mutantiyla olculdu (M138): 17000 b'lik ORTAM.md ile kapi KIRMIZI verdi"),
 ]
 # Pay esigi: tavanin %5'inden az pay kaldiysa SARI. Olculmus gerekce: oturum 34'te
 # pay 38 bayta dustu ve bir SONRAKI her ekleme tavani asti -- yani dar pay,
