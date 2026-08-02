@@ -50,8 +50,7 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **K89–K100 KAPANDI (oturum 42–44):** `KAPILAR.md` · `GOREV-A8` v2 · `GOREV-A9` v3 · `GOREV-A9b` v2
-(**30.046 b · `AF624471`**) · **A9 KABUL**. Anlatım **arşivde** (K73).
+🔒 **K89–K100 KAPANDI (oturum 42–44):** `KAPILAR.md` · `A8` v2 · `A9` v3 · `A9b` v2 · **A9 KABUL**; arşivde.
 
 🟢 **`GOREV-A10` KABUL (K106) · `.gitignore` tuzağı KAPANDI (K107).** Kapılar **`A10/G17`–`A10/G21`**,
 mutantlar **`M125`–`M135`**; anlatım arşivde. 🟢 **`GOREV-A9c` KİLİTLİ (K109)**, iş **Claude Code'a
@@ -66,11 +65,13 @@ Kanıt `KANIT/net10-adim6/`; ayrıntı arşivde (K111); paket borçları `BORCLA
 **② A10 ✅ KAPANDI (K106).** 🔴 *"Geliştirme modunda `devUserId` alanı"* ifadesi **DARALTILDI**:
 çalışma-zamanı UI alanı **değil**, derleme-zamanı `--dart-define` ezmesi (A10 §8/5) — kullanıcı değiştirmek
 **yeniden derleme + kurulum** ister.
-🟢 **③ YÜRÜYEN İSKELET KOŞTU (K112, oturum 48):** emülatörde oluşturulan görev **PostgreSQL'e ulaştı**
-(iki vaka, 14,4 s / 23,5 s) · `entityId` **UUIDv7** · rozet senkrondan sonra **düştü** · K61 kalkanı ve
-SignalR **canlı**. Kanıt `KANIT/ucuncu-cihaz-senkron/`. 🔴 **AYNI KOŞUMDA BULGU: yerel yazma İTMEYİ
-tetiklemiyor** — *"Yenile"* yalnız çekme koşar, itme **yalnız açılışta**; kapsam boşluğu, **kilit Onur'da**.
-🔴 **ÖLÇÜLMEYEN:** çift yön (sunucu→cihaz) · çevrimdışı/çakışma · **fiziksel cihaz** (yalnız emülatör).
+🟢 **③ CİHAZ→SUNUCU SENKRON KANITLANDI (K112) · BULGU AYNI OTURUMDA KAPATILDI (K113).** Emülatörde
+oluşturulan görev PostgreSQL'e ulaştı · `entityId` **UUIDv7** · rozet senkrondan sonra **düştü** ·
+K61 kalkanı ve SignalR **canlı** (401/401/200). 🔴 K112 bulgusu: *yerel yazma İTMEYİ tetiklemiyordu*
+(60 s + *"Yenile"* 40 s hiç gitmedi) ⇒ K113 yaması: `onYerelYazma` + `elleYenile` **itme+çekme**;
+sonuç **2,1 s**. Kapı 4 ayak, **M136/M137 ısırıyor**; `analyze` temiz, test **485/485**. Yan ürün:
+çift yön de **görüldü** (kabul kriterleri ölçülmedi). Kanıt `KANIT/ucuncu-cihaz-senkron/`.
+🔴 **ÖLÇÜLMEYEN:** çevrimdışı/çakışma · **fiziksel cihaz** (yalnız emülatör) · CI.
 → ④ iOS iskelesi + CI → ⑤ `SS2` (dar) → ⑥ web borcu + release → ⑦ `ADR 0004` + vitrin.
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026).** Reddedilmedi; **iki koşul birlikte** sağlanınca açılır:

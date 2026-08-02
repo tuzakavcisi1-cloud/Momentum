@@ -17,6 +17,8 @@
 
 ### Ürün / kod
 
+- 🟡 **K113 SARMALAYICISI `duzenle`/`sil` YOLLARINI KAPSAMIYOR.** O iki yol bugün arayüzde kullanıcıya
+  **açık değil**; açılırlarsa `_yerelYaz()`'dan geçmeleri ZORUNLUDUR, yoksa K112 boşluğu geri döner.
 - 🟡 **.NET 10 KAPSAM DIŞI paketler [K111, Onur kilidi]:** `Asp.Versioning.Http` 8.1.1→10.0.1 · `xunit` 2.9.2→2.9.3 ·
   `Microsoft.NET.Test.Sdk` 17.12.0→18.8.1 · `xunit.runner.visualstudio` 2.8.2→3.1.5 · `Scalar.AspNetCore`→2.16.17.
 - 🟡 **`Microsoft.OpenApi 2.11.0` GEÇİCİ CVE PİNİ [K111]**, mimari karar değil; yukarı akış düzelince **silinir**
@@ -55,6 +57,9 @@
 
 ### Araç / kapı
 
+- 🟡 **`_start_api.cmd` `ASPNETCORE_ENVIRONMENT` borcu ÖLÇÜLEMEDİ [oturum 48'de DENENDİ].** Aynı depoda
+  ikinci bir `dotnet run` örneği, birincinin **dll'leri kilitlemesi** yüzünden derlenemiyor (`MSB3027`) ⇒
+  değişkensiz davranış ölçülemedi. Ölçmenin yolu: tek örnek, değişkensiz kaldırma (ortamı boşaltmayı ister).
 - 🔴 **`verify.ps1` GEÇMİŞ KANITI EZİYOR [K111 — ölçüldü, iki kez].** `MOMENTUM_KANIT_DIZIN` varsayılanı yüzünden her
   koşum `KANIT\slice-3d\07-G7-backend-zorlama\outbox-sorgu.txt`'yi yeniden yazıyor; oturum 47'nin *"kaydedilmemiş
   yeniden koşum"* vakasının **kaynağı budur**. Kapı donmuş kanıtı ezmemeli. 🔴 **AYRI ELE (K34-f).**
@@ -68,8 +73,6 @@
 - 🔴 **DEVİR NOTU KENDİ KABININ KİMLİĞİNİ YAZMAMALI [K82, ölçüldü].** Not `PROJE_HAFIZA.md 684.530 b`
   diyor, yazım anında **691.599 b** — notu yazmak dosyayı büyütür ⇒ beyan **yapısal olarak imkânsız**.
   Araç `D1-OZ` ile SARI der; kural henüz `CLAUDE.md`'ye **yazılmadı** (Onur'un kilidi).
-- 🟡 **`CLAUDE.md` K53/4 hâlâ `R7` diyor [ölçüldü, oturum 38]** — kural K57'de **`R8`** oldu, radarın
-  ürettiği kod da `R8`. Pazarlıksız kurallar bloğunda bayat araç adı.
 - 🟡 **`oturum-sagligi.py` `tek-kopya-kapisi.py` kapsamına EKLENMEDİ** — eklemek kapının kilitli sha'sını
   bozar + 11/11 mutantı yeniden koşturur; `GOREV-slice-3e-G12.md` ile **aynı beyanlı-kilit** durumu.
 - 🟡 **`oturum-sagligi.py` §3'ü GÖRMÜYOR [ölçüldü, oturum 38].** `D1` yalnız ÜÇ hücreli kimlik tablosunu
@@ -136,7 +139,6 @@
 ### `[DOĞRULANMADI]` (ölçülmedi — "temiz" DEĞİL)
 
 - 🟡 **CI'da .NET 10 [DOĞRULANMADI] [K111].** Geçiş tek makinede ölçüldü; CI'da SDK 10.0.302 + `verify` hiç koşmadı.
-- 🟡 **Flutter istemcinin etkilenmediği BEKLENTİDİR, ölçüm değil [K111]:** bu turda `flutter test` koşulmadı.
 - **Kriter 9'un kapsamı ve beyan ettiği sınırlar:** web ayağı (`--platform chrome` sonuç üretmiyor) · iOS (Mac yok, CI-only) · boşaltma tavanı 20'nin her koşulda yeterliliği · `01-acilis.png`'deki ANR **System UI**'a ait (ölçüldü) ama uygulamanın kendi ANR üretmediği **ölçülmedi** · soğuk açılış **süresi** ölçülmedi · düzenleme/tamamlama/silme yollarının uzak yansıması bu ayakta ölçülmedi.
 - **Eski açık 5:** flutter_secure_storage Windows · WebKit `__Host-` · Isopoh lisansı ·
   NIST SP 800-38D · web'de `textScaler`/tema farkı.
