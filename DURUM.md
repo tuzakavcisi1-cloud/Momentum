@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayattır** (`1.0.0` yazıyor, belgeler `1.1.0` diyor; kapasitesi gerçekten güncel, altın küme **12/12** ölçüldü) — borç `B-O50-2`.
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 2 Ağu 2026, **oturum 50 (K120 · K121 — `A11` KABUL EDİLDİ)** — açılışın 10 adımı koştu; `A11`'in **sekiz kriteri de ölçülerek** geçti. Yolda iki kusur bulundu ve kapatıldı: `M141` **kör ayaktı** (eşdeğerlik **yanlışlandı**, varsayılmadı) ⇒ `G22`/`c2` doğdu · kriter 7 ile 8 **backend konusunda çelişiyordu** ⇒ sıra pazarlıksız oldu. Mutantlar **17/17 ISIRIYOR**. *(Oturum 39–49'da yapılan iş arşivdedir.)*
+> **Son güncelleme:** 3 Ağu 2026, **oturum 51 (K122 — `A12` BUILD'E DEVREDİLDİ)** — açılışın 10 adımı koştu (`S4` **162.603 token ⇒ YEŞİL**, bulutta ölçüldü). Önceki oturum: `A11`'in **sekiz kriteri de ölçülerek** geçti. Yolda iki kusur bulundu ve kapatıldı: `M141` **kör ayaktı** (eşdeğerlik **yanlışlandı**, varsayılmadı) ⇒ `G22`/`c2` doğdu · kriter 7 ile 8 **backend konusunda çelişiyordu** ⇒ sıra pazarlıksız oldu. Mutantlar **17/17 ISIRIYOR**. *(Oturum 39–49'da yapılan iş arşivdedir.)*
 
 ---
 
@@ -75,7 +75,7 @@ temiz koşum tekrar EXIT 0) · `yoklama-yasagi-kapisi.py` altın küme **26/26**
 kriter 8 **backend konusunda çelişiyordu** (`verify.ps1` çalışan API ile 36× `MSB3026`) ⇒ sıra artık
 **pazarlıksız: 7 → kapat → 8**. Kriter 7'nin tetikleyicisi **yol sayımıyla izole edildi** (SignalR yolu
 `cekmeTuruCalistir` çağırır, `ops:[]` gönderir, kuyruğu **itemez**) — kapısı yok, borç `B-O50-1`.
-**➡ SIRADAKİ İLK İŞ: `GOREV-A12` (kural envanteri, mikro-dilim, cihaz istemez).**
+**➡ SIRADAKİ İLK İŞ: `A12`'nin KABUL KOŞUMU** (build Claude Code'un, ölçüm Cowork'ün — aşağıda).
 🔴 **ÖLÇÜLMEYEN:** çakışma rozeti · çift yönün kabul kriterleri · **fiziksel cihaz** (yalnız
 emülatör; NAT kurulu soketi koruduğu için SignalR yeniden bağlanma yolu **hiç egzersiz edilmedi**) · CI.
 → ⑥ `A12` (mikro-dilim) → ⑦ iOS iskelesi + CI → ⑧ `SS2` (dar) → ⑨ web borcu + release → ⑩ `ADR 0004` + vitrin.
@@ -83,9 +83,13 @@ emülatör; NAT kurulu soketi koruduğu için SignalR yeniden bağlanma yolu **h
 (36× `MSB3026`/`MSB3027`, DLL kilidi) ⇒ sıra **pazarlıksız: cihaz kanıtı → backend KAPATILIR → `verify.ps1`**.
 Madde `ORTAM.md`'de. Cowork süreci **Onur'un açık izniyle kapattı**, **yeniden BAŞLATMADI** (K80 ayakta).
 
-🟢 **`GOREV-A12-kural-envanteri.md` DE HAZIR (K118)** — `spec-kapi-kapsama.py`'nin kural yarısı
-`K108` sonrası **ölü**; envanteri §3 karar başlıklarını da okuyacak. Patlama yarıçapı **ölçüldü: 0**
-(22 spec). Kapılar `A12/G25`–`A12/G26`, mutantlar `M156`–`M161`. Mikro-dilim, cihaz istemez.
+🟢 **`GOREV-A12` BUILD'E DEVREDİLDİ (oturum 51, K122; spec `8.221 b`/`7AE50BF1`)** — `spec-kapi-kapsama.py`'nin
+kural yarısı `K108` sonrası **ölü**; kapılar `A12/G25`–`A12/G26`, mutantlar `M156`–`M161`, cihaz istemez.
+Kriter 0 için **bağımsız taban** alındı: `KANIT/A12/00-COWORK-TABAN-ONCESI.txt` (**4.754 b**/`AF42E7E7`;
+23 spec, **10** adet `[S0]`). 🔴 Spec §2 ve §9/1'deki *"sekiz eski spec"* **BAYAT** — ölçülen **10**
+(`slice-3e-G12` + `slice-3e-iskelet` de `[S0]` veriyor; birincisi `CLAUDE.md` K81'de zaten yazılıydı).
+Metne **DOKUNULMADI** (radar KIRMIZI ⇒ K40), builder'a **yazılı** iletildi. Kabul koşumu **Cowork'ün**
+(K26). 🔴 Araç işidir ⇒ **`R8`'i DÜŞÜRMEZ.**
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026).** Reddedilmedi; **iki koşul birlikte** sağlanınca açılır:
 ① cihaz senkron kanıtı kapandı ② hedef şirket yığını MSSQL. Ölçülen maliyet, `Rule3` ve en riskli parça
