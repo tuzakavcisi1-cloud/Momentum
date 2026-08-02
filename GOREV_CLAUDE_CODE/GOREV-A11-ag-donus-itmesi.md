@@ -1,4 +1,4 @@
-# GOREV-A11 v2.1 — AĞ-DÖNÜŞ İTMESİ (`D0` DARALTMASI) + `Y1` KAÇAĞININ KAPATILMASI
+# GOREV-A11 v2.2 — AĞ-DÖNÜŞ İTMESİ (`D0` DARALTMASI) + `Y1` KAÇAĞININ KAPATILMASI
 
 > **Durum:** KİLİT ADAYI (v2). Onur **dört** kilit verdi (2 Ağu 2026, oturum 49).
 > **Build: Claude Code. Ölçüm/denetim: Cowork (K26).** Araç onarımı bilerek **yazan elden ayrı ele**
@@ -139,6 +139,7 @@ sahte ağın çağrı sayacı ile **birlikte** ölçülür.
 | `j` | 🔴 **`D-A11-4`:** 12 ardışık **taşıma** hatası ⇒ satır **`bekliyor`** kalır, `denemeSayisi` **artmaz**, rozet **`cakisma` OLMAZ** |
 | `k` | 🔴 **`D-A11-4` sınırı [v2.1'de `400` → `401` DÜZELTİLDİ]:** ardışık **`401`** ⇒ `denemeSayisi` **artar**, 9'da satır **`zehirli`** + `sonHataKodu='deneme-tavani'` + rozet `cakisma`. **Bu ayak `A11`'in en riskli yan etkisini ölçer:** `D-A11-4` taşıma ve `5xx`'i sayaçtan muaf tuttuğuna göre, sayacı canlı tutan **başka bir yol kalmalıdır** — yoksa `_denemeTavani = 8` **ölü kod** olur ve zehirli-op koruması sessizce kaybolur |
 | `l` | 🔴 **`D-A11-2`/3:** bekleyen 60 s'lik zamanlayıcı varken **yeni yerel yazma** ⇒ iptal edilir, yeni deneme **2 s**'de |
+| `m` | 🔴 **[v2.2 — builder ikinci kez yakaladı] ÇOK-YUVARLAKLI TUR:** tur **retry'dan** gelir (indeks > 0), sahte ağ **1. çağrıda** `SenkronBasarili` + `hasMore: true` + **dolu sayfa**, **2. çağrıda** taşıma hatası ⇒ yeni `planla()` **2 s**'den başlar (başarı dalı `sifirla()` çizelgeyi sıfırladı). `sifirla()` olmadan **5 s** olurdu. Seed sabit ⇒ **kesin eşitlik** |
 
 ### G23 — `Y1` KAÇAK KAPISI (statik; `yoklama-yasagi-kapisi.py` altın kümesi)
 
@@ -175,7 +176,7 @@ sahte ağın çağrı sayacı ile **birlikte** ölçülür.
 | **M139** | Yeniden-deneme planlamasını kaldır | `A11/G22`/`a` | ikinci istek gelmez ⇒ **KIRMIZI** |
 | **M140** | Çizelgeyi sabit `2 s` yap | `A11/G22`/`b` | çizelge ayağı düşer ⇒ **KIRMIZI** |
 | **M141** | Kuyruk boşalınca **zamanlayıcıyı iptal etme** | `A11/G22`/`c` | `pendingTimers` dolu kalır ⇒ **KIRMIZI** |
-| **M142** | Başarıdan sonra çizelgeyi sıfırlama | `A11/G22`/`d` | ilk deneme 2 s yerine 60 s ⇒ **KIRMIZI** |
+| **M142** | Başarı dalındaki `sifirla()`'yı kaldır (`_yuvarlakDongusu` `SenkronBasarili` dalı) | `A11/G22`/**`m`** | **[v2.2]** çok-yuvarlaklı turda 2. yuvarlak hata verince `planla()` **5 s**'den başlar (2 s yerine) ⇒ **KIRMIZI**. 🔴 v2'de bu mutant `G22`/`d`'ye bağlıydı ve **EŞDEĞERDİ** — builder ölçtü ve haklıydı: `d`'de bir sonraki hata **dışarıdan** gelen çağrıdan doğuyor ve o çağrı zaten koşulsuz sıfırlıyor. Kaçırılan yol **boşaltma döngüsüdür**: `sifirla()` (`:182`) ve `planla()` (`:205`) **aynı turda** ateşlenebilir |
 | **M143** | Planlama tekliği kontrolünü kaldır | `A11/G22`/`e` | `nonPeriodicTimerCount == 2` ⇒ **KIRMIZI** |
 | **M144** | `400`'ü de yeniden dene | `A11/G22`/`f` | `pendingTimers` dolu ⇒ **KIRMIZI** |
 | **M145** | Yeniden denemeyi `cekmeTuruCalistir`e bağla | `A11/G22`/`h` + `A11/G23`/`f` | boş `ops` **ve** statik kapı ⇒ **KIRMIZI ×2** |
@@ -269,6 +270,23 @@ kapsamına **bilerek alınmamıştır** (üç araç onarımı bir dilime sığma
    Kabul kriteri 6'nın *kural* bacağı bu spec için **hiçbir şey ölçmez**. Borç; `A11` kapsamında değil.
 6. **Çakışma rozeti ve çift yönün kabul kriterleri** bu dilimin konusu değildir.
 7. `duzenle`/`sil` yolları `onYerelYazma` sarmalayıcısına hâlâ bağlı değil (oturum 48 borcu).
+10. 🔴 **v2.2 ERRATA — BUILDER İKİNCİ KEZ YAKALADI (`M142` eşdeğer mutant).** v2'de `M142`
+    `G22`/`d`'ye bağlıydı; builder ölçtü: `d`'de başarıdan sonraki hata **dışarıdan** gelen bir
+    `turCalistir()`'den doğar ve o giriş noktası (`:98-100`) çizelgeyi **zaten koşulsuz sıfırlar**
+    ⇒ başarı dalındaki `sifirla()` **hiçbir ölçülebilir etki üretmiyordu**. Builder haklıydı.
+    🔴 **Ama "eşdeğer ilan et" şıkkı REDDEDİLDİ:** kaçırılan bir yol var — `_yuvarlakDongusu`
+    bir **`while(true)` boşaltma döngüsüdür** (`D7`), yani `sifirla()` (`:182`) ve `planla()`
+    (`:205`) **AYNI TURDA** ateşlenebilir. Yeni ayak **`G22`/`m`** o yolu ölçer ve `M142`
+    gerçekten ısırır. **Ders: bir mutant "eşdeğer" ilan edilmeden önce ERİŞİLEBİLİR YOLLARIN
+    TAMAMI sayılmalıdır; "bu ayakta etkisi yok" ile "hiçbir yolda etkisi yok" aynı şey değildir.**
+11. 🔴 **`M141` İÇİN KARAR BUILDER'A BIRAKILDI (ölç, ilan etme).** Aynı akıl yürütme `M141`
+    (`G22`/`c`, kuyruk boşalınca iptal) için de geçerli olabilir: başarı anında bekleyen
+    zamanlayıcı **yoktur** (ateşlenen zamanlayıcı kendini `null`'lar), dolayısıyla oradaki
+    `cancel()` inert olabilir. **ÖLÇ:** erişilebilir yolları say (özellikle `:97`'deki
+    `if (devamEden != null) return devamEden;` erken dönüşü — dışarıdan gelen çağrı devam eden
+    tura takılırsa `:99` sıfırlaması **hiç koşmaz**). Isıran bir yol varsa ayağı ona bağla;
+    **yoksa** eşdeğer ilan et — ama gerekçede **hangi yolları saydığını** yaz, *"etkisi yok"*
+    demekle yetinme.
 9. 🔴 **v2.1 ERRATA — BU SPEC'İN KENDİ HATASI, BUILDER YAKALADI.** v2'nin `G22`/`k` ve `M153`
    maddeleri `400` durum kodunu kullanıyordu ve `D9`'un **kilitli** sınıflandırmasıyla doğrudan
    çelişiyordu (`401`-dışı `4xx`'te `denemeSayisi` **artmaz**). Üç bağımsız kanıt: `slice-3d` §3
