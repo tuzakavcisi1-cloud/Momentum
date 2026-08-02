@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""iddia-kapisi.py 1.2.0 -- BELGENIN KENDI IDDIASINI DISKLE KARSILASTIRIR
+"""iddia-kapisi.py 1.3.0 -- BELGENIN KENDI IDDIASINI DISKLE KARSILASTIRIR
 
 NEDEN VAR (iki sinif, IKISI DE IKI KEZ isirdi, ikisinin de kapisi YOKTU):
 
@@ -56,7 +56,7 @@ import re
 import sys
 import tempfile
 
-SURUM = "1.2.0"
+SURUM = "1.3.0"
 LISTE_ESIGI = 8  # bu kadar farkli mutant kimligi tasiyan dosya ENVANTERDIR, kanit degil
 # [D5] Esik K40 geregi UYDURULMADI: D1'den sonra kimlik SAYISI dosya ADINDAN
 # okunur (icerikten degil) ve altin kumede IKI YONLU pinlenir --
@@ -452,13 +452,37 @@ _TEMIZ = """## 6. MUTANTLAR -- uc; KAPALI liste
 """
 
 
-def _vaka(ad, metin, beklenen, kanitli=None, muafiyetler=None, olmamali=(), belge_yolu=None):
+_PIN_DESEN = re.compile(r"^(\d+[a-z]?)\)")
+# [D8] pin etiketi -> ayrıştırılan vaka numaralarının KUMESI. Her altin_kume()
+# cagrisinin BASINDA sifirlanir -- modul duzeyinde birikirse ikinci cagri
+# yanlis olcer.
+_PINLI = {}
+
+
+def _pin_kaydet(ad, pin):
+    """[D8] `pin` verilmisse `ad`'in BASINDAKI vaka numarasini `_PINLI[pin]`'e
+    yazar. Numara `^(\\d+[a-z]?)\\)` deseniyle okunur -- ikinci bir yere ELLE
+    YAZILMAZ (aksi halde kanonik-kopya doğar). Ayristirilamazsa SESSIZCE
+    atlanmaz: `AssertionError` atilir -- kor kapi boyle doğar (M124)."""
+    if pin is None:
+        return
+    m = _PIN_DESEN.match(ad)
+    if not m:
+        raise AssertionError(
+            "pin='%s' verildi ama vaka adi '<numara>)' ile baslamiyor: %r" % (pin, ad))
+    _PINLI.setdefault(pin, set()).add(m.group(1))
+
+
+def _vaka(ad, metin, beklenen, kanitli=None, muafiyetler=None, olmamali=(), belge_yolu=None,
+          pin=None):
     """[D7] `beklenen`/`olmamali`: (SEVIYE, KOD) CIFTLERI -- yalniz KOD DEGIL.
 
     Boyle olmasi ZORUNLUDUR: eskiden yalniz KOD karsilastirilirdi ve
     `beklenen=[], olmamali=()` yazilan bir vaka `all([]) and not any(())`
     yuzunden DAIMA GECERDI -- denetci muafiyet mekanizmasini SILSE bile.
+    `pin` [D8]: verilmisse vaka numarasi `_PINLI[pin]`'e kaydedilir.
     """
+    _pin_kaydet(ad, pin)
     bulgular, _t, _m = denetle(metin, kanitli=kanitli, muafiyetler=muafiyetler,
                                 belge_yolu=belge_yolu)
     olculen = sorted({(s, k) for s, k, _m2 in bulgular})
@@ -473,8 +497,11 @@ def _vaka(ad, metin, beklenen, kanitli=None, muafiyetler=None, olmamali=(), belg
     return ok
 
 
-def _vaka_kanit(ad, adlar, beklenen_kanitli, beklenen_envanter=(), beklenen_elenen=()):
-    """`kanit_topla()`'yi DOGRUDAN sinar -- D1/D2/D3 disk OLMADAN olculur."""
+def _vaka_kanit(ad, adlar, beklenen_kanitli, beklenen_envanter=(), beklenen_elenen=(),
+                 pin=None):
+    """`kanit_topla()`'yi DOGRUDAN sinar -- D1/D2/D3 disk OLMADAN olculur.
+    `pin` [D8]: verilmisse vaka numarasi `_PINLI[pin]`'e kaydedilir."""
+    _pin_kaydet(ad, pin)
     kanitli, envanterler, elenen = kanit_topla(adlar)
     ok = (kanitli == set(beklenen_kanitli)
           and sorted(envanterler) == sorted(beklenen_envanter)
@@ -499,7 +526,19 @@ def _i1_aday(metin):
     raise AssertionError("altin kume vakasi: I1 adayi bulunamadi")
 
 
+def _vaka_pin(ad, etiket):
+    """[D8-c] `LISTE_ESIGI_PIN_VAKALARI`'nin gercekten pin tasiyan vakalari
+    ADLANDIRDIGINI olcer -- string arama DEGIL, KUME karsilastirmasi."""
+    olculen = _PINLI.get(etiket, set())
+    beklenen = {str(n) for n in LISTE_ESIGI_PIN_VAKALARI}
+    ok = (olculen == beklenen)
+    _yaz(("[GECTI] " if ok else "[KALDI] ") + ad)
+    _yaz("    beklenen: %s - olculen: %s" % (sorted(beklenen), sorted(olculen)))
+    return ok
+
+
 def altin_kume():
+    _PINLI.clear()  # [D8] her cagrinin BASINDA sifirlanir
     _yaz("=" * 78)
     _yaz("ALTIN KUME -- IDDIA KAPISININ KENDI KANITI (kor kapi yok)")
     _yaz("LISTE_ESIGI=%d -- LISTE_ESIGI_PIN_VAKALARI=%s [D5]"
@@ -581,13 +620,13 @@ def altin_kume():
     s.append(_vaka_kanit(
         "16) dosya ADI 8 farkli kimlik tasiyor (D3, esik) -- ENVANTER REDDI",
         ["M1-M2-M3-M4-M5-M6-M7-M8-liste.txt"], set(),
-        [("M1-M2-M3-M4-M5-M6-M7-M8-liste.txt", 8)]))
+        [("M1-M2-M3-M4-M5-M6-M7-M8-liste.txt", 8)], pin="LISTE_ESIGI"))
 
     s.append(_vaka_kanit(
         "17) dosya ADI 7 farkli kimlik tasiyor (D3, esigin alti) -- KABUL EDILIR "
         "(LISTE_ESIGI=8 ALTTAN pinlendi)",
         ["M1-M2-M3-M4-M5-M6-M7-liste.txt"],
-        {"M1", "M2", "M3", "M4", "M5", "M6", "M7"}))
+        {"M1", "M2", "M3", "M4", "M5", "M6", "M7"}, pin="LISTE_ESIGI"))
 
     # --- D4: I1 (sayi<->liste) icin sha-keyli, dosya-kapsamli muafiyet -------
     _D4_METIN = _TEMIZ + "\nToplam 5 mutant uygulandi.\n"
@@ -671,6 +710,16 @@ def altin_kume():
                    muafiyetler=_muaf24,
                    olmamali=[("SARI", "I5")],
                    belge_yolu="GOREV_CLAUDE_CODE\\VAKA24.md"))
+
+    # --- D8: LISTE_ESIGI_PIN_VAKALARI'nin YUK TASIYICI oldugunu olcer --------
+    # [D8/103] TEK ETIKET KILIDI: `beklenen` her halukarda
+    # LISTE_ESIGI_PIN_VAKALARI'ndan turur; ikinci bir pin etiketi eklenirse
+    # `_vaka_pin` onu YANLIS sabitle karsilastirir ve SESSIZCE yanlis olcer --
+    # bu assert varsayimi beyan degil KURAL yapar.
+    assert set(_PINLI) <= {"LISTE_ESIGI"}
+    s.append(_vaka_pin(
+        "27) [D8] LISTE_ESIGI_PIN_VAKALARI gercekten pinli vakalari adlandiriyor mu",
+        "LISTE_ESIGI"))
 
     kaldi = s.count(False)
     _yaz("=" * 78)
