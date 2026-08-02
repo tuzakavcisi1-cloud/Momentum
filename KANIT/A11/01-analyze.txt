@@ -1,5 +1,5 @@
 [KOSUM] oturum 50 -- A11 kabul, adim 1: flutter analyze --fatal-infos
-2026-08-02T22:11:59.4376850+03:00
+2026-08-02T23:18:24.8954897+03:00
 Resolving dependencies...
 Downloading packages...
   _fe_analyzer_shared 100.0.0 (105.0.0 available)
@@ -25,5 +25,5 @@ Got dependencies!
 19 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
 Analyzing client...                                             
-No issues found! (ran in 7.0s)
+No issues found! (ran in 6.3s)
 EXIT_ANALYZE=0

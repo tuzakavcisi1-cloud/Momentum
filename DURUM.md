@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayattır** (`1.0.0` yazıyor, belgeler `1.1.0` diyor; kapasitesi gerçekten güncel, altın küme **12/12** ölçüldü) — borç `B-O50-2`.
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 2 Ağu 2026, **oturum 50 (K120 — `A11` KABUL KOŞUMU)** — açılışın 10 adımı da koştu; `A11`'in kalan beş kriteri **ölçüldü**, `M139`–`M155` **16/17 ISIRDI**, `M141` **kör ayak** çıktı (eşdeğerlik **yanlışlandı**, varsayılmadı) ⇒ Onur yeni ayak **`A11/G22`/`c2`**'yi kilitledi, spec **v2.4**, build **Claude Code'un**. *(Oturum 39–49'da yapılan iş arşivdedir.)*
+> **Son güncelleme:** 2 Ağu 2026, **oturum 50 (K120 · K121 — `A11` KABUL EDİLDİ)** — açılışın 10 adımı koştu; `A11`'in **sekiz kriteri de ölçülerek** geçti. Yolda iki kusur bulundu ve kapatıldı: `M141` **kör ayaktı** (eşdeğerlik **yanlışlandı**, varsayılmadı) ⇒ `G22`/`c2` doğdu · kriter 7 ile 8 **backend konusunda çelişiyordu** ⇒ sıra pazarlıksız oldu. Mutantlar **17/17 ISIRIYOR**. *(Oturum 39–49'da yapılan iş arşivdedir.)*
 
 ---
 
@@ -38,7 +38,7 @@
 |---|---|
 | **Backend** | ✅ slice-1 → 3e (3e'de **tek bayt yazılmadı**, ayak 2b2'de bitmişti). `araclar\verify.ps1` ⇒ build **0 uyarı/0 hata** · **test 120/120** · CVE 0 · EXIT 0. |
 | **Veritabanı** | PostgreSQL / Docker; konteyner adı **`momentum-postgres`**. 🔴 **ÇALIŞMA DURUMU BURAYA YAZILMAZ — §2 adım 9'da ÖLÇÜLÜR (K80).** *(Oturum 42: bu hücre `✅ … Up (healthy)` diyordu; ölçüm `docker ps -a` ⇒ **`Exited (255)`** çıktı. K80'i doğuran bayat-PID vakasının ikinci kopyasıydı.)* |
-| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 + A7/A8/A9 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Kapılar **spec-yereldir** (K108; envanter `GOREV_CLAUDE_CODE/`'da ÖLÇÜLÜR) + `design-token-kapisi.py` + `iddia-kapisi.py` **1.3.0**. Ölçülen mutantlar: **`M1`–`M108`** (dilim dilim) + A9b'nin **14** kanıtı; `M119` ISIRIYOR (vaka 27, `A9c/D8`); **`M139`–`M155` oturum 50'de koştu ⇒ 16/17 ISIRDI, `M141` AÇIK** (§4). Son koşumlar **Cowork'ün kendisi** (K26): `flutter test` **499/499** · `analyze --fatal-infos` **0** · **release APK derlendi** (bu depoda ilk kez, K106). 🔴 A‑7 `DESIGN.md`'de kapanmadı (K46). Tur tur anlatım **arşivde** (K73). |
+| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 + A7/A8/A9 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). Kapılar **spec-yereldir** (K108; envanter `GOREV_CLAUDE_CODE/`'da ÖLÇÜLÜR) + `design-token-kapisi.py` + `iddia-kapisi.py` **1.3.0**. Ölçülen mutantlar: **`M1`–`M108`** (dilim dilim) + A9b'nin **14** kanıtı; `M119` ISIRIYOR (vaka 27, `A9c/D8`); **`M139`–`M155` 17/17 ISIRIYOR** (`A11` KABUL, K121). Son koşumlar **Cowork'ün kendisi** (K26): `flutter test` **500/500** · `analyze --fatal-infos` **0** · **release APK derlendi** (bu depoda ilk kez, K106). 🔴 A‑7 `DESIGN.md`'de kapanmadı (K46). Tur tur anlatım **arşivde** (K73). |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
 | **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR** *(bu satır bir kez "aynı iki artefakt" dedi, ölçüm **11** verdi: sayı yazan satır bayatlar, ölçüme atan bayatlamaz — K82-b)*. 🔒 **K83 — Onur DURDUR'u kilitledi:** park yürürlükte, dört-şık ritüeli **tekrarlanmaz**. 🔴 **`R8` DURUMU DA YAZILMAZ, ÖLÇÜLÜR:** K104'te **ısırdı** (44–45 sıfır), K106'da **düştü**; sayı daima `--olc-urun-kodu <sha>` ile **git'ten** türetilir (K55). |
@@ -65,16 +65,17 @@ kırık) · **A10** (**K106**; *"`devUserId` alanı"* derleme-zamanı `--dart-de
 **K116** dört kilidi. Kanıtlar: `KANIT/net10-adim6/` · `KANIT/ucuncu-cihaz-senkron/` ·
 `KANIT/cevrimdisi-senkron/`. Paket borçları `BORCLAR.md`'de.
 
-🔴 **⑤ `A11` KABUL KOŞUMU BİTTİ — KABUL EDİLMEDİ, TEK KALEM AÇIK (K120, oturum 50).**
-Ölçülenler (hepsi **Cowork'ün kendi koşumu**, K26; kanıt `KANIT/A11/`): `analyze --fatal-infos` **0** ·
-`flutter test` **499/499** · `verify.ps1` **EXIT 0** (build 0/0 · test 120/120 · CVE 0) ·
-`spec-kapi-kapsama` **EXIT 0** · kriter **0** (fakeAsync+drift ilk kez birlikte koştu) ve kriter **7**
-(tetikleyici **yol sayımıyla** izole edildi) **kanıtlandı** · `M139`–`M155` **16/17 ISIRDI**.
-🔴 **AÇIK TEK KALEM — `M141` HAYATTA KALDI.** Eşdeğerlik **varsayılmadı, YANLIŞLANDI** (prob ayağı +
-orijinal kod **EXIT 0**, aynı prob + `M141` **EXIT 1**) ⇒ `A11/G22`/`c` **kördü**. Onur yeni ayak
-**`A11/G22`/`c2`**'yi kilitledi; Dart gövdesi spec **§5'te hazır**, `M141` ona **yeniden bağlandı**,
-spec **v2.4**, **build Claude Code'un** (rol bölümü korundu).
-**➡ SIRADAKİ İLK İŞ: Claude Code `c2` ayağını yazar → Cowork `M141`'i yeniden koşar → `A11` KABUL.**
+🟢 **⑤ `A11` KABUL EDİLDİ (K121, oturum 50 · Onur kilitledi).** Sekiz kriterin sekizi de **ölçülerek**
+geçti (hepsi **Cowork'ün kendi koşumu**, K26; kanıt `KANIT/A11/`, hüküm `07-KABUL-HUKMU.md`):
+`analyze` **0** · `flutter test` **500/500** · **`M139`–`M155` 17/17 ISIRDI** (üç dosya bayt-özdeş,
+temiz koşum tekrar EXIT 0) · altın küme **26/26** · `spec-kapi-kapsama` **0** · `verify.ps1` **EXIT 0**
+(build 0/0 · test 120/120 · CVE 0) · cihazda uçtan uca **186 s çevrimdışı → `T1`+4 s'de boşaldı**.
+🔴 **Yolda İKİ kusur ölçüldü ve kapatıldı:** ① `M141` **hayatta kaldı**, eşdeğerlik **yanlışlandı**
+(prob + orijinal kod EXIT 0, prob + `M141` EXIT 1) ⇒ `A11/G22`/`c` **kördü**, `c2` doğdu ② kriter 7 ile
+kriter 8 **backend konusunda çelişiyordu** (`verify.ps1` çalışan API ile 36× `MSB3026`) ⇒ sıra artık
+**pazarlıksız: 7 → kapat → 8**. Kriter 7'nin tetikleyicisi **yol sayımıyla izole edildi** (SignalR yolu
+`cekmeTuruCalistir` çağırır, `ops:[]` gönderir, kuyruğu **itemez**) — kapısı yok, borç `B-O50-1`.
+**➡ SIRADAKİ İLK İŞ: `GOREV-A12` (kural envanteri, mikro-dilim, cihaz istemez).**
 🔴 **ÖLÇÜLMEYEN:** çakışma rozeti · çift yönün kabul kriterleri · **fiziksel cihaz** (yalnız
 emülatör; NAT kurulu soketi koruduğu için SignalR yeniden bağlanma yolu **hiç egzersiz edilmedi**) · CI.
 → ⑥ `A12` (mikro-dilim) → ⑦ iOS iskelesi + CI → ⑧ `SS2` (dar) → ⑨ web borcu + release → ⑩ `ADR 0004` + vitrin.
@@ -101,20 +102,11 @@ itirazının **haklı çekirdeği**. 🔴 *"Repo public"* iddiası oturum 47'de 
 
 - **K77 · K78 · K79 · K81 — slice-3e KAPANDI** (iskelet **K78**, `G12` **K81**; ikisi de Cowork'ün kendi koşumuyla, K26). Tasarım/spec kilitleri K73 gereği **çekildi**; kurallar bugün `G12`'nin 15 ayağında (`A1`–`A13` + `A7b`/`A13b`), `araclar/yoklama-yasagi-kapisi.py`'nin `Y1`–`Y4`'ünde ve `M58`–`M73`+`M71b` mutantlarında **koşuyor**. 🔴 **Yaşayan üç beyan:** ① `Y1` **sembol bazlı** (`K79/3` K81'de daraltıldı) ve gövde kuralı beyaz listedekiler **dâhil** herkese uygulanır ② `CursorHint` **yoksayılır** (`D6`) — sinyal yalnız uyandırma zili ③ web'de sinyal **`kIsWeb` ile kapalı**, web ayağı **`[DOĞRULANMADI]`**. 🔴 **İki açık borç:** `Y3`'ün mutantı yok · `G12` kriter 8 **UYGULANMAZ** (biçim standardı `CLAUDE.md`'de). Gerekçeler: hafıza K77–K81.
 - **K76 · K75 · K74 · K71** — **`R9` ve `R10` KABUL EDİLDİ**; tasarım/spec kilitleri K73 gereği §5'ten **ÇEKİLDİ** ve bugün prozada değil `G10`/`G11` kapılarında + `M41`–`M57` mutantlarında **koşuyor**. 🔴 **Yaşayan iki beyan edilmiş sınır:** ① `D2` kural 3'ün `K != 'yerel'` istisnası — kolonu hâlâ `'yerel'` olan ESKİ satırlar sunucuda olsa da *"Yalnızca bu cihazda"* der; ② `R9` öncesi inmiş satırlar `'yerel'` KALIR (migration yasak). 🔴 **`K46` AÇIK** (kapsam: bileşik satır + `gonderilmemis`) ⇒ `DESIGN.md` **v2**. Gerekçeler: hafıza K71/K74/K75/K76.
-- 🔒 **K120 — `A11/G22`/`c2` YENİ AYAK + `M141` YENİDEN EŞLEME (Onur kilitledi, 2 Ağu 2026):** `M141` `c` ayağında **hayatta kaldı**; *"eşdeğer mutant"* ihtimali **varsayılmadı, YANLIŞLANDI** (prob ayağı + orijinal kod **EXIT 0**, aynı prob + `M141` **EXIT 1**) ⇒ ayak **kördü**. Ölçülmüş kök neden: `c`'de ikinci çağrıyı **retry timer'ın KENDİSİ** yapıyor ve callback ateşlerken zaten `_zamanlayici = null` yazıyor ⇒ `sifirla()`'nın iptal ayağı orada **hiç iş yapmıyor**. `c2` bunu kapatır: timer **ateşlemeden** dışarıdan gelen tur **başarılı** olur ⇒ `pendingTimers` **BOŞ**. Gövde spec §5'te **hazır**, **build Claude Code'un** (rol bölümü korundu). `M142`'nin eşdeğerlik sınıfının **kardeşi**. Gerekçe: hafıza K120.
+- **K116 · K120 — `A11` KABUL EDİLDİ (K121, Onur kilitledi, 2 Ağu 2026)** ⇒ K73 gereği tasarım/spec kilitleri §5'ten **ÇEKİLDİ**. `D0` daraltması (periyodik **ÇEKME** yasak; **tek istisna** kuyrukta bekleyen satır varken **başarısız İTMEnin** tavanlı geri çekilmesi) · taşıma hatası ve `5xx`'in `denemeSayisi` muafiyeti · retry'ın **kendi sınıfında** yaşaması (`ItmeYenidenDeneme`) · `Y1`'in **kapsayan-gövde** kuralı — hepsi bugün prozada değil **`A11/G22`–`A11/G24` kapılarında ve `M139`–`M155` mutantlarında** koşuyor (**17/17 ISIRIYOR**, Cowork'ün kendi koşumu, K26). 🔴 **Yaşayan üç beyan:** ① `GOREV-slice-3d-cekme.md`'deki `D0` metni **bilerek bayat** (K70 kilitli) — kanonik metin `GOREV-A11` §3'tür ② `main.dart:149` sinyal dinleyicisini ölçen kapı **YOK** (`B-O50-1`) ③ `durdur()` üretimde çağrılmıyor · `408`/`429` kapsam dışı · **fiziksel cihaz ölçülmedi**. Gerekçeler: hafıza K116/K120/K121.
 - 🔒 **K111 — .NET 10 (Onur kilitledi, 2 Ağu 2026):** çatı `net10.0`, SDK pini `10.0.302`. Kural bugün prozada
   değil **`verify.ps1`'de ve `global.json` pininde** koşuyor. Geçiş **ATOMİK** (ara durum ölçülerek kırık bulundu);
   `LangVersion=latest` riski + kapsam dışı paketler + geçici CVE pini `BORCLAR.md`'de. Gerekçe: hafıza K111.
 - 🔒 **K108 — KAPI KİMLİĞİ SPEC-YERELDİR** (Onur kilitledi, 2 Ağu 2026): atıf **daima** kapsam önekli (`A10/G18`). Ölçülmüş gerekçe: `A9b/G17` ≠ `A10/G17`, `A10/G18` ≠ `A9c/G18` (iki farklı kapı, aynı ad; ikisi de kabul edilmiş işin içindeydi) ve dilim spec'lerinin **ilk sekiz kapı kimliği en baştan dilim-yereldi** ⇒ *"küresel dizi"* varsayımı hiç doğru olmamıştı. Hiçbir kilit bozulmadı. Kapısı **var**: `kapi-ad-teklik-kapisi.py` (§6), açılışta **§2 adım 4b**.
-- 🔒 **K116 — `D0` DARALTILDI + `Y1` KAÇAĞI KİLİTLENDİ (Onur, 2 Ağu 2026):** `D0` artık *"periyodik
-  **ÇEKME** yasak"*tır; **tek istisna** kuyrukta bekleyen satır varken **başarısız İTMEnin** tavanlı geri
-  çekilmeyle yeniden denenmesidir. Yanında üç kilit: **taşıma hatası `denemeSayisi`'nı ARTIRMAZ**
-  (yoksa >5 dk kesinti kuyruğu **kalıcı zehirler** — bağımsız denetim ölçtü, düzeltme kusurdan kötü
-  olurdu) · retry **kendi dosyasında/sınıfında** yaşar (`ItmeYenidenDeneme`; yoksa `Y1` beyaz listesi
-  **senkron çekirdeğinin tamamını** muaf kılardı) · `Y1` gövde kuralı **kapsayan fonksiyona** taşınır
-  (`Future.delayed` + `while`/`.then` kaçakları). 🔴 **`GOREV-slice-3d-cekme.md`'ye DOKUNULMAZ** (K70
-  kilitli) ⇒ oradaki `D0` metni **bilerek bayat bırakıldı**; kanonik metin burasıdır. Kapılar
-  **`A11/G22`–`A11/G24`**, mutantlar **`M139`–`M155`**. 🟢 İş **koştu ve ölçüldü** (K120): 16/17 ısırdı, `M141` açık ⇒ `G22`/`c2`. Gerekçe: hafıza K116.
 - **K73** — **Bir dilimin tasarım/spec kilitleri, dilim KABUL EDİLDİĞİNDE §5'ten çekilir** ve tek satırlık atıfla temsil edilir; çünkü o andan sonra kural **prozada değil KAPIDA** yaşar (K53 doktrini). Arşivde hiçbir şey silinmez. 🔴 Kapısı **olmayan** kilit çekilemez — bu yüzden `K72` §5'te DURUYOR (`G10` henüz yok).
 - **slice-3b (K57·K59) · slice-3c (K62–K66) · slice-3d (K68–K70) kilitleri** — hepsi **KABUL EDİLDİ** ⇒ K73 gereği §5'ten **ÇEKİLDİ**. Kurallar (`D0`–`D9`, `P1`–`P7`, `A2`/`G` ayakları) bugün prozada değil **kapılarda ve 40 mutantta koşuyor**; spec kimlikleri §9'da, sapma her açılışta `tek-kopya-kapisi.py` ile ölçülür. 🔴 `P6`/`D4` **K72** ile daraltıldı, düzeltmesi **K74** ile kabul edildi (kapısı `G10`). Gerekçeler: hafıza K57–K74.
 - **K61** — **Dev-kimlik kalkanı (şık 1) KİLİTLİ:** yalnız `Development`'ta `DevCurrentUser` (**`X-Momentum-Dev-User`** → `UserId`; başlık yok/bozuk ⇒ 401, sessiz varsayılan kullanıcı YOK); **üretimde `NullCurrentUser` korunur ve bunu bir MUTANT kanıtlar** (`Production` ⇒ 401). `UserId` ⟂ `ClientId`. ADR 0003 **donmuş kalır** (K41). Beyan edilen sınır: bu bir kimlik **çözümü değil**, ölçüm **iskelesidir**.

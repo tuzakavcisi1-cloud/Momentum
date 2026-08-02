@@ -4,7 +4,7 @@ geri alma: itme_yeniden_deneme.dart sha8=50B88E92 ozdes=True
 HUKUM: KIRMIZI (beklenen)
 
 === DART EXIT=1 ===
-#7      main.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart:513:23)
+#7      main.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart:550:23)
 #8      Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:25)
 <asynchronous suspension>
 #9      Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:11)
@@ -12,7 +12,7 @@ HUKUM: KIRMIZI (beklenen)
 #10     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:9)
 <asynchronous suspension>
 This warning will only appear on debug builds.
-00:05 +11 -1: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+00:04 +12 -1: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
 WARNING (drift): It looks like you've created the database class Veritabani multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
 Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
 Here is the stacktrace from when the database was opened a second time:
@@ -23,7 +23,7 @@ Here is the stacktrace from when the database was opened a second time:
 #4      new Veritabani (package:client/veri/veritabani.dart:99:43)
 #5      main.dosyaDbAc (file:///C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart:78:29)
 #6      main.kurulumYap (file:///C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart:81:16)
-#7      main.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart:560:23)
+#7      main.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart:597:23)
 #8      Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:25)
 <asynchronous suspension>
 #9      Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:11)
@@ -31,6 +31,6 @@ Here is the stacktrace from when the database was opened a second time:
 #10     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:9)
 <asynchronous suspension>
 This warning will only appear on debug builds.
-00:05 +12 -1: Some tests failed.
+00:04 +13 -1: Some tests failed.
 Failing tests:
   C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/e: bekleyen zamanlayici varken IKINCI hata -- nonPeriodicTimerCount == 1

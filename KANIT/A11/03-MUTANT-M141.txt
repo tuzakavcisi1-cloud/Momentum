@@ -1,36 +1,36 @@
-MUTANT M141 -- kapi A11/G22/c
+MUTANT M141 -- kapi A11/G22/c2
 eslesme: itme_yeniden_deneme.dart:1
 geri alma: itme_yeniden_deneme.dart sha8=50B88E92 ozdes=True
-HUKUM: HAYATTA KALDI (KUSUR)
+HUKUM: KIRMIZI (beklenen)
 
-=== DART EXIT=0 ===
-  drift 2.34.2 (2.34.3 available)
-  hooks 2.0.2 (2.1.0 available)
-  jni 1.0.0 (1.0.3 available)
-  jni_flutter 1.0.1 (1.0.2 available)
-  matcher 0.12.19 (0.12.20 available)
-  meta 1.18.0 (1.19.0 available)
-  native_toolchain_c 0.19.2 (0.19.3 available)
-  objective_c 9.4.1 (9.5.0 available)
-  package_config 2.2.0 (3.0.0 available)
-  record_use 0.6.0 (1.0.0 available)
-  test_api 0.7.11 (0.7.13 available)
-  vector_math 2.2.0 (2.4.2 available)
-Got dependencies!
-19 packages have newer versions incompatible with dependency constraints.
-Try `flutter pub outdated` for more information.
-00:00 +0: loading C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart
-00:00 +0: KABUL KRITERI 0 + G22/a: kuyrukta 1 op, tasima hatasi -- TAM 2s de ikinci istek (seed sabit)
-00:00 +1: G22/b: ardisik hatalar -- istek anlari 2,5,15,30,60, 6.dan sonra 60 sabit
-00:00 +2: G22/c: ag duzelir -- op gider, kuyruk bosalir, +300s pendingTimers BOS, ek istek yok
-00:00 +3: G22/d: basari sonrasi yeni op + hata -- ilk yeniden deneme YINE 2s (cizelge sifirlandi)
-00:01 +4: G22/e: bekleyen zamanlayici varken IKINCI hata -- nonPeriodicTimerCount == 1
-00:01 +5: G22/f: ag 400 -- +300s pendingTimers BOS (planlanmadi)
-00:01 +6: G22/g: ag 503 -- yeniden deneme planlanir (pendingTimers dolu)
-00:01 +7: G22/h: yeniden deneme boyunca gonderilen HER govdede ops BOS DEGIL (cekme yok)
-00:01 +8: G22/i: durdur() sonrasi +300s -- pendingTimers BOS (yetim zamanlayici yok)
-00:01 +9: GOREV-A11 D-A11-4 / G22-j: 12 ardisik TASIMA hatasi -- bekliyor kalir, denemeSayisi ARTMAZ, rozet cakisma OLMAZ
-00:02 +10: GOREV-A11 D-A11-4 siniri / G22-k [v2.1, 400->401 SPEC DUZELTMESI]: ardisik 401 -- denemeSayisi ARTAR, 9da zehirli + deneme-tavani + rozet cakisma
-00:02 +11: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
-00:04 +12: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
-00:05 +13: All tests passed!
+=== DART EXIT=1 ===
+#7      main.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart:550:23)
+#8      Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:25)
+<asynchronous suspension>
+#9      Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:11)
+<asynchronous suspension>
+#10     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:9)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:04 +12 -1: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+WARNING (drift): It looks like you've created the database class Veritabani multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$Veritabani (package:client/veri/veritabani.g.dart:2106:35)
+#4      new Veritabani (package:client/veri/veritabani.dart:99:43)
+#5      main.dosyaDbAc (file:///C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart:78:29)
+#6      main.kurulumYap (file:///C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart:81:16)
+#7      main.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart:597:23)
+#8      Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:25)
+<asynchronous suspension>
+#9      Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:11)
+<asynchronous suspension>
+#10     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:9)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:04 +13 -1: Some tests failed.
+Failing tests:
+  C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/c2: bekleyen retry timer + DISARIDAN basarili tur -- sifirla() IPTAL ETMELI

@@ -7,7 +7,7 @@ A11 KABUL adim 5 -- M139..M155 mutant kosumu (Cowork, K26)
   TEMIZ-ONCE PROJE  EXIT=0
   M139  A11/G22/a              eslesme[senkron_dongusu.dart:1] DART=1 -> KIRMIZI (beklenen)
   M140  A11/G22/b              eslesme[itme_yeniden_deneme.dart:1] DART=1 -> KIRMIZI (beklenen)
-  M141  A11/G22/c              eslesme[itme_yeniden_deneme.dart:1] DART=0 -> HAYATTA KALDI (KUSUR)
+  M141  A11/G22/c2             eslesme[itme_yeniden_deneme.dart:1] DART=1 -> KIRMIZI (beklenen)
   M142  A11/G22/m              eslesme[senkron_dongusu.dart:1] DART=1 -> KIRMIZI (beklenen)
   M143  A11/G22/e              eslesme[itme_yeniden_deneme.dart:1] DART=1 -> KIRMIZI (beklenen)
   M144  A11/G22/f              eslesme[senkron_dongusu.dart:1] DART=1 -> KIRMIZI (beklenen)
@@ -28,4 +28,4 @@ A11 KABUL adim 5 -- M139..M155 mutant kosumu (Cowork, K26)
   TEMIZ-SONRA DART   EXIT=0
   TEMIZ-SONRA ALTIN  EXIT=0
   TEMIZ-SONRA PROJE  EXIT=0
-  ISIRAN MUTANT: 16/17
+  ISIRAN MUTANT: 17/17

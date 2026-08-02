@@ -76,7 +76,7 @@ M.append(("M140", "A11/G22/b", [(IY,
     "    Duration(seconds: 2),\n    Duration(seconds: 2),\n"
     "    Duration(seconds: 2),\n")], [DART]))
 
-M.append(("M141", "A11/G22/c", [(IY,
+M.append(("M141", "A11/G22/c2", [(IY,
     "  void sifirla() {\n    _zamanlayici?.cancel();\n"
     "    _zamanlayici = null;\n    _indeks = 0;\n  }\n",
     "  void sifirla() {\n    _indeks = 0; // MUTANT M141: iptal YOK\n  }\n")], [DART]))
