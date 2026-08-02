@@ -1,0 +1,613 @@
+[KOSUM] oturum 50 -- A11 kabul, adim 2: flutter test
+2026-08-02T22:12:20.3427860+03:00
+Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 100.0.0 (105.0.0 available)
+  analyzer 13.0.0 (14.1.0 available)
+  build 4.0.7 (4.0.10 available)
+  build_config 1.3.1 (1.3.2 available)
+  build_daemon 4.1.2 (4.1.3 available)
+  build_runner 2.15.1 (2.16.0 available)
+  dart_style 3.1.9 (3.1.12 available)
+  drift 2.34.2 (2.34.3 available)
+  hooks 2.0.2 (2.1.0 available)
+  jni 1.0.0 (1.0.3 available)
+  jni_flutter 1.0.1 (1.0.2 available)
+  matcher 0.12.19 (0.12.20 available)
+  meta 1.18.0 (1.19.0 available)
+  native_toolchain_c 0.19.2 (0.19.3 available)
+  objective_c 9.4.1 (9.5.0 available)
+  package_config 2.2.0 (3.0.0 available)
+  record_use 0.6.0 (1.0.0 available)
+  test_api 0.7.11 (0.7.13 available)
+  vector_math 2.2.0 (2.4.2 available)
+Got dependencies!
+19 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/dev/Momentum/src/client/test/a11y_kapisi_test.dart
+00:00 +0: C:/dev/Momentum/src/client/test/a11y_kapisi_test.dart: metin (F6 kilidi -- fixture/metinler-kilit.json ile 13 dizge) gorunur (8) birebir
+00:00 +1: C:/dev/Momentum/src/client/test/a11y_kapisi_test.dart: metin (F6 kilidi -- fixture/metinler-kilit.json ile 13 dizge) rozet kisa gorunur (3) birebir -- GOREV-A7, F6 13 dizgesine DAHIL DEGIL
+00:00 +2: C:/dev/Momentum/src/client/test/a11y_kapisi_test.dart: metin (F6 kilidi -- fixture/metinler-kilit.json ile 13 dizge) semantics duyurusu (5) birebir
+00:00 +3: C:/dev/Momentum/src/client/test/a11y_kapisi_test.dart: DURUM VITRINI A11Y-1: androidTapTargetGuideline
+00:01 +4: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: durum vitrini textContrastGuideline (VM)
+00:01 +5: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: durum vitrini textContrastGuideline (VM)
+00:01 +6: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: durum vitrini textContrastGuideline (VM)
+00:02 +7: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: durum vitrini textContrastGuideline (VM)
+00:02 +8: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: durum vitrini textContrastGuideline (VM)
+00:02 +9: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: durum vitrini textContrastGuideline (VM)
+00:02 +10: C:/dev/Momentum/src/client/test/a11y_kapisi_test.dart: A11Y-2: GorevEkleAlani odak halkasi focusedBorder.width == odakKalinlik, color == birincil
+00:03 +11: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: gercek ekran (yerel durum) textContrastGuideline (VM)
+00:03 +12: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: gercek ekran (yerel durum) textContrastGuideline (VM)
+00:04 +13: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: gercek ekran (yerel durum) textContrastGuideline (VM)
+00:04 +14: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: gercek ekran (yerel durum) textContrastGuideline (VM)
+00:10 +15: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: gercek ekran (yerel durum) textContrastGuideline (VM)
+00:10 +16: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: gercek ekran (yerel durum) textContrastGuideline (VM)
+00:10 +17: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: gercek ekran (yerel durum) textContrastGuideline (VM)
+00:10 +18: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: gercek ekran (yerel durum) textContrastGuideline (VM)
+00:10 +19: C:/dev/Momentum/src/client/test/a11y_kontrast_test.dart: kontrast: gercek ekran (yerel durum) textContrastGuideline (VM)
+00:10 +20: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/b: ardisik hatalar -- istek anlari 2,5,15,30,60, 6.dan sonra 60 sabit
+00:10 +21: C:/dev/Momentum/src/client/test/ayarlari_hazirla_test.dart: G19/a: farkli GUID ezmesi -- devUserId degisir, dort kayit sifirlanir
+G19-KANIT ONCE: cursor=dolu uzak=2 gorev=2 kuyruk=2
+00:10 +22: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/c: ag duzelir -- op gider, kuyruk bosalir, +300s pendingTimers BOS, ek istek yok
+00:10 +22: C:/dev/Momentum/src/client/test/ayarlari_hazirla_test.dart: G19/b: bos ezme -- devUserId DEGISMEZ, cursor KORUNUR, tablolar DOLU kalir
+G19-KANIT ONCE: cursor=dolu uzak=2 gorev=2 kuyruk=2
+00:10 +23: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/c: ag duzelir -- op gider, kuyruk bosalir, +300s pendingTimers BOS, ek istek yok
+00:10 +23: C:/dev/Momentum/src/client/test/ayarlari_hazirla_test.dart: G19/c: ezme zaten esit -- devUserIdDegistir HIC cagrilmaz (casus sayar)
+G19-KANIT ONCE: cursor=dolu uzak=2 gorev=2 kuyruk=2
+00:10 +24: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/c: ag duzelir -- op gider, kuyruk bosalir, +300s pendingTimers BOS, ek istek yok
+00:10 +24: C:/dev/Momentum/src/client/test/ayarlari_hazirla_test.dart: G19/d: GUID olmayan ezme -- ArgumentError firlar, HICBIR sey degismez
+G19-KANIT ONCE: cursor=dolu uzak=2 gorev=2 kuyruk=2
+00:10 +25: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/c: ag duzelir -- op gider, kuyruk bosalir, +300s pendingTimers BOS, ek istek yok
+00:10 +26: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/d: basari sonrasi yeni op + hata -- ilk yeniden deneme YINE 2s (cizelge sifirlandi)
+00:13 +26: C:/dev/Momentum/src/client/test/dev_user_id_define_test.dart: DEV_USER_ID define, urunun devUserIdEzmesi sabitiyle AYNI degeri tasir
+G20-KANIT testinKendiOkudugu= urunDevUserIdEzmesi=
+00:13 +27: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/d: basari sonrasi yeni op + hata -- ilk yeniden deneme YINE 2s (cizelge sifirlandi)
+00:13 +28: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/e: bekleyen zamanlayici varken IKINCI hata -- nonPeriodicTimerCount == 1
+00:13 +29: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/f: ag 400 -- +300s pendingTimers BOS (planlanmadi)
+00:14 +30: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK1: changesUygula ile YENI entity dogar -- senkronDurumu == senkronize
+00:16 +31: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/g: ag 503 -- yeniden deneme planlanir (pendingTimers dolu)
+00:16 +32: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK2: snapshotUygula ile YENI entity dogar -- senkronDurumu == senkronize
+00:16 +33: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK2: snapshotUygula ile YENI entity dogar -- senkronDurumu == senkronize
+00:16 +34: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK2: snapshotUygula ile YENI entity dogar -- senkronDurumu == senkronize
+00:16 +35: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK2: snapshotUygula ile YENI entity dogar -- senkronDurumu == senkronize
+00:16 +36: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK2: snapshotUygula ile YENI entity dogar -- senkronDurumu == senkronize
+00:16 +37: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK2: snapshotUygula ile YENI entity dogar -- senkronDurumu == senkronize
+00:16 +38: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK2: snapshotUygula ile YENI entity dogar -- senkronDurumu == senkronize
+00:16 +39: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK2: snapshotUygula ile YENI entity dogar -- senkronDurumu == senkronize
+00:16 +40: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/h: yeniden deneme boyunca gonderilen HER govdede ops BOS DEGIL (cekme yok)
+00:17 +41: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/h: yeniden deneme boyunca gonderilen HER govdede ops BOS DEGIL (cekme yok)
+00:17 +42: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/h: yeniden deneme boyunca gonderilen HER govdede ops BOS DEGIL (cekme yok)
+00:17 +43: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK3: MEVCUT cakisma satir uzak degisiklik alir -- rozet cakisma KALIR (P6 saglam)
+00:17 +44: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK3: MEVCUT cakisma satir uzak degisiklik alir -- rozet cakisma KALIR (P6 saglam)
+00:17 +45: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK3: MEVCUT cakisma satir uzak degisiklik alir -- rozet cakisma KALIR (P6 saglam)
+00:17 +46: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/i: durdur() sonrasi +300s -- pendingTimers BOS (yetim zamanlayici yok)
+00:17 +47: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/i: durdur() sonrasi +300s -- pendingTimers BOS (yetim zamanlayici yok)
+00:17 +48: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/i: durdur() sonrasi +300s -- pendingTimers BOS (yetim zamanlayici yok)
+00:17 +49: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/i: durdur() sonrasi +300s -- pendingTimers BOS (yetim zamanlayici yok)
+00:17 +50: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK4: MEVCUT yerel satir (bekleyen yerel yazim) echo alir -- rozet yerel KALIR (P7 kardesi)
+00:17 +51: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 D-A11-4 / G22-j: 12 ardisik TASIMA hatasi -- bekliyor kalir, denemeSayisi ARTMAZ, rozet cakisma OLMAZ
+00:20 +52: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK5: changesUygula ile UCTAN UCA dogan (INSERT-from-pull) satir listede -- Yalnizca bu cihazda metni YOK
+00:20 +53: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK5: changesUygula ile UCTAN UCA dogan (INSERT-from-pull) satir listede -- Yalnizca bu cihazda metni YOK
+00:20 +54: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK5: changesUygula ile UCTAN UCA dogan (INSERT-from-pull) satir listede -- Yalnizca bu cihazda metni YOK
+00:20 +55: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK5: changesUygula ile UCTAN UCA dogan (INSERT-from-pull) satir listede -- Yalnizca bu cihazda metni YOK
+00:20 +56: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK5: changesUygula ile UCTAN UCA dogan (INSERT-from-pull) satir listede -- Yalnizca bu cihazda metni YOK
+00:20 +57: C:/dev/Momentum/src/client/test/g10_rozet_kapsami_test.dart: AYAK5: changesUygula ile UCTAN UCA dogan (INSERT-from-pull) satir listede -- Yalnizca bu cihazda metni YOK
+00:21 +58: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:21 +59: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +60: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +61: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +62: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +63: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +64: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +65: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +66: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +67: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +68: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +69: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +70: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +71: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +72: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +73: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +74: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +75: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +76: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +77: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +78: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +79: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +80: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +81: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +82: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +83: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +84: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +85: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +86: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:22 +87: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +88: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +89: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +90: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +91: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +92: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +93: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +94: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +95: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +96: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +97: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +98: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +99: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +100: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +101: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +102: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +103: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:23 +104: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:24 +105: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:24 +106: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: GOREV-A11 v2.3 / G22-m: 101 bekleyen op, tur retry den gelir -- 1. yuvarlak (100 op) basarili, 2. yuvarlak (kalan 1 op) hata -- YENI planla() 2s den baslar
+00:24 +107: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +108: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +109: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +110: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +111: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +112: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +113: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +114: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +115: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +116: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +117: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:24 +118: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:25 +119: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:25 +120: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:25 +121: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:25 +122: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:25 +123: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:25 +124: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:25 +125: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:25 +126: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:25 +127: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A4 -- DAR ekran + BUYUK olcek ⇒ DIKEY 320.0dp + 2.0x + gonderilmemis ⇒ DIKEY  [spec kanonik ayagi]
+00:25 +128: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+00:25 +129: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+00:25 +130: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+00:25 +131: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+00:25 +132: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+00:25 +133: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+00:25 +134: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+00:25 +135: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+00:25 +136: C:/dev/Momentum/src/client/test/ag_donus_itmesi_test.dart: G22/l: bekleyen 60s lik zamanlayici varken yeni yerel yazma -- iptal edilir, yeni deneme 2s de
+00:25 +137: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=360.0 durum=cevrimdisi cakisma=false
+00:25 +138: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A6 -- KARARLILIK: ayni girdi iki kez pump ⇒ ayni duzen 320dp + 2.0x + gonderilmemis: titreme yok
+00:25 +139: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A6 -- KARARLILIK: ayni girdi iki kez pump ⇒ ayni duzen 320dp + 2.0x + gonderilmemis: titreme yok
+00:26 +140: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=360.0 durum=gonderilmemis cakisma=false
+00:26 +141: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A7 -- senkronize (metin null) ⇒ 320dp+2.0x'te bile YATAY rozet cizilmiyorsa dikeye donmenin sebebi de yok
+00:26 +142: C:/dev/Momentum/src/client/test/g14_dikey_donus_kapisi_test.dart: G14/A7 -- senkronize (metin null) ⇒ 320dp+2.0x'te bile YATAY rozet cizilmiyorsa dikeye donmenin sebebi de yok
+00:26 +143: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=411.0 durum=yerel cakisma=false
+00:26 +144: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=411.0 durum=yerel cakisma=false
+00:26 +145: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=411.0 durum=yerel cakisma=true
+00:26 +146: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=411.0 durum=kuyrukta cakisma=false
+00:26 +147: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=411.0 durum=kuyrukta cakisma=true
+00:26 +148: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=411.0 durum=cevrimdisi cakisma=false
+00:26 +149: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=411.0 durum=cevrimdisi cakisma=true
+00:26 +150: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=411.0 durum=gonderilmemis cakisma=false
+00:26 +151: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A1 -- KIRPMA YOK: 72 kombinasyon (3 olcek x 3 genislik x 4 durum x 2 cakisma) olcek=2.0 genislik=411.0 durum=gonderilmemis cakisma=true
+00:26 +152: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A2 -- senkronize: olculecek Text YOK, kapi susar ama "olctum" DEMEZ 320dp + 2.0x + senkronize ⇒ rozet Text kumesi BOS
+00:26 +153: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A3 -- STATIK: rozet Text'i maxLines TASIR lib/sunum/senkron_rozeti.dart icindeki her Text( cagrisi maxLines tasir
+00:26 +154: C:/dev/Momentum/src/client/test/g13_rozet_tasma_kapisi_test.dart: G13/A3 -- STATIK: rozet Text'i maxLines TASIR MAX_SATIR degeri 1'den BUYUK ve emniyet payi tasiyor
+00:26 +155: C:/dev/Momentum/src/client/test/g15_bilesik_satir_kapisi_test.dart: G15/A9 -- BILESIK SATIR: iki rozet AYNI ANDA agacta cakisma=true + gonderilmemis, 320dp, 2.0x
+00:28 +156: C:/dev/Momentum/src/client/test/g15_bilesik_satir_kapisi_test.dart: G15/A10 -- A11Y-1: dokunma hedefleri dikeyde de >= 48dp Checkbox ve CakismaRozeti kendi 48dp'lerini korur
+00:28 +157: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A0 -- kod ici kapsam korumasi (UYELIK, uzunluk DEGIL) _hepsi / _a3Kapsami / _olcumKapsami kodlari TAM olarak beklenen
+00:28 +158: C:/dev/Momentum/src/client/test/g15_bilesik_satir_kapisi_test.dart: G15/A11 -- A11Y-6: rozetin GORUNUR Text'i KORUNUR yerel: gorunur Text VAR ve BOS DEGIL
+00:28 +159: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 1.0x -- kirpma YOK
+00:28 +160: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 1.0x -- kirpma YOK
+00:28 +161: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 1.0x -- kirpma YOK
+00:28 +162: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 1.0x -- kirpma YOK
+00:28 +163: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 1.0x -- kirpma YOK
+00:29 +164: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 1.0x -- kirpma YOK
+00:29 +165: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 1.0x -- kirpma YOK
+00:29 +166: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 1.0x -- kirpma YOK
+00:29 +167: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 1.0x -- kirpma YOK
+00:29 +168: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 360.0dp x 1.0x -- kirpma YOK
+00:29 +169: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 411.0dp x 1.0x -- kirpma YOK
+00:29 +170: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 1.5x -- kirpma YOK
+00:29 +171: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 360.0dp x 1.5x -- kirpma YOK
+00:29 +172: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 411.0dp x 1.5x -- kirpma YOK
+00:29 +173: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 320.0dp x 2.0x -- kirpma YOK
+00:29 +174: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 360.0dp x 2.0x -- kirpma YOK
+00:29 +175: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y2: 411.0dp x 2.0x -- kirpma YOK
+00:30 +176: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y3: 320.0dp x 1.0x -- kirpma YOK
+00:30 +177: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:30 +178: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:30 +179: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:30 +180: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:30 +181: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:30 +182: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:30 +183: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:30 +184: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:30 +185: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:30 +186: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +187: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +188: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +189: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +190: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +191: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +192: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +193: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +194: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +195: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +196: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +197: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +198: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +199: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +200: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: kuyruk bos, cekmeTuruCalistir() -- BIR istek gitti (bugun: sifir)
+00:31 +201: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y5: 320.0dp x 2.0x -- kirpma YOK
+00:31 +202: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: govde -- "ops":[] tasir
+00:31 +203: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: govde -- "ops":[] tasir
+00:31 +204: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali Y5: 411.0dp x 2.0x -- kirpma YOK
+00:31 +205: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tetikleyici sayimi -- acilis + elle yenileme (kuyruk bos) -- gozlenen istek sayisi IKI, fazlasi yok
+00:32 +206: C:/dev/Momentum/src/client/test/g24_d0_regresyon_kapisi_test.dart: G24/b: kuyruk BOS, hic tetik yok -- +300s sifir istek ve pendingTimers BOS
+00:32 +207: C:/dev/Momentum/src/client/test/g24_d0_regresyon_kapisi_test.dart: G24/b: kuyruk BOS, hic tetik yok -- +300s sifir istek ve pendingTimers BOS
+00:32 +208: C:/dev/Momentum/src/client/test/g24_d0_regresyon_kapisi_test.dart: G24/b: kuyruk BOS, hic tetik yok -- +300s sifir istek ve pendingTimers BOS
+00:32 +209: C:/dev/Momentum/src/client/test/g24_d0_regresyon_kapisi_test.dart: G24/b: kuyruk BOS, hic tetik yok -- +300s sifir istek ve pendingTimers BOS
+00:32 +210: C:/dev/Momentum/src/client/test/g24_d0_regresyon_kapisi_test.dart: G24/b: kuyruk BOS, hic tetik yok -- +300s sifir istek ve pendingTimers BOS
+00:32 +211: C:/dev/Momentum/src/client/test/g24_d0_regresyon_kapisi_test.dart: G24/b: kuyruk BOS, hic tetik yok -- +300s sifir istek ve pendingTimers BOS
+00:32 +212: C:/dev/Momentum/src/client/test/g24_d0_regresyon_kapisi_test.dart: G24/b: kuyruk BOS, hic tetik yok -- +300s sifir istek ve pendingTimers BOS
+00:32 +213: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: bekleyen op VARKEN turCalistir() baslar, Future beklenmeden cekmeTuruCalistir() cagirilir -- ilk tur devam ederken IKINCI ISTEK GITMEZ; ilk tur bitince K3 BIR KEZ kosar (toplam istek IKI)
+00:32 +214: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: bekleyen op VARKEN turCalistir() baslar, Future beklenmeden cekmeTuruCalistir() cagirilir -- ilk tur devam ederken IKINCI ISTEK GITMEZ; ilk tur bitince K3 BIR KEZ kosar (toplam istek IKI)
+00:32 +215: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: bekleyen op VARKEN turCalistir() baslar, Future beklenmeden cekmeTuruCalistir() cagirilir -- ilk tur devam ederken IKINCI ISTEK GITMEZ; ilk tur bitince K3 BIR KEZ kosar (toplam istek IKI)
+00:32 +216: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: bekleyen op VARKEN turCalistir() baslar, Future beklenmeden cekmeTuruCalistir() cagirilir -- ilk tur devam ederken IKINCI ISTEK GITMEZ; ilk tur bitince K3 BIR KEZ kosar (toplam istek IKI)
+00:32 +217: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: bekleyen op VARKEN turCalistir() baslar, Future beklenmeden cekmeTuruCalistir() cagirilir -- ilk tur devam ederken IKINCI ISTEK GITMEZ; ilk tur bitince K3 BIR KEZ kosar (toplam istek IKI)
+00:32 +218: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A2 -- Y1-Y7 (hepsi): her Text maxLines!=null VE overflow==ellipsis Y1: 320.0dp x 1.0x -- maxLines+ellipsis beyani
+00:32 +219: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:32 +220: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +221: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +222: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +223: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +224: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +225: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +226: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +227: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +228: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +229: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +230: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +231: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +232: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +233: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D0: tek tur devam ederken UC cekme tetikleyicisi yutulur -- tur bitince yalniz BIR ek istek (bayrak sayac DEGIL)
+00:33 +234: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:33 +235: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:33 +236: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:33 +237: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:33 +238: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:33 +239: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:33 +240: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:33 +241: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:33 +242: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:33 +243: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:34 +244: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:34 +245: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:34 +246: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:34 +247: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:34 +248: C:/dev/Momentum/src/client/test/g2_migration_kapisi_test.dart: D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz
+00:34 +249: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore true -> true -> false -- UC istek; her istek oncekinin nextCursorunu tasir
+00:34 +250: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore true -> true -> false -- UC istek; her istek oncekinin nextCursorunu tasir
+00:34 +251: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore true -> true -> false -- UC istek; her istek oncekinin nextCursorunu tasir
+00:34 +252: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A2 -- Y1-Y7 (hepsi): her Text maxLines!=null VE overflow==ellipsis Y3: 411.0dp x 2.0x -- maxLines+ellipsis beyani
+00:34 +253: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +254: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +255: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +256: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +257: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +258: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +259: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +260: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +261: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +262: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +263: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +264: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +265: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +266: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:34 +267: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +268: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +269: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +270: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +271: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +272: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +273: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +274: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +275: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +276: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +277: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +278: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +279: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +280: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +281: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +282: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +283: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +284: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +285: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +286: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:35 +287: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +288: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +289: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +290: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +291: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +292: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +293: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +294: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +295: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +296: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +297: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +298: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +299: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +300: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +301: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +302: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +303: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +304: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +305: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +306: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore DAIMA true, sayfalar DOLU -- tur 20de durur, sonsuza gitmez
+00:36 +307: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A3 -- Y1-Y5+Y7 (Y6 HARIC): tester.takeException() null (RenderFlex tasmasi yakalanir) Y1: 320.0dp x 2.0x -- istisna yok
+00:36 +308: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore true AMA changes BOS -- dongu ILK TURDA durur (tek istek; yirmi bos tur YOK)
+00:36 +309: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore true AMA changes BOS -- dongu ILK TURDA durur (tek istek; yirmi bos tur YOK)
+00:37 +310: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: hasMore true AMA changes BOS -- dongu ILK TURDA durur (tek istek; yirmi bos tur YOK)
+00:37 +311: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A3 -- Y1-Y5+Y7 (Y6 HARIC): tester.takeException() null (RenderFlex tasmasi yakalanir) Y2: 320.0dp x 1.0x -- istisna yok
+00:37 +312: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: resyncRequired true -- saklanan imlec silinir; sonraki istek sinceCursor:null; UzakAlanDurumu AYNEN durur
+00:37 +313: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: resyncRequired true -- saklanan imlec silinir; sonraki istek sinceCursor:null; UzakAlanDurumu AYNEN durur
+00:37 +314: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: resyncRequired true -- saklanan imlec silinir; sonraki istek sinceCursor:null; UzakAlanDurumu AYNEN durur
+00:37 +315: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: resyncRequired true -- saklanan imlec silinir; sonraki istek sinceCursor:null; UzakAlanDurumu AYNEN durur
+00:37 +316: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: resyncRequired true -- saklanan imlec silinir; sonraki istek sinceCursor:null; UzakAlanDurumu AYNEN durur
+00:37 +317: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: resyncRequired true -- saklanan imlec silinir; sonraki istek sinceCursor:null; UzakAlanDurumu AYNEN durur
+00:37 +318: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: resyncRequired true -- saklanan imlec silinir; sonraki istek sinceCursor:null; UzakAlanDurumu AYNEN durur
+00:37 +319: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: resyncRequired true -- saklanan imlec silinir; sonraki istek sinceCursor:null; UzakAlanDurumu AYNEN durur
+00:37 +320: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A3 -- Y1-Y5+Y7 (Y6 HARIC): tester.takeException() null (RenderFlex tasmasi yakalanir) Y2: 411.0dp x 2.0x -- istisna yok
+00:37 +321: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +322: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +323: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +324: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +325: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +326: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +327: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +328: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +329: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +330: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +331: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +332: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +333: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +334: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +335: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +336: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +337: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +338: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +339: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:37 +340: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +341: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +342: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +343: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +344: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +345: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +346: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +347: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +348: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +349: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +350: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D7: devUserIdDegistir sonrasi DB kapatilip acilir -- nextCursorJson null, UzakAlanDurumu bos, imlecSahibi=yeni devUserId
+00:38 +351: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: changes fixture -- fields.title + groups.completion okundu; projeksiyon guncellendi
+00:38 +352: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: changes fixture -- fields.title + groups.completion okundu; projeksiyon guncellendi
+00:38 +353: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: changes fixture -- fields.title + groups.completion okundu; projeksiyon guncellendi
+00:38 +354: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: changes fixture -- fields.title + groups.completion okundu; projeksiyon guncellendi
+00:38 +355: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: changes fixture -- fields.title + groups.completion okundu; projeksiyon guncellendi
+00:38 +356: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: changes fixture -- fields.title + groups.completion okundu; projeksiyon guncellendi
+00:38 +357: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: changes fixture -- fields.title + groups.completion okundu; projeksiyon guncellendi
+00:38 +358: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: changes fixture -- fields.title + groups.completion okundu; projeksiyon guncellendi
+00:38 +359: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: changes fixture -- fields.title + groups.completion okundu; projeksiyon guncellendi
+00:38 +360: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D8: dort yazma yolunun urettigi operationIdler -- tiresiz 13. hane (indeks 12) "7"
+00:38 +361: C:/dev/Momentum/src/client/test/g1_cekme_yolu_kapisi_test.dart: D8: dort yazma yolunun urettigi operationIdler -- tiresiz 13. hane (indeks 12) "7"
+00:38 +362: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: snapshot fixture -- scalars[]/groups[] okundu; winOperationId DOGRUDAN kullanildi
+00:38 +363: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: snapshot fixture -- scalars[]/groups[] okundu; winOperationId DOGRUDAN kullanildi
+00:38 +364: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: snapshot fixture -- scalars[]/groups[] okundu; winOperationId DOGRUDAN kullanildi
+00:38 +365: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: snapshot fixture -- scalars[]/groups[] okundu; winOperationId DOGRUDAN kullanildi
+00:38 +366: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: snapshot fixture -- scalars[]/groups[] okundu; winOperationId DOGRUDAN kullanildi
+00:38 +367: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: snapshot fixture -- scalars[]/groups[] okundu; winOperationId DOGRUDAN kullanildi
+00:39 +368: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: snapshot fixture -- scalars[]/groups[] okundu; winOperationId DOGRUDAN kullanildi
+00:39 +369: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: snapshot fixture -- scalars[]/groups[] okundu; winOperationId DOGRUDAN kullanildi
+00:39 +370: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A4 -- yalniz Y2-Y5+Y7: cizilen kutu metnin ISTEDIGI yuksekligi KISALTMAMALI Y2: 411.0dp x 2.0x -- dikey sessiz kirpma yok
+00:39 +371: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +372: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +373: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +374: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +375: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +376: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +377: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +378: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +379: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +380: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +381: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":null,"order":null tasiyan payload -- COKME YOK, kanal bos sayildi
+00:39 +382: C:/dev/Momentum/src/client/test/g16_metin_kaybi_kapisi_test.dart: G16/A4 -- yalniz Y2-Y5+Y7: cizilen kutu metnin ISTEDIGI yuksekligi KISALTMAMALI Y4: 360.0dp x 1.0x -- dikey sessiz kirpma yok
+00:39 +383: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +384: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +385: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +386: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +387: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +388: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +389: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +390: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +391: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +392: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +393: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +394: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +395: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +396: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:39 +397: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +398: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +399: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +400: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +401: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +402: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +403: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +404: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +405: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +406: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +407: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +408: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: notes/priority tasiyan payload -- UzakAlanDurumunda satir VAR, Gorevler DEGISMEDI
+00:40 +409: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D2: "sets":[...] tasiyan snapshot -- yok sayildi, cokme yok, UzakAlanDurumuna YAZILMADI
+00:41 +410: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: completion.status == "open" -> tamamlandi == false
+00:41 +411: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: completion.status == "open" -> tamamlandi == false
+00:41 +412: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: completion.status == "open" -> tamamlandi == false
+00:41 +413: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: completion.status == "open" -> tamamlandi == false
+00:41 +414: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: completion.status == "open" -> tamamlandi == false
+00:41 +415: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: completion.status == "open" -> tamamlandi == false
+00:41 +416: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: completion.status == "open" -> tamamlandi == false
+00:41 +417: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: completion.status == "open" -> tamamlandi == false
+00:41 +418: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: completion.status == "open" -> tamamlandi == false
+00:42 +419: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D1: uc op uret, DB kapat, yeniden ac -- kuyrukta uc satir
+00:42 +420: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D1: uc op uret, DB kapat, yeniden ac -- kuyrukta uc satir
+00:42 +421: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D1: uc op uret, DB kapat, yeniden ac -- kuyrukta uc satir
+00:42 +422: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D1: uc op uret, DB kapat, yeniden ac -- kuyrukta uc satir
+00:42 +423: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D1: uc op uret, DB kapat, yeniden ac -- kuyrukta uc satir
+00:42 +424: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D1: uc op uret, DB kapat, yeniden ac -- kuyrukta uc satir
+00:42 +425: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D1: uc op uret, DB kapat, yeniden ac -- kuyrukta uc satir
+00:42 +426: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D1: uc op uret, DB kapat, yeniden ac -- kuyrukta uc satir
+00:42 +427: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: completion.status == "done" -> tamamlandi == true
+00:43 +428: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D1: siralama (hlcWallMs, hlcCounter, opId) artan -- esit damgada opId tie-break
+00:43 +429: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: isDeleted.value == "True" (buyuk T) -> silindi FALSE kalir (Ordinal, tam dize)
+00:44 +430: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D1: govdeJson gonderim oncesi/sonrasi bayt bayt AYNI (yeniden uretilmez)
+00:44 +431: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: uygulama sonrasi senkronDurumu DEGISMEDI (rozete dokunulmadi)
+00:44 +432: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: uygulama sonrasi senkronDurumu DEGISMEDI (rozete dokunulmadi)
+00:44 +433: C:/dev/Momentum/src/client/test/g3_ayristirici_kapisi_test.dart: D4: uygulama sonrasi senkronDurumu DEGISMEDI (rozete dokunulmadi)
+00:44 +434: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:44 +435: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:44 +436: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:44 +437: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:44 +438: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:44 +439: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:44 +440: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:44 +441: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:45 +442: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:45 +443: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:45 +444: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:45 +445: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:45 +446: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:45 +447: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:45 +448: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:46 +449: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:46 +450: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:46 +451: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:46 +452: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:46 +453: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:48 +454: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:48 +455: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:48 +456: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:48 +457: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:49 +458: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:49 +459: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:49 +459: C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart: D3: A yazar -> B ceker -> B yazar -> A ceker -- iki DAR DOKUM bayt-ozdes
+WARNING (drift): It looks like you've created the database class Veritabani multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$Veritabani (package:client/veri/veritabani.g.dart:2106:35)
+#4      new Veritabani (package:client/veri/veritabani.dart:99:43)
+#5      main.istemciKur (file:///C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart:212:16)
+#6      main.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart:224:21)
+<asynchronous suspension>
+#7      Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:15)
+<asynchronous suspension>
+#8      Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:11)
+<asynchronous suspension>
+#9      Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:9)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:49 +460: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:49 +461: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:50 +462: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:50 +463: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:50 +464: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:50 +465: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:51 +465: C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart: D3: B IKI AYRI turda cekiyor -- ikinci turda gelen ESKI (dusuk HLC) yazim, birinci turda uygulanmis YENI degeri EZMEZ (kalici meta)
+WARNING (drift): It looks like you've created the database class Veritabani multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$Veritabani (package:client/veri/veritabani.g.dart:2106:35)
+#4      new Veritabani (package:client/veri/veritabani.dart:99:43)
+#5      main.istemciKur (file:///C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart:212:16)
+#6      main.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart:251:21)
+<asynchronous suspension>
+#7      Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:15)
+<asynchronous suspension>
+#8      Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:11)
+<asynchronous suspension>
+#9      Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:9)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:51 +466: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:52 +467: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:53 +467: C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart: D3: ayni alana ESZAMANLI iki yazim (farkli clientId, ayni wallMs+counter) -- iki istemci AYNI kazanani secer
+WARNING (drift): It looks like you've created the database class Veritabani multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$Veritabani (package:client/veri/veritabani.g.dart:2106:35)
+#4      new Veritabani (package:client/veri/veritabani.dart:99:43)
+#5      main.istemciKur (file:///C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart:212:16)
+#6      main.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart:301:21)
+<asynchronous suspension>
+#7      Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:15)
+<asynchronous suspension>
+#8      Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:11)
+<asynchronous suspension>
+#9      Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:9)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:53 +468: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:53 +469: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:54 +470: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:54 +471: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:54 +471: C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart: D5: A'nin bekleyen duzenlemesi varken A ceker -- cekmeden HEMEN SONRA A projeksiyonu A'nin bekleyen degerini tasir
+WARNING (drift): It looks like you've created the database class Veritabani multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$Veritabani (package:client/veri/veritabani.g.dart:2106:35)
+#4      new Veritabani (package:client/veri/veritabani.dart:99:43)
+#5      main.istemciKur (file:///C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart:212:16)
+#6      main.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/g6_f2_yakinsama_kapisi_test.dart:344:21)
+<asynchronous suspension>
+#7      Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:15)
+<asynchronous suspension>
+#8      Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:11)
+<asynchronous suspension>
+#9      Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:9)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:54 +472: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:54 +473: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:54 +474: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:54 +475: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: kuyrukta 150 op -- her istegin ops uzunlugu <= 100, iki tur, sahte ag 400 dondurmez
+00:54 +476: C:/dev/Momentum/src/client/test/sunum_bilesenleri_test.dart: SenkronRozeti kuyrukta: donen ok + metin
+00:54 +477: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: iki tur ESZAMANLI baslatilir -- sahte aga giden istek sayisi tek turu asmaz, denemeSayisi cift artmaz
+00:54 +478: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: iki tur ESZAMANLI baslatilir -- sahte aga giden istek sayisi tek turu asmaz, denemeSayisi cift artmaz
+00:54 +479: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: iki tur ESZAMANLI baslatilir -- sahte aga giden istek sayisi tek turu asmaz, denemeSayisi cift artmaz
+00:54 +480: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D4: iki tur ESZAMANLI baslatilir -- sahte aga giden istek sayisi tek turu asmaz, denemeSayisi cift artmaz
+00:54 +481: C:/dev/Momentum/src/client/test/sunum_bilesenleri_test.dart: GorevSatiri GOREV-R10 D7: cakisma varsa CakismaRozeti VE taban SenkronRozeti BIRLIKTE gosterir (cakisma taban rozeti bastirmaz)
+00:54 +482: C:/dev/Momentum/src/client/test/veri_kapisi_test.dart: bos durum dogru zamanda
+00:55 +483: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D6: nextCursor ham metin olarak yazilir, yeniden acilista okunur, sonraki istek sinceCursor ile gider
+00:55 +484: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D6: nextCursor ham metin olarak yazilir, yeniden acilista okunur, sonraki istek sinceCursor ile gider
+00:55 +485: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D6: nextCursor ham metin olarak yazilir, yeniden acilista okunur, sonraki istek sinceCursor ile gider
+00:55 +486: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D6: nextCursor ham metin olarak yazilir, yeniden acilista okunur, sonraki istek sinceCursor ile gider
+00:55 +487: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D6: nextCursor ham metin olarak yazilir, yeniden acilista okunur, sonraki istek sinceCursor ile gider
+00:55 +488: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D6: nextCursor ham metin olarak yazilir, yeniden acilista okunur, sonraki istek sinceCursor ile gider
+00:55 +489: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D6: nextCursor ham metin olarak yazilir, yeniden acilista okunur, sonraki istek sinceCursor ile gider
+00:55 +490: C:/dev/Momentum/src/client/test/g3_kuyruk_kapisi_test.dart: D6: nextCursor ham metin olarak yazilir, yeniden acilista okunur, sonraki istek sinceCursor ile gider
+00:55 +491: C:/dev/Momentum/src/client/test/sunum_bilesenleri_test.dart: GorevEkleAlani metin girip ekle dugmesine basinca onEkle cagrilir
+00:55 +492: C:/dev/Momentum/src/client/test/sunum_bilesenleri_test.dart: GorevEkleAlani metin girip ekle dugmesine basinca onEkle cagrilir
+00:55 +493: C:/dev/Momentum/src/client/test/sunum_bilesenleri_test.dart: GorevEkleAlani bos metinle onEkle cagrilmaz
+00:56 +494: C:/dev/Momentum/src/client/test/widget_test.dart: durum vitrininin 8 durumu da ByValueKey ile bulunur
+00:57 +495: C:/dev/Momentum/src/client/test/yerel_yazma_itme_tetikleyicisi_test.dart: K112/a -- gorev ekleme ITME turunu tetikler
+00:58 +496: C:/dev/Momentum/src/client/test/yerel_yazma_itme_tetikleyicisi_test.dart: K112/b -- SIRA: once YAZMA, sonra itme
+00:58 +497: C:/dev/Momentum/src/client/test/yerel_yazma_itme_tetikleyicisi_test.dart: K112/c -- YANLIS-POZITIF: onYerelYazma null ise cokmez
+00:59 +498: C:/dev/Momentum/src/client/test/yerel_yazma_itme_tetikleyicisi_test.dart: K112/d -- BOS metin ne yazar ne tetikler
+00:59 +499: All tests passed!
+EXIT_TEST=0

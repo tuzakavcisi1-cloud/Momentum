@@ -174,3 +174,37 @@
 - **Geçici artıklar (repo DIŞINDA, silme Onur'da):** `%TEMP%\_cw_*` · `C:\dev\_cowork_tmp\`.
 
 ---
+
+## B-O50-1 — `main.dart:149` SİNYAL DİNLEYİCİSİNİ ÖLÇEN KAPI YOK (oturum 50, ölçüldü)
+
+`A11` kriter 7'nin tetikleyici izolasyonu (`KANIT/A11/05-KRITER7-TETIKLEYICI-IZOLASYONU.md`) şu
+satıra dayanıyor: `sinyal.olaylar.listen((_) => unawaited(dongu.cekmeTuruCalistir()))`. Bu satır
+`turCalistir`'e dönerse **kriter 7'nin kanıtı sessizce bayatlar** — sinyal yolu kuyruğu itebilir
+hâle gelir ve *"tetikleyici retry'dı"* hükmü çürür. 🔴 **Ölçen hiçbir kapı yok:**
+`yoklama-yasagi-kapisi.py` `Y1`'i yalnız `Timer`/`Future.delayed` çağrılarının **kapsayan
+gövdesinde** arar; `main.dart:149` bir **stream dinleyicisidir** ve o taramaya **hiç girmez**.
+Sınıf: `kör kapı`. Kapanış: `Y1`'e (ya da ayrı bir ayağa) *"sinyal dinleyicisi `turCalistir`
+çağıramaz"* kuralı + mutantı.
+
+## B-O50-2 — `sayi-tazeligi.py` SÜRÜM ETİKETİNİ ÖLÇMÜYOR (oturum 50, ölçüldü)
+
+`belge-tavan-kapisi.py` banner'ı **1.0.0** yazıyor; `DURUM.md`'nin **3. satırı da 1.0.0**, ama §5
+(K58) ve §6 tablosu **1.1.0** diyor. Araç gerçekten güncel — vaka 10 çıktıda görünüyor ve **12/12**
+iddiası `sayi-tazeligi.py` ile **doğrulandı** ⇒ kusur **sürüm etiketinde**, kapasitede değil.
+🔴 `sayi-tazeligi.py` bu sınıfı **görmez**: yalnız *"altın küme N/M"* desenini ölçer, **`SURUM`
+sabitini belgedeki sürüm iddiasıyla karşılaştırmaz**. Sınıf: `bayat-iddia` + `kanonik-kopya`
+(aynı sayı `DURUM.md`'de **iki farklı değerle** yaşıyor). Kapanış: araca *"belgede geçen
+`<arac> N.N.N` iddiasını aracın `SURUM` sabitiyle karşılaştır"* ayağı + mutant; ya da banner
+sürümünün tek kaynağa bağlanması.
+
+## B-O50-3 — `radar.py` `D2`'NİN `olcum-duzeltme` ÖNERİSİ ÖLÜ (oturum 50, ölçüldü)
+
+`radar.py:268-272` yinelenen tur numarasını **yalnız sayarak** buluyor ve mesajda
+*"düzeltme kaydıysa `asama` alanına `olcum-duzeltme` yaz"* diyor — ama **`asama` alanını hiç
+okumuyor**. Bu oturumda **dört** düzeltme kaydı tam o biçimde yazıldı ve `D2` **yine SARI** verdi.
+🔴 **Öneriyi izleyen el bile uyarıyı susturamıyor** ⇒ uyarı **gürültüye** dönüşür ve gerçek bir
+yinelenen turu **maskeler**. Sınıf: `kör kapı` + `ölü beyan`.
+🔴 **Düzeltme yeri PROJE DEĞİL, PLUGIN:** `araclar/radar.py` **K57-b** ile `proje-radari` plugin
+0.2.0'a **bayt-özdeş** kilitli (`46E3A8BC`); proje-yerel yama sapmayı ölçen tek sha'yı kırar.
+Kapanış: plugin'de `asama` alanı okunacak (`startswith("olcum-duzeltme")` ⇒ o kaydı yinelenen
+sayma) + altın kümeye vaka; sonra proje kopyası tazelenir.

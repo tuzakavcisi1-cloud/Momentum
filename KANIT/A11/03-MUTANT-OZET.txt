@@ -1,0 +1,31 @@
+A11 KABUL adim 5 -- M139..M155 mutant kosumu (Cowork, K26)
+  TABAN sha8=0435E333   19134 b  senkron_dongusu.dart
+  TABAN sha8=50B88E92    3465 b  itme_yeniden_deneme.dart
+  TABAN sha8=8F8BBB66   31314 b  yoklama-yasagi-kapisi.py
+  TEMIZ-ONCE DART   EXIT=0
+  TEMIZ-ONCE ALTIN  EXIT=0
+  TEMIZ-ONCE PROJE  EXIT=0
+  M139  A11/G22/a              eslesme[senkron_dongusu.dart:1] DART=1 -> KIRMIZI (beklenen)
+  M140  A11/G22/b              eslesme[itme_yeniden_deneme.dart:1] DART=1 -> KIRMIZI (beklenen)
+  M141  A11/G22/c              eslesme[itme_yeniden_deneme.dart:1] DART=0 -> HAYATTA KALDI (KUSUR)
+  M142  A11/G22/m              eslesme[senkron_dongusu.dart:1] DART=1 -> KIRMIZI (beklenen)
+  M143  A11/G22/e              eslesme[itme_yeniden_deneme.dart:1] DART=1 -> KIRMIZI (beklenen)
+  M144  A11/G22/f              eslesme[senkron_dongusu.dart:1] DART=1 -> KIRMIZI (beklenen)
+  M145  A11/G22/h + A11/G23/f  eslesme[itme_yeniden_deneme.dart:1,itme_yeniden_deneme.dart:1,itme_yeniden_deneme.dart:1,senkron_dongusu.dart:1] DART=1 PROJE=1 -> KIRMIZI (beklenen)
+  M146  A11/G23/a,b            eslesme[yoklama-yasagi-kapisi.py:1] ALTIN=1 -> KIRMIZI (beklenen)
+  M147  A11/G23/h              eslesme[yoklama-yasagi-kapisi.py:1] ALTIN=1 -> KIRMIZI (beklenen)
+  M148  A11/G22/i              eslesme[itme_yeniden_deneme.dart:1] DART=1 -> KIRMIZI (beklenen)
+  M149  A11/G23/c,d            eslesme[yoklama-yasagi-kapisi.py:2] ALTIN=1 -> KIRMIZI (beklenen)
+  M150  A11/G23/g              eslesme[yoklama-yasagi-kapisi.py:1] ALTIN=1 -> KIRMIZI (beklenen)
+  M151  A11/G24/c              eslesme[yoklama-yasagi-kapisi.py:1] ALTIN=1 -> KIRMIZI (beklenen)
+  M152  A11/G22/j              eslesme[senkron_dongusu.dart:1] DART=1 -> KIRMIZI (beklenen)
+  M153  A11/G22/k              eslesme[senkron_dongusu.dart:1] DART=1 -> KIRMIZI (beklenen)
+  M154  A11/G22/l              eslesme[senkron_dongusu.dart:1] DART=1 -> KIRMIZI (beklenen)
+  M155  A11/G23/i,j            eslesme[yoklama-yasagi-kapisi.py:1] ALTIN=1 -> KIRMIZI (beklenen)
+  SON   sha8=0435E333   19134 b  senkron_dongusu.dart  ozdes=True
+  SON   sha8=50B88E92    3465 b  itme_yeniden_deneme.dart  ozdes=True
+  SON   sha8=8F8BBB66   31314 b  yoklama-yasagi-kapisi.py  ozdes=True
+  TEMIZ-SONRA DART   EXIT=0
+  TEMIZ-SONRA ALTIN  EXIT=0
+  TEMIZ-SONRA PROJE  EXIT=0
+  ISIRAN MUTANT: 16/17

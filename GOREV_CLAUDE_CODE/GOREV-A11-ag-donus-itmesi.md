@@ -1,6 +1,13 @@
-# GOREV-A11 v2.3 — AĞ-DÖNÜŞ İTMESİ (`D0` DARALTMASI) + `Y1` KAÇAĞININ KAPATILMASI
+# GOREV-A11 v2.4 — AĞ-DÖNÜŞ İTMESİ (`D0` DARALTMASI) + `Y1` KAÇAĞININ KAPATILMASI
 
-> **Durum:** KİLİT ADAYI (v2). Onur **dört** kilit verdi (2 Ağu 2026, oturum 49).
+> **Durum: v2.4 — BAĞIMSIZ KABUL DENETİMİ KOŞTU, `A11` KABUL EDİLMEDİ (Cowork, oturum 50, 2 Ağu 2026).**
+> Ölçülen: `analyze` **0** · `flutter test` **499/499** · **`M139`–`M155` ⇒ 16/17 ISIRDI** ·
+> `verify.ps1` **EXIT 0** (build 0/0 · test 120/120 · CVE 0) · kriter 0 ve 7 **kanıtlandı**.
+> 🔴 **AÇIK TEK KALEM: `M141` HAYATTA KALDI** ⇒ yeni ayak **`G22`/`c2`** yazıldı (gövdesi §5'te
+> hazır), `M141` ona **yeniden bağlandı**; **build Claude Code'un** (Onur kilitledi). Kanıt:
+> `KANIT/A11/`.
+>
+> **Durum (v2, oturum 49):** KİLİT ADAYI. Onur **dört** kilit verdi (2 Ağu 2026).
 > **Build: Claude Code. Ölçüm/denetim: Cowork (K26).** Araç onarımı bilerek **yazan elden ayrı ele**
 > verilmiştir (`K34-f`; oturum 47'de `A9c` aynı yolu izledi).
 >
@@ -130,6 +137,7 @@ sahte ağın çağrı sayacı ile **birlikte** ölçülür.
 | `a` | kuyrukta 1 op, taşıma hatası ⇒ **tam 2 s**'de ikinci istek (seed sabit ⇒ **kesin eşitlik**) |
 | `b` | ardışık hatalar ⇒ istek anları `2·5·15·30·60`, altıncıdan sonra **60 s'de sabit** |
 | `c` | ağ düzelir ⇒ op gider, kuyruk boşalır, +300 s ⇒ **`pendingTimers` BOŞ** ve ek istek yok |
+| `c2` | 🔴 **[v2.4 — COWORK ÖLÇTÜ; `M141` `c`'de HAYATTA KALIYORDU]** bekleyen retry zamanlayıcısı **HENÜZ ATEŞLEMEDEN**, DIŞARIDAN gelen ikinci tur **BAŞARILI** olur ⇒ `pendingTimers` **BOŞ**. `c`'den farkı yapısaldır: `c`'de ikinci çağrıyı **timer'ın KENDİSİ** yapar ve `planla()`'nın callback'i ateşlerken zaten `_zamanlayici = null` yazar ⇒ `sifirla()`'nın iptal ayağı o senaryoda **hiç iş yapmaz** ve mutant görünmez |
 | `d` | başarı sonrası yeni op + hata ⇒ ilk yeniden deneme **yine 2 s** (çizelge sıfırlandı) |
 | `e` | bekleyen zamanlayıcı varken ikinci hata ⇒ **`nonPeriodicTimerCount == 1`** |
 | `f` | ağ **400** ⇒ +300 s'de **`pendingTimers` BOŞ** (planlanmadı) |
@@ -140,6 +148,50 @@ sahte ağın çağrı sayacı ile **birlikte** ölçülür.
 | `k` | 🔴 **`D-A11-4` sınırı [v2.1'de `400` → `401` DÜZELTİLDİ]:** ardışık **`401`** ⇒ `denemeSayisi` **artar**, 9'da satır **`zehirli`** + `sonHataKodu='deneme-tavani'` + rozet `cakisma`. **Bu ayak `A11`'in en riskli yan etkisini ölçer:** `D-A11-4` taşıma ve `5xx`'i sayaçtan muaf tuttuğuna göre, sayacı canlı tutan **başka bir yol kalmalıdır** — yoksa `_denemeTavani = 8` **ölü kod** olur ve zehirli-op koruması sessizce kaybolur |
 | `l` | 🔴 **`D-A11-2`/3:** bekleyen 60 s'lik zamanlayıcı varken **yeni yerel yazma** ⇒ iptal edilir, yeni deneme **2 s**'de |
 | `m` | 🔴 **[v2.3 — builder ÜÇÜNCÜ kez yakaladı] ÇOK-YUVARLAKLI TUR, `hasMore` İLE DEĞİL TOPLU GÖNDERİM TAVANIYLA.** Kurulum: **101 bekleyen op** (`_bekleyenleriSec()` `..limit(100)` taşır, `:220`) ve tur **retry'dan** gelir (indeks > 0). 1. yuvarlak: 100 op gider, `SenkronBasarili` (**`hasMore` GEREKMEZ**) ⇒ `:182` `sifirla()` ⇒ indeks **0**. 2. yuvarlak: `_bekleyenleriSec()` **kalan 1 op**'u seçer ⇒ `secilenler` **BOŞ DEĞİL** ⇒ taşıma hatası ⇒ `:205` guard'ı **geçer** ⇒ `planla()` **2 s**'den. `M142` ile indeks 1'de kalır ⇒ **5 s**. Seed sabit ⇒ **kesin eşitlik**. 🔴 **v2.2'nin `hasMore` kurulumu ERİŞİLEMEZDİ:** 1. sayfada tek op `Applied` olup silindiğinden 2. yuvarlakta `secilenler` **boş** kalıyor ve `:205`'in `secilenler.isNotEmpty` guard'ı `planla()`'yı **hiç çağırmıyordu** |
+
+🔴 **`c2`'NİN GÖVDESİ BURADA — YENİDEN KEŞFEDİLMESİ GEREKMEZ.** Cowork bu ayağı `M141`'i
+yanlışlarken **fiilen koştu** (orijinal kodda `EXIT 0`, `M141` ile `EXIT 1`); aşağıdaki gövde o
+koşumun **birebir** metnidir, yardımcıları (`kurulumYap`/`donguOlustur`/`_basariliYanit`) mevcut
+dosyanınkilerdir:
+
+```dart
+  test(
+    'G22/c2: bekleyen retry timer + DISARIDAN basarili tur -- sifirla() IPTAL ETMELI',
+    () async {
+      final k = await kurulumYap();
+      await k.depo.ekle('c2 iptal ayagi');
+
+      fakeAsync((async) {
+        var cagriSayisi = 0;
+        final agi = SahteSenkronAgi(
+          davranis: (govde, cagriNo) async {
+            cagriSayisi++;
+            if (cagriSayisi == 1) return SenkronAgHatasi(Exception('tasima hatasi'));
+            return _basariliYanit(govde);
+          },
+        );
+        final dongu = donguOlustur(k, agi, rastgele: Random(3));
+
+        unawaited(dongu.turCalistir());
+        async.elapse(Duration.zero);
+        expect(cagriSayisi, 1);
+        expect(async.pendingTimers, isNotEmpty, reason: 'retry planlanmis olmali');
+
+        // Timer HENUZ ATESLEMEDI -- disaridan taze cagri geliyor.
+        unawaited(dongu.turCalistir());
+        async.elapse(Duration.zero);
+        expect(cagriSayisi, 2, reason: 'disaridan gelen tur kosmus olmali');
+        expect(
+          async.pendingTimers,
+          isEmpty,
+          reason: 'sifirla() bekleyen retry timer ini IPTAL ETMELIYDI',
+        );
+      });
+
+      await k.db.close();
+    },
+  );
+```
 
 ### G23 — `Y1` KAÇAK KAPISI (statik; `yoklama-yasagi-kapisi.py` altın kümesi)
 
@@ -175,7 +227,7 @@ sahte ağın çağrı sayacı ile **birlikte** ölçülür.
 |---|---|---|---|
 | **M139** | Yeniden-deneme planlamasını kaldır | `A11/G22`/`a` | ikinci istek gelmez ⇒ **KIRMIZI** |
 | **M140** | Çizelgeyi sabit `2 s` yap | `A11/G22`/`b` | çizelge ayağı düşer ⇒ **KIRMIZI** |
-| **M141** | Kuyruk boşalınca **zamanlayıcıyı iptal etme** | `A11/G22`/`c` | `pendingTimers` dolu kalır ⇒ **KIRMIZI** |
+| **M141** | `sifirla()`'daki `_zamanlayici?.cancel()` **ve** `_zamanlayici = null` satırlarını kaldır (gövde yalnız `_indeks = 0` kalır) | `A11/G22`/**`c2`** | **[v2.4]** bekleyen timer iptal edilmez ⇒ `pendingTimers` **DOLU** ⇒ **KIRMIZI**. 🔴 v2.3'te bu mutant **`c`'ye** bağlıydı ve **HAYATTA KALDI** — Cowork ölçtü (`KANIT/A11/03-MUTANT-OZET.txt`, 16/17) ve *"eşdeğer mutant"* ihtimalini **yanlışladı** (`KANIT/A11/03-MUTANT-M141-YANLASLAMA.txt`: prob ayağı + **orijinal** kod `EXIT 0`, aynı prob + `M141` `EXIT 1`) ⇒ mutant eşdeğer **değil**, ayak **kördü**. `M142`'de builder'ın yakaladığı eşdeğerlik sınıfının **kardeşi** |
 | **M142** | Başarı dalındaki `sifirla()`'yı kaldır (`_yuvarlakDongusu` `SenkronBasarili` dalı) | `A11/G22`/**`m`** | **[v2.2]** çok-yuvarlaklı turda 2. yuvarlak hata verince `planla()` **5 s**'den başlar (2 s yerine) ⇒ **KIRMIZI**. 🔴 v2'de bu mutant `G22`/`d`'ye bağlıydı ve **EŞDEĞERDİ** — builder ölçtü ve haklıydı: `d`'de bir sonraki hata **dışarıdan** gelen çağrıdan doğuyor ve o çağrı zaten koşulsuz sıfırlıyor. Kaçırılan yol **boşaltma döngüsüdür**: `sifirla()` (`:182`) ve `planla()` (`:205`) **aynı turda** ateşlenebilir |
 | **M143** | Planlama tekliği kontrolünü kaldır | `A11/G22`/`e` | `nonPeriodicTimerCount == 2` ⇒ **KIRMIZI** |
 | **M144** | `400`'ü de yeniden dene | `A11/G22`/`f` | `pendingTimers` dolu ⇒ **KIRMIZI** |
@@ -237,6 +289,14 @@ kapsamına **bilerek alınmamıştır** (üç araç onarımı bir dilime sığma
    Ayrıca **rozet `cakisma` OLMAMALIDIR** (`D-A11-4`'ün cihazdaki kanıtı).
 8. `powershell -File araclar\verify.ps1` ⇒ **EXIT 0**. 🔴 **`M8` karşılığı:** v1 `python` ile
    çağırıyordu; bu dosya **PowerShell** betiğidir.
+   🔴 **[v2.4 — ÖLÇÜLDÜ, KRİTER SIRALAMASI ÇAKIŞIYORDU] `verify.ps1` ÇALIŞAN BİR `Momentum.Api`
+   VARKEN KOŞULAMAZ.** Cowork ölçtü: kriter 7'nin ayakta bıraktığı backend süreciyle `verify.ps1`
+   **36 hata** verdi, hepsi `MSB3026`/`MSB3027` — *"Dosya şunun tarafından kilitlendi:
+   `Momentum.Api (<pid>)`"*; `bin\Debug\net10.0\Momentum.{Application,Domain,Infrastructure}.dll`
+   üzerine yazılamıyor. **Bu bir ürün kusuru DEĞİL, kriter sıralamasının kendi çakışmasıdır:
+   kriter 7 backend'in ÇALIŞMASINI, kriter 8 KAPALI olmasını ister ve v2.3 bunu hiç ölçmemişti.**
+   ⇒ **Sıra PAZARLIKSIZ: önce 7, sonra backend KAPATILIR, sonra 8.** Kapatma **ölçülür**
+   (`netstat -ano | findstr :5298` boş dönmeli), varsayılmaz.
 
 ## 8. YASAKLAR
 
