@@ -73,9 +73,26 @@ class MomentumUygulamasi extends StatelessWidget {
       // F5: --dart-define=DURUM_VITRINI=true ile durum vitrini acilir.
       home: depo == null
           ? const DurumVitrini()
-          : GorevListesiEkrani(depo: depo!, onYenile: dongu?.cekmeTuruCalistir),
+          : GorevListesiEkrani(
+              depo: depo!,
+              // K112: "Yenile" bugune kadar YALNIZ cekme kosuyordu.
+              onYenile: dongu == null ? null : () => elleYenile(dongu!),
+              // K112: yerel yazma sonrasi ITME turu.
+              onYerelYazma: dongu?.turCalistir,
+            ),
     );
   }
+}
+
+/// K112 (oturum 48 -- cihazda olculdu): elle yenileme bugune kadar YALNIZ
+/// `cekmeTuruCalistir`a bagliydi; o tur govdeyi DAIMA `ops:[]` ile kurar
+/// (slice-3d D0) ⇒ kuyrukta bekleyen satir varsa kullanici yenilemeye bassa
+/// bile GITMIYORDU. Artik once ITME, sonra CEKME. Ikisi ayni tek-ucus
+/// kilidini paylasir (D4); ikinci cagri devam eden turu beklerse K3 bayragi
+/// zaten bir kez yeniden kosturur.
+Future<void> elleYenile(SenkronDongusu dongu) async {
+  await dongu.turCalistir();
+  await dongu.cekmeTuruCalistir();
 }
 
 class _UretimKurulumu {

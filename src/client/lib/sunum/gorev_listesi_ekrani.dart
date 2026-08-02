@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../design/tokens.dart';
@@ -23,7 +25,22 @@ class GorevListesiEkrani extends StatefulWidget {
   // vitrini) yenile dugmesi HIC gosterilmez -- geriye donuk uyumlu.
   final Future<void> Function()? onYenile;
 
-  const GorevListesiEkrani({super.key, required this.depo, this.onYenile});
+  // K112 (oturum 48 -- CIHAZDA OLCULDU): yerel yazma ITMEYI tetiklemiyordu.
+  // Gorev ekleniyor, "Bu cihazda" rozetiyle duruyor ve uygulama YENIDEN
+  // BASLATILANA kadar sunucuya gitmiyordu (olcum: 60 s + elle yenileme 40 s
+  // bekledi, gelmedi; yeniden baslatinca 14,4 s ve 23,5 s'te geldi).
+  // Bu geri cagri her YEREL YAZMA'dan SONRA bir itme turu ister.
+  // slice-3d D0'i IHLAL ETMEZ: zamanlayici degil, OLAY tetiklidir --
+  // periyodik yoklama yasagi yerinde durur.
+  // `null` ise (mevcut testler / durum vitrini) hicbir sey tetiklenmez.
+  final Future<void> Function()? onYerelYazma;
+
+  const GorevListesiEkrani({
+    super.key,
+    required this.depo,
+    this.onYenile,
+    this.onYerelYazma,
+  });
 
   @override
   State<GorevListesiEkrani> createState() => _GorevListesiEkraniState();
@@ -36,6 +53,15 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
   void initState() {
     super.initState();
     _akis = widget.depo.gorevlerGorunur();
+  }
+
+  /// K112: once YEREL YAZMA tamamlanir, SONRA itme tetiklenir. Sira
+  /// pazarliksizdir -- tersi olursa itme turu kuyrugu HENUZ BOS gorur ve
+  /// tetikleyici sessizce hicbir sey yapmaz (bu, kapinin mutantidir).
+  Future<void> _yerelYaz(Future<void> Function() yazma) async {
+    await yazma();
+    final tetik = widget.onYerelYazma;
+    if (tetik != null) await tetik();
   }
 
   void _yenidenDene() {
@@ -87,8 +113,14 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
                       return GorevSatiri(
                         key: ValueKey('gorev_satiri_${gorunum.gorev.id}'),
                         gorev: gorunum.gorev,
-                        onTamamlaDegisti: (deger) => widget.depo
-                            .tamamlaGeriAl(gorunum.gorev.id, tamamlandi: deger),
+                        onTamamlaDegisti: (deger) => unawaited(
+                          _yerelYaz(
+                            () => widget.depo.tamamlaGeriAl(
+                              gorunum.gorev.id,
+                              tamamlandi: deger,
+                            ),
+                          ),
+                        ),
                         senkronDurumu: gorunum.senkronDurumu,
                         cakismaVarMi: gorunum.cakismaVarMi,
                       );
@@ -97,7 +129,11 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
                 },
               ),
             ),
-            GorevEkleAlani(onEkle: widget.depo.ekle),
+            GorevEkleAlani(
+              onEkle: (baslik) => unawaited(
+                _yerelYaz(() => widget.depo.ekle(baslik)),
+              ),
+            ),
           ],
         ),
       ),
