@@ -263,6 +263,30 @@ spec-yerel ilan ettiğinden bundan sonraki her spec kendi karar adlarını kulla
 verecek — yani *"mutantsız kural yok"* hükmü **boşluğa** verilecek. Bu bir **borçtur** ve `A11`'in
 kapsamına **bilerek alınmamıştır** (üç araç onarımı bir dilime sığmaz); Onur'un kilidi beklenir.
 
+🟢 **`GOREV-A12` ile MEKANİZMA ÇALIŞIR HÂLE GELDİ [3 Ağu 2026, Onur kilidi — ŞIK 2].** Araç artık §3
+karar başlıklarını okuyor ve `D-A11-1`…`D-A11-6` envanterde **görünüyor**. Bunun BEDELİ ölçüldü:
+altısı da hiçbir mutant tablosu satırında **adıyla** geçmediğinden ilk koşumda hepsi `[S2] MUTANTSIZ
+KURAL` verdi (Claude Code'un bağımsız ölçümü: `KANIT/A12/sonraki/GOREV-A11-ag-donus-itmesi.txt`, 6/6).
+Aşağıdaki kayıtlar bu altısını **gerekçeli borç** olarak kapatır — **hiçbiri "mutantı yok" DEMEZ**:
+her biri kararı fiilen ısıran mutantı adıyla gösterir ve eşlemenin neden **dolaylı** olduğunu açıklar
+(araç `S2`'de yalnız kural adının mutant tablosunda **doğrudan** geçip geçmediğine bakar; kapı-ayak
+üzerinden kurulan dolaylı bağı görmez — bu ayrı, KAPANMAMIŞ bir kusurdur, bkz. aşağıdaki not ve
+`BORCLAR.md` `B-O51-1`).
+
+- KURAL: D-A11-1 | GEREKCE: MUTANTSIZ DEGILDIR: M151 (A11/G24/c) SenkronDongusu'nu beyaz listeye ekleyip periyodik cekme korumasini kaldirir ve KIRMIZI verir. Esleme DOLAYLIDIR -- D0'in periyodik-cekme-yasagi cumlesinin kendisini degil, onu ayakta tutan Y1 beyaz-liste mekanizmasini isirir; arac S2'de yalniz dogrudan kural->mutant adi atfini arar.
+- KURAL: D-A11-2 | GEREKCE: MUTANTSIZ DEGILDIR: M139 (A11/G22/a, yeniden deneme planlamasi kaldirilinca ikinci istek gitmez), M140 (A11/G22/b, cizelge sabitlenince 2-5-15-30-60 dizisi duser) ve M143 (A11/G22/e, planlama tekligi kaldirilinca iki zamanlayici birden bekler) sozlesmenin 1. ve 2. maddelerini dogrudan isirir. Esleme kapi-ayak uzerinden DOLAYLIDIR; sozlesmenin durma/tasima-sinifi/tek-ucus maddeleri bu uc mutantin disinda kalir.
+- KURAL: D-A11-3 | GEREKCE: MUTANTSIZ DEGILDIR: M149 (A11/G23/c,d, govde kurali cagri parantezine geri alinca while/.then kacaklari yesil gecer) ve M155 (A11/G23/i,j, Y1 asiri genisletilince yanlis-pozitif kontrolu duser) kararin 2. ve 3. maddelerini dogrudan isirir. Esleme kapi-ayak uzerinden DOLAYLIDIR.
+- KURAL: D-A11-4 | GEREKCE: MUTANTSIZ DEGILDIR: M152 (A11/G22/j) onu isirir ve mutant tablosunun kendi metni kuralin adini ("D-A11-4 iptal") tasir -- bu altinin EN DOGRUDAN eslemesidir. Yine de DOLAYLIDIR cunku arac S2'de tablo metnini degil yalniz kapi-ayak atfini okur.
+- KURAL: D-A11-5 | GEREKCE: MUTANTSIZ DEGILDIR: M147 (A11/G23/h, beyaz liste dosya bazina cevrilince baska sinif affedilir) kararin (dosya,sinif) ciftini, M145 (A11/G22/h+G23/f, retry cekmeTuruCalistir'e baglaninca bos ops+kapi isirir) sinif-ici cekme yasagini, M150 (A11/G23/g, yasak kumeden _yuvarlakDongusu cikarilinca ozel metotla periyodik cekme yesil gecer) sinif-ici ozel-metot yasagini (denetim B5'in kendisi) dogrudan isirir. Esleme kapi-ayak uzerinden DOLAYLIDIR.
+- KURAL: D-A11-6 | GEREKCE: MUTANTSIZ DEGILDIR: M142 (A11/G22/m, basari dalindaki sifirla() kaldirilinca cok-yuvarlakli turda 2. hata 5s'den baslar) ve M154 (A11/G22/l, yerel yazmada cizelge sifirlama kaldirilinca yeni gorev 60s bekler) planla()/sifirla()'nin dogru ANDA tetiklendigini isirir. Esleme CIFT DOLAYLIDIR: aracin kendi beyan ettigi sinir geregi (SS9/2) hicbir mutant kararin "hangi call-site'ta planlanir" mimari iddiasini davranissal olarak sinamaz -- yalniz gozlemlenebilir sonucunu.
+
+🔴 **ASIL KUSUR BURADA KAPANMIYOR (ŞART 3, Onur — 3 Ağu 2026):** yukarıdaki altı kaydın hepsinin
+"DOLAYLIDIR" demek zorunda kalması, aracın `S2` mantığının **yalnız doğrudan kural→mutant adı atfını**
+aradığını, kapı-ayak üzerinden kurulan **dolaylı** kapsamayı hiç göremediğini kanıtlar. Bu, `S2`'nin
+kendi başına ayrı bir kör noktasıdır ve bu mikro-dilimde **kapatılmaz** (araç kodunda `S2` mantığına
+dokunmak bu dilimin kapsamı dışıdır — `GOREV-A12` yalnız envanteri onardı). Kalem: `BORCLAR.md`
+`B-O51-1`.
+
 ## 7. KABUL KRİTERLERİ (sırayla)
 
 0. 🔴 **YÜRÜYEN İSKELET ADIMI (K53/5) — `M4` KARŞILIĞI.** Bu repoda `fakeAsync` ile **drift** hiç
@@ -328,6 +352,11 @@ kapsamına **bilerek alınmamıştır** (üç araç onarımı bir dilime sığma
 10. 🔴 **`spec-kapi-kapsama.py`'nin kural yarısı bu spec'te ÖLÜDÜR** (§6b'de ölçüldü): envanteri
    yalnız `D0`–`D9`/`A11Y-<hane>` tanır, `D-A11-n`'i göremez ⇒ `KURAL (0)` yazıp **EXIT 0** verir.
    Kabul kriteri 6'nın *kural* bacağı bu spec için **hiçbir şey ölçmez**. Borç; `A11` kapsamında değil.
+   🟢 **ERRATA (3 Ağu 2026, `GOREV-A12` — Onur kilidi):** bu madde ARTIK BAYATTIR. Envanter artık
+   `D-A11-1`…`D-A11-6`'yı görüyor (`KURAL (0)` değil `KURAL (6)`) ve kriter 6 gerçekten ölçüyor; altısı
+   da §6b'de **gerekçeli borç** olarak kapatıldı. Silinmiyor, çünkü append-only/kanonik-kopya
+   disiplini bayat iddiayı **düzeltme notuyla** işaretlemeyi ister — bir sonraki okuyan §6b'yi görmeden
+   bu satırı gerçek sanmasın.
 6. **Çakışma rozeti ve çift yönün kabul kriterleri** bu dilimin konusu değildir.
 7. `duzenle`/`sil` yolları `onYerelYazma` sarmalayıcısına hâlâ bağlı değil (oturum 48 borcu).
 12. 🔴 **v2.3 ERRATA — BUILDER ÜÇÜNCÜ KEZ YAKALADI (`G22`/`m` erişilemezdi).** v2.2'nin

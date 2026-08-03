@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """COWORK BAGIMSIZ TABAN OLCUMU -- GOREV-A12 kabul kriteri 0.
 
-ONARIM ONCESI referans: spec-kapi-kapsama.py'nin BUGUNKU hukmu, GOREV_CLAUDE_CODE
-altindaki HER .md icin. Builder onarimdan SONRA ayni olcumu tekrarlar; fark > 0 ise
-A12 kriter 0 geregi DURULUR ve Onur'a sorulur.
+spec-kapi-kapsama.py'yi GOREV_CLAUDE_CODE altindaki HER .md icin kosar,
+cikti + exit kodunu toplar, tek bir metin dosyasina ATOMIK yazar (K60).
+Hedef dosya adi argumandan alinir (varsayilan: onarim ONCESI tabani).
 
 BU BETIK URUN KODU DEGILDIR (K55) -- olcum aracidir.
-Yazim K60: once encode, sonra .tmp, en son takas.
 """
 import hashlib
 import os
@@ -19,7 +18,8 @@ BU = os.path.dirname(os.path.abspath(__file__))
 KOK = os.path.abspath(os.path.join(BU, "..", ".."))
 ARAC = os.path.join(KOK, "araclar", "spec-kapi-kapsama.py")
 SPECDIZIN = os.path.join(KOK, "GOREV_CLAUDE_CODE")
-HEDEF = os.path.join(BU, "00-COWORK-TABAN-ONCESI.txt")
+AD = sys.argv[1] if len(sys.argv) > 1 else "00-COWORK-TABAN-ONCESI.txt"
+HEDEF = os.path.join(BU, AD)
 
 
 def kos(spec_yolu):
@@ -48,7 +48,8 @@ def ayikla(cikti):
 
 def main():
     adlar = sorted(a for a in os.listdir(SPECDIZIN) if a.lower().endswith(".md"))
-    satirlar = ["COWORK BAGIMSIZ TABAN OLCUMU -- spec-kapi-kapsama.py, ONARIM ONCESI",
+    satirlar = ["COWORK BAGIMSIZ TABAN OLCUMU -- spec-kapi-kapsama.py",
+                "hedef: %s" % AD,
                 "spec sayisi: %d" % len(adlar), "=" * 78]
     toplam_bulgu = 0
     for ad in adlar:

@@ -74,15 +74,9 @@
 
 ### Araç / kapı
 
-- 🔴 **`spec-kapi-kapsama.py`'NİN KURAL YARISI ÖLÜ [oturum 49'da ölçüldü · spec YAZILDI: `A12`].**
-  Kural envanterini **yalnız §5 tablolarının ilk sütunundan** ve **yalnız** `D<TEK HANE>` ·
-  `A11Y-<hane>` · sabit `kontrast`/`metin` biçimlerinde çıkarıyor (`:52-83`); deseni `\bD(\d)\b`
-  olduğu için **`D10` bile görünmez**. `K108` kapı kimliklerini spec-yerel ilan ettiğinden yeni
-  spec'ler kendi karar adlarını kullanıyor (`D-A11-1`…) ⇒ araç **`KURAL (0)`** yazıp **EXIT 0**
-  veriyor: *"mutantsız kural yok"* hükmü **boşluğa** veriliyor. Borç mekanizması da ölü —
-  `A11` ve `A12`'nin §6b'leri **hayalet borç** (`S6`) alıp §9'a taşınmak zorunda kaldı.
-  🟢 Onarım spec'i **`GOREV-A12-kural-envanteri.md`** hazır; patlama yarıçapı **ölçüldü: 0** (22 spec).
-  **Kapanış koşulu:** `A12` kabul edilir ve `A11`/`A12` §9'daki iki sınır §6b'ye **geri taşınabilir**.
+- 🟢 **KAPANDI — `spec-kapi-kapsama.py`'nin KURAL YARISI ARTIK ÇALIŞIYOR [`K124`, oturum 51].**
+  `GOREV-A12` kabul edildi (7/7 kriter + 3/3 şart, **Cowork'ün kendi koşumu**, K26). Ölçüm ve gerekçe
+  arşivde: `PROJE_HAFIZA.md` **K124**, kanıt `KANIT/A12/`. Kalan kör nokta **ayrı kalemdir: `B-O51-1`**.
 
 - 🟡 **`_start_api.cmd` `ASPNETCORE_ENVIRONMENT` borcu ÖLÇÜLEMEDİ [oturum 48'de DENENDİ].** Aynı depoda
   ikinci bir `dotnet run` örneği, birincinin **dll'leri kilitlemesi** yüzünden derlenemiyor (`MSB3027`) ⇒
@@ -110,7 +104,11 @@
   **çözülebilirliği** ölçmüyor. Kalkan gelene dek her pin `pub get` ile doğrulanır.
 - 🟡 **`radar.py` R5'in CÜMLESİ KAPSAMINI AŞIYOR** — artefaktın kaydını okur ama *"**projenin** görünen çıktısı %0"* der. Kusur **metinde**; onarım üst akış plugin'inde, **ayrı el** (K34-f).
 - 🟡 **`radar --olc-urun-kodu` ÇALIŞMA AĞACINI GÖRMEZ** — yalnız commit'lenmiş farkı sayar ⇒ R8 yanlış-pozitif olabilir; R8 yandığında **önce çalışma ağacı ölçülür.**
-- 🟡 **`sayi-tazeligi.py` İMZA↔SAYI YAKINLIĞI ÖLÇÜLMÜYOR** [3 kez tetikledi]; eşik uydurulmadı (K40), onarım **ayrı ele** (K34-f).
+- 🟡 **`sayi-tazeligi.py` İMZA↔SAYI YAKINLIĞI ÖLÇÜLMÜYOR** [**4 kez** tetikledi]. 🔴 Sonuncusu (oturum 51)
+  **ters yönde ısırdı:** kapı bir satırda araç adı bulunmadığı için `T5` verdi; ad satıra taşınınca bu kez
+  *aynı satırdaki BAŞKA* ölçümlerin sayıları (`500/500`, `17/17`) o araca bağlandı ⇒ **iki sahte `T1`**.
+  ⇒ Kuralın **iki yönü** var: sayı aracın adıyla aynı satırda yaşamalı, **ve** o satırda başka bir aracın
+  sayısı yaşamamalı. Eşik uydurulmadı (K40), onarım **ayrı ele** (K34-f).
 - **`radar.config.json` YOK ve bu bir KARAR**; eşik değiştiren K40 gereği **altın kümeye vaka ekler.**
 
 - 🔴 **`belge-tavan-kapisi.py`'NİN ALTIN KÜMESİ KAPSAM LİSTESİNİ KANITLAMIYOR [ÖLÇÜLDÜ, oturum 39].**
@@ -208,3 +206,26 @@ yinelenen turu **maskeler**. Sınıf: `kör kapı` + `ölü beyan`.
 0.2.0'a **bayt-özdeş** kilitli (`46E3A8BC`); proje-yerel yama sapmayı ölçen tek sha'yı kırar.
 Kapanış: plugin'de `asama` alanı okunacak (`startswith("olcum-duzeltme")` ⇒ o kaydı yinelenen
 sayma) + altın kümeye vaka; sonra proje kopyası tazelenir.
+
+## B-O51-1 — `spec-kapi-kapsama.py`'nin `S2`'si DOLAYLI kapı-ayak→kural eşlemesini GÖRMÜYOR (oturum 51, ölçüldü)
+
+`GOREV-A12-kural-envanteri.md`'nin kural-envanteri onarımı (`D-A12-1`/`D-A12-2`) `A11`'in ve `A12`'nin
+kendi §3 kararlarını (`D-A11-1`…`D-A11-6`, `D-A12-1`…`D-A12-3`) envanterde **doğru** görünür kıldı —
+ama bu 9 kararın **hiçbiri** hiçbir mutant tablosu satırında **adıyla** geçmiyor (satırlar yalnız
+`A11/G22`/`a` gibi kapı-ayak biçiminde atıf taşıyor); `S2` yalnız **doğrudan** kural→mutant adı
+atfına bakıyor ⇒ 9'u da ilk koşumda `[S2] MUTANTSIZ KURAL` verdi (Claude Code'un ölçümü:
+`KANIT/A12/01-PATLAMA-YARICAPI-OLCUMU.txt`). Bu **kör kapı değil DOĞRU alarm**: kararların hepsi
+gerçekten bir mutant tarafından ısırılıyor, yalnız eşleme kapı-ayak üzerinden **dolaylı**.
+
+🔴 **BU DİLİMDE KAPATILMADI (Onur, 3 Ağu 2026 — ŞART 3):** `A11` ve `A12`'nin §6b'sine 9 gerekçeli
+borç kaydı yazıldı (her biri kararı ısıran mutantı adıyla gösterir ve eşlemenin neden dolaylı
+olduğunu açıklar — hiçbiri "mutantı yok" demez) ama **`S2`'nin kendisi** hâlâ bu dolaylı bağı
+**göremiyor**; her yeni spec aynı sınıfı yeniden üretecek ve her seferinde elle §6b borcu yazmayı
+gerektirecek. Kapanış: `mutantlar()`'ın atıf kümesini yalnız §6 tablosunun "kapı/kural" sütunundan
+değil, kapı-ayak → o ayağın **ölçtüğü** kararlar eşlemesinden de (`## 5.` tablolarındaki ayak
+metninden, veya spec yazarının ayrı bir eşleme bloğundan) türetmesi gerekir — bu, `S2` mantığına
+dokunmayı gerektirdiği için `A12`'nin mikro-dilim kapsamı **dışında** bırakıldı (araç kodu
+`D-A12-1`/`D-A12-2` dışında değiştirilmedi). Örnek dokuz kayıt (isim, mutant, kapı-ayak):
+`D-A11-1`←`M151`(`G24/c`) · `D-A11-2`←`M139,M140,M143`(`G22/a,b,e`) · `D-A11-3`←`M149,M155`(`G23/c,d,i,j`) ·
+`D-A11-4`←`M152`(`G22/j`) · `D-A11-5`←`M145,M147,M150`(`G22/h`+`G23/f,g,h`) · `D-A11-6`←`M142,M154`(`G22/m,l`) ·
+`D-A12-1`←`M156,M161`(`G25/a,b`) · `D-A12-2`←`M157,M158`(`G25/c,d`) · `D-A12-3`←`M160`(`G26/a`).

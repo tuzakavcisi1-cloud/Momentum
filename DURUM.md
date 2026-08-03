@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayattır** (`1.0.0` yazıyor, belgeler `1.1.0` diyor; kapasitesi gerçekten güncel, altın küme **12/12** ölçüldü) — borç `B-O50-2`.
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 3 Ağu 2026, **oturum 51 (K122 — `A12` BUILD'E DEVREDİLDİ)** — açılışın 10 adımı koştu (`S4` **162.603 token ⇒ YEŞİL**, bulutta ölçüldü). Önceki oturum: `A11`'in **sekiz kriteri de ölçülerek** geçti. Yolda iki kusur bulundu ve kapatıldı: `M141` **kör ayaktı** (eşdeğerlik **yanlışlandı**, varsayılmadı) ⇒ `G22`/`c2` doğdu · kriter 7 ile 8 **backend konusunda çelişiyordu** ⇒ sıra pazarlıksız oldu. Mutantlar **17/17 ISIRIYOR**. *(Oturum 39–49'da yapılan iş arşivdedir.)*
+> **Son güncelleme:** 3 Ağu 2026, **oturum 51 (K122 · K123 · K124 — `A12` KABUL EDİLDİ)** — açılışın 10 adımı koştu; `A12`'nin **yedi kriteri + üç şartı da ölçülerek** geçti (`M156`–`M161` **6/6 ISIRDI**). Yolda iki kâğıt iddiası yanlışlandı (*"sekiz eski spec"* → **10** · *"patlama yarıçapı 0"* → **9 bulgu**) ve `BORCLAR.md` budandı. Önceki oturum: `A11`'in **sekiz kriteri de ölçülerek** geçti. Yolda iki kusur bulundu ve kapatıldı: `M141` **kör ayaktı** (eşdeğerlik **yanlışlandı**, varsayılmadı) ⇒ `G22`/`c2` doğdu · kriter 7 ile 8 **backend konusunda çelişiyordu** ⇒ sıra pazarlıksız oldu. Mutantlar **17/17 ISIRIYOR**. *(Oturum 39–49'da yapılan iş arşivdedir.)*
 
 ---
 
@@ -67,29 +67,25 @@ kırık) · **A10** (**K106**; *"`devUserId` alanı"* derleme-zamanı `--dart-de
 
 🟢 **⑤ `A11` KABUL EDİLDİ (K121, oturum 50 · Onur kilitledi).** Sekiz kriterin sekizi de **ölçülerek**
 geçti (hepsi **Cowork'ün kendi koşumu**, K26; kanıt `KANIT/A11/`, hüküm `07-KABUL-HUKMU.md`):
-`analyze` **0** · `flutter test` **500/500** · **`M139`–`M155` 17/17 ISIRDI** (üç dosya bayt-özdeş,
-temiz koşum tekrar EXIT 0) · `yoklama-yasagi-kapisi.py` altın küme **26/26** · `spec-kapi-kapsama.py` **0** · `verify.ps1` **EXIT 0**
-(build 0/0 · test 120/120 · CVE 0) · cihazda uçtan uca **186 s çevrimdışı → `T1`+4 s'de boşaldı**.
-🔴 **Yolda İKİ kusur ölçüldü ve kapatıldı:** ① `M141` **hayatta kaldı**, eşdeğerlik **yanlışlandı**
-(prob + orijinal kod EXIT 0, prob + `M141` EXIT 1) ⇒ `A11/G22`/`c` **kördü**, `c2` doğdu ② kriter 7 ile
-kriter 8 **backend konusunda çelişiyordu** (`verify.ps1` çalışan API ile 36× `MSB3026`) ⇒ sıra artık
-**pazarlıksız: 7 → kapat → 8**. Kriter 7'nin tetikleyicisi **yol sayımıyla izole edildi** (SignalR yolu
-`cekmeTuruCalistir` çağırır, `ops:[]` gönderir, kuyruğu **itemez**) — kapısı yok, borç `B-O50-1`.
-**➡ SIRADAKİ İLK İŞ: `A12`'nin KABUL KOŞUMU** (build Claude Code'un, ölçüm Cowork'ün — aşağıda).
+`flutter test` **500/500** · **`M139`–`M155` 17/17 ISIRDI** · `verify.ps1` **EXIT 0** (build 0/0 ·
+test 120/120 · CVE 0) · cihazda **186 s çevrimdışı → `T1`+4 s**.
+`yoklama-yasagi-kapisi.py` altın küme **26/26**. 🔴 **Yolda iki kusur kapandı:** `M141` **kör ayaktı** (eşdeğerlik **yanlışlandı**) ⇒ `c2`
+doğdu · kriter 7↔8 **çelişiyordu** ⇒ sıra **pazarlıksız: 7 → kapat → 8**. Kriter 7'nin kapısı **yok**,
+borç `B-O50-1`. *(Ayrıntı arşivde, K73.)*
+**➡ SIRADAKİ İLK İŞ: ⑦ iOS iskelesi + CI — ÜRÜN KODU** (`A12` araç işiydi, `R8`'i düşürmedi; iki
+oturum üst üste 0 ürün kodu **sert duraktır**, K53/4). Kapsam kilidi Onur'dan.
 🔴 **ÖLÇÜLMEYEN:** çakışma rozeti · çift yönün kabul kriterleri · **fiziksel cihaz** (yalnız
 emülatör; NAT kurulu soketi koruduğu için SignalR yeniden bağlanma yolu **hiç egzersiz edilmedi**) · CI.
-→ ⑥ `A12` (mikro-dilim) → ⑦ iOS iskelesi + CI → ⑧ `SS2` (dar) → ⑨ web borcu + release → ⑩ `ADR 0004` + vitrin.
+→ **⑦ iOS iskelesi + CI** → ⑧ `SS2` (dar) → ⑨ web borcu + release → ⑩ `ADR 0004` + vitrin. *(⑥ `A12` KAPANDI.)*
 🔴 **ORTAM ÇAKIŞMASI ÖLÇÜLDÜ (oturum 50):** `verify.ps1` **çalışan bir `Momentum.Api` varken KOŞULAMAZ**
 (36× `MSB3026`/`MSB3027`, DLL kilidi) ⇒ sıra **pazarlıksız: cihaz kanıtı → backend KAPATILIR → `verify.ps1`**.
 Madde `ORTAM.md`'de. Cowork süreci **Onur'un açık izniyle kapattı**, **yeniden BAŞLATMADI** (K80 ayakta).
 
-🟢 **`GOREV-A12` BUILD'E DEVREDİLDİ (oturum 51, K122; spec `8.221 b`/`7AE50BF1`)** — `spec-kapi-kapsama.py`'nin
-kural yarısı `K108` sonrası **ölü**; kapılar `A12/G25`–`A12/G26`, mutantlar `M156`–`M161`, cihaz istemez.
-Kriter 0 için **bağımsız taban** alındı: `KANIT/A12/00-COWORK-TABAN-ONCESI.txt` (**4.754 b**/`AF42E7E7`;
-23 spec, **10** adet `[S0]`). 🔴 Spec §2 ve §9/1'deki *"sekiz eski spec"* **BAYAT** — ölçülen **10**
-(`slice-3e-G12` + `slice-3e-iskelet` de `[S0]` veriyor; birincisi `CLAUDE.md` K81'de zaten yazılıydı).
-Metne **DOKUNULMADI** (radar KIRMIZI ⇒ K40), builder'a **yazılı** iletildi. Kabul koşumu **Cowork'ün**
-(K26). 🔴 Araç işidir ⇒ **`R8`'i DÜŞÜRMEZ.**
+🟢 **⑥ `GOREV-A12` KABUL EDİLDİ (K124, oturum 51 · Onur kilitledi).** `spec-kapi-kapsama.py` altın küme
+**21/21**; kural yarısı artık **çalışıyor**. Yedi kriter + üç şart **ölçülerek** geçti (hepsi Cowork'ün
+kendi koşumu, K26; hüküm `KANIT/A12/04-COWORK-KABUL-HUKMU.md`): patlama yarıçapı **fark 0** ·
+**`M156`–`M161` 6/6 ISIRDI**, araç bayt-özdeş · §6b öncesi/sonrası **EXIT 1 → 0**. 🔴 **Kalan kör nokta
+BİLEREK açık: `B-O51-1`** (`S2` dolaylı eşlemeyi görmüyor). 🔴 Araç işidir ⇒ **`R8`'i DÜŞÜRMEZ.**
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026).** Reddedilmedi; **iki koşul birlikte** sağlanınca açılır:
 ① cihaz senkron kanıtı kapandı ② hedef şirket yığını MSSQL. Ölçülen maliyet, `Rule3` ve en riskli parça
@@ -139,7 +135,7 @@ itirazının **haklı çekirdeği**. 🔴 *"Repo public"* iddiası oturum 47'de 
 | araç | ne yapar | altın küme |
 |---|---|---|
 | `radar.py` **0.2.0** | kısır döngü + **R8 ürün kodu durgunluğu** + **defter dürüstlüğü D1‑D5** + `--olc-urun-kodu` | **18/18** |
-| `spec-kapi-kapsama.py` | spec'te **mutantsız kapı/kural** arar; borç beyanı okur | **13/13** |
+| `spec-kapi-kapsama.py` | spec'te **mutantsız kapı/kural** arar; borç beyanı okur (`A12`: §3 karar başlıkları da okunur) | **21/21** |
 | `sayi-tazeligi.py` **1.1.0** | belgedeki **"altın küme N/M"** iddiasını **aracı koşarak** doğrular; muafiyet `tazelik-muafiyet.json`'da ve **gerekçesiz olamaz** | **16/16** |
 | `design-token-kapisi.py` **0.2.0** | `DESIGN.md` ↔ Dart token kapısı `D0`–`D6` (D1 sıkılaştırma + D5 + D6 T8'de) | **18/18** |
 | `pub-cve-kapisi.py` (`slice-3b/G2`) | `pubspec.lock` ↔ `/advisories`; `withdrawn` atar, `ignored_advisories` **yutmaz** | **8/8** |

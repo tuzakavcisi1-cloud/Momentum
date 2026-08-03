@@ -50,20 +50,45 @@ def bolum(metin, baslik_re):
 
 
 def kod_araligi_ac(hucre):
-    """'D0`-`D4' gibi araliklari D0,D1,D2,D3,D4'e acar."""
+    """'D0`-`D4' gibi araliklari D0,D1,D2,D3,D4'e acar.
+
+    D-A12-2: ad deseni genisler -- D<rakam+> (cok haneli, D10 dahil),
+    A11Y-<rakam+> ve D-<harf/rakam>+-<rakam+> (spec-yerel, or. D-A11-2).
+    """
     bulunan = set()
-    for a, b in re.findall(r"D(\d)\s*[`\s]*-[`\s]*\s*D(\d)", hucre):
+    for a, b in re.findall(r"D(\d+)\s*[`\s]*-[`\s]*\s*D(\d+)", hucre):
         for k in range(int(a), int(b) + 1):
             bulunan.add("D%d" % k)
-    for k in re.findall(r"\bD(\d)\b", hucre):
+    for ad in re.findall(r"\bD-[A-Za-z0-9]+-\d+\b", hucre):
+        bulunan.add(ad)
+    for k in re.findall(r"\bD(\d+)\b", hucre):
         bulunan.add("D" + k)
-    for k in re.findall(r"\bA11Y-(\d)\b", hucre):
+    for k in re.findall(r"\bA11Y-(\d+)\b", hucre):
         bulunan.add("A11Y-" + k)
     return bulunan
 
 
+def uc_baslik_kurallari(uc_govde):
+    """D-A12-1: SS3'teki '### <KURAL-ADI> -- <baslik>' karar basliklarindan
+    kural adlarini cikarir. Bicim KURAL-ADI'ni basliktan ayirir: yalniz
+    '###' sonrasindaki ILK belirtec taranir, geri kalan serbest metin
+    (baslik gerekcesi) TARANMAZ -- aksi halde baslik govdesinde gecen
+    baska bir kod (or. '... D0 DARALTILDI') sahte kural olarak sizardi.
+    '### G25 -- ...' gibi bir KAPI basligi ilk belirteci 'G25' oldugundan
+    kendiliginden kural SAYILMAZ (D-A12-2: G<n> kural degildir)."""
+    kurallar = set()
+    if uc_govde is None:
+        return kurallar
+    for s in uc_govde.split("\n"):
+        m = re.match(r"^###\s+(\S+)", s)
+        if not m:
+            continue
+        kurallar |= kod_araligi_ac(m.group(1))
+    return kurallar
+
+
 def envanter(kapilar_govde):
-    """§5'ten KAPI ve KURAL envanterini cikarir."""
+    """§5'ten KAPI ve KURAL envanterini cikarir (bugunku kaynak -- korunur)."""
     kapilar = []
     for s in kapilar_govde.split("\n"):
         m = re.match(r"^###\s+(G\d+)\s", s)
@@ -136,11 +161,14 @@ def borclar(metin):
 def denetle(metin):
     """(bulgular, ozet) dondurur. bulgular: [(kod, mesaj)]"""
     metin = normalize(metin)
+    uc = bolum(metin, r"^##\s*3\.")
     g5 = bolum(metin, r"^##\s*5\.")
     g6 = bolum(metin, r"^##\s*6\.")
     if g5 is None or g6 is None:
         return [("S0", "BICIM: '## 5.' veya '## 6.' bolumu bulunamadi")], None
-    kapilar, kurallar = envanter(g5)
+    kapilar, kurallar_5 = envanter(g5)
+    # D-A12-1: SS3 karar basliklari SS5 tablosunun UZERINE eklenir, yerini almaz.
+    kurallar = sorted(set(kurallar_5) | uc_baslik_kurallari(uc))
     muts = mutantlar(g6)
     if not kapilar:
         return [("S0", "BICIM: §5'te hic '### G<n>' kapi basligi yok")], None
@@ -266,6 +294,105 @@ def altin_kume():
                        _TEMIZ.replace("## 7. son",
                                       "## 6b. MUTANT BORCU\n- KURAL: kontrast | GEREKCE: gereksiz beyan, mutanti zaten var ve kosuyor\n## 7. son"),
                        ["S6"]))
+    # --- A12/G25: SS3 karar basliklari + genisletilmis ad deseni (D-A12-1/D-A12-2) ---
+    _UC_D_A11_2 = """## 3. KARARLAR
+### D-A11-2 -- YENIDEN DENEME SOZLESMESI
+govde metni burada
+## 5. KAPILAR
+### G1 - kapi
+| kod | ne |
+| D0 | bir sey |
+## 6. MUTANTLAR
+| # | mutant | kapi / kural | beklenen |
+| **M1** | boz | G1 / D0 | kirmizi |
+## 7. son
+"""
+    sonuc.append(_vaka("14) A12/G25/a: SS3 basligi -- D-A11-2 envanterde gorunur (S2 isirmali)",
+                       _UC_D_A11_2, ["S2"]))
+    _UC_D0_D4 = """## 5. KAPILAR
+### G1 - kapi
+| kod | ne |
+| `D0`-`D4` | mevcut kodlar |
+## 6. MUTANTLAR
+| # | mutant | kapi / kural | beklenen |
+| **M1** | boz | G1 / D0 | k |
+| **M2** | boz | G1 / D1 | k |
+| **M3** | boz | G1 / D2 | k |
+| **M4** | boz | G1 / D3 | k |
+| **M5** | boz | G1 / D4 | k |
+## 7. son
+"""
+    sonuc.append(_vaka("15) A12/G25/b: D0-D4 araligi bes kurala acilir -- susmali (regresyon)",
+                       _UC_D0_D4, []))
+    _UC_D10 = """## 5. KAPILAR
+### G1 - kapi
+| kod | ne |
+| D10 | on birinci kod |
+## 6. MUTANTLAR
+| # | mutant | kapi / kural | beklenen |
+| **M1** | boz | G1 | kirmizi |
+## 7. son
+"""
+    sonuc.append(_vaka("16) A12/G25/c: D10 envanterde gorunur (S2 isirmali)", _UC_D10, ["S2"]))
+    _UC_G25_BASLIK = """## 3. KARARLAR
+### G25 -- KAPI BASLIGI ORNEGI (kural degil)
+govde metni
+## 5. KAPILAR
+### G1 - kapi
+| kod | ne |
+| D0 | bir sey |
+## 6. MUTANTLAR
+| # | mutant | kapi / kural | beklenen |
+| **M1** | boz | G1 / D0 | kirmizi |
+## 7. son
+"""
+    sonuc.append(_vaka("17) A12/G25/d: SS3'te G<n> basligi kural SAYILMAZ -- susmali",
+                       _UC_G25_BASLIK, []))
+    _UC_SPEC_YEREL_5 = """## 5. KAPILAR
+### G1 - kapi
+| kod | ne |
+| D-A11-2 | spec-yerel karar adi |
+## 6. MUTANTLAR
+| # | mutant | kapi / kural | beklenen |
+| **M1** | boz | G1 | kirmizi |
+## 7. son
+"""
+    sonuc.append(_vaka("18) A12/G25/e: SS5'te spec-yerel ad (D-A11-2) mutantsiz -- S2 isirmali",
+                       _UC_SPEC_YEREL_5, ["S2"]))
+    sonuc.append(_vaka("19) A12/G25/f: SS3 kaynakli kurala gerekceli borc -- SUSMALI",
+                       _UC_D_A11_2.replace(
+                           "## 7. son",
+                           "## 6b. MUTANT BORCU\n- KURAL: D-A11-2 | GEREKCE: bu dilimde kasitli olarak mutantsiz birakildi test amacli\n## 7. son"),
+                       []))
+    _UC_HAYALET_BORC = """## 3. KARARLAR
+### D-A11-2 -- YENIDEN DENEME SOZLESMESI
+govde metni
+## 5. KAPILAR
+### G1 - kapi
+| kod | ne |
+| D0 | bir sey |
+## 6. MUTANTLAR
+| # | mutant | kapi / kural | beklenen |
+| **M1** | boz | G1 / D0 | kirmizi |
+| **M2** | boz | G1 / D-A11-2 | kirmizi |
+## 6b. MUTANT BORCU
+- KURAL: D-A11-99 | GEREKCE: envanterde hic olmayan bir ada kasitli hayalet borc denemesi
+## 7. son
+"""
+    sonuc.append(_vaka("20) A12/G25/g: envanterde olmayan ada borc -- S6 isirmali (hayalet borc)",
+                       _UC_HAYALET_BORC, ["S6"]))
+    _UC_HAYALET_ATIF_YENI = """## 5. KAPILAR
+### G1 - kapi
+| kod | ne |
+| D0 | bir sey |
+## 6. MUTANTLAR
+| # | mutant | kapi / kural | beklenen |
+| **M1** | boz | G1 / D0 | kirmizi |
+| **M2** | boz | G1 / D-A11-99 | kirmizi |
+## 7. son
+"""
+    sonuc.append(_vaka("21) A12/G25/h: yeni-desenli hayalet atif -- S3 isirmali (bozulmadi)",
+                       _UC_HAYALET_ATIF_YENI, ["S3"]))
     _yaz("=" * 74)
     gecti = sum(1 for x in sonuc if x)
     _yaz("HUKUM: %d/%d GECTI -- %s" % (gecti, len(sonuc),
