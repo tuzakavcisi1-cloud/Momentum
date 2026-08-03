@@ -1,0 +1,30 @@
+name: ci
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: src/client
+
+jobs:
+  istemci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.6
+      - run: flutter analyze --fatal-infos
+      - run: flutter test
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.6
+      - run: flutter build ios --no-codesign

@@ -1,0 +1,45 @@
+KANIT/A13/04-MUTANT-statik/OZET.txt -- GOREV-A13 kriter 5
+Yontem: rb ikili okuma -> Edit ile bayt duzeyinde yama -> ci-kapisi.py kosumu -> geri yama ->
+sha256 ozdeslik olcumu. git restore KULLANILMADI (ORTAM.md core.autocrlf yasagi).
+
+Taban sha256 (mutant turundan ONCE):
+  .github/workflows/ci.yml                          283d785e9fc3ee91d65ba2f0eee0764bb111c6c7e8e1ad0604a8563269ec22d1
+  src/client/ios/Runner.xcodeproj/project.pbxproj    1d94d07c34df840fc30ae50a203c5b8f8bbd4edff640aeb203578d45e4840c7b
+  .gitignore                                         4f708868c4e76a216529a518959d20c4a4cafa4a2a4a38486bb4fdf31c0bfb60
+
+M162 | statik | A13/G28/a * D-A13-3 | ci.yml: 'flutter analyze --fatal-infos' -> 'flutter analyze'
+  ONCEKI:  [BULGU YOK] EXIT=0
+  SONRAKI: [G28a] A13/G28/a: 'flutter analyze' + '--fatal-infos' ayni satirda degil (silinmis ya da yalniz yorumda)  EXIT=1
+  HUKUM: ISIRDI (beklenen). Geri yama sonrasi sha256 OZDES; temiz kosum tekrar EXIT=0.
+
+M163 | statik | A13/G28/b * D-A13-6 | ci.yml: flutter-version 3.44.6 -> 3.43.0
+  ONCEKI:  [BULGU YOK] EXIT=0
+  SONRAKI: [G28b] A13/G28/b: 'flutter-version:' 3.44.6 degil ya da hic yok  EXIT=1
+  HUKUM: ISIRDI (beklenen). Geri yama sonrasi sha256 OZDES; temiz kosum tekrar EXIT=0.
+
+M163b | statik | A13/G28/b * D-A13-6 (YANLIS-POZITIF kontrolu) | ci.yml: 'channel: stable' EKLENDI, flutter-version: 3.44.6 KORUNDU
+  ONCEKI:  [BULGU YOK] EXIT=0
+  SONRAKI: [BULGU YOK] EXIT=0
+  HUKUM: SUSTU (beklenen -- kapi 'stable' kelimesini degil PIN VARLIGINI olcuyor). Geri yama sonrasi sha256 OZDES.
+
+M164 | statik | A13/G29/a * D-A13-5 | ci.yml: 'flutter build ios --no-codesign' -> 'flutter build ios'
+  ONCEKI:  [BULGU YOK] EXIT=0
+  SONRAKI: [G29a] A13/G29/a: 'flutter build ios' + '--no-codesign' ayni satirda degil  EXIT=1
+  HUKUM: ISIRDI (beklenen). Geri yama sonrasi sha256 OZDES; temiz kosum tekrar EXIT=0.
+
+M165 | statik | A13/G30/a * D-A13-2 | project.pbxproj: Runner/Profile yapilandirmasinda com.momentum.client -> com.example.client (TEK yapilandirma)
+  ONCEKI:  [BULGU YOK] EXIT=0
+  SONRAKI: [G30a] A13/G30/a: Profile yapilandirmasinda 'com.example' geciyor  EXIT=1
+  HUKUM: ISIRDI (beklenen, "tek gecis bile yeter" dogrulandi). Geri yama sonrasi sha256 OZDES; temiz kosum tekrar EXIT=0.
+
+M166 | statik | A13/G30/c * D-A13-1 | .gitignore: 'ios/Pods/' satiri silindi
+  ONCEKI:  [BULGU YOK] EXIT=0
+  SONRAKI: [G30c] A13/G30/c: gitignore'da eksik: ios/Pods/  EXIT=1
+  HUKUM: ISIRDI (beklenen). Geri yama sonrasi sha256 OZDES; temiz kosum tekrar EXIT=0.
+
+SON DURUM -- tum dosyalar taban sha256 ile OZDES:
+  .github/workflows/ci.yml                          283d785e9fc3ee91d65ba2f0eee0764bb111c6c7e8e1ad0604a8563269ec22d1
+  src/client/ios/Runner.xcodeproj/project.pbxproj    1d94d07c34df840fc30ae50a203c5b8f8bbd4edff640aeb203578d45e4840c7b
+  .gitignore                                         4f708868c4e76a216529a518959d20c4a4cafa4a2a4a38486bb4fdf31c0bfb60
+
+HUKUM: M162-M166 5/5 ISIRDI, M163b SUSTU. Kriter 5 KARSILANDI.
