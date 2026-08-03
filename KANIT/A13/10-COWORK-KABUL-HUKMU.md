@@ -121,3 +121,25 @@ aksiyonlar **sha'ya pinli değil** ⇒ bu yeşil **bit-bazında tekrarlanabilir 
 - Kriter 7'yi ölçen betikler `%TEMP%` altındaydı ve **repoya girmedi** ⇒ üçüncü bir el bu
   ölçümü yeniden koşamaz, ancak sıfırdan yazabilir (bağımsız denetçi öyle yaptı ve **aynı
   sonuca vardı**). Borç `B-O53-3`.
+
+---
+
+## 8. 🔴 KABUL BİR SHA'YA PİNLİDİR — `G27/b`'Yİ KÖRÜ KÖRÜNE YENİDEN KOŞMA
+
+Kabul, koşum **`30809600584`** ve commit **`79d0901`** için verildi. Kabulün **kaydı**
+(`bu dosya + denetim + güncellenmiş belgeler + tüm `KANIT/A13/06-*`, `07-*`) `main`'e
+commit edilince `main` **`7475f4d`**'ye ilerledi.
+
+⇒ `A13/G27/b` (*kaydedilmiş JSON'un `headSha`'sı == `git rev-parse main`*) bugünden
+sonra **KIRMIZI verir**. 🔴 **Bu bir regresyon değildir; ölçünün ZAMAN PENCERESİ
+kapanmıştır.** `G27/b` bir **kabul anı** ölçüsüdür, sürekli sağlık göstergesi değil.
+
+**Zaman penceresinden bağımsız doğru formülasyon** (borç `B-O53-3`'ün aracına girecek):
+`git merge-base --is-ancestor 79d0901 main` → **EXIT 0** *(bugün ölçüldü: 0)*.
+
+Aynı uyarı `M170` için de geçerli: bugün yeniden koşulursa *"temiz-önce"* ayağı kırmızı
+verir — mutantın ısırmasından değil **pinden**. Ayrıntı: `06-ci-yesil/04-KABUL-SHA-PINI-UYARI.txt`.
+
+🔴 **Bu tuzağı Cowork kabul commit'ini attıktan HEMEN SONRA kendisi fark edip yazdı;
+push'tan önce kapatıldı.** Yazılmasaydı sınıfı belliydi: `bayat-atıf` — bu projede
+altı kez ısırmış aile.
