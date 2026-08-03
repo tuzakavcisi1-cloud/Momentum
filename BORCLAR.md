@@ -229,3 +229,14 @@ dokunmayı gerektirdiği için `A12`'nin mikro-dilim kapsamı **dışında** bı
 `D-A11-1`←`M151`(`G24/c`) · `D-A11-2`←`M139,M140,M143`(`G22/a,b,e`) · `D-A11-3`←`M149,M155`(`G23/c,d,i,j`) ·
 `D-A11-4`←`M152`(`G22/j`) · `D-A11-5`←`M145,M147,M150`(`G22/h`+`G23/f,g,h`) · `D-A11-6`←`M142,M154`(`G22/m,l`) ·
 `D-A12-1`←`M156,M161`(`G25/a,b`) · `D-A12-2`←`M157,M158`(`G25/c,d`) · `D-A12-3`←`M160`(`G26/a`).
+
+### `B-O52-1` — K81 BİÇİM STANDARDI YARIM: **MUTANT TABLOSUNUN SÜTUN SIRASI YAZILI DEĞİL**
+
+🔴 **Ölçüldü (oturum 52, `GOREV-A13` ilk yazımı):** `spec-kapi-kapsama.py` mutant hedefini
+**`hucreler[2]`**'den okur (`mutantlar()`). `hedef` sütunu dördüncü sıraya konunca araç
+**`[S1]` × 4 + `[S2]` × 5** verdi: sekiz mutantın hiçbiri hiçbir kapıya bağlanmadı, dört kapının
+dördü de *"mutantsız"* göründü. K81 **bölüm başlıklarını** standartlaştırdı ama **sütun sırasını
+yazmadı** ⇒ standart yarım. **Kapanış (iki yol, biri seçilir):** ① `CLAUDE.md`'nin K81 maddesine
+tek cümle eklenir (*"§6 tablosunda 3. sütun `hedef`tir"*) — ucuz ama **kapısız**; ② araç, başlık
+satırındaki `hedef` sütununu **adıyla** bulur (sabit indeks yerine) ve bulamazsa `[S0] BİÇİM` der —
+pahalı ama **mekanik**. K53/2 gereği ikincisi *"koşan kod olmadan ölçülebilir"* sınıfındadır.
