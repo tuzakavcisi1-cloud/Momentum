@@ -74,6 +74,9 @@ Yeni araç `araclar\ci-kapisi.py` **builder yazacak** (K44-a). Kimlik §9'da.
 🔴 **Kilit K126'da denetimsiz verildi; K127'de düzeltildi.** Bağımsız denetim **3 bloker + 6 major +
 5 minor** buldu (biri `A11`'in kriter 7↔8 çelişkisinin **aynı numaralarla tekrarı**), hepsi kapandı.
 Denetçi çıktısı: **`KANIT/A13/00-DENETIM-kilit-oncesi.md`**.
+🟡 **BUILD YAPILDI, DİLİM YARIM (K128).** Kriter **1–6 ve 9 Cowork'ün KENDİ koşumuyla geçti**
+(mutantlar **6/6**, `analyze --fatal-infos` EXIT 0, `G30/d` çıktı **boş**); kriter **7–8 PUSH'A
+BAĞLI** ve push Onur'undur. Ara hüküm: **`KANIT/A13/09-COWORK-ARA-HUKUM.md`**. **Kabul YOK.**
 🔴 **ÖN KOŞUL [DOĞRULANMADI]:** push'un kullandığı token'da `workflow` yetkisi (spec §4); yoksa
 GitHub `.github/workflows/` push'unu **reddeder**. Çözüm Onur'da: `gh auth refresh -h github.com -s workflow`.
 🔴 **ÖLÇÜLMEYEN:** çakışma rozeti · çift yönün kabul kriterleri · **fiziksel cihaz** (NAT kurulu
@@ -108,8 +111,8 @@ itirazının **haklı çekirdeği**. 🔴 *"Repo public"* iddiası oturum 47'de 
   değil **`verify.ps1`'de ve `global.json` pininde** koşuyor. Geçiş **ATOMİK** (ara durum ölçülerek kırık bulundu);
   `LangVersion=latest` riski + kapsam dışı paketler + geçici CVE pini `BORCLAR.md`'de. Gerekçe: hafıza K111.
 - 🔒 **K108 — KAPI KİMLİĞİ SPEC-YERELDİR** (Onur kilitledi, 2 Ağu 2026): atıf **daima** kapsam önekli (`A10/G18`). Ölçülmüş gerekçe: `A9b/G17` ≠ `A10/G17`, `A10/G18` ≠ `A9c/G18` — aynı ad, farklı kapı, ikisi de kabul edilmiş işin içinde. Kapısı **var**: `kapi-ad-teklik-kapisi.py`, açılışta **§2 adım 4b**.
-- **K73** — **Bir dilimin tasarım/spec kilitleri, dilim KABUL EDİLDİĞİNDE §5'ten çekilir** ve tek satırlık atıfla temsil edilir; çünkü o andan sonra kural **prozada değil KAPIDA** yaşar (K53 doktrini). Arşivde hiçbir şey silinmez. 🔴 Kapısı **olmayan** kilit çekilemez — bu yüzden `K72` §5'te DURUYOR (`G10` henüz yok).
-- **slice-3b (K57·K59) · slice-3c (K62–K66) · slice-3d (K68–K70) kilitleri** — hepsi **KABUL EDİLDİ** ⇒ K73 gereği §5'ten **ÇEKİLDİ**. Kurallar (`D0`–`D9`, `P1`–`P7`, `A2`/`G` ayakları) bugün prozada değil **kapılarda ve 40 mutantta koşuyor**; spec kimlikleri §9'da, sapma her açılışta `tek-kopya-kapisi.py` ile ölçülür. 🔴 `P6`/`D4` **K72** ile daraltıldı, düzeltmesi **K74** ile kabul edildi (kapısı `G10`). Gerekçeler: hafıza K57–K74.
+- **K73** — **Bir dilimin kilitleri, dilim KABUL EDİLDİĞİNDE §5'ten çekilir** ve tek satırlık atıfla temsil edilir; kural o andan sonra **prozada değil KAPIDA** yaşar. Arşivde hiçbir şey silinmez. 🔴 Kapısı **olmayan** kilit çekilemez — `K72` bu yüzden §5'te DURUYOR.
+- **slice-3b · 3c · 3d kilitleri (K57–K70)** — hepsi **KABUL EDİLDİ** ⇒ §5'ten **ÇEKİLDİ**; kurallar kapılarda ve **40 mutantta** koşuyor, sapma her açılışta `tek-kopya-kapisi.py` ile ölçülür. 🔴 `P6`/`D4` **K72** ile daraltıldı, düzeltmesi **K74** (kapısı `G10`). Gerekçeler: hafıza K57–K74.
 - **K61** — **Dev-kimlik kalkanı KİLİTLİ:** yalnız `Development`'ta `DevCurrentUser` (**`X-Momentum-Dev-User`** → `UserId`; başlık yok/bozuk ⇒ **401**, sessiz varsayılan YOK); üretimde `NullCurrentUser` korunur ve bunu bir **MUTANT** kanıtlar. `UserId` ⟂ `ClientId`. Beyan edilen sınır: kimlik **çözümü değil**, ölçüm **iskelesi**.
 - **K53** — Verimlilik reformu: kâğıt denetim turu tavanı **1** · radar KIRMIZI'da varsayılan **DEVRET** · koşan-uygulama-mutant tavanı **3** · iki oturum 0 ürün kodu = **sert durak (`R8` — K57'de `R7`'den yeniden adlandırıldı)** · hafıza bölündü.
 - **K60** — **Tek kopya dosyaya yazan her betik ATOMİK yazar:** önce `encode("utf-8")`, sonra `.tmp`, en son takas. Gerekçe: oturum 31'de `io.open(yol,"w")` 542 KB arşivi **0 bayta** düşürdü. ✅ Kapısı var: `tek-kopya-kapisi.py`. **Beyan edilen sınır:** kapı hasarı **önlemez**, sessiz kalmasını imkânsız kılar. 🔴 Bu makinede `os.replace` `WinError 5` veriyor ⇒ takas **üç adımlı yedekli** (`ORTAM.md`).
@@ -126,7 +129,7 @@ itirazının **haklı çekirdeği**. 🔴 *"Repo public"* iddiası oturum 47'de 
 - **K44-a** — **Önce araç, sonra belge.**
 - **K34-f** — Bir aracı **onaran el**, onu **yazan elden AYRI** olmalı.
 - **K26** — Üretici kendi denetçisini spawn edemez. **Üreten ≠ denetleyen.**
-- **K21** — Oturum sağlığı **ölçülür**; eşikler **MUTLAK** (yüzde YOK). 🔴 **Kanonik eşikler YALNIZ `CLAUDE.md`'de — buraya KOPYALANMAZ.** Ölçülen gerekçe: bu satır eşikleri *yüzde* kopyalayınca **payda düştü**, iki oturum 200k uydurup yanlış renk ilan etti (**K21-DÜZELTME**). **Yüzde yazan el paydayı uydurmuştur.**
+- **K21** — Oturum sağlığı **ölçülür**; eşikler **MUTLAK** (yüzde YOK). 🔴 **Kanonik eşikler YALNIZ `CLAUDE.md`'de — buraya KOPYALANMAZ.** Ölçülen gerekçe: yüzde kopyalanınca **payda düştü**, iki oturum 200k uydurup yanlış renk ilan etti (K21-DÜZELTME). **Yüzde yazan el paydayı uydurmuştur.**
 - **K40** — Radar KIRMIZI'da yeni tur YASAK; kilit **Onur'dan** gelir.
 - **§4** — **Ölç ya da `[DOĞRULANMADI]` yaz.** "Beyan edilmiş sınır kabul edilir, gizlenmiş sınır edilmez."
 
