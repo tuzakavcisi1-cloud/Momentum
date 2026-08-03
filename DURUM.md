@@ -74,14 +74,15 @@ macOS runner'ında: `✓ Built build/ios/iphoneos/Runner.app (**18.7MB**)` · `�
 **§9'da yazılı ve borçlandı** (`B-O53-1`…`5`): `G29/b` **kör** · `--fatal-infos`'un taşıyıcılığı
 **gösterilemez** · `G27/a`·`G27/c`·`G30/b` **mutantsız** · kriter 7'nin **dinamik ayaklarının
 aracı yok** · aksiyonlar **pinsiz**. Onarım **builder'ın** (K34-f). Gerekçe **§5/K130 + arşiv**.
-🟢 **§9/5 · §9/10 KAPANDI, §9/4 kısmen:** `workflow` yetkisi ölçüldü (push **GCM** token'ını
-kullanıyor, onda vardı; `gh workflow run` **`repo` ile** çalıştı ⇒ `gh auth refresh` gerekmedi) ·
-`ci-kapisi.py` yazıldı (**13/13**) · dört koşumun da **billable 0 ms**. 🔴 Kalan kota `[ÖLÇÜLMEDİ]`.
+🟢 `A13` **§9/5 · §9/10 KAPANDI**, §9/4 kısmen (ayrıntı kabul hükmünde). 🔴 Kota `[ÖLÇÜLMEDİ]`.
 🔴 **ÖLÇÜLMEYEN (değişmedi):** çakışma rozeti · çift yönün kabul kriterleri · **fiziksel cihaz**
 (NAT kurulu soketi koruduğu için SignalR yeniden bağlanma yolu **hiç egzersiz edilmedi**).
-→ ⑧ `SS2` (dar) → ⑨ web borcu + **backend CI** (`D-A13-4` borcu) + release → ⑩ `ADR 0004` + vitrin.
-🔴 **ONUR'A AÇIK İŞ:** uzaktaki üç mutant dalı **silinmedi** · `KANIT/A13/06-*`, `07-*`
-**izlenmiyor** (`??`) ⇒ commit edilmezse itilmiş depoda kabul kanıtı yok.
+🔴 **⑧ `SS2` v2: İKİ TUR DENETİM DÜŞÜRDÜ (K132).** Kalan 5 bloker **mimari DEĞİL**; kanıt
+`KANIT/SS2/02-DENETIM-tur2.md`. **K53/1 ⇒ üçüncü kâğıt turu AÇILAMAZ.**
+🔴 **R8 SERT DURAK YANDI** (53 ve 54 = **0** ürün kodu) ⇒ **oturum 55 ÜRÜN KODUYLA başlar** (K53/4).
+→ ⑨ web borcu + **backend CI** (`D-A13-4`) + release → ⑩ `ADR 0004` + vitrin.
+🟢 **ONUR'A AÇIK İŞ KAPANDI (oturum 54'te ÖLÇÜLDÜ):** uzakta yalnız `main` · `KANIT/A13` izlenir
+(`??` 0) · `origin/main == HEAD` · kabul pini ayakta.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` ÇAKIŞMASI: kanonik metin `ORTAM.md`'de** (oturum 50'de
 ölçüldü). Buraya **kopyalanmaz** — üç satırlık özet oturum 53'te `kanonik-kopya` olarak budandı.
 
