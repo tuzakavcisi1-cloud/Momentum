@@ -1,0 +1,8 @@
+KANIT/A13/06-ci-yesil/ -- HENUZ BOS, KASITLI.
+
+Kriter 7 (CI YESIL) push'tan SONRA olculebilir (SS7/7: "Bu kriter kriter 6 olmadan
+olculemez; CI kosmadan 'yesil' yazan bir el, olcmedigini beyan etmis olur"). Bu dilimde
+push YAPILMADI -- push Onur'undur (SS4, kirmizi cizgi 3). Onur push ettikten sonra
+`gh run list --workflow ci.yml --branch main --limit 5 --json conclusion,headSha,status,databaseId`
+ve `gh run view <databaseId> --log` ham ciktilari buraya yazilir; ozet beyan edilmez,
+dosya konur.
