@@ -240,3 +240,15 @@ yazmadı** ⇒ standart yarım. **Kapanış (iki yol, biri seçilir):** ① `CLA
 tek cümle eklenir (*"§6 tablosunda 3. sütun `hedef`tir"*) — ucuz ama **kapısız**; ② araç, başlık
 satırındaki `hedef` sütununu **adıyla** bulur (sabit indeks yerine) ve bulamazsa `[S0] BİÇİM` der —
 pahalı ama **mekanik**. K53/2 gereği ikincisi *"koşan kod olmadan ölçülebilir"* sınıfındadır.
+
+### `B-O52-2` — `K127`'NİN MEKANİK KAPISI YOK (kural prozada yaşıyor)
+
+🔴 **Ölçüldü (oturum 52, K127'nin doğduğu tur):** `K127` *"kilit checkpoint'i bağımsız denetçinin
+çıktı yolunu taşımak zorundadır"* der, ama bunu **hiçbir kapı zorlamıyor**. Bugün checkpoint metnini
+kimse denetlemiyor ⇒ bir sonraki kilit yine denetimsiz yazılabilir ve kimse fark etmez. Bu, projenin
+en çok eleştirdiği sınıfın (*"beyan edilmiş zayıf kontrol"*, `belge-tavan-kapisi.py` öncesi durum)
+bilerek tekrarıdır. **Kapanış yolu:** `PROJE_HAFIZA.md`'nin **en üstteki** checkpoint'inde, başlığı
+`KİLİT`/`KILITLENDI` içeren her kayıt için `KANIT/**/*DENETIM*` deseninde **var olan** bir dosya
+yolu arayan küçük bir kapı (`kilit-denetim-kapisi.py`); yol yoksa ya da dosya diskte yoksa KIRMIZI.
+Altın küme: yol var+dosya var (sussun) · yol var+dosya yok (ısırsın) · yol yok ama *"denetim
+KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).

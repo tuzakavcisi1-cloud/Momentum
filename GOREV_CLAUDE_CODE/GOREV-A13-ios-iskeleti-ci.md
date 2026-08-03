@@ -132,10 +132,16 @@ tek satırdır: `gh auth refresh -h github.com -s workflow`.
 
 | ayak | ölçüm | geçme koşulu |
 |---|---|---|
-| a | `gh run list --workflow ci.yml --limit 5 --json conclusion,headSha,status` | en son koşumun `conclusion` = `success` |
-| b | aynı çıktının `headSha`'sı ile `git --no-optional-locks rev-parse HEAD` | **eşit** — başka bir commit'in yeşili bu dilimi kanıtlamaz |
-| c | `gh run view <id> --log` içinde **iki işin de** adı geçer | `istemci` **ve** `ios` işleri koşmuş olmalı |
+| a | `gh run list --workflow ci.yml --branch main --limit 5 --json conclusion,headSha,status,databaseId` | en son **`main`** koşumunun `conclusion` = `success` |
+| b | aynı kaydın `headSha`'sı ile `git --no-optional-locks rev-parse main` | **eşit** — başka bir commit'in yeşili bu dilimi kanıtlamaz |
+| c | `gh run view <databaseId> --log` içinde **iki işin de** adı geçer | `istemci` **ve** `ios` işleri koşmuş olmalı |
 
+🔴 **`--branch main` PAZARLIKSIZ [oturum 52'de bağımsız denetim buldu].** Filtresiz `gh run list`
+en son koşumu verir; kriter 8 mutant dallarını **kasten failure** koşturduğu için, kabul ölçümü
+kriter 8'den sonra yapıldığında listenin başı **`M169`'un failure'ı** olur ⇒ **kriter 7 kabul anında
+KIRMIZI olurdu, hâlbuki geçmişti.** Bu, `A11`'deki kriter 7↔8 çelişkisinin birebir tekrarıydı.
+🔴 **Aynı sebeple `b` ayağı `HEAD` DEĞİL `main` ölçer:** builder mutant dallarındayken `HEAD`
+mutant commit'idir ve `main`'in yeşil koşumuyla asla eşleşmez.
 🔴 **"Actions sekmesinde yeşil gördüm" BİR ÖLÇÜM DEĞİLDİR.** Kanıt `gh` çıktısının
 **ham metnidir** ve `KANIT/A13/` altına yazılır. Kural: `D-A13-3`
 
@@ -144,10 +150,14 @@ tek satırdır: `gh auth refresh -h github.com -s workflow`.
 | ayak | ölçüm | geçme koşulu |
 |---|---|---|
 | a | `ci-kapisi.py`: `ci.yml`'de `analyze` adımı **`--fatal-infos` taşıyor** | taşımıyorsa KIRMIZI |
-| b | `ci-kapisi.py`: Flutter sürümü **`3.44.6` olarak pinli**, `stable`/`latest` **değil** | pin yoksa KIRMIZI |
+| b | `ci-kapisi.py`: **`flutter-version:` anahtarının değeri** tam olarak `3.44.6` | anahtar yoksa **veya** değeri `3.44.6` değilse KIRMIZI |
 | c | CI logunda `flutter analyze` çıkışı | **0 sorun** |
 | d | CI logunda `flutter test` özeti | `N/N` geçti; **N logdan okunur, spec'ten değil** |
 
+🔴 **`b` ayağı `channel:` anahtarına BAKMAZ [oturum 52'de bağımsız denetim buldu].** İlk yazım
+*"`stable`/`latest` geçmesin"* diyordu; oysa `subosito/flutter-action`'da `flutter-version: 3.44.6`
+ile `channel: stable` **meşru ve yaygın** bir birlikteliktir ⇒ o kural **doğru dosyayı** kırmızı
+yapardı. Ölçülen şey **pinin varlığı**dır, `stable` kelimesinin yokluğu değil.
 Kurallar: `D-A13-3` · `D-A13-6` · `D-A13-7`
 
 ### G29 — iOS GERÇEKTEN DERLENDİ (bu dilimin taç ayağı)
@@ -155,10 +165,16 @@ Kurallar: `D-A13-3` · `D-A13-6` · `D-A13-7`
 | ayak | ölçüm | geçme koşulu |
 |---|---|---|
 | a | `ci-kapisi.py`: `ci.yml`'de iOS adımı **`--no-codesign`** taşıyor | taşımıyorsa KIRMIZI |
-| b | macOS işinin logunda `Xcode build done` benzeri tamamlanma satırı | **var** |
-| c | log içinde `Runner.app` üretim satırı ve boyut | **> 0 bayt** |
+| b | macOS işinin logunda `Xcode build done.` dizgesi | **tam dizge** var (kısmi/benzer eşleşme sayılmaz) |
+| c | logda **`Built build/ios/iphoneos/Runner.app (`** ile başlayan satır + parantez içindeki boyut | satır **var** ve boyut **> 0** |
 | d | macOS işinin `conclusion`'ı | `success` |
 
+🔴 **`c` AYAĞI ÖNCE KÖRDÜ, ONARILDI [oturum 52'de bağımsız denetim buldu].** İlk yazım *"log içinde
+`Runner.app` üretim satırı"* diyordu — **alt-dizge araması**. Xcode logu **başarısız** derlemede de
+`Runner.app` içerir (ör. `ProcessInfoPlistFile …/Runner.app/Info.plist`, ki `M169`'un patlattığı
+adımın ta kendisidir) ⇒ ayak bozukta da yeşil verirdi ve `M169` işi düşürdüğü için `G29/d` kırmızı
+olup **kör ayağı MASKELERDİ**. Bu, `A11`/`M141` deseninin aynısıdır: mutantın ısırması, ısıran
+ayağın **doğru ayak olduğunu** kanıtlamaz. Onarım: **tam satır pini + boyut**.
 🔴 **`--no-codesign` yüzünden `.ipa` ÜRETİLMEZ; kanıt `Runner.app`'tir.** `.ipa` arayan
 bir kriter, bu dilimde **hiç geçemeyecek** bir kriterdir. Kurallar: `D-A13-5` · `D-A13-2`
 
@@ -166,13 +182,26 @@ bir kriter, bu dilimde **hiç geçemeyecek** bir kriterdir. Kurallar: `D-A13-5` 
 
 | ayak | ölçüm | geçme koşulu |
 |---|---|---|
-| a | `ci-kapisi.py`: `ios/Runner.xcodeproj/project.pbxproj` içindeki **her** `PRODUCT_BUNDLE_IDENTIFIER` | `com.momentum.client` — `com.example` **bir kez bile** geçmemeli |
+| a | `ci-kapisi.py`: `project.pbxproj`'de **`Runner`** hedefinin **üç** yapılandırmasındaki `PRODUCT_BUNDLE_IDENTIFIER` | üçü de `com.momentum.client`; **`com.example` hiçbirinde geçmemeli** |
 | b | `ci-kapisi.py`: `IPHONEOS_DEPLOYMENT_TARGET` | `13.0` |
 | c | `ci-kapisi.py`: `.gitignore` iOS artefakt yollarını kapsıyor (`ios/Pods/`, `ios/.symlinks/`, `ios/Flutter/Flutter.framework`) — **varlık pozitif kontrolüyle** (ORTAM.md `findstr` dersi) | üçü de kapsanmalı |
-| d | `src/client/lib`, `src/client/test`, `pubspec.yaml` **HEAD'e göre değişmemiş** | `git --no-optional-locks status --porcelain` bu yollarda **boş** |
+| d | `git --no-optional-locks diff --stat <dilim-öncesi-sha>..HEAD -- src/client/lib src/client/test src/client/pubspec.yaml` | **çıktı BOŞ** (çıkış kodu **değil** — bu komut kirlide de 0 döner) |
 
-🔴 **Ayak (d) `D-A13-1`'in gerçek kapısıdır:** *"yeni proje açılmadı"* iddiası ancak
-**mevcut dosyaların dokunulmamış olmasıyla** kanıtlanır. Kurallar: `D-A13-1` · `D-A13-2`
+🔴 **`a` AYAĞINDAKİ "HER" NİCELEYİCİSİ DARALTILDI [oturum 52, bağımsız denetim].** Flutter'ın iOS
+şablonunda `RunnerTests` hedefinin **kendi** bundle id'si vardır (`…client.RunnerTests`); *"her
+`PRODUCT_BUNDLE_IDENTIFIER` `com.momentum.client` olmalı"* kriteri ya **hiç geçemez** ya da
+builder'ı Xcode projesini bozmaya iter. Ölçülen: **`Runner` hedefinin üç yapılandırması**.
+🔴 **Beyan edilmiş sınır:** `RunnerTests`'in bundle id'si bu dilimde **ölçülmez** (şablon içeriği
+`ios/` üretilmeden ölçülemedi ⇒ `[DOĞRULANMADI]`).
+
+🔴 **`d` AYAĞI ÖNCE KÖRDÜ, ONARILDI [oturum 52, bağımsız denetim].** İlk yazım
+`git status --porcelain`'in boş olmasını arıyordu; o komut *"dosyalar değişmedi"*yi değil
+*"çalışma ağacı kirli değil"*i ölçer. `flutter create` `lib/main.dart`'ı yeniden üretir, builder
+commit'ler, **kriter 6'daki ölçüm tertemiz döner** — oysa `lib/` değişmiştir. Üstelik §9/8
+`D-A13-1`'in mutantsızlığını tam da bu ayağa yaslıyordu. **Ölçülmüş kanıt:** bu oturumda
+`git status --porcelain` **EXIT 0** verdi ve çıktısı beş dosyayla **doluydu** ⇒ çıkış koduna bakan
+bir el kirli ağacı yeşil sayar (ORTAM.md `findstr` dersinin birebir kardeşi).
+Ayak (d) `D-A13-1`'in gerçek kapısıdır. Kurallar: `D-A13-1` · `D-A13-2`
 
 ---
 
@@ -192,13 +221,27 @@ bir kriter, bu dilimde **hiç geçemeyecek** bir kriterdir. Kurallar: `D-A13-5` 
 | mutant | sınıf | hedef | ne bozulur | beklenen |
 |---|---|---|---|---|
 | M162 | statik | `A13/G28` · `D-A13-3` | `ci.yml`'deki `analyze` adımından `--fatal-infos` silinir | `ci-kapisi.py` **KIRMIZI** |
-| M163 | statik | `A13/G28` · `D-A13-6` | `ci.yml`'de Flutter sürüm pini `3.44.6` → `stable` yapılır | `ci-kapisi.py` **KIRMIZI** |
+| M163 | statik | `A13/G28` · `D-A13-6` | `ci.yml`'de `flutter-version:` değeri `3.44.6` → `3.43.0` yapılır | `ci-kapisi.py` **KIRMIZI** |
+| M163b | statik | `A13/G28` · `D-A13-6` | `ci.yml`'de `channel: stable` **eklenir**, `flutter-version: 3.44.6` **korunur** | `ci-kapisi.py` **SUSMALI** — yanlış-pozitif kontrolü |
 | M164 | statik | `A13/G29` · `D-A13-5` | `ci.yml`'deki iOS adımından `--no-codesign` silinir | `ci-kapisi.py` **KIRMIZI** |
-| M165 | statik | `A13/G30` · `D-A13-2` | `project.pbxproj`'de bir `PRODUCT_BUNDLE_IDENTIFIER` `com.example.client`'a döndürülür | `ci-kapisi.py` **KIRMIZI** (tek geçiş bile yeter) |
+| M165 | statik | `A13/G30` · `D-A13-2` | `project.pbxproj`'de `Runner`'ın bir yapılandırmasındaki `PRODUCT_BUNDLE_IDENTIFIER` `com.example.client`'a döndürülür | `ci-kapisi.py` **KIRMIZI** (tek geçiş bile yeter) |
 | M166 | statik | `A13/G30` · `D-A13-1` | `.gitignore`'dan `ios/Pods/` satırı silinir | `ci-kapisi.py` **KIRMIZI** |
-| M167 | **koşan CI** | `A13/G27` · `A13/G28` · `D-A13-3` | `lib/main.dart`'a kullanılmayan bir `import` eklenir (dal: `mutant/A13-M167`) | `istemci` işi **failure** |
+| M170 | statik | `A13/G27` · `D-A13-3` | `KANIT/A13/06-ci-yesil/` altına kaydedilmiş `gh run list` JSON'ının `headSha`'sı tek karakter değiştirilir | `G27/b` ölçümü **KIRMIZI** — kabul ölçümünün kendisi kör değil |
+| M167 | **koşan CI** | `A13/G27` · `A13/G28` · `D-A13-3` | `lib/main.dart`'a **`print('mutant');`** eklenir (`avoid_print`, şiddet **INFO**) — dal: `mutant/A13-M167` | `istemci` işi **failure** |
 | M168 | **koşan CI** | `A13/G28` · `D-A13-7` | bir widget testinin beklentisi kasten ters çevrilir (dal: `mutant/A13-M168`) | `istemci` işi **failure** |
-| M169 | **koşan CI** | `A13/G29` · `A13/G27` · `D-A13-2` | `ios/Runner/Info.plist` bozulur — kapatılmamış XML etiketi (dal: `mutant/A13-M169`) | `ios` işi **failure** |
+| M169 | **koşan CI** | `A13/G29` · `D-A13-1` | `ios/Runner/Info.plist` bozulur — kapatılmamış XML etiketi (dal: `mutant/A13-M169`) | `ios` işi **failure** |
+
+🔴 **`M167` ÖNCE EŞDEĞERDİ, DEĞİŞTİRİLDİ [oturum 52, bağımsız denetim].** İlk yazım *"kullanılmayan
+`import`"* diyordu; `unused_import` Dart'ta **WARNING**'dir ve `flutter analyze` zaten warning'lerde
+düşer ⇒ mutant **`--fatal-infos` OLMADAN DA ısırırdı**, yani `D-A13-3`'ün çekirdek iddiasını
+(*"bayrak taşıyıcıdır"*) **hiçbir koşan mutant ölçmüyordu**. Onarım **ölçülerek** seçildi:
+`src/client/analysis_options.yaml` `package:flutter_lints/flutter.yaml` içeriyor ve `avoid_print`
+**devre dışı bırakılmamış** (dosya okundu) ⇒ `print()` **INFO** şiddetinde bir ihlaldir ve yalnız
+`--fatal-infos` varsa işi düşürür. **Doğru mutant, bayrağın kendisini ölçendir.**
+🔴 **`M163b` bir YANLIŞ-POZİTİF mutantıdır:** kapının *"pin var mı"* ölçtüğünü, *"`stable` kelimesi
+geçiyor mu"* ölçmediğini kanıtlar. Isırmaması **beklenen** sonuçtur.
+🔴 **`M169`'un hedefi `D-A13-2` DEĞİL `D-A13-1`'e çevrildi:** `Info.plist`'i bozmak bundle id'yi ya
+da deployment target'ı ölçmez; ölçtüğü şey **üretilen iskeletin gerçekten derlenebilir olduğudur**.
 
 🔴 **KOŞAN MUTANTLARIN PUSH DİSİPLİNİ — PAZARLIKSIZ:** üç mutant **ayrı dallara** yazılır
 (`mutant/A13-M167` · `-M168` · `-M169`) ve `main`'e **asla** girmez. `ci.yml` tetiği yalnız
@@ -230,23 +273,37 @@ değil. *(Kapı susturulmadı, beyan doğru sınıfa taşındı.)*
 > kabul koşumunda görüldü. Bu yüzden sıra burada **açıkça** yazılıdır ve her kriter,
 > kendisinden öncekinin çıktısına dayanır. **Kriter atlanamaz, sırası değiştirilemez.**
 
-1. **ÖNCE ARAÇ (K44-a):** `araclar\ci-kapisi.py` yazılır; **kendi altın kümesi** (`--altin-kume`,
-   temizde susar / kirlide ısırır) **EXIT 0** verir. Bu geçmeden hiçbir kapı yeşil sayılmaz.
+1. **ÖNCE ARAÇ + DİLİM ÖNCESİ SHA (K44-a):** `araclar\ci-kapisi.py` yazılır; **kendi altın kümesi**
+   (`--altin-kume`, temizde susar / kirlide ısırır) **EXIT 0** verir. Bu geçmeden hiçbir kapı yeşil
+   sayılmaz. 🔴 **Aynı anda `git --no-optional-locks rev-parse HEAD` çıktısı `KANIT/A13/00-ortam.txt`'ye
+   *dilim öncesi sha* olarak yazılır** — `A13/G30/d` bunu ister; sonradan hatırlanamaz.
+   🔴 **Altın kümenin YORUM SATIRI vakası ZORUNLU ve beklenen hükmü BURADA yazılıdır:** `ci.yml`'de
+   aranan bayrak **yalnız bir `#` yorum satırında** geçiyorsa kapı **KIRMIZI vermeli** (§9/7'nin
+   düz-metin sınırı bu vakayla pinlenir). Bu satır olmadan builder aracı kendi lehine yazabilir ve
+   **altın küme kendini onaylar**.
 2. **iSKELET:** `flutter create --platforms=ios .` koşar; `src/client/ios/` üretilir.
    `flutter analyze --fatal-infos` **yerelde** 0 sorun (iskelet mevcut kodu kırmadı).
 3. **HİJYEN:** `.gitignore` iOS artefakt yollarını kapsar; `project.pbxproj` `D-A13-2`'ye göre
-   düzenlenir. **`A13/G30` (a·b·c·d) EXIT 0.**
+   düzenlenir. **`A13/G30` a·b·c ⇒ `ci-kapisi.py` EXIT 0; ayak d ⇒ komutun ÇIKTISI BOŞ.**
+   🔴 **İki farklı ölçü tek koşulda toplanmaz:** a·b·c bir *çıkış kodu*, d bir *boş çıktı* ister.
 4. **CI DOSYASI:** `.github/workflows/ci.yml` yazılır. **`A13/G28` (a·b) ve `A13/G29` (a) EXIT 0.**
-5. **STATİK MUTANTLAR:** `M162`–`M166` **5/5 ISIRIR**; her birinden sonra dosyanın `sha256`'sı
+5. **STATİK MUTANTLAR:** `M162`–`M166` **5/5 ISIRIR** **ve** `M163b` **SUSAR** (yanlış-pozitif
+   kontrolü — ısırırsa kapı yanlış şeyi ölçüyor demektir). Her mutanttan sonra dosyanın `sha256`'sı
    yedekle **özdeş** döner (ölçülür, varsayılmaz).
-6. **COMMIT + PUSH:** builder commit eder (çift tırnaksız mesaj, `--no-optional-locks`);
+6. **COMMIT + PUSH (`main`):** builder commit eder (çift tırnaksız mesaj, `--no-optional-locks`);
    **push ONUR'undur.** Push reddedilirse §4'teki `workflow` yetkisi maddesi uygulanır.
-7. **CI YEŞİL:** `A13/G27` (a·b·c) + `A13/G28` (c·d) + `A13/G29` (b·c·d) — hepsi **`gh` çıktısının
-   ham metniyle** kanıtlanır. 🔴 Bu kriter **kriter 6 olmadan ölçülemez**; CI koşmadan
-   "yeşil" yazan bir el, ölçmediğini beyan etmiş olur.
-8. **KOŞAN MUTANTLAR:** `M167`–`M169` **3/3 ISIRIR** (§6'daki dal disipliniyle). 🔴 Bu kriter
-   **kriter 7'den SONRA** gelir: kapının ısırdığını ölçmek için önce **ısırmadığı** hâlin
-   yeşil olduğu ölçülmüş olmalıdır.
+7. **CI YEŞİL (`main` DALINDA):** `A13/G27` (a·b·c) + `A13/G28` (c·d) + `A13/G29` (b·c·d) — hepsi
+   **`gh` çıktısının ham metniyle** kanıtlanır ve ham JSON `KANIT/A13/06-ci-yesil/` altına yazılır.
+   🔴 Bu kriter **kriter 6 olmadan ölçülemez**; CI koşmadan "yeşil" yazan bir el, ölçmediğini beyan
+   etmiş olur.
+8. **KOŞAN MUTANTLAR + KABUL ÖLÇÜMÜNÜN KENDİ MUTANTI:** builder üç mutant dalını **yerelde** açar
+   (`mutant/A13-M167` · `-M168` · `-M169`) → 🔴 **ONUR TEK PUSH yapar:**
+   `git push origin mutant/A13-M167 mutant/A13-M168 mutant/A13-M169` → her dal için
+   `gh workflow run ci.yml --ref <dal>` → `M167`–`M169` **3/3 ISIRIR**. Ardından `M170` kriter 7'nin
+   kaydedilmiş JSON'ı üzerinde koşulur ve **`G27/b`'nin kör olmadığını** kanıtlar.
+   🔴 Bu kriter **kriter 7'den SONRA** gelir: kapının ısırdığını ölçmek için önce **ısırmadığı**
+   hâlin yeşil olduğu ölçülmüş olmalıdır. 🔴 **`A13/G27` bundan sonra da ölçülürse `--branch main`
+   ile ölçülür** — mutant dallarının failure'ı `main`'in yeşilini geçersiz kılmaz.
 9. **KANIT:** `KANIT/A13/` altına ham çıktılar (§10 düzeni). Beyan yok, dosya var.
 
 ---
@@ -292,22 +349,30 @@ değil. *(Kapı susturulmadı, beyan doğru sınıfa taşındı.)*
    `M166`, kuralın *"artefakt commit edilmez"* ve *"mevcut dosyalar dokunulmadı"* ayaklarını
    ölçer; ama builder'ın **gerçekten yeni proje açıp `lib/` ve `test/`'i sildiği** hâli ölçen
    bir mutant **yoktur ve bilerek yazılmamıştır**: bedeli 500 testi ve tüm istemci kaynağını
-   geçici olarak yok etmektir. ⇒ Bu kuralın ihlali **kapı tarafından değil, `git status`
-   tarafından** yakalanır ve o yüzden kriter 3 ile 6 arasında **iki kez** ölçülür.
+   geçici olarak yok etmektir. ⇒ Bu kuralın ihlali **`A13/G30/d`'nin `git diff --stat` ölçümüyle**
+   yakalanır ve o ölçüm **kriter 3'te BİR KEZ** koşulur. 🔴 *İlk yazım burada "kriter 3 ile 6
+   arasında iki kez ölçülür" diyordu — §7 bunu bir kez zorluyordu ⇒ **beyan ile kriter
+   çelişiyordu**, oturum 52'de bağımsız denetim buldu ve beyan gerçeğe çekildi.*
+9. **`RunnerTests` HEDEFİNİN BUNDLE ID'Sİ ÖLÇÜLMEZ** (`A13/G30/a` yalnız `Runner`'ı ölçer).
+   Şablon içeriği `ios/` üretilmeden ölçülemedi ⇒ **[DOĞRULANMADI]**.
+10. **`ci-kapisi.py` HENÜZ YAZILMADI** — bu spec onun *ne ölçeceğini* tarif eder, *nasıl*
+   yazılacağını değil. Aracın kendi altın kümesi kriter 1'de EXIT 0 vermeden **hiçbir kapı
+   yeşil sayılmaz**; yorum-satırı vakasının beklenen hükmü kriter 1'de **yazılıdır** ki küme
+   kendi kendini onaylayamasın.
 
 ---
 
 ## 10. KANIT DÜZENİ (`KANIT/A13/`)
 
 ```
-KANIT/A13/00-ortam.txt              flutter --version · git rev-parse HEAD · tarih (cihazdan ÖLÇÜLÜR)
-KANIT/A13/01-arac-altin-kume.txt    ci-kapisi.py --altin-kume ham çıktı (kriter 1)
+KANIT/A13/00-ortam.txt              flutter --version · DİLİM ÖNCESİ SHA (rev-parse HEAD) · tarih (cihazdan ÖLÇÜLÜR)
+KANIT/A13/01-arac-altin-kume.txt    ci-kapisi.py --altin-kume ham çıktı, yorum-satırı vakası DÂHİL (kriter 1)
 KANIT/A13/02-iskelet.txt            flutter create çıktısı + yerel analyze (kriter 2)
-KANIT/A13/03-statik-kapilar.txt     A13/G28a-b · G29a · G30a-d ham çıktı (kriter 3-4)
-KANIT/A13/04-MUTANT-statik/         M162–M166: her biri için önce/sonra + sha256 (kriter 5)
+KANIT/A13/03-statik-kapilar.txt     A13/G28a-b · G29a · G30a-d ham çıktı, d'nin ÇIKTISI dâhil (kriter 3-4)
+KANIT/A13/04-MUTANT-statik/         M162–M166 (ısırdı) + M163b (sustu): önce/sonra + sha256 (kriter 5)
 KANIT/A13/05-commit.txt             git log --oneline -1 + status --porcelain + index.lock (kriter 6)
-KANIT/A13/06-ci-yesil/              gh run list/view ham JSON + log (kriter 7)
-KANIT/A13/07-MUTANT-kosan/          M167–M169: dal adı + gh run çıktısı + conclusion (kriter 8)
+KANIT/A13/06-ci-yesil/              gh run list --branch main / view ham JSON + log (kriter 7)
+KANIT/A13/07-MUTANT-kosan/          M167–M169: dal adı + gh run çıktısı + conclusion; M170 (kriter 8)
 KANIT/A13/08-OZET.md                madde madde PASS/FAIL + ölçülen sayılar
 ```
 

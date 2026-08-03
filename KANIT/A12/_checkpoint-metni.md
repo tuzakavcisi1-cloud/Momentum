@@ -1,50 +1,61 @@
-## 🔒 CHECKPOINT — K126 · **`GOREV-A13` KİLİTLENDİ** (Onur kilitledi, 3 Ağu 2026, oturum 52)
+## 🔒 CHECKPOINT — K127 · **KİLİT ÖNCESİ BAĞIMSIZ DENETİM ZORUNLU** + `A13` DÜZELTİLDİ VE YENİDEN KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 52)
 
-Onur üç kararı birlikte verdi: ① `A13` **KİLİTLE — Claude Code'a hazır** ② `BORCLAR.md` tavanı için
-*"önerini uygula"* ⇒ **24 → 32 KB yükseltme** (gerekçe aşağıda, K40 şartıyla) ③ commit **kilitten
-sonra, tek commit**.
+🔴 **DENETÇİ ÇIKTI YOLU (K127'nin kendi şartı, ilk kez uygulanıyor): `KANIT/A13/00-DENETIM-kilit-oncesi.md`.**
+🔴 **ZAMANLAMA DÜRÜSTÇE YAZILIYOR: bu denetim `K126` kilidinden SONRA koştu.** Kural tam da bu
+sıra hatasından doğdu.
 
-**KİLİTLENEN ARTEFAKT:** `GOREV_CLAUDE_CODE/GOREV-A13-ios-iskeleti-ci.md` —
-**20.940 b · `56871800`** · U+FFFD **0** · CRLF **0** (kimlik **son yazımdan SONRA** ölçüldü).
-Bu andan sonra dosyanın **her değişen baytı kilidi bozar**; `tek-kopya-kapisi.py`'nin **`kilitli`**
-sınıfına girer ve sapması **her açılışta** ölçülür.
+## NE OLDU
 
-**KİLİDİN DAYANDIĞI ÖLÇÜMLER (hepsi Cowork'ün kendi koşumu, K26):**
-`spec-kapi-kapsama.py` altın küme **21/21** → spec **EXIT 0 / BULGU YOK** ·
-`kapi-ad-teklik-kapisi.py` **YEŞİL** (`G27`–`G30` hiçbir spec'le çakışmıyor) ·
-`tek-kopya-kapisi.py` **YEŞİL** · `sayi-tazeligi.py` **TEMİZ**.
-Kapsam: **4 kapı** (`A13/G27`–`G30`) · **7 kural** (`D-A13-1`–`7`) · **8 mutant** (`M162`–`M169`) ·
-**1 gerekçeli borç** (`D-A13-4`). *Koşan* mutant sınıfı **tam 3** ⇒ **K53/3 tavanı dolu**,
-dördüncüsü açılamaz.
+`K126` `A13`'ü **denetimsiz** kilitledi. Kilitten sonra iki bağımsız ajan (K26; **ikisi de spec'i
+yazmadı**, farklı lensler) koşturuldu ve **3 BLOKER + 6 MAJOR + 5 MINOR** buldu. Onur kilidi
+**açtı**, spec düzeltildi, yeniden kilitlendi.
 
-🔴 **KİLİDİN İÇİNDE BEYAN EDİLEN ÜÇ SINIR — kabul edilmiş, gizlenmemiş:**
-① **iOS yalnız DERLENİR, ÇALIŞTIRILMAZ** — bu dilim *"iOS hedefi derleniyor"*u kanıtlar,
-*"iOS destekleniyor"*u **kanıtlamaz** ② **backend `verify` CI'ya girmez** (`D-A13-4`) ⇒ CI yeşili
-*"sistem çalışıyor"* **demez** ③ **`workflow` token yetkisi [DOĞRULANMADI]** — GitHub,
-`.github/workflows/` ekleyen push'u yetki yoksa **reddeder**; `gh` token'ında yetki **yok**
-(`gist, read:org, repo`), push ise **GCM** kullanıyor ve onun yetkisi ölçülemiyor. Patlarsa
-çözüm **Onur'un** koşacağı `gh auth refresh -h github.com -s workflow`. **Bu bir ürün kusuru
-değildir ve kabul kriterlerini düşürmez.**
+🔴 **BLOKER 1 — `A11`'İN KRİTER 7↔8 ÇELİŞKİSİ, AYNI NUMARALARLA TEKRARLADI.** `A13/G27/a`
+`gh run list --workflow ci.yml --limit 5` idi — **dal filtresi yoktu** — ve *"en son koşum
+`success`"* istiyordu. Kriter 8 ise aynı iş akışını mutant dallarında kasten **failure**
+koşturuyor ⇒ kabul ölçümü kriter 8'den sonra yapıldığında listenin başı `M169`'un failure'ı olur
+ve **kriter 7 kendi kendini KIRMIZI'ya düşürürdü**. Onarım: `--branch main` + `rev-parse main`
+(`HEAD` değil; builder mutant dallarındayken `HEAD` mutant commit'idir).
+🔴 **BLOKER 2 — `A13/G30/d` KÖRDÜ.** `git status --porcelain`'in boşluğu *"dosyalar değişmedi"*yi
+değil *"ağaç kirli değil"*i ölçer. **Ölçülmüş kanıt bu oturumda fiilen görüldü:** commit betiğinde
+o komut **EXIT 0** verdi ve çıktısı **beş dosyayla doluydu**. Onarım: `git diff --stat
+<dilim-öncesi-sha>..HEAD -- src/client/lib src/client/test src/client/pubspec.yaml` ⇒ **çıktı BOŞ**;
+dilim öncesi sha artık **kriter 1'de** kaydediliyor.
+🔴 **BLOKER 3 — `A13/G29/c` KÖRDÜ ve `M169` ONU MASKELİYORDU.** *"Logda `Runner.app` geçsin"* bir
+**alt-dizge** aramasıydı; Xcode logu **başarısız** derlemede de `Runner.app` içerir
+(`ProcessInfoPlistFile …/Runner.app/Info.plist` — `M169`'un patlattığı adımın ta kendisi).
+`M169` işi düşürdüğü için `G29/d` kırmızı olur ve **kör ayağı gizlerdi**: `A11`/`M141` deseninin
+aynısı. Onarım: **tam satır pini** `Built build/ios/iphoneos/Runner.app (` + boyut > 0.
 
-## 🔓 `BORCLAR.md` TAVANI **24.576 → 32.768 B** (Onur, 3 Ağu 2026 — K117'nin ikinci gevşetmesi)
+🔴 **EN PAHALI MAJOR — `M167` EŞDEĞERDİ.** *"Kullanılmayan `import`"* Dart'ta **WARNING**'dir ve
+`flutter analyze` zaten warning'de düşer ⇒ mutant **`--fatal-infos` OLMADAN DA** ısırırdı; yani
+`D-A13-3`'ün çekirdek iddiasını (*"bayrak taşıyıcıdır"*) **hiçbir koşan mutant ölçmüyordu**.
+Onarım **ölçülerek** seçildi: `src/client/analysis_options.yaml` okundu, `flutter_lints/flutter.yaml`
+dâhil ve `avoid_print` **devre dışı bırakılmamış** ⇒ `print()` **INFO** şiddetindedir ve yalnız
+`--fatal-infos` varsa işi düşürür. Ayrıca `M163b` (yanlış-pozitif mutantı) ve `M170` (`G27/b`'nin
+mutantı) eklendi; `M169`'un hedefi `D-A13-2` → **`D-A13-1`** olarak düzeltildi.
 
-**Ölçülmüş gerekçe, K117'nin kendi dersinin doğrudan uygulanmasıdır.** K117 şunu yazmıştı:
-*"bu dosyada budama ancak bir borç KAPANDIĞINDA işe yarar; anlatımı kısaltarak yer açma girişimi
-ölçülerek başarısızdır"* (oturum 48: 2 kalem kapandı, 2 yeni doğdu, net **+258 b**).
-Bugün ölçülen durum: `T2` **SARI**, 24.252/24.576, pay **324 b** (eşik 1.228) ve **kapanan borç
-YOK** — `B-O51-1` açık, üstüne `B-O52-1` doğdu. ⇒ Budama bu turda **ölçülerek işe yaramaz**;
-geriye kalan tek dürüst seçenek eşiktir.
+🟢 **DENETÇİLERİN OLUMLU ÖLÇÜMÜ:** §5'in **14 ayağının tamamı** §7'de çağrılıyor ⇒ **kör kapı yok**.
 
-🔴 **BEYAN EDİLMİŞ BEDEL: BU İKİNCİ GEVŞETMEDİR (16 → 24 → 32 KB).** Tavan artık `DURUM.md` ile
-**eşit**; *"borç listesi canlı durumun yarısı kadar kalmalı"* tasarımı **ölmüştür** ve bu yazıya
-geçirilmiştir. Karşılığında K40'ın şartı **ödendi**: `belge-tavan-kapisi.py`'nin altın kümesine
-yeni tavanı **pinleyen** vaka eklendi (vaka **13**), küme **12/12 → 13/13**.
-🔴 **Sınırı BEYAN EDEN her kopya aynı anda kapatıldı** (bu projede `kanonik-kopya` altı kez ısırdı):
-araç kapsam tablosu · `DURUM.md` §5 K117 satırı. `PROJE_HAFIZA.md`'deki K117 metni append-only
-olduğu için **dokunulmadı** — bu checkpoint onun **düzeltme notudur**.
+## DÜZELTME SONRASI ÖLÇÜM (yeniden kilit)
 
-## SIRADAKİ İŞ — DEĞİŞMEDİ
+`GOREV_CLAUDE_CODE/GOREV-A13-ios-iskeleti-ci.md` — **27.908 b · `BCD0AA81`** · U+FFFD 0 · CRLF 0.
+🔴 `K126`'nın kilit kimliği **`56871800` (20.940 b) GEÇERSİZDİR**; kilit `BCD0AA81`'dedir.
+`spec-kapi-kapsama.py` altın küme **21/21** → spec **EXIT 0 / bulgu yok**: **4 kapı · 7 kural ·
+10 mutant** (`M162`–`M170` + `M163b`; *koşan* sınıf **tam 3**, K53/3 tavanı dolu) · **1 gerekçeli
+borç** (`D-A13-4`). `kapi-ad-teklik-kapisi.py` **YEŞİL**.
 
-`A13` build'i **Claude Code'undur** (K34-f · rol bölümü). Cowork ortamı **kaldırmaz, ölçer**.
-🔴 `A13` kabul edilene kadar `urun_kodu_satiri` **0'dır**; `R8` bu oturumda ısırmadı ama
-**düşmedi de** — iskelet ve CI dosyası repoya girdiğinde düşer.
+## K127 — KURALIN KENDİSİ (Onur kilitledi)
+
+**Bir spec/ADR kilitlenirken yazılan checkpoint, o turda koşan BAĞIMSIZ DENETÇİNİN ÇIKTI YOLUNU
+taşımak ZORUNDADIR.** Yol yoksa checkpoint *"denetim KOŞULMADI"* diye **açıkça** yazar.
+Kanonik metin `CLAUDE.md`'dedir (K81'in altında).
+
+🔴 **K53/1 İLE ÇELİŞMEZ.** Tavan hâlâ **bir** kâğıt turudur; K127 turun *sayısını* değil
+**zamanlamasını** sabitler — tur **kilitten ÖNCE** koşar. K53/1'in kendi gerekçesi de buydu:
+*"sebep denetimin miktarı değil, zamanlaması"*. Bu turda bulunan dokuz kusurun **hiçbiri koşan kod
+gerektirmiyordu**; hepsi tek bir okuma turuyla bulunabilirdi — ve bulundu, yalnız **bir adım geç**.
+
+🔴 **BEYAN EDİLMİŞ SINIR:** K127'nin **mekanik kapısı YOK**. Bugün checkpoint metnini kimse
+denetlemiyor; kural prozada yaşıyor. Bu, projenin en çok eleştirdiği duruma (*"beyan edilmiş zayıf
+kontrol"*) **bilerek** düşülmüş bir örnektir ve `BORCLAR.md`'ye `B-O52-2` olarak yazıldı.

@@ -112,6 +112,32 @@ taşır ve araç **spec dosyasının yoluyla** çağrılır, dizinle değil.
 Kusur builder'ın değil, **spec'i yazan elindir**: kriter, aracın hiç kabul etmediği bir argüman biçimiyle
 ve ayrıştıramadığı bir belge biçimine karşı yazılmıştı.
 
+🔴 **`## 6. MUTANTLAR` TABLOSUNDA ÜÇÜNCÜ SÜTUN `hedef`TİR [K126, oturum 52].** Araç mutant hedefini
+`hucreler[2]`'den okur (`mutantlar()`). `A13` ilk yazımında `hedef`i dördüncü sütuna koydu ⇒ araç
+`[S1]` × 4 + `[S2]` × 5 verdi: **sekiz mutantın hiçbiri hiçbir kapıya bağlanmadı** ve dört kapının
+dördü de *"mutantsız"* göründü. K81 bölüm **başlıklarını** standartlaştırmıştı ama **sütun sırasını
+yazmamıştı** — standart yarım kalmıştı. Kalıcı kapanış yolu: `BORCLAR.md` `B-O52-1`.
+
+### KİLİT ÖNCESİ BAĞIMSIZ DENETİM [K127 — 3 Ağu 2026, Onur kilitledi · PAZARLIKSIZ]
+
+**Bir spec/ADR kilitlenirken yazılan checkpoint, o turda koşan BAĞIMSIZ DENETÇİNİN ÇIKTI YOLUNU
+taşımak ZORUNDADIR.** Yol yoksa checkpoint *"denetim KOŞULMADI"* diye **açıkça** yazar — sessiz
+geçmek yasaktır.
+
+🔴 **Ölçülmüş gerekçe, bu kuralın doğduğu turun kendisidir.** Oturum 52'de `GOREV-A13` **denetimsiz
+kilitlendi**; kilitten *sonra* koşturulan iki bağımsız denetçi (K26) **üç bloker + altı major**
+buldu — ve **birincisi `A11`'in kriter 7↔8 çelişkisinin AYNI numaralarla tekrarıydı**
+(`gh run list` dal filtresizdi ⇒ mutant koşumlarından sonra kabul ölçümü kendi kendini kırmızıya
+düşürecekti). İki kapı ayağı (`G29/c` alt-dizge araması · `G30/d` `git status` çıkış kodu) **kördü**
+ve bir koşan mutant (`M167`, `unused_import`) **eşdeğerdi** — hedeflediği kuralın çekirdek iddiasını
+hiç ölçmüyordu. **Hiçbiri koşan kod gerektirmiyordu; hepsi bir okuma turuyla bulunabilirdi ve
+bulundu.**
+
+Bu kural K53/1 ile **çelişmez**: tavan hâlâ **bir** kâğıt turudur. Kural turun *sayısını* değil,
+**zamanlamasını** sabitler — tur **kilitten ÖNCE** koşar. *(K53/1'in kendi gerekçesi de buydu:
+denetimin miktarı değil zamanlaması.)* İkinci tur yine yalnız birincisi **mimariyi değiştiren**
+bir bloker bulduysa açılır.
+
 ## Ortamı kim kaldırır [K80 — 29 Tem 2026, Onur kilitledi · PAZARLIKSIZ]
 
 **Cihaz ya da canlı-sunucu kanıtı isteyen HER spec, ortamı KENDİ kaldırma maddesini taşımak ZORUNDADIR.**
