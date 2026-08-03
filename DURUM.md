@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayat** — borç `B-O50-2` (ayrıntı orada).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 3 Ağu 2026, **oturum 53 (K129 `A13` KABUL · K130 spec yeniden kilitlendi)** — açılışın 10 adımı koştu, `A13` kriter 7 ve 8 ölçüldü, **iOS ilk kez CI'da derlendi**. 🔴 **K127 ilk kez işe yaradı ve kendi kuralı doğruladı:** kabul öncesi bağımsız denetim (3 denetçi) **1 bloker + 5 major + 8 minor** buldu; bloker, oturum 52'nin *"düzelttim"* sandığı `M167` eşdeğerliğiydi — **onarım da yanlıştı** (`--fatal-infos` Flutter 3.44.6'da varsayılan **AÇIK** ⇒ bayrak no-op; Cowork gerçek depoda ölçtü). Ders: **okunan onarım, ölçülmüş onarım değildir.** Ayrıca `G29/b` **kör ayak** çıktı, `08-OZET.md` bayat bulundu, Cowork'ün kendi ölçüm betiğinde **ters etiket** yakalandı. Beşi de kapatıldı, spec **K130** ile yenilendi, beş yeni borç (`B-O53-1`…`5`) açıldı. *(Oturum 39–52 arşivde.)*
+> **Son güncelleme:** 3 Ağu 2026, **oturum 55 (`K133` — `SS2` v3 KİLİTLENDİ)** — açılışın 10 adımı koştu; tur 2 denetiminin **beş blokeri de kapatıldı** (`K53/3`'e göre **hiçbiri borçlanamıyordu**: üçü kör kapı, biri ürün veri kaybı, biri spec içi çelişki), 13 majoru borçlandı. Kilit **kapanmamış sınırlarla** verildi (`A13`/`K130` emsali); hüküm `KANIT/SS2/03-v3-KILIT.md`. *(Oturum 39–54 anlatımı arşivde — `PROJE_HAFIZA.md` K129–K133.)*
 
 ---
 
@@ -65,24 +65,21 @@ sekiz/yedi kriterin hepsi Cowork'ün kendi koşumuyla geçti (K26). Hükümler `
 ve `KANIT/A12/04-COWORK-KABUL-HUKMU.md`; **anlatımlar arşivde (K73)**. 🔴 Yaşayan iki borç:
 `B-O50-1` (`A11` kriter 7'nin kapısı yok) · `B-O51-1` (`A12`'nin bilerek açık kör noktası).
 🔴 `A12` **araç işiydi ⇒ `R8`'i düşürmedi**.
-🟢 **⑦ `GOREV-A13` KABUL EDİLDİ (K129/K130, oturum 53 · Onur kilitledi).** Dokuz kriterin dokuzu da
-Cowork'ün KENDİ koşumuyla geçti (K26). **iOS bu depoda İLK KEZ gerçekten derlendi** — GitHub
-macOS runner'ında: `✓ Built build/ios/iphoneos/Runner.app (**18.7MB**)` · `🎉 **500** tests passed.`
-· `analyze --fatal-infos` **0 sorun** · koşan mutantlar **`M167`–`M169` 3/3 ISIRDI** (her birinde
-**doğru iş** düştü) · `M170` ısırdı. Hüküm **`KANIT/A13/10-COWORK-KABUL-HUKMU.md`**.
-🔴 **K130 — spec kilidi AÇILDI ve YENİLENDİ; kabul KAPANMAMIŞ SINIRLARLA verildi.** Beşi de
-**§9'da yazılı ve borçlandı** (`B-O53-1`…`5`): `G29/b` **kör** · `--fatal-infos`'un taşıyıcılığı
-**gösterilemez** · `G27/a`·`G27/c`·`G30/b` **mutantsız** · kriter 7'nin **dinamik ayaklarının
-aracı yok** · aksiyonlar **pinsiz**. Onarım **builder'ın** (K34-f). Gerekçe **§5/K130 + arşiv**.
-🟢 `A13` **§9/5 · §9/10 KAPANDI**, §9/4 kısmen (ayrıntı kabul hükmünde). 🔴 Kota `[ÖLÇÜLMEDİ]`.
+🟢 **⑦ `A13` KABUL (K129/K130, oturum 53 · Onur kilitledi).** Dokuz kriterin dokuzu Cowork'ün
+KENDİ koşumuyla geçti (K26); **iOS bu depoda İLK KEZ derlendi**. Hüküm
+`KANIT/A13/10-COWORK-KABUL-HUKMU.md`. Kabul **kapanmamış beş sınırla** verildi (`B-O53-1`…`5`;
+gerekçe §5/K130). 🟢 §9/5 · §9/10 KAPANDI, §9/4 kısmen. 🔴 Kota `[ÖLÇÜLMEDİ]`.
 🔴 **ÖLÇÜLMEYEN (değişmedi):** çakışma rozeti · çift yönün kabul kriterleri · **fiziksel cihaz**
 (NAT kurulu soketi koruduğu için SignalR yeniden bağlanma yolu **hiç egzersiz edilmedi**).
-🔴 **⑧ `SS2` v2: İKİ TUR DENETİM DÜŞÜRDÜ (K132).** Kalan 5 bloker **mimari DEĞİL**; kanıt
-`KANIT/SS2/02-DENETIM-tur2.md`. **K53/1 ⇒ üçüncü kâğıt turu AÇILAMAZ.**
-🔴 **R8 SERT DURAK YANDI** (53 ve 54 = **0** ürün kodu) ⇒ **oturum 55 ÜRÜN KODUYLA başlar** (K53/4).
-→ ⑨ web borcu + **backend CI** (`D-A13-4`) + release → ⑩ `ADR 0004` + vitrin.
-🟢 **ONUR'A AÇIK İŞ KAPANDI (oturum 54'te ÖLÇÜLDÜ):** uzakta yalnız `main` · `KANIT/A13` izlenir
-(`??` 0) · `origin/main == HEAD` · kabul pini ayakta.
+🟢 **⑧ `SS2` v3 KİLİTLENDİ (`K133`, oturum 55 · Onur kilitledi).** Tur 2'nin **beş blokeri de
+kapatıldı**; **13 major borçlandı** (`S11`–`S14` + `B-SS2-4`). Üçüncü denetim turu `K53/1` gereği
+**açılmadı**, gerekçe kanıtta yazılı (K127'nin *"yoksa açıkça yazar"* şıkkı). Dört mekanik kapı
+YEŞİL. Hüküm **`KANIT/SS2/03-v3-KILIT.md`**. 🔴 **İş Claude Code'da: `T0` → `T1`.**
+🔴 **`R8` AÇIK — oturum 55'te ÖLÇÜLDÜ ve ISIRDI** (53 ve 54 = **0** ürün kodu). Sönmesi
+`SS2/T1`'in **ilk satırına** bağlıdır; `T0` araçtır, **saymaz**. 🔴 **ÖLÇÜLDÜ (oturum 55): ⑨ web
+borcunun HAZIR SPEC'İ YOK** — `GOREV_CLAUDE_CODE/` altındaki 25 spec'in **hiçbiri web değil** ⇒ o
+yol önce bir **spec turu** ister ve `R8` onu yasaklar; devir notunun *"kural açısından en temiz"*
+beyanı böylece **çürüdü**. → ⑨ web + **backend CI** (`D-A13-4`) + release → ⑩ `ADR 0004` + vitrin.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` ÇAKIŞMASI: kanonik metin `ORTAM.md`'de** (oturum 50'de
 ölçüldü). Buraya **kopyalanmaz** — üç satırlık özet oturum 53'te `kanonik-kopya` olarak budandı.
 
@@ -119,6 +116,14 @@ aracı yok** · aksiyonlar **pinsiz**. Onarım **builder'ın** (K34-f). Gerekçe
 - **K41** — ADR 0003 v7 **DONDURULDU**; açılması üç şartın BİRLİKTE sağlanmasına + Onur'un açık onayına bağlı.
 - 🔒 **K127 — KİLİT ÖNCESİ BAĞIMSIZ DENETİM (Onur kilitledi, 3 Ağu 2026):** bir spec/ADR kilitlenirken yazılan checkpoint, o turda koşan **bağımsız denetçinin ÇIKTI YOLUNU** taşımak zorundadır; yoksa *"denetim KOŞULMADI"* diye **açıkça** yazar. Kanonik metin **`CLAUDE.md`**'de (K81'in altında), buraya kopyalanmaz. Ölçülmüş gerekçe kuralın doğduğu turdur: `A13` denetimsiz kilitlendi, kilitten **sonra** koşan iki bağımsız ajan **3 bloker + 6 major + 5 minor** buldu ve hiçbiri koşan kod gerektirmiyordu. **K53/1 ile çelişmez** — tavan hâlâ bir tur; K127 turun *sayısını* değil **zamanlamasını** sabitler. 🔴 **Mekanik kapısı YOK** ⇒ borç `B-O52-2`.
 - 🔒 **K129 · K130 — `A13` KABUL + SPEC YENİDEN KİLİTLENDİ (Onur, 3 Ağu 2026, oturum 53).** K73 gereği `A13`'ün kuralları artık prozada değil **`A13/G27`–`G30` kapılarında + `M162`–`M170` mutantlarında** koşuyor. 🔴 **Yaşayan beş sınır (§9'da yazılı, hepsi borç):** `G29/b` **kör** · `--fatal-infos`'un taşıyıcılığı **gösterilemez** (3.44.6'da varsayılan açık) · `G27/a`·`G27/c`·`G30/b` **mutantsız** · kriter 7'nin **dinamik ayaklarının aracı yok** · aksiyonlar **sha'ya pinsiz**. 🔴 **K127'nin ilk gerçek sınavı:** denetim kilitten önce koştu ve spec'te **ölçümle yanlışlanmış iki gerekçe** buldu. Ders: **okunan onarım, ölçülmüş onarım değildir.** Gerekçe: hafıza K129/K130.
+- 🔒 **K133 — `SS2` v3 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 55):** tur 2'nin **beş
+  blokeri kapandı** — sınıflama `K53/3`'e göre yapıldı ve **hiçbiri borçlanamıyordu** (üçü KAPI:
+  `G32/a`·`G31/a`·`G33/c` kör; biri ÜRÜN: `/e`'nin şart 3'ü atlaması **yeni veri kaybı**; biri spec
+  içi çelişki). 13 major **borçlandı**. Kilit **kapanmamış sınırlarla** verildi (`A13`/`K130`
+  emsali). Üçüncü kâğıt turu `K53/1` gereği **açılmadı**; gerekçe ve dört kapı çıktısı
+  `KANIT/SS2/03-v3-KILIT.md`'de. 🔴 **Yaşayan sınır:** `spec-kapi-kapsama.py` *"mutant ISIRIR mı"*
+  **sormaz** ⇒ v3'ün üç onarımı yalnız **`T7`'de koşan kodla** kanıtlanır (borç `B-SS2-4`).
+  Gerekçe: hafıza K133.
 - **K44-a** — **Önce araç, sonra belge.**
 - **K34-f** — Bir aracı **onaran el**, onu **yazan elden AYRI** olmalı.
 - **K26** — Üretici kendi denetçisini spawn edemez. **Üreten ≠ denetleyen.**
@@ -205,6 +210,8 @@ python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GO
 | `GOREV-A10-cihaz-on-kosullari.md` | **26.126** | **`8AD6CA10`** | 🔒 **K105 kilidi (v2, Onur onayladı 1 Ağu 2026)** — `04E49CC9` (v1) ve `A947CC1E` (kilit satırı ÖNCESİ v2) **GEÇERSİZDİR**. 🔴 Beyanlı-kilit sepetinde — gerekçe `BORCLAR.md`'de. Kapıları **`A10/G17`–`A10/G21`** (K108) |
 | `GOREV-A9c-D5-kor-kapi-onarimi.md` | **20.600** | **`53ED7838`** | 🔒 **K109 kilidi (Onur onayladı 2 Ağu 2026)** — kilit satırı **ÖNCESİ** `D88312F6` (19.497 b) **GEÇERSİZDİR**. Kapısı **`A9c/G18`** (K108; `A10/G18` ile adı aynı, kendisi farklı). 🔴 Beyanlı-kilit sepetinde — gerekçe `BORCLAR.md`'de |
 | `GOREV-A13-ios-iskeleti-ci.md` | **36.155** | **`9C7213F2`** | 🔒 **K130 kilidi (Onur kilitledi 3 Ağu 2026, oturum 53 — KABUL sonrası)** — `BCD0AA81` (K127) · `56871800` (K126) · `D2DA483E` · `3E543DBE` **hepsi GEÇERSİZDİR**. Kilit **kabul öncesi bağımsız denetim** (K127) spec'te ölçümle yanlışlanmış iki gerekçe bulunca açıldı; `D-A13-3` + §9/9 düzeltildi, §9'a 11 yeni beyan eklendi. Kapıları **`A13/G27`–`A13/G30`** (K108). U+FFFD 0 · CRLF 0. 🔴 **Beyanlı-kilit sepetinde** — `tek-kopya-kapisi.py` kapsamına **eklenmedi** (sepet `BORCLAR.md`'de) |
+
+| `GOREV-SS2-cakisma-cozumu.md` | **46.003** | **`420E9F91`** | 🔒 **K133 kilidi (Onur kilitledi 3 Ağu 2026, oturum 55)** — `66CC4AAE` (v2) ve `90314998` (v1) **GEÇERSİZDİR**. U+FFFD 0 · CRLF 0. Kapıları **`SS2/G31`–`SS2/G34`** (K108). 🔴 **Beyanlı-kilit sepetinde** — `tek-kopya-kapisi.py` kapsamına **eklenmedi** (sepet `BORCLAR.md`'de) |
 
 ⚠ **Kimlik `sha256`+bayttır, satır DEĞİL** ve **DAİMA son yazımdan SONRA** ölçülür.
 

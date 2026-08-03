@@ -314,3 +314,25 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
 - 🔴 **`B-O52-2` (K127'nin mekanik kapısı yok) HÂLÂ AÇIK — ama bu turda K127 kapısız hâliyle
   bile İŞE YARADI:** denetim kilitten önce koştu ve **1 bloker** yakaladı. Kapı olmadığı için
   *koştuğunu* garanti eden bir şey yok; **bu tur onu Onur'un talimatı garanti etti.**
+
+### OTURUM 55'TE AÇILAN — `SS2` v3 KİLİDİNİN BORÇLARI (`K133`)
+
+- 🔴 **`B-SS2-1` · `B-SS2-2` · `B-SS2-3` — SPEC'İN KENDİ §8'İNDE TAM METİNLE YAZILIDIR.**
+  Buraya **kopyalanmaz** (`kanonik-kopya` bu projede altı kez ısırdı); kanonik yer
+  `GOREV_CLAUDE_CODE/GOREV-SS2-cakisma-cozumu.md` §8 → `S7` · `S5` · `S8`. Tek satırlık kimlikleri:
+  `B-SS2-1` v3→v5 migration zinciri `[DOĞRULANMADI]` (`G31/c` yalnız v4→v5 ölçer) ·
+  `B-SS2-2` rozet **iki farklı olayı** aynı ikonla gösteriyor (ayrıştırma yok) ·
+  `B-SS2-3` görev silinince çakışma kaydı **yetim** kalır (`sil()` temizlemez).
+  🔴 **Bu üç atıf v2'de de vardı ve BORCLAR.md'de karşılığı YOKTU** — kilit onları **sarkan atıf**
+  yapacaktı; oturum 55 açılışında ölçülüp kapatıldı.
+
+- 🔴 **`B-SS2-4` — `spec-kapi-kapsama.py` *"MUTANT ISIRIR MI"* DİYE SORMUYOR.** Araç *"mutant VAR
+  mı"* sorar; **eşdeğer mutant onun için YEŞİLDİR** ve bu, aracın kendi beyan edilmiş sınırıdır.
+  🔴 **Ölçülmüş bedel:** aynı ders **üç tur üst üste** alıntılanıp uygulanmadı
+  (`A13/M167` → `SS2` v1 `M172`/`M173`/`M175` → v2 `M172`) ve iki bağımsız denetim turu (~307k +
+  ~120k token) onu **elle** yakalamak zorunda kaldı. Kapı olsaydı üçü de ilk turda düşerdi.
+  **Kapanış yolu:** mutantı **gerçekten uygulayıp** kapıyı koşan, sonra geri alan bir koşucu;
+  referans **`KANIT/A11/_mutant_kosucu.py`** (ikili yedek → bayt düzeyinde yama → kapı → `wb` ile
+  geri yazım → `sha256` ile özdeşlik). 🔴 `git restore` ile geri alma **YASAK** (`core.autocrlf`
+  bayt-özdeşliği kör kılar — `ORTAM.md`). 🔴 **Araç ÜRÜN KODU SAYILMAZ (`K53/4`)** ⇒ bu borç
+  `R8` sönmeden açılamaz.

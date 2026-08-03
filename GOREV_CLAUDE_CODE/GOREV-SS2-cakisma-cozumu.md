@@ -1,10 +1,18 @@
-# GOREV-SS2 — ÇAKIŞMA ÇÖZÜM EKRANI (DAR KAPSAM) · **v2**
+# GOREV-SS2 — ÇAKIŞMA ÇÖZÜM EKRANI (DAR KAPSAM) · **v3**
 
-> **Durum:** 🔓 **KİLİT ADAYI v2** — tasarım Onur tarafından **3 Ağu 2026, oturum 54**'te onaylandı;
-> **v1 KİLİTLENEMEDİ.** Üç bağımsız denetçi (K26) **13 bloker + 31 major + 15 minor** buldu ve
-> üçü de **aynı kök blokeri** ayrı yollardan bulmuştu.
+> **Durum:** 🔒 **KİLİTLİ — Onur kilitledi, 3 Ağu 2026, oturum 55 (`K133`).**
+> **Kilit KAPANMAMIŞ SINIRLARLA verildi** (`A13`/`K130`'un emsali): tur 2'nin **beş blokeri
+> KAPATILDI**, **13 majoru** `S11`–`S14` + `BORCLAR.md` (`B-SS2-4`…) olarak **borçlandı**.
 > **v1 (GEÇERSİZ):** 28.801 b · `90314998` → `KANIT/SS2/01-SPEC-v1-KILITLENEMEDI.md`
-> **Denetim çıktısı (K127):** **`KANIT/SS2/00-DENETIM-kilit-oncesi.md`**
+> **v2 (GEÇERSİZ):** 34.504 b · `66CC4AAE` → `KANIT/SS2/02-DENETIM-tur2.md`
+> 🔴 **BAĞIMSIZ DENETİM ÇIKTI YOLLARI (K127 — zorunlu alan):**
+> tur 1 → **`KANIT/SS2/00-DENETIM-kilit-oncesi.md`** (13 bloker) ·
+> tur 2 → **`KANIT/SS2/02-DENETIM-tur2.md`** (5 bloker + 13 major).
+> 🔴 **ÜÇÜNCÜ DENETİM TURU KOŞULMADI** ve bu **bilinçlidir:** `K53/1` üçüncü kâğıt turunu yasaklar
+> (*"ikinci tur ancak birincisi **mimariyi değiştiren** bir bloker bulduysa"* — tur 2 öyle bir bloker
+> **bulmadı**; kalan beşi mutant kalitesi ve nokta düzeltmesiydi) ve `K53/4`'ün **`R8` sert durağı**
+> oturum 53–54'te **0 satır ürün kodu** ölçtü. v3'ün onarımları **mekanik kapılarla** doğrulandı:
+> `spec-kapi-kapsama.py` · `kapi-ad-teklik-kapisi.py` · `dosya-kimlik.py` (çıktılar `KANIT/SS2/`).
 > **Yazan el:** Cowork. **Build eden el:** Claude Code. **Biçim:** K81 + K126 (`hedef` = **3. sütun**).
 > **Kapı kimlikleri (K108):** `SS2/G31`–`SS2/G34`; atıf **daima** `SS2/` önekli. Mutantlar `M171`+.
 
@@ -95,8 +103,23 @@ class CakismaKayitlari extends Table {
 ### D-SS2-2 — TESPİT NOKTASI: `_projeksiyonYaz`'ın **UPDATE dalı** (INSERT dalı DEĞİL)
 
 Gerekçe (`Ö5`): `mevcut` satır orada **zaten okunuyor** (`:209`) ⇒ ekstra `SELECT` yok, erken
-`return` sorunu yok, üç-kanal eşlemesi `g` içinde hazır. INSERT dalı **kapsam dışıdır**: yeni
-entity'de ezilecek yerel değer **yoktur** (`:213`'ün kendi gerekçesi).
+`return` sorunu yok. INSERT dalı **kapsam dışıdır**: yeni entity'de ezilecek yerel değer **yoktur**
+(`:213`'ün kendi gerekçesi).
+
+🔴 **ŞART 3'ÜN İKİ ÖN KOŞULU KODDA YOK — `T3`'ÜN PARÇASIDIR [tur 2, MAJOR-1].** v2 *"üç-kanal
+eşlemesi `g` içinde hazır"* diyordu; **ölçüm bunu çürüttü**. `_projeksiyonYaz`'da şart 3
+hesaplanabilsin diye **ikisi de eklenir**:
+
+1. **`_GorevGuncellemesi` kanal başına kazanan anahtarı taşır** — `AlanAnahtari` (dolayısıyla
+   `clientHex`) `_kanalUygula`'da biliniyor ama `_projeksiyonYaz`'a **taşınmıyor**; kanal→anahtar
+   eşlemesi `g` ile birlikte taşınır. `G34/d`'nin `kazananAnahtar` operandı da **buradan** okunur
+   (tur 2, MAJOR-2: v2 kazanan HLC sütunlarını sildiği için operandın kaynağı belirsiz kalmıştı).
+2. **`UzakDegisiklikUygulayici` kurucusu cihazın kendi `clientId`'sini alır** — bugün **almıyor** ⇒
+   *"kazanan biz miyiz"* karşılaştırması yapılamaz. `normHex`'i `D-SS2-3/3` ile aynı fonksiyondan
+   üretilir.
+
+🔴 Bu **iki alanın varlığı** `SS2/G32/c` ve `SS2/G32/e2` ayaklarının ön koşuludur: taşınmazsa şart 3
+sessizce **daima doğru** olur ve echo elemesi v1'deki gibi **ters çalışır**.
 
 ### D-SS2-3 — ÇAKIŞMA TANIMI (PAZARLIKSIZ · dört şart, hepsi AND)
 
@@ -113,8 +136,17 @@ Kanal `k ∈ {fields:title, groups:completion}` için, UPDATE dalında yazımdan
 Dördü de sağlanırsa: `kaybedenDeger = kanonikDize(mevcutYerel)`,
 `kazananDeger = kanonikDize(yeniUzak)`, `kazananClientHex = <kazananın clientHex'i>`.
 
-🔴 **BAYATLAMA KURALI (`/e`):** o `(entityId, alan)` için **kayıt zaten VARSA**, şart 2–4
-aranmaksızın **`kazananDeger` ve `kazananClientHex` GÜNCELLENİR**, `kaybedenDeger` **korunur**.
+🔴 **BAYATLAMA KURALI (`/e`):** o `(entityId, alan)` için **kayıt zaten VARSA**, şart **2 ve 4**
+aranmaksızın — **ama şart 3 ARANARAK** — **`kazananDeger` ve `kazananClientHex` GÜNCELLENİR**,
+`kaybedenDeger` **korunur**.
+
+🔴 **ŞART 3 `/e`'DE DE ARANIR — PAZARLIKSIZ [tur 2 denetimi `B2-4`; `KANIT/SS2/02-DENETIM-tur2.md`].**
+v2 *"şart 2–4 aranmaksızın"* yazmıştı ve bu **YENİ bir veri kaybı** doğuruyordu (ölçülmüş senaryo):
+kayıt varken kullanıcı yerel `C` düzenlemesi yapar → itilir → **kendi echo'su** döner (`Ö8` gereği op
+`changesUygula`'dan **önce** silinmiştir ⇒ echo projeksiyonu kazanır) ⇒ şart 1 sağlanır ⇒ `/e` ateşler
+ve `kazananDeger = C` yazılır. Ekran *"Benimki: `B1` / Onlarınki: `C`"* gösterir; **`C` kullanıcının
+KENDİ EN YENİ yazımıdır** ve *Benimkini tut* onu **yok eder**. Şart 3 (*kazanan biz değiliz*) `/e`'de
+de arandığında echo turu `/e`'yi **hiç ateşlemez**. → `SS2/G32/e2`, mutant `M180b`.
 Gerekçe ölçülmüş bir kusurdur: aksi hâlde kullanıcı listede `C`, çakışma ekranında `B` görür ve
 *Benimkini tut* ile **iki kuşak eski** bir değeri diriltir (denetim MAJOR-12).
 
@@ -156,6 +188,13 @@ kırılır (denetim MAJOR-3). `M176` bunu ısırır.
 
 - 🔴 **Yazma ÖNCE, silme SONRA, ikisi de AYNI `transaction`** — ters sıra, uygulama arada ölürse
   hem çakışmayı hem yazımı kaybettirir. `M177` ısırır.
+- 🔴 **İÇ İÇE TRANSACTION: DIŞ TRANSACTION AÇILIR [tur 2 MAJOR-8; Onur kilitledi, oturum 55].**
+  `cakismaCoz` **kendi** `_db.transaction()`'ını açar; içinden çağrılan `duzenle`/`tamamlaGeriAl`
+  kendi `transaction()`'larını (`gorev_deposu.dart:266, 300`) **iç içe** açar. Bu depoda iç içe
+  transaction örneği **yoktur** ⇒ **beyan edilmiş sınır (`S11`)**: *drift'in iç içe `transaction()`
+  çağrısını savepoint'e indirgediği bu spec'te **ÖLÇÜLMEMİŞTİR**.* `T6` bunu **ölçer ve ham çıktıyı
+  `KANIT/SS2/` altına yazar**; indirgemiyorsa builder **durur** ve Onur'a döner — sessizce ikinci
+  boynuza (transaction'sız `cakismaCoz`) **geçmez**, çünkü o boynuz `G34/f` kilidini kırar.
 - 🔴 **Projeksiyon yazımı atlanamaz:** v1 yalnız kuyruğa yazıyordu ⇒ kullanıcı butona basıyor,
   listede hiçbir şey değişmiyor, rozet kayboluyordu (denetim BLOKER-6). `M179` ısırır.
 - Karar **entity başınadır**: ekrandaki tek buton o entity'nin **tüm** kayıtlarına uygulanır.
@@ -226,7 +265,7 @@ edilmiş kapılarına bağlıdır. Bu **ayrı** bir sağlayıcıdır; ikisi kar�
 | adım | iş | biter göstergesi |
 |---|---|---|
 | **T0** | 🔴 **`araclar/ss2-kapisi.py` YAZILIR (Claude Code)** — `SS2/G31/a,b` ve `SS2/G33/c` statik ayaklarını ölçer; **kendi altın kümesini** taşır. **K44-a: önce araç, sonra belge.** K26: aracı **builder yazar**, **Cowork koşar ve altın kümesini denetler**. | `--altin-kume` **EXIT 0** |
-| **T1** | `CakismaKayitlari` + `schemaVersion` 4→5 + migration (`D-SS2-1`). `drift_dev`: **dump + generate** (iki ayrı komut). | `flutter test` yeşil |
+| **T1** | `CakismaKayitlari` + `schemaVersion` 4→5 + migration (`D-SS2-1`). 🔴 **SIRA PAZARLIKSIZ [tur 2, MAJOR-9]:** ① `drift_dev schema dump` **`schemaVersion` HÂLÂ 4 iken** koşar ② sonra `=> 5` bump ③ sonra `drift_dev schema generate`. Ters sırada v4 dump'ı **bir daha alınamaz** ve `G31/c` **ölür**. 🔴 **`test/g2_migration_kapisi_test.dart:47-51`'deki `expect(db.schemaVersion, 4)` → `5` GÜNCELLENİR [tur 2, `B2-5`]:** bu **zorunlu** bir düzenlemedir, `T2`'nin *"regresyon yok"* ölçütü bu satırı **hariç tutar** — aksi hâlde builder zorunlu değişikliği regresyon sanar. | `flutter test` yeşil **ve** `g2_migration_kapisi_test` yeşil |
 | **T2** | `bekleyenYerelYazimVarMi` sağlayıcısı + `SenkronDongusu`'nda **tur-başı anlık görüntü** (`D-SS2-11`). | mevcut `G3`/`G5`/`G10` testleri **hâlâ yeşil** |
 | **T3** | `kanonikDize()` (`D-SS2-4`) + `_projeksiyonYaz` UPDATE dalında tespit ve yazım (`D-SS2-2`, `D-SS2-3` dört şart + bayatlama) + **enjekte saat** (`D-SS2-9`). | `SS2/G32` yeşil |
 | **T4** | `gorevlerGorunur()`'a ikinci join + **tüm sayımlara `distinct: true`** + `rozetDikisi` üçüncü kanal (`D-SS2-5`). | `SS2/G33` yeşil · **`G10` testleri hâlâ yeşil** |
@@ -249,7 +288,7 @@ edilmiş kapılarına bağlıdır. Bu **ayrı** bir sağlayıcıdır; ikisi kar�
 
 - **a)** `schemaVersion => 5` **ve** `@DriftDatabase(tables:[…])` listesinde `CakismaKayitlari`
   **var**. *Ölçüm:* `ss2-kapisi.py` — **kod satırında** (yorum satırları **atılarak**) iki desen
-  birden aranır. → `M171`, `M171b`
+  birden aranır. → `M171`, `M171b`, `M171c`
 - **b)** `onUpgrade`'in `from < 5` bloğu **yalnız `createTable`** çağırır; o bloğun **metin
   aralığında** `alterTable(` ve `gorevler` **geçmez**. *Ölçüm:* `ss2-kapisi.py`, blok-aralığı
   araması (dosya geneli `from < 2`'deki **meşru** `alterTable`'ı yakalar ⇒ yanlış-pozitif). → `M181`
@@ -268,6 +307,10 @@ Altı ayak da `select(cakismaKayitlari).get().length` ile **sayı olarak** ölç
 - **d)** *(şart 4)* `kanonikDize` değerleri **aynı** ⇒ **0 kayıt**. → `M174`
 - **e)** *(bayatlama, `/e`)* Kayıt varken aynı alana **çakışmasız** uzak yazım gelir ⇒ kayıt sayısı
   **1 kalır**, `kazananDeger` **güncellenir**, `kaybedenDeger` **DEĞİŞMEZ**. → `M180`
+- **e2)** *(bayatlamada şart 3)* Kayıt varken **kendi echo'muz** gelir (kazanan `clientHex` =
+  cihazın kendi `normHex`'i) ⇒ `kazananDeger` **DEĞİŞMEZ**, `kaybedenDeger` **değişmez**, kayıt sayısı
+  **1 kalır**. *Ölçüm:* birim testi — `/e` öncesi ve sonrası iki sütun da **tam dize** eşlenir.
+  → `M180b`
 - **f)** *(INSERT dalı)* Yeni entity (`mevcut == null`) ⇒ **0 kayıt** (`D-SS2-2`). → **mutantsız,
   beyanlı**
 - **g)** *(saat dikişi)* `olusturuldu`, **enjekte saatin** döndürdüğü sabit değere **birebir
@@ -288,7 +331,17 @@ Altı ayak da `select(cakismaKayitlari).get().length` ile **sayı olarak** ölç
   birebir aynıdır**. *Ölçüm:* aynı testte önce/sonra dize karşılaştırması. → `M183`
 - **c)** `gorevlerGorunur()` sorgusundaki **her** `count(...)` çağrısı `distinct: true` taşır.
   *Ölçüm:* `ss2-kapisi.py` — `count(` geçen her satırda `distinct: true` **aranır**; sayı pini
-  **YOK** (v1'in pinsiz-sayı kusuru), **desen-başına-koşul** ölçülür. → `M176`
+  **YOK** (v1'in pinsiz-sayı kusuru), **desen-başına-koşul** ölçülür.
+  🔴 **Reçete satır-bazlı DEĞİLDİR [tur 2, MAJOR-10]:** kaynakta `count(` bir satırda, argümanları
+  **sonraki** satırdadır (`gorev_deposu.dart:178-186`) ⇒ araç `count(`'un **açılan parantezinden
+  kapananına kadar** olan aralığı tarar, tek satırı değil. Satır-bazlı bir araç doğru kodda bile
+  KIRMIZI verir. → `M176`
+- **d)** 🔴 **FAN-OUT DAVRANIŞSAL AYAĞI [tur 2 `B2-2`; Onur kilitledi, oturum 55]:** **çakışma kaydı
+  DOLU** iken (aynı entity için **iki** farklı alanda kayıt) `ucusta`/`bekleyen`/`zehirli` sayıları
+  `distinct`'siz duruma göre **şişmez** ve tek kayıtlı duruma **eşit** kalır. *Ölçüm:* birim testi —
+  kayıt sayısı 0 → 1 → 2 yapılırken üç sayım da **sabit** ölçülür. Ölçülmüş gerekçe: çakışma satırı
+  **0 iken** `distinct`'li ve `distinct`'siz sayımlar **özdeştir** ⇒ `G33/c` tek başına `distinct`'in
+  **gerekli** olduğunu kanıtlayamaz, yalnız **yazıldığını** kanıtlar. → `M176b`
 
 ### G34 — EKRAN VE ÇÖZÜM EYLEMİ
 
@@ -323,16 +376,19 @@ v1'de üç mutant (`M172`/`M173`/`M175`) **eşdeğerdi**; v2'de üçü de **yeni
 | mutant | sınıf | hedef | ne bozulur | beklenen |
 |---|---|---|---|---|
 | M171 | statik | `SS2/G31/a` · `D-SS2-1` | `veritabani.dart`'ta `schemaVersion => 5` → `=> 4` (tablo tanımı KALIR) | `ss2-kapisi.py` **KIRMIZI** |
-| M171b | statik | `SS2/G31/a` | Kod bozulmaz; dosyaya **yorum satırı** olarak `// schemaVersion => 5` eklenir | `ss2-kapisi.py` **SUSMALI** — yorum-atlama yanlış-pozitif kontrolü |
+| M171b | statik | `SS2/G31/a` | **Gerçek kod satırı** `schemaVersion => 4` yapılır, doğru değer **yalnız yorumda** bırakılır (`// schemaVersion => 5`) | `ss2-kapisi.py` **KIRMIZI** — yorum-atlamanın **yük taşıdığını** ölçer: yorumu koda sayan araç burada **susar** ve yakalanır |
+| M171c | statik | `SS2/G31/a` | Kod **bozulmaz**; dosyaya fazladan **yorum satırı** eklenir (`// schemaVersion => 4`) | `ss2-kapisi.py` **SUSMALI** — yanlış-pozitif kontrolü (v2'nin `M171b`'si **buydu** ve tek başına **sıfır-bilgiydi**: gerçek satır korunduğu için yorumu atan da atmayan araç da yeşil dönüyordu — tur 2 `B2-3`) |
 | M181 | statik | `SS2/G31/b` · `D-SS2-1` | `from < 5` bloğuna `await m.alterTable(TableMigration(gorevler));` eklenir | `ss2-kapisi.py` **KIRMIZI** |
-| M172 | birim | `SS2/G32/a` · `D-SS2-2` | `_projeksiyonYaz`'da çakışma kaydı, `write(companion)` çağrısından **SONRA**ya taşınır | `G32/a` **KIRMIZI** — `kaybedenDeger` kazananla eşitlenir |
+| M172 | birim | `SS2/G32/a` · `D-SS2-2` | `kaybedenDeger`, bellekteki `mevcut` nesnesinden **DEĞİL**, `write(companion)` çağrısından **SONRA DB'den YENİDEN OKUNAN** satırdan alınır | `G32/a` **KIRMIZI** — kaybeden değer kazananla **bayt-özdeş** olur ⇒ ekran iki aynı değeri gösterir |
 | M173 | birim | `SS2/G32/b` · `D-SS2-3/2` | `bekleyenYerelYazimVarMi` şartı koşuldan silinir | `G32/b` **KIRMIZI** — kuyruk boşken kayıt üretilir |
 | M175 | birim | `SS2/G32/c` · `D-SS2-3/3` | `clientHex` echo elemesi silinir | `G32/c` **KIRMIZI** — kendi echo'muz kayıt üretir |
 | M174 | birim | `SS2/G32/d` · `D-SS2-3/4` | `kanonikDize` eşitlik elemesi silinir | `G32/d` **KIRMIZI** |
 | M180 | birim | `SS2/G32/e` · `D-SS2-3/e` | Bayatlama dalı silinir (kayıt varsa `kazananDeger` güncellenmez) | `G32/e` **KIRMIZI** — ekran bayat kazanan gösterir |
+| M180b | birim | `SS2/G32/e2` · `D-SS2-3/e` | `/e` dalından **şart 3 elemesi** silinir (v2'nin *"şart 2–4 aranmaksızın"* hâli) | `G32/e2` **KIRMIZI** — kendi echo'muz `kazananDeger`'i kullanıcının **en yeni** yazımıyla ezer ve *Benimkini tut* onu yok eder (tur 2 `B2-4`: **yeni** veri kaybı) |
 | M182 | birim | `SS2/G33/a` · `D-SS2-5` | `rozetDikisi`'nden üçüncü kanal (`cakismaKaydiSayisi > 0`) silinir | `G33/a` **KIRMIZI** |
 | M183 | birim | `SS2/G33/b` · `D-SS2-5` | `_projeksiyonYaz`'ın **UPDATE** dalına `senkronDurumu: Value('cakisma')` eklenir | `G33/b` **KIRMIZI** **ve** mevcut `G10` rozet testleri **KIRMIZI** — D4 kilidinin bugün yük taşıdığını ölçer |
-| M176 | birim | `SS2/G33/c` · `D-SS2-5` | `gorevlerGorunur()` sorgusundaki `count(...)` çağrılarından `distinct: true` silinir | `G33/c` **KIRMIZI** **ve** mevcut `G10` sayım testleri **KIRMIZI** — fan-out gerçek |
+| M176 | **statik** | `SS2/G33/c` · `D-SS2-5` | `gorevlerGorunur()` sorgusundaki `count(...)` çağrılarından `distinct: true` silinir | `ss2-kapisi.py` **KIRMIZI** (desen ayağı). 🔴 *Mevcut `G10` testlerini düşürme şartı **KALDIRILDI** — tur 2 `B2-2`; sınıfı da `birim`→`statik` düzeltildi (tur 2 MINOR).* |
+| M176b | birim | `SS2/G33/d` · `D-SS2-5` | **Aynı** mutasyon (`distinct: true` silinir), ama ölçüm **çakışma kaydı DOLU** iken koşar | `G33/d` **KIRMIZI** — `ucusta/bekleyen/zehirli` sayıları fan-out ile **şişer** (D5 sqlite'ta ölçtü: `2 → 4`). `distinct`'in **bugün yük taşıdığını** davranışsal olarak kanıtlayan tek ayak budur |
 | M184 | statik | `SS2/G34/a` · `D-SS2-8` | `CakismaRozeti`'nin `entityId` parametresi kaldırılır, `const` kurucu geri konur | `ss2-kapisi.py` **KIRMIZI** (derleme de kırılır — **ikisi de beklenir**) |
 | M178 | widget | `SS2/G34/b` · `D-SS2-8` | Ekrandan **uzak sürüm** metin düğümü silinir | `G34/b` **KIRMIZI** |
 | M178b | widget | `SS2/G34/c` | İki butonun `Semantics` etiketi **aynı** dizeye çevrilir | `G34/c` **KIRMIZI** |
@@ -372,6 +428,18 @@ elle bozmak aracın kendisini test eder, migration'ı değil.
 🔴 **Ders (kanıt dosyasında da yazılı):** *bir dersi alıntılamak, o dersten korunmak değildir.*
 v1 `A13`/`M167` dersini metninde taşıyordu ve yine üç kopyasını üretti.
 
+## 6d. v2'NİN ÜÇ KUSURU NASIL ONARILDI (tur 2 denetimi · `KANIT/SS2/02-DENETIM-tur2.md`)
+
+| mutant | v2'de neden ölçmüyordu | v3'te ne değişti |
+|---|---|---|
+| `M172` | *"kaydı `write(companion)`'ın altına taşı"* — kaybeden değer `_projeksiyonYaz:209`'daki **bellekteki `mevcut`** nesnesinden okunuyor; yazımı aşağı taşımak `mevcut`'u **yeniden okumaz** ⇒ `kaybedenDeger` **bayt-özdeş** kalır. Aynı ders **üçüncü kez** alıntılanıp uygulanmamıştı (`A13/M167` → v1 `M172/M173/M175` → v2 `M172`) | Mutasyonun hedefi **yazım sırası değil OKUMA KAYNAĞI**: `kaybedenDeger` artık yazımdan **sonra DB'den yeniden okunan** satırdan alınır ⇒ kaybeden **gerçekten** kazanana eşitlenir |
+| `M171b` | `G31/a` **varlık** araması yapıyor ve mutant gerçek `=> 5` satırını **koruyup** üstüne yorum ekliyordu ⇒ yorumu atan da atmayan araç da **YEŞİL** dönüyordu: **sıfır bilgi** | Mutant **tersine çevrildi** (gerçek satır `=> 4`, doğru değer yalnız yorumda ⇒ **KIRMIZI**) ve yanlış-pozitif kontrolü **`M171c`** olarak **ayrı** mutanta taşındı. İki mutant birlikte yorum-atlamanın **hem yükünü hem sessizliğini** ölçer |
+| `M176` | Kriter 4 *"mevcut `G10`'u da düşürmeli"* diyordu; ölçüm bunun **hiçbir koşulda** sağlanamayacağını gösterdi (çakışma satırı 0 iken `distinct`'li/`distinct`'siz sayımlar özdeş; `g10`'un altı ayağı ne çakışma kaydı yazar ne sayım ölçer) ⇒ kriter kabulü **kendi kuralıyla** engelliyordu | `M176` **statik** ayağa (`G33/c`) indirildi ve `G10` şartı kaldırıldı; fan-out'un **yükü** yeni **`G33/d` + `M176b`** ile *çakışma kaydı DOLU iken* davranışsal ölçülür |
+
+🔴 **Bu turun kendi dersi:** bir mutant *"kod değişti"* diye değil, **ölçtüğü sayı değişti** diye
+ısırır. `spec-kapi-kapsama.py` *"mutant VAR mı"* sorar, *"mutant ISIRIR mı"* **sormaz** — bu sınıfın
+mekanik kapısı **hâlâ yoktur** ve borç `BORCLAR.md`'dedir (`B-SS2-4`).
+
 ---
 
 ## 7. KABUL KRİTERLERİ (hepsi **Cowork'ün KENDİ koşumuyla** — K26)
@@ -379,9 +447,17 @@ v1 `A13`/`M167` dersini metninde taşıyordu ve yine üç kopyasını üretti.
 1. `flutter analyze` **0 sorun**.
 2. `flutter test` **tamamı yeşil**; toplam sayı **ölçülür**, spec'e **yazılmaz**.
 3. `SS2/G31`–`SS2/G34`'ün **her ayağı** geçer; her ayağın **nasıl ölçüldüğü** kanıtta yazılıdır.
-4. `M171`–`M186` **hepsi ısırır**; `M171b` **susar**. Isırmayan mutant ⇒ **kabul YOK**.
-   🔴 `M176` ve `M183`'ün **mevcut `G10` testlerini de** düşürmesi **beklenen** sonuçtur — yalnız
-   yeni ayağı düşürüp `G10`'u düşürmüyorlarsa **hedefleri yanlış etiketlenmiştir**.
+4. `M171`–`M188` — **`M171b`, `M171c`, `M176b`, `M178b`, `M180b` DÂHİL** (tur 2 MAJOR-4: v2'nin
+   *"`M171`–`M186`"* aralığı `M187`/`M188`'i **dışarıda** bırakıyordu) — **hepsi ısırır**;
+   **YALNIZ `M171c` susar** (yanlış-pozitif kontrolü). Isırmayan mutant ⇒ **kabul YOK**.
+   🔴 **`M183` için** mevcut `G10` testlerini **de** düşürmek **beklenen** sonuçtur: `g10:153` D4
+   kilidini bugün fiilen taşıyor (tur 2 denetiminde doğrulandı).
+   🔴 **`M176` İÇİN BU ŞART KALDIRILDI [tur 2 `B2-2`; Onur kilitledi, oturum 55].** Ölçülmüş gerekçe:
+   `g10_rozet_kapsami_test.dart`'ın **altı ayağının hiçbiri** çakışma kaydı yazmaz ve **hiçbiri sayım
+   ölçmez** (sayım testleri **`g11`**'dedir); çakışma satırı **0 iken** `distinct`'li ve `distinct`'siz
+   sayımlar **özdeştir** (D5 sqlite ile ölçtü) ⇒ `M176` mevcut hiçbir testi **hiçbir koşulda**
+   düşüremez ve şart, kabulü **kendi kuralıyla** engelliyordu. `distinct`'in yükü artık **`G33/d` +
+   `M176b`** ile davranışsal ölçülür.
 5. `python araclar\spec-kapi-kapsama.py GOREV_CLAUDE_CODE\GOREV-SS2-cakisma-cozumu.md`
    ⇒ `[S0]/[S1]/[S2]` **yok**.
 6. `python araclar\ss2-kapisi.py --altin-kume` **EXIT 0** *(aracı `T0`'da **Claude Code** yazar;
@@ -440,6 +516,23 @@ v1 `A13`/`M167` dersini metninde taşıyordu ve yine üç kopyasını üretti.
   ertelenebilir olmalı). Ekran açıkken kayıt değişirse ekran **yeniden çizilir** (`watch()`).
 - **S10** — Bu spec ekranın **piksel** düzenini ölçmez; `DESIGN.md` v2 **tüketilir, değiştirilmez**
   (`K46`).
+- **S11** — 🔴 **İÇ İÇE TRANSACTION `[ÖLÇÜLMEDİ]`:** `cakismaCoz`'un dış transaction'ı içinde
+  `duzenle`/`tamamlaGeriAl`'ın kendi `transaction()`'larının savepoint'e indirgendiği **bu spec'te
+  ölçülmemiştir**; depoda iç içe transaction örneği yoktur. `T6` ölçer ve ham çıktıyı yazar;
+  indirgemiyorsa builder **durur** (`D-SS2-6`).
+- **S12** — 🔴 **`rozetDikisi` İMZA DEĞİŞİKLİĞİNİN PATLAMA YARIÇAPI `[ÖLÇÜLMEDİ]` [tur 2, MAJOR-6]:**
+  doğrudan çağrı yerleri `g11_rozet_turetme_kapisi_test.dart` (14+), `a11y_kapisi_test.dart:119`,
+  `g5_karantina_kapisi_test.dart:227`; `T4`'ün regresyon ölçütü yalnız `G10`'a bakıyor, oysa `G10` bu
+  fonksiyonu **hiç doğrudan çağırmıyor**. `T4` bu üç dosyayı da **kapsamına alır**.
+- **S13** — 🔴 **ZORUNLU `entityId` İKİ MEVCUT TESTİ DERLENEMEZ YAPAR [tur 2, MAJOR-7]:**
+  `g16_metin_kaybi_kapisi_test.dart:155,168` ve `sunum_bilesenleri_test.dart:183`. `T5` bunları
+  **günceller**; `T2`/`T4`'ün *"regresyon yok"* ölçütü bu üç satırı **hariç tutar** (`B2-5` ile aynı
+  sınıf: zorunlu değişikliği regresyon sanma tuzağı).
+- **S14** — 🔴 **`G31/c` REÇETESİ `[DOĞRULANMADI]` [tur 2, MAJOR-9]:** `g2`'nin gerçek yolu
+  `SchemaVerifier(GeneratedHelper()) + schemaAt(3) + v3.DatabaseAtV3`'tür ve dosya başlığı
+  **`NativeDatabase.memory()` YASAK — PAZARLIKSIZ** der; v2 *"bellek DB'si"* yazıp
+  `SchemaVerifier`/`GeneratedHelper`/`DatabaseAtV4`'ü **hiç anmıyordu**. `T1` mevcut deseni
+  **birebir izler**; sapacaksa gerekçesini `KANIT/SS2/` altına yazar.
 
 ---
 
@@ -450,4 +543,10 @@ v1 `A13`/`M167` dersini metninde taşıyordu ve yine üç kopyasını üretti.
 | durum | bayt | sha8 |
 |---|---|---|
 | v1 — **KİLİTLENEMEDİ** (`KANIT/SS2/01-SPEC-v1-KILITLENEMEDI.md`) | 28.801 | `90314998` |
-| v2 — kilit adayı, **ikinci denetimden önce** | *(ölçülecek)* | *(ölçülecek)* |
+| v2 — **KİLİTLENEMEDİ** (`KANIT/SS2/02-DENETIM-tur2.md`) | 34.504 | `66CC4AAE` |
+| **v3 — KİLİTLİ (`K133`)** | 🔴 **BURAYA YAZILMAZ** | 🔴 **`DURUM.md` §9'da ÖLÇÜLÜR** |
+
+🔴 **Geçerli sürümün kimliği bu dosyaya YAZILMAZ.** Ölçülmüş gerekçe: kimlik *son yazımdan sonra*
+alınır; onu **bu dosyanın içine** yazmak dosyayı yeniden değiştirir ve yazılan sha'yı **aynı anda
+geçersiz kılar** (`kanonik-kopya` kusurunun özyinelemeli hâli — bu projede kimlik tablosunda **üç kez**
+ısırdı). Kanonik yer **`DURUM.md` §9**'dur; `A13`'ün (`9C7213F2`) izlediği desenin aynısı.
