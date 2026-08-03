@@ -48,3 +48,19 @@ SIRADAKI ADIM (Onur):
   (her dal icin) gh workflow run ci.yml --ref <dal>
   M167-M169 3/3 ISIRDIGI `gh run list`/`gh run view` ile OLCULUR (bu KANIT dizinine eklenir).
   Ardindan M170 kriter 7'nin kaydedilmis JSON'u uzerinde kosulur.
+
+
+================================================================================
+[OTURUM 53 DUZELTMESI -- 3 Agu 2026, Cowork]
+YUKARIDAKI METIN ARTIK BAYATTIR ve tarihsel kayit olarak birakilmistir.
+Onur uc dali TEK PUSH ile gonderdi; Cowork uc dispatch'i kosturdu:
+  gh workflow run ci.yml --ref mutant/A13-M167  -> run 30812873002 -> istemci FAILURE (ios success)
+  gh workflow run ci.yml --ref mutant/A13-M168  -> run 30812875758 -> istemci FAILURE (ios success)
+  gh workflow run ci.yml --ref mutant/A13-M169  -> run 30812878437 -> ios FAILURE (istemci success)
+3/3 ISIRDI; her kosumda DOGRU is dustu, yanlis is hic dusmedi.
+NOT: 'gh workflow run' icin `workflow` kapsami GEREKMEDI -- gh token'inda
+(gist, read:org, repo) yoktu ve dispatch yine calisti.
+Bu dizindeki olcumler: 10 (M170) -- 20 (M167-M169) -- 30 (G29/b kor ayak bulgusu)
+                       40 (M167 esdegerlik bulgusu) -- 0M167/8/9-* ham loglar
+Bayat yer tutucu, kabul oncesi bagimsiz denetimde (K127) MINOR olarak bulundu.
+================================================================================

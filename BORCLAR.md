@@ -252,3 +252,65 @@ bilerek tekrarıdır. **Kapanış yolu:** `PROJE_HAFIZA.md`'nin **en üstteki** 
 yolu arayan küçük bir kapı (`kilit-denetim-kapisi.py`); yol yoksa ya da dosya diskte yoksa KIRMIZI.
 Altın küme: yol var+dosya var (sussun) · yol var+dosya yok (ısırsın) · yol yok ama *"denetim
 KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
+
+---
+
+## OTURUM 53 — `A13` KABULÜNÜN AÇTIĞI BEŞ BORÇ (K129/K130)
+
+> Hepsi **kabul öncesi bağımsız denetimde** (K127) bulundu; hiçbiri **yanlış-YEŞİL** üretmiyor,
+> hepsi *fazlalık / gösterilemeyen iddia* sınıfındadır. Kabul **bu sınırlar YAZILARAK** verildi.
+> Kaynak: `KANIT/A13/00-DENETIM-kabul-oncesi.md` · beyanlar `GOREV-A13` §9/11–21.
+> 🔴 **Onarımların hepsi BUILDER'ın işidir (K34-f)** — Cowork ölçer ve raporlar, onarmaz.
+
+- 🔴 **`B-O53-1` — `A13/G29/b` KÖR AYAK.** `Xcode build done.` tam dizgesi `main` (ios **success**,
+  91.9s) ve `M169` (ios **failure**, 43.7s) loglarının **ikisinde de** geçiyor ⇒ ayırt etme gücü
+  **sıfır**. Ölçüm: `KANIT/A13/07-MUTANT-kosan/30-BULGU-G29b-kor-ayak.txt`.
+  **Kapanış yolu:** builder ya ayağı `Built build/ios/iphoneos/Runner.app (` pinine **birleştirir**,
+  ya da ayağı **kaldırır**; her iki durumda `M169`'un logu üzerinde **yeniden ölçülür**.
+  *Neden bloker değil:* `G29` bir bütün olarak ayırt ediyor — `c` (fail 0 / success 1) ve `d`
+  (failure/success) ikisi de `M169` ile kanıtlı.
+
+- 🔴 **`B-O53-2` — MUTANTSIZ AYAKLAR: `G27/a` · `G27/c` · `G30/b`.** Üçü de ölçüldü ama hiçbirinin
+  kendi mutantı yok ⇒ **körlükleri BİLİNMİYOR** (`G29/b`'nin körlüğü tam da mutantsız olduğu için
+  yıllarca görülmezdi). `M170` §6'da `A13/G27`'yi hedef gösteriyor ama yalnız **`b`**'yi ölçüyor;
+  kapı granülerliğinde çalışan `spec-kapi-kapsama.py` bu boşluğu **göremez** — aracın beyan edilmiş
+  sınırı. **Kapanış yolu:** ya ayak-granüler kapsama ölçümü, ya üç statik mutant (üçü de ucuz:
+  `G27/a` → kaydedilmiş JSON'da `conclusion` bozulur · `G27/c` → iş adı silinir · `G30/b` →
+  `IPHONEOS_DEPLOYMENT_TARGET` değiştirilir).
+
+- 🔴 **`B-O53-3` — KRİTER 7'NİN DİNAMİK AYAKLARININ KORUNMUŞ ARACI YOK (K44-a ihlali).**
+  `ci-kapisi.py` yalnız **statik** ayakları ölçüyor (`G28/a,b` · `G29/a` · `G30/a,b,c`).
+  `G27 a·b·c` + `G28 c·d` + `G29 b·c·d` **saklanmamış** `%TEMP%` betikleriyle ölçüldü; altın kümesi
+  yok, üçüncü bir el **yeniden koşamaz** (bağımsız denetçi sıfırdan yazmak zorunda kaldı —
+  yazdı ve **aynı sonuca vardı**, bu yüzden bloker değil).
+  🔴 **Ölçülmüş bağlantı: kaçan tek kör ayak (`B-O53-1`) tam da bu araçsız kümededir.**
+  **Kapanış yolu:** builder `araclar\ci-log-kapisi.py` yazar (girdi = kaydedilmiş `gh` log + JSON,
+  çıktı = `G27`/`G28c-d`/`G29b-d` hükmü), **kendi altın kümesiyle**; küme `M169` logunu **negatif
+  vaka** olarak taşımak zorundadır (kör ayak orada yakalanır).
+
+- 🟡 **`B-O53-4` — `G28/d`'nin `N/N` BİÇİMİ LOGDA LAFZEN YOK.** Spec `N/N geçti` istiyor; CI
+  reporter'ı `🎉 500 tests passed.` basıyor, **payda yazmıyor**. Hüküm *"`failed` satırı 0 +
+  `skip` 0"* kuralıyla verildi — savunulabilir ama **spec'in yazdığı ölçü değil**.
+  🔴 **Ölçülmüş tehlike:** gevşek `tests passed` arayan bir kapı, `M168`'in
+  `##[error]499 tests passed, 1 failed.` satırını **YEŞİL sayardı**.
+  **Kapanış yolu:** dizge pinlenir (`^🎉 (\d+) tests passed\.$` + `failed` satırı yokluğu, ikisi
+  birlikte) ve `B-O53-3`'ün aracına vaka olarak girer.
+
+- 🟡 **`B-O53-5` — AKSİYONLAR SHA'YA PİNLİ DEĞİL.** `actions/checkout@v4` ve
+  `subosito/flutter-action@v2` **yüzen etiketlerdir**; `D-A13-6` Flutter'ı pinler, **aksiyonları
+  pinlemez**. ⇒ `A13`'ün yeşili **bit-bazında tekrarlanabilir değildir**: yarın aynı commit farklı
+  aksiyon kodu çekebilir ve o gün kusur **üründe sanılır** (`D-A13-6`'nın kendi gerekçesinin
+  aksiyonlara uygulanmamış hâli). **Kapanış yolu:** `@<tam-sha>` pini + `M163`'ün kardeşi bir
+  statik mutant. *Beyan edilmiş bedel:* pin, güvenlik yamalarını da dondurur ⇒ Dependabot'suz
+  pin bir bakım borcudur.
+
+### OTURUM 53'TE KAPANAN / DEĞİŞEN
+- 🟢 **`A13` §9/5 KAPANDI** — `workflow` token yetkisi ölçüldü (push **GCM** token'ını kullanıyor,
+  onda `workflow` **vardı**; `gh` token'ında yok ama `gh workflow run` **`repo` ile çalıştı**).
+  🔴 **Ders:** `credential.helper` **ölçülmeden** yazılan bir çare, yanlış token'ı hedefler.
+- 🟢 **`A13` §9/10 KAPANDI** — `ci-kapisi.py` yazıldı, altın küme **13/13** (iki ayrı el koştu).
+- 🟡 **`A13` §9/4 KISMEN KAPANDI** — Timing API: dört koşumun da **billable MACOS 0 ms /
+  UBUNTU 0 ms**. **Kalan kontenjan hâlâ `[ÖLÇÜLMEDİ]`** (`gh` token'ında `user` yetkisi yok).
+- 🔴 **`B-O52-2` (K127'nin mekanik kapısı yok) HÂLÂ AÇIK — ama bu turda K127 kapısız hâliyle
+  bile İŞE YARADI:** denetim kilitten önce koştu ve **1 bloker** yakaladı. Kapı olmadığı için
+  *koştuğunu* garanti eden bir şey yok; **bu tur onu Onur'un talimatı garanti etti.**

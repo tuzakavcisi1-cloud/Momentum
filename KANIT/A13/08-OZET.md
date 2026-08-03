@@ -1,8 +1,17 @@
 # KANIT/A13/08-OZET.md — GOREV-A13, madde madde PASS/FAIL
 
 > Bu dosya **beyan yok, dosya var** ilkesiyle yazıldı: her satır `KANIT/A13/` altındaki bir
-> dosyaya işaret eder. §7'nin **SIRA PAZARLIKSIZ** kuralına uyulmuştur; kriter 7 ve kriter 8'in
-> ölçüm gerektiren kısımları **push'a bağlı** olduğundan Onur'un push'unu bekliyor.
+> dosyaya işaret eder. §7'nin **SIRA PAZARLIKSIZ** kuralına uyulmuştur.
+>
+> 🔴 **OTURUM 53 DÜZELTMESİ — YAZAR AYRIMI AÇIKÇA BELİRTİLİR.** Kriter **0–6** satırları
+> **builder'ındır** (oturum 52, dokunulmadı). Kriter **7 ve 8** satırlarını **Cowork** yazdı
+> (3 Ağu 2026, oturum 53), çünkü o iki kriteri **Cowork ölçtü** (K26: üreten ≠ denetleyen).
+> Eski hâlleri *"⏳ BEKLEMEDE"* / *"⏳ KISMEN"* idi ve push'tan **37 dakika önce** yazılmıştı;
+> kabul öncesi bağımsız denetim (K127) bunu **bayat-iddia** olarak buldu — §10 bu dosyayı
+> *"madde madde PASS/FAIL + ölçülen sayılar"* diye tanımlıyor ve dosya geçmiş bir kriteri
+> yalanlıyordu. Aşağıdaki *"Push sonrası beklenen adımlar"* listesi **tarihsel kayıt olarak
+> bırakıldı**; hepsi yapıldı (madde 2 hariç: `gh auth refresh` **gerekmedi**, ölçüldü).
+> Nihai hüküm: **`KANIT/A13/10-COWORK-KABUL-HUKMU.md`** · denetim: **`00-DENETIM-kabul-oncesi.md`**.
 
 | kriter | durum | kanıt |
 |---|---|---|
@@ -15,8 +24,8 @@
 | 4. CI dosyası (G28 a,b · G29 a) | ✅ `.github/workflows/ci.yml` yazıldı; `ci-kapisi.py .` **EXIT 0** | `03-statik-kapilar.txt` |
 | 5. Statik mutantlar | ✅ **M162–M166 5/5 ISIRDI**, **M163b SUSTU** (yanlış-pozitif kontrolü), her turda sha256 özdeşliği doğrulandı | `04-MUTANT-statik/OZET.txt` |
 | 6. Commit (push yok) | ✅ `e65a8bc` — yalnız `git add <yol>` ile (A13'e ait dosyalar); push **YAPILMADI** | `05-commit.txt` |
-| 7. CI yeşil (main) | ⏳ **BEKLEMEDE** — push Onur'undur; push sonrası `gh run list/view` ile ölçülecek | `06-ci-yesil/00-BEKLEMEDE.txt` |
-| 8. Koşan mutantlar + M170 | ⏳ **KISMEN**: `mutant/A13-M167/M168/M169` dalları **yerelde açıldı ve commit'lendi**, her biri **yerelde** (analyze/test/XML-geçerlilik ile) ayrıca doğrulandı; push ve `gh workflow run` Onur'u bekliyor. M170 kriter 7'nin JSON'ı olmadan koşulamaz | `07-MUTANT-kosan/00-DALLAR-YERELDE-ACILDI.txt` |
+| 7. CI yeşil (main) | ✅ **PASS [oturum 53, COWORK ölçtü]** — run **`30809600584`**, `conclusion success`, `headSha 79d0901…` == `rev-parse main`; işler `['ios','istemci']` **ikisi de success**; `No issues found! (ran in 9.8s)`; **`🎉 500 tests passed.`** (N=500, logdan); `Xcode build done. 91.9s`; **`✓ Built build/ios/iphoneos/Runner.app (18.7MB)`** | `06-ci-yesil/01,02,03` |
+| 8. Koşan mutantlar + M170 | ✅ **PASS [oturum 53, COWORK ölçtü]** — `M167` run `30812873002` · `M168` `30812875758` · `M169` `30812878437` ⇒ **3/3 ISIRDI**, her birinde **doğru iş** düştü (M167/M168 `istemci`, M169 `ios`), yanlış iş hiç düşmedi. `M170` ısırdı; JSON geri yazımı **bayt-özdeş** (`2B63CB73`) | `07-MUTANT-kosan/10,20,30,40` |
 | 9. Kanıt (§10) | ✅ Bu dosya + yukarıdaki tümü | `KANIT/A13/` |
 
 ## Push sonrası Onur'dan / Cowork'ten beklenen adımlar (kriter 7 → 8)

@@ -1,6 +1,14 @@
 # GOREV-A13 — iOS İSKELETİ + İLK CI BORU HATTI (dar dikey dilim)
 
-> **Durum:** KİLİT ADAYI — Onur onaylamadan Claude Code'a **verilmez**.
+> 🔒 **Durum: KABUL EDİLDİ — `K130`, Onur kilitledi 3 Ağu 2026 (oturum 53).**
+> Kilit tarihçesi: `K126` (denetimsiz, oturum 52) → `K127` (kilit öncesi denetimle yenilendi,
+> sha `BCD0AA81`) → 🔴 **oturum 53'te Onur KİLİDİ AÇTI**, çünkü **kabul öncesi bağımsız denetim
+> (K127'nin kendi kuralı) spec'te ÖLÇÜMLE YANLIŞLANMIŞ iki gerekçe buldu**: `D-A13-3`'ün
+> *"`--fatal-infos` taşıyıcıdır"* iddiası ve `§9/9`'un *"ölçülemedi"* beyanı. İkisi de gerçeğe
+> çekildi, `§9`'a **11 yeni beyan edilmiş sınır** eklendi, spec **K130 ile yeniden kilitlendi**.
+> Denetim kaydı: **`KANIT/A13/00-DENETIM-kabul-oncesi.md`** · kabul hükmü:
+> **`KANIT/A13/10-COWORK-KABUL-HUKMU.md`**. Yeni kimlik `DURUM.md §9`'da **ölçülür**.
+> *(Eski satır: "KİLİT ADAYI — Onur onaylamadan Claude Code'a verilmez." — dilim bitti, ölü beyan.)*
 > **Dilim sınıfı:** 🟢 **ÜRÜN KODU** (K53/4). `flutter create --platforms=ios` çıktısı
 > `urun_kodu_satiri`na girer; **niteliği burada beyan edilir: bu üretilmiş bir iskelettir,
 > elle yazılmış bir özellik değildir.** Dilimin ürün değeri iskeletin kendisinde değil,
@@ -62,9 +70,18 @@ hesap yok, yazılan her değer **doğrulanmamış bir beyandır**.
 `.github/workflows/ci.yml`:
 `istemci` (`ubuntu-latest`) → `flutter analyze --fatal-infos` **ve** `flutter test`.
 `ios` (`macos-latest`) → `flutter build ios --no-codesign`.
-🔴 **`--fatal-infos` PAZARLIKSIZ:** bu depoda analiz kapısı bugüne kadar
-`--fatal-infos` ile koştu (`A11` kabulü: 0 sorun). CI'da bayrağı düşürmek, aynı kapıyı
-**sessizce gevşetmektir**. 🔴 `pull_request` tetiği **YOK** (Onur kilitledi, oturum 52):
+🔴 **`--fatal-infos` PAZARLIKSIZ — AMA GEREKÇESİ OTURUM 53'TE ÖLÇÜLEREK DÜZELTİLDİ.**
+İlk yazım *"CI'da bayrağı düşürmek aynı kapıyı **sessizce gevşetmektir**"* diyordu.
+**Bu, Flutter 3.44.6 için OLGUSAL OLARAK YANLIŞTIR.** Ham ölçüm (`flutter analyze --help`,
+gerçek depo, oturum 53): `--[no-]fatal-infos … **(defaults to on)**`. Gerçek `main.dart`
+üzerinde bayt düzeyinde ölçülen tablo — `KANIT/A13/07-MUTANT-kosan/40-BULGU-M167-esdeger-mutant.txt`:
+`print('mutant')` **bayraksız EXIT 1** · `--fatal-infos` **EXIT 1** · `--no-fatal-infos` **EXIT 0**.
+⇒ Bayrak bu sürümde **varsayılanı tekrar eden bir no-op'tur**; kapıyı gevşeten şey
+`--no-fatal-infos`'tur. **Bayrak yine de yazılır**, çünkü değeri *bugünkü davranış* değil
+**geleceğe karşı savunmadır**: varsayılan değişirse ya da başka bir araç sürümü koşarsa
+niyet dosyada açıkça durur. **Varlığı statik `M162` ile korunur; çalışma anındaki
+taşıyıcılığı hiçbir mutantla gösterilemez ve gösterilemezdi** (§9/11).
+🔴 `pull_request` tetiği **YOK** (Onur kilitledi, oturum 52):
 private repo kotası ölçülemedi ⇒ kendiliğinden koşan iş sayısı **asgaride** tutulur.
 
 ### `D-A13-4` — BACKEND `verify` ZİNCİRİ BU DİLİMDE CI'YA **GİRMEZ**
@@ -165,7 +182,7 @@ Kurallar: `D-A13-3` · `D-A13-6` · `D-A13-7`
 | ayak | ölçüm | geçme koşulu |
 |---|---|---|
 | a | `ci-kapisi.py`: `ci.yml`'de iOS adımı **`--no-codesign`** taşıyor | taşımıyorsa KIRMIZI |
-| b | macOS işinin logunda `Xcode build done.` dizgesi | **tam dizge** var (kısmi/benzer eşleşme sayılmaz) |
+| b | macOS işinin logunda `Xcode build done.` dizgesi | **tam dizge** var. 🔴 **BU AYAK KÖRDÜR — oturum 53'te ÖLÇÜLDÜ, §9/12** |
 | c | logda **`Built build/ios/iphoneos/Runner.app (`** ile başlayan satır + parantez içindeki boyut | satır **var** ve boyut **> 0** |
 | d | macOS işinin `conclusion`'ı | `success` |
 
@@ -175,6 +192,14 @@ Kurallar: `D-A13-3` · `D-A13-6` · `D-A13-7`
 adımın ta kendisidir) ⇒ ayak bozukta da yeşil verirdi ve `M169` işi düşürdüğü için `G29/d` kırmızı
 olup **kör ayağı MASKELERDİ**. Bu, `A11`/`M141` deseninin aynısıdır: mutantın ısırması, ısıran
 ayağın **doğru ayak olduğunu** kanıtlamaz. Onarım: **tam satır pini + boyut**.
+🔴 **YUKARIDAKİ GEREKÇENİN OLGUSAL AYAĞI OTURUM 53'TE ÖLÇÜLDÜ VE BU KOŞUMDA GERÇEKLEŞMEDİ.**
+`M169`'un **başarısız** ios logunda `Runner.app` **alt-dizgesi 0**, `ProcessInfoPlistFile` **0**
+(`30-BULGU-G29b-kor-ayak.txt`): `Info.plist` hatası derlemeyi `Runner.app` hiç anılmadan düşürüyor
+⇒ **eski (alt-dizge) ayak da `M169`'da KIRMIZI verirdi.** Elde bulunan tüm örneklerde onarılmış ve
+onarılmamış `c` **davranışsal olarak özdeştir**; onarımın değeri **hiçbir mutantla gösterilemedi**
+(başka bir kırılma modunda — ör. geç link hatası — gösterilebilir, ama ölçülmedi). Onarım yine de
+**korunur**: tam satır + boyut, alt-dizgeden **kesinlikle daha dar**dır. *Çürüdü demiyoruz,
+**bu koşumda gözlenmedi** diyoruz.* ⇒ §9/14
 🔴 **`--no-codesign` yüzünden `.ipa` ÜRETİLMEZ; kanıt `Runner.app`'tir.** `.ipa` arayan
 bir kriter, bu dilimde **hiç geçemeyecek** bir kriterdir. Kurallar: `D-A13-5` · `D-A13-2`
 
@@ -226,18 +251,29 @@ Ayak (d) `D-A13-1`'in gerçek kapısıdır. Kurallar: `D-A13-1` · `D-A13-2`
 | M164 | statik | `A13/G29` · `D-A13-5` | `ci.yml`'deki iOS adımından `--no-codesign` silinir | `ci-kapisi.py` **KIRMIZI** |
 | M165 | statik | `A13/G30` · `D-A13-2` | `project.pbxproj`'de `Runner`'ın bir yapılandırmasındaki `PRODUCT_BUNDLE_IDENTIFIER` `com.example.client`'a döndürülür | `ci-kapisi.py` **KIRMIZI** (tek geçiş bile yeter) |
 | M166 | statik | `A13/G30` · `D-A13-1` | `.gitignore`'dan `ios/Pods/` satırı silinir | `ci-kapisi.py` **KIRMIZI** |
-| M170 | statik | `A13/G27` · `D-A13-3` | `KANIT/A13/06-ci-yesil/` altına kaydedilmiş `gh run list` JSON'ının `headSha`'sı tek karakter değiştirilir | `G27/b` ölçümü **KIRMIZI** — kabul ölçümünün kendisi kör değil |
-| M167 | **koşan CI** | `A13/G27` · `A13/G28` · `D-A13-3` | `lib/main.dart`'a **`print('mutant');`** eklenir (`avoid_print`, şiddet **INFO**) — dal: `mutant/A13-M167` | `istemci` işi **failure** |
+| M170 | statik | `A13/G27` | `KANIT/A13/06-ci-yesil/` altına kaydedilmiş `gh run list` JSON'ının `headSha`'sı tek karakter değiştirilir | `G27/b` ölçümü **KIRMIZI**. 🔴 **Hüküm oturum 53'te DARALTILDI:** ölçtüğü şey *"**kaydedilmiş kanıtın** karşılaştırma mantığı ayırt ediyor"*tur — *"kabul ölçümünün tamamı kör değildir"* **değil**; canlı `gh` yolunu ısırmaz (§9/13) |
+| M167 | **koşan CI** | `A13/G28` | `lib/main.dart`'a **`print('mutant');`** eklenir (`avoid_print`, **INFO**) — dal: `mutant/A13-M167`. 🔴 Hedefi oturum 53'te **daraltıldı**: `D-A13-3` çıkarıldı (bayrak taşıyıcı değil, ölçüldü); ölçtüğü şey `G28/c`'nin **ayırt etme gücüdür** | `istemci` işi **failure** |
 | M168 | **koşan CI** | `A13/G28` · `D-A13-7` | bir widget testinin beklentisi kasten ters çevrilir (dal: `mutant/A13-M168`) | `istemci` işi **failure** |
 | M169 | **koşan CI** | `A13/G29` · `D-A13-1` | `ios/Runner/Info.plist` bozulur — kapatılmamış XML etiketi (dal: `mutant/A13-M169`) | `ios` işi **failure** |
 
-🔴 **`M167` ÖNCE EŞDEĞERDİ, DEĞİŞTİRİLDİ [oturum 52, bağımsız denetim].** İlk yazım *"kullanılmayan
-`import`"* diyordu; `unused_import` Dart'ta **WARNING**'dir ve `flutter analyze` zaten warning'lerde
-düşer ⇒ mutant **`--fatal-infos` OLMADAN DA ısırırdı**, yani `D-A13-3`'ün çekirdek iddiasını
-(*"bayrak taşıyıcıdır"*) **hiçbir koşan mutant ölçmüyordu**. Onarım **ölçülerek** seçildi:
-`src/client/analysis_options.yaml` `package:flutter_lints/flutter.yaml` içeriyor ve `avoid_print`
-**devre dışı bırakılmamış** (dosya okundu) ⇒ `print()` **INFO** şiddetinde bir ihlaldir ve yalnız
-`--fatal-infos` varsa işi düşürür. **Doğru mutant, bayrağın kendisini ölçendir.**
+🔴 **`M167` — ONARIM DENENDİ, ONARIM DA EŞDEĞER ÇIKTI [oturum 53'te ÖLÇÜLDÜ].**
+Oturum 52'nin öyküsü şuydu: ilk yazım *"kullanılmayan `import`"* diyordu; `unused_import`
+Dart'ta **WARNING**'dir ve `flutter analyze` zaten warning'lerde düşer ⇒ mutant
+**`--fatal-infos` OLMADAN DA ısırırdı**. Onarım olarak `print()` (**INFO**) seçildi ve
+*"yalnız `--fatal-infos` varsa işi düşürür"* denildi.
+🔴 **ONARIM DA YANLIŞTI VE BU ÖLÇÜLDÜ** (`40-BULGU-M167-esdeger-mutant.txt`, gerçek depo):
+Flutter 3.44.6'da `--fatal-infos` **varsayılan açıktır** ⇒ `print('mutant')` **bayraksız da**
+`EXIT 1` verir. Yani WARNING→INFO değişimi hiçbir şeyi düzeltmedi: **her iki şiddet de
+varsayılan ölümcüldür.** ⇒ `D-A13-3`'ün *"bayrak taşıyıcıdır"* iddiası **hiçbir koşan
+mutantla ölçülemez** — çünkü bu sürümde **doğru değildir** (bkz. düzeltilmiş `D-A13-3`).
+🟢 **`M167`'nin GERÇEKTE ÖLÇTÜĞÜ ŞEY, ve bu değerlidir:** *"CI'da `istemci` işinin analiz
+adımı CANLIDIR ve INFO düzeyinde bir lint ihlalini yakalayıp işi düşürür"*. Kanıt
+`0M167-log.txt`: `info • Don't invoke 'print' … lib/main.dart:34` + `istemci` **failure**,
+`ios` **success** (izolasyon). Mutant **eşdeğer değildir, hedefi yanlış etiketlenmişti**.
+🔴 **Bu ders K127'nin ikinci kanıtıdır:** kilit öncesi denetim bir kusuru bulabilir ama
+**onarımın doğruluğunu ölçmezse** aynı sınıf ikinci kez geçer. Oturum 52 onarımı *okuyarak*
+seçti (`analysis_options.yaml`), *koşarak* değil; oturum 53 `flutter analyze --help`'i
+**koşturunca** gerçek çıktı. **Okunan onarım, ölçülmüş onarım değildir.**
 🔴 **`M163b` bir YANLIŞ-POZİTİF mutantıdır:** kapının *"pin var mı"* ölçtüğünü, *"`stable` kelimesi
 geçiyor mu"* ölçmediğini kanıtlar. Isırmaması **beklenen** sonuçtur.
 🔴 **`M169`'un hedefi `D-A13-2` DEĞİL `D-A13-1`'e çevrildi:** `Info.plist`'i bozmak bundle id'yi ya
@@ -337,7 +373,12 @@ değil. *(Kapı susturulmadı, beyan doğru sınıfa taşındı.)*
 4. **Actions kotası ÖLÇÜLEMEDİ** (oturum 52: `gh` token'ında `user` yetkisi yok, faturalama
    ucu 404). Private repo'da ücretsiz kota **vardır** ama dakikası **[ÖLÇÜLMEDİ]**.
    Bilinen fiyat (GitHub, 2026): Linux **$0,006**/dk · macOS **$0,062**/dk (~10 kat).
-5. **`workflow` token yetkisi [DOĞRULANMADI]** (§4). İlk push'ta ölçülecek.
+5. 🟢 **KAPANDI [oturum 53]. `workflow` token yetkisi ÖLÇÜLDÜ.** Push `gh`'nin değil **GCM**'in
+   token'ını kullanıyor ve onda yetki **vardı**: `X-OAuth-Scopes = 'gist, repo, workflow'`
+   (token hiçbir yere yazılmadı, yalnız kapsam başlığı okundu). Push **reddedilmedi**.
+   §4'ün önerdiği çare (`gh auth refresh`) **yanlış token'ı** hedefliyordu: `gh` token'ında
+   (`gist, read:org, repo`) `workflow` **yok** ve buna rağmen `gh workflow run` **çalıştı**
+   ⇒ dispatch için `repo` yetiyor. Kanıt: `claude/oturum-53-*` + `06-ci-yesil/`.
 6. **Web ve Windows hedefleri bu dilimde YOK.** `windows/`, `macos/`, `linux/` klasörleri
    diskte yoktur ve **üretilmez**; `web/` vardır ama CI'ya **girmez** (web test ayağı zaten
    `[DOĞRULANMADI]` — ORTAM.md: `flutter test --platform chrome` bu ortamda sonuç üretmiyor).
@@ -354,11 +395,58 @@ değil. *(Kapı susturulmadı, beyan doğru sınıfa taşındı.)*
    arasında iki kez ölçülür" diyordu — §7 bunu bir kez zorluyordu ⇒ **beyan ile kriter
    çelişiyordu**, oturum 52'de bağımsız denetim buldu ve beyan gerçeğe çekildi.*
 9. **`RunnerTests` HEDEFİNİN BUNDLE ID'Sİ ÖLÇÜLMEZ** (`A13/G30/a` yalnız `Runner`'ı ölçer).
-   Şablon içeriği `ios/` üretilmeden ölçülemedi ⇒ **[DOĞRULANMADI]**.
-10. **`ci-kapisi.py` HENÜZ YAZILMADI** — bu spec onun *ne ölçeceğini* tarif eder, *nasıl*
-   yazılacağını değil. Aracın kendi altın kümesi kriter 1'de EXIT 0 vermeden **hiçbir kapı
-   yeşil sayılmaz**; yorum-satırı vakasının beklenen hükmü kriter 1'de **yazılıdır** ki küme
-   kendi kendini onaylayamasın.
+   🔴 **GEREKÇE OTURUM 53'TE DÜZELTİLDİ.** Eski metin *"şablon içeriği `ios/` üretilmeden
+   ölçülemedi ⇒ `[DOĞRULANMADI]`"* diyordu; `ios/` üretildikten sonra bağımsız denetçi **ölçtü**:
+   `PRODUCT_BUNDLE_IDENTIFIER = com.momentum.client.RunnerTests` (3 yapılandırma), `com.example`
+   **0 geçiş**. Doğru ifade: **ölçülemez DEĞİL, KAPSAM DIŞI BIRAKILDI** — `G30/a` bilerek yalnız
+   `Runner`'ı ölçer (§5/G30'un daraltma gerekçesi). *Ölçülemediğini söyleyen bir beyan, ölçülünce
+   düzeltilir; yoksa `bayat-iddia` olur.*
+10. 🟢 **KAPANDI [oturum 53]. `ci-kapisi.py` YAZILDI** (418 satır); altın kümesi hem builder'ın
+   hem **bağımsız denetçinin** koşumunda **13/13, EXIT 0** ve yorum-satırı vakası (vaka 3)
+   kümede **var** ⇒ kriter 1'in pazarlıksız şartı iki ayrı elde karşılandı.
+
+---
+
+### 🔴 OTURUM 53'TE KABUL ÖNCESİ BAĞIMSIZ DENETİMİN (K127) DOĞURDUĞU YENİ SINIRLAR
+
+> Üç bağımsız denetçi + Cowork'ün kendi doğrulaması. Tam kayıt: **`KANIT/A13/00-DENETIM-kabul-oncesi.md`**.
+> Hiçbiri yanlış-YEŞİL üretmiyor; hepsi **fazlalık/aşırı-genel iddia** sınıfındadır.
+
+11. **`--fatal-infos` BU SÜRÜMDE TAŞIYICI DEĞİLDİR** ve bu **hiçbir mutantla gösterilemez**
+   (`D-A13-3`, §6/`M167`). Flutter 3.44.6'da varsayılan **açık**; gevşeten bayrak
+   `--no-fatal-infos`'tur. Bayrağın **dosyadaki varlığı** statik `M162` ile korunur.
+   Koşan mutant tavanı **3/3 dolu** ⇒ dördüncü mutant açılamaz; zaten ölçülecek bir şey yok.
+12. 🔴 **`A13/G29/b` KÖR AYAKTIR.** `Xcode build done.` tam dizgesi `main` (ios **success**,
+   91.9s) ve `M169` (ios **failure**, 43.7s) loglarının **ikisinde de** geçiyor ⇒ ayırt etme
+   gücü **sıfır**. `G29`'u ısırtan yalnız **`c` ve `d`**'dir; ikisi de `M169` ile kanıtlı,
+   dolayısıyla **yanlış-YEŞİL yoktur**. Ayak **bilerek bırakıldı** (silmek ölçüm tarihçesini
+   kırar); onarımı/kaldırılması **builder'ın işidir (K34-f)** ⇒ borç `B-O53-1`.
+13. **`M170` GERÇEK ÖLÇÜM YOLUNU DEĞİL KAYDEDİLMİŞ KANITI ISIRIR** (§6). Kriter 7 betiği
+   `G27/b`'yi **canlı `gh` stdout'undan** ölçer; kaydedilen JSON yan-üründür. ⇒ *"kabul
+   ölçümünün tamamı kör değildir"* **iddia edilemez**; ölçülen şey dardır.
+14. **`G29/c` ONARIMININ DEĞERİ HİÇBİR MUTANTLA GÖSTERİLEMEDİ** (§5/G29). `M169`'da eski ve
+   yeni ayak davranışsal olarak özdeş çıktı. Onarım korunur (daha dar), değeri **ölçülmedi**.
+15. **MUTANTSIZ AYAKLAR:** `G27/a` · `G27/c` · `G30/b`. Üçü de ölçüldü ama hiçbirinin kendi
+   mutantı yok ⇒ körlükleri **bilinmiyor**. Borç `B-O53-2`.
+16. **KRİTER 7'NİN DİNAMİK AYAKLARININ KORUNMUŞ ARACI YOKTUR (K44-a).** `ci-kapisi.py` yalnız
+   **statik** ayakları ölçer; `G27 a·b·c` + `G28 c·d` + `G29 b·c·d` saklanmamış betiklerle
+   ölçüldü, altın kümesi yok. 🔴 **Kaçan tek kör ayağın (`G29/b`) tam da araçsız kümede
+   olması tesadüf değildir.** Borç `B-O53-3`.
+17. **`G28/d`'nin `N/N` BİÇİMİ LOGDA LAFZEN YOKTUR.** CI reporter'ı `🎉 500 tests passed.`
+   basar, payda yazmaz; hüküm *"`failed` satırı 0"* kuralıyla verildi. 🔴 Gevşek
+   `tests passed` arayan bir kapı `M168`'in `499 tests passed, 1 failed.` satırını **yeşil
+   sayardı** ⇒ dizge pinlenmelidir. Borç `B-O53-4`.
+18. **YASAK 8 (kapı susturma) HİÇBİR KAPIYLA ÖLÇÜLMÜYOR** — `G30/d`'nin yol listesi
+   `analysis_options.yaml`'ı kapsamaz. *Fiilî ihlal yok* (ölçüldü: dosya bu dilimde değişmedi,
+   `avoid_print` devre dışı değil), ama yasağın kapısı **yoktur**.
+19. **AKSİYONLAR SHA'YA PİNLİ DEĞİL** (`actions/checkout@v4`, `subosito/flutter-action@v2`)
+   ⇒ bu yeşil **inşa gereği bit-bazında tekrarlanabilir değildir**. `D-A13-6` Flutter'ı pinler,
+   aksiyonları **pinlemez**. Borç `B-O53-5`.
+20. **§9/9 DÜZELTİLDİ:** eski gerekçe *"şablon içeriği `ios/` üretilmeden ölçülemedi"* idi;
+   `ios/` artık var ve ölçüldü — `RunnerTests` bundle id = `com.momentum.client.RunnerTests`,
+   `com.example` **0 geçiş**. Doğru ifade: **ölçülemez değil, KAPSAM DIŞI BIRAKILDI.**
+21. **§9/4 KISMEN KAPANDI:** Timing API ⇒ dört koşumun da **billable MACOS 0 ms / UBUNTU 0 ms**
+   (ücretsiz kota içinde kalındı). **Kalan kontenjan hâlâ `[ÖLÇÜLMEDİ]`.**
 
 ---
 
