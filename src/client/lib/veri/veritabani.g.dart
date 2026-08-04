@@ -2102,6 +2102,445 @@ class UzakAlanDurumuCompanion extends UpdateCompanion<UzakAlanDurumuRow> {
   }
 }
 
+class $CakismaKayitlariTable extends CakismaKayitlari
+    with TableInfo<$CakismaKayitlariTable, CakismaKaydiRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CakismaKayitlariTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entityIdMeta = const VerificationMeta(
+    'entityId',
+  );
+  @override
+  late final GeneratedColumn<String> entityId = GeneratedColumn<String>(
+    'entity_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _alanMeta = const VerificationMeta('alan');
+  @override
+  late final GeneratedColumn<String> alan = GeneratedColumn<String>(
+    'alan',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kaybedenDegerMeta = const VerificationMeta(
+    'kaybedenDeger',
+  );
+  @override
+  late final GeneratedColumn<String> kaybedenDeger = GeneratedColumn<String>(
+    'kaybeden_deger',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kazananDegerMeta = const VerificationMeta(
+    'kazananDeger',
+  );
+  @override
+  late final GeneratedColumn<String> kazananDeger = GeneratedColumn<String>(
+    'kazanan_deger',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kazananClientHexMeta = const VerificationMeta(
+    'kazananClientHex',
+  );
+  @override
+  late final GeneratedColumn<String> kazananClientHex = GeneratedColumn<String>(
+    'kazanan_client_hex',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _olusturulduMeta = const VerificationMeta(
+    'olusturuldu',
+  );
+  @override
+  late final GeneratedColumn<DateTime> olusturuldu = GeneratedColumn<DateTime>(
+    'olusturuldu',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    entityId,
+    alan,
+    kaybedenDeger,
+    kazananDeger,
+    kazananClientHex,
+    olusturuldu,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cakisma_kayitlari';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CakismaKaydiRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entity_id')) {
+      context.handle(
+        _entityIdMeta,
+        entityId.isAcceptableOrUnknown(data['entity_id']!, _entityIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityIdMeta);
+    }
+    if (data.containsKey('alan')) {
+      context.handle(
+        _alanMeta,
+        alan.isAcceptableOrUnknown(data['alan']!, _alanMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_alanMeta);
+    }
+    if (data.containsKey('kaybeden_deger')) {
+      context.handle(
+        _kaybedenDegerMeta,
+        kaybedenDeger.isAcceptableOrUnknown(
+          data['kaybeden_deger']!,
+          _kaybedenDegerMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_kaybedenDegerMeta);
+    }
+    if (data.containsKey('kazanan_deger')) {
+      context.handle(
+        _kazananDegerMeta,
+        kazananDeger.isAcceptableOrUnknown(
+          data['kazanan_deger']!,
+          _kazananDegerMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_kazananDegerMeta);
+    }
+    if (data.containsKey('kazanan_client_hex')) {
+      context.handle(
+        _kazananClientHexMeta,
+        kazananClientHex.isAcceptableOrUnknown(
+          data['kazanan_client_hex']!,
+          _kazananClientHexMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_kazananClientHexMeta);
+    }
+    if (data.containsKey('olusturuldu')) {
+      context.handle(
+        _olusturulduMeta,
+        olusturuldu.isAcceptableOrUnknown(
+          data['olusturuldu']!,
+          _olusturulduMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_olusturulduMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entityId, alan};
+  @override
+  CakismaKaydiRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CakismaKaydiRow(
+      entityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_id'],
+      )!,
+      alan: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}alan'],
+      )!,
+      kaybedenDeger: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kaybeden_deger'],
+      )!,
+      kazananDeger: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kazanan_deger'],
+      )!,
+      kazananClientHex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kazanan_client_hex'],
+      )!,
+      olusturuldu: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}olusturuldu'],
+      )!,
+    );
+  }
+
+  @override
+  $CakismaKayitlariTable createAlias(String alias) {
+    return $CakismaKayitlariTable(attachedDatabase, alias);
+  }
+}
+
+class CakismaKaydiRow extends DataClass implements Insertable<CakismaKaydiRow> {
+  final String entityId;
+  final String alan;
+  final String kaybedenDeger;
+  final String kazananDeger;
+  final String kazananClientHex;
+  final DateTime olusturuldu;
+  const CakismaKaydiRow({
+    required this.entityId,
+    required this.alan,
+    required this.kaybedenDeger,
+    required this.kazananDeger,
+    required this.kazananClientHex,
+    required this.olusturuldu,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entity_id'] = Variable<String>(entityId);
+    map['alan'] = Variable<String>(alan);
+    map['kaybeden_deger'] = Variable<String>(kaybedenDeger);
+    map['kazanan_deger'] = Variable<String>(kazananDeger);
+    map['kazanan_client_hex'] = Variable<String>(kazananClientHex);
+    map['olusturuldu'] = Variable<DateTime>(olusturuldu);
+    return map;
+  }
+
+  CakismaKayitlariCompanion toCompanion(bool nullToAbsent) {
+    return CakismaKayitlariCompanion(
+      entityId: Value(entityId),
+      alan: Value(alan),
+      kaybedenDeger: Value(kaybedenDeger),
+      kazananDeger: Value(kazananDeger),
+      kazananClientHex: Value(kazananClientHex),
+      olusturuldu: Value(olusturuldu),
+    );
+  }
+
+  factory CakismaKaydiRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CakismaKaydiRow(
+      entityId: serializer.fromJson<String>(json['entityId']),
+      alan: serializer.fromJson<String>(json['alan']),
+      kaybedenDeger: serializer.fromJson<String>(json['kaybedenDeger']),
+      kazananDeger: serializer.fromJson<String>(json['kazananDeger']),
+      kazananClientHex: serializer.fromJson<String>(json['kazananClientHex']),
+      olusturuldu: serializer.fromJson<DateTime>(json['olusturuldu']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entityId': serializer.toJson<String>(entityId),
+      'alan': serializer.toJson<String>(alan),
+      'kaybedenDeger': serializer.toJson<String>(kaybedenDeger),
+      'kazananDeger': serializer.toJson<String>(kazananDeger),
+      'kazananClientHex': serializer.toJson<String>(kazananClientHex),
+      'olusturuldu': serializer.toJson<DateTime>(olusturuldu),
+    };
+  }
+
+  CakismaKaydiRow copyWith({
+    String? entityId,
+    String? alan,
+    String? kaybedenDeger,
+    String? kazananDeger,
+    String? kazananClientHex,
+    DateTime? olusturuldu,
+  }) => CakismaKaydiRow(
+    entityId: entityId ?? this.entityId,
+    alan: alan ?? this.alan,
+    kaybedenDeger: kaybedenDeger ?? this.kaybedenDeger,
+    kazananDeger: kazananDeger ?? this.kazananDeger,
+    kazananClientHex: kazananClientHex ?? this.kazananClientHex,
+    olusturuldu: olusturuldu ?? this.olusturuldu,
+  );
+  CakismaKaydiRow copyWithCompanion(CakismaKayitlariCompanion data) {
+    return CakismaKaydiRow(
+      entityId: data.entityId.present ? data.entityId.value : this.entityId,
+      alan: data.alan.present ? data.alan.value : this.alan,
+      kaybedenDeger: data.kaybedenDeger.present
+          ? data.kaybedenDeger.value
+          : this.kaybedenDeger,
+      kazananDeger: data.kazananDeger.present
+          ? data.kazananDeger.value
+          : this.kazananDeger,
+      kazananClientHex: data.kazananClientHex.present
+          ? data.kazananClientHex.value
+          : this.kazananClientHex,
+      olusturuldu: data.olusturuldu.present
+          ? data.olusturuldu.value
+          : this.olusturuldu,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CakismaKaydiRow(')
+          ..write('entityId: $entityId, ')
+          ..write('alan: $alan, ')
+          ..write('kaybedenDeger: $kaybedenDeger, ')
+          ..write('kazananDeger: $kazananDeger, ')
+          ..write('kazananClientHex: $kazananClientHex, ')
+          ..write('olusturuldu: $olusturuldu')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    entityId,
+    alan,
+    kaybedenDeger,
+    kazananDeger,
+    kazananClientHex,
+    olusturuldu,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CakismaKaydiRow &&
+          other.entityId == this.entityId &&
+          other.alan == this.alan &&
+          other.kaybedenDeger == this.kaybedenDeger &&
+          other.kazananDeger == this.kazananDeger &&
+          other.kazananClientHex == this.kazananClientHex &&
+          other.olusturuldu == this.olusturuldu);
+}
+
+class CakismaKayitlariCompanion extends UpdateCompanion<CakismaKaydiRow> {
+  final Value<String> entityId;
+  final Value<String> alan;
+  final Value<String> kaybedenDeger;
+  final Value<String> kazananDeger;
+  final Value<String> kazananClientHex;
+  final Value<DateTime> olusturuldu;
+  final Value<int> rowid;
+  const CakismaKayitlariCompanion({
+    this.entityId = const Value.absent(),
+    this.alan = const Value.absent(),
+    this.kaybedenDeger = const Value.absent(),
+    this.kazananDeger = const Value.absent(),
+    this.kazananClientHex = const Value.absent(),
+    this.olusturuldu = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CakismaKayitlariCompanion.insert({
+    required String entityId,
+    required String alan,
+    required String kaybedenDeger,
+    required String kazananDeger,
+    required String kazananClientHex,
+    required DateTime olusturuldu,
+    this.rowid = const Value.absent(),
+  }) : entityId = Value(entityId),
+       alan = Value(alan),
+       kaybedenDeger = Value(kaybedenDeger),
+       kazananDeger = Value(kazananDeger),
+       kazananClientHex = Value(kazananClientHex),
+       olusturuldu = Value(olusturuldu);
+  static Insertable<CakismaKaydiRow> custom({
+    Expression<String>? entityId,
+    Expression<String>? alan,
+    Expression<String>? kaybedenDeger,
+    Expression<String>? kazananDeger,
+    Expression<String>? kazananClientHex,
+    Expression<DateTime>? olusturuldu,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (entityId != null) 'entity_id': entityId,
+      if (alan != null) 'alan': alan,
+      if (kaybedenDeger != null) 'kaybeden_deger': kaybedenDeger,
+      if (kazananDeger != null) 'kazanan_deger': kazananDeger,
+      if (kazananClientHex != null) 'kazanan_client_hex': kazananClientHex,
+      if (olusturuldu != null) 'olusturuldu': olusturuldu,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CakismaKayitlariCompanion copyWith({
+    Value<String>? entityId,
+    Value<String>? alan,
+    Value<String>? kaybedenDeger,
+    Value<String>? kazananDeger,
+    Value<String>? kazananClientHex,
+    Value<DateTime>? olusturuldu,
+    Value<int>? rowid,
+  }) {
+    return CakismaKayitlariCompanion(
+      entityId: entityId ?? this.entityId,
+      alan: alan ?? this.alan,
+      kaybedenDeger: kaybedenDeger ?? this.kaybedenDeger,
+      kazananDeger: kazananDeger ?? this.kazananDeger,
+      kazananClientHex: kazananClientHex ?? this.kazananClientHex,
+      olusturuldu: olusturuldu ?? this.olusturuldu,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entityId.present) {
+      map['entity_id'] = Variable<String>(entityId.value);
+    }
+    if (alan.present) {
+      map['alan'] = Variable<String>(alan.value);
+    }
+    if (kaybedenDeger.present) {
+      map['kaybeden_deger'] = Variable<String>(kaybedenDeger.value);
+    }
+    if (kazananDeger.present) {
+      map['kazanan_deger'] = Variable<String>(kazananDeger.value);
+    }
+    if (kazananClientHex.present) {
+      map['kazanan_client_hex'] = Variable<String>(kazananClientHex.value);
+    }
+    if (olusturuldu.present) {
+      map['olusturuldu'] = Variable<DateTime>(olusturuldu.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CakismaKayitlariCompanion(')
+          ..write('entityId: $entityId, ')
+          ..write('alan: $alan, ')
+          ..write('kaybedenDeger: $kaybedenDeger, ')
+          ..write('kazananDeger: $kazananDeger, ')
+          ..write('kazananClientHex: $kazananClientHex, ')
+          ..write('olusturuldu: $olusturuldu, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$Veritabani extends GeneratedDatabase {
   _$Veritabani(QueryExecutor e) : super(e);
   $VeritabaniManager get managers => $VeritabaniManager(this);
@@ -2109,6 +2548,9 @@ abstract class _$Veritabani extends GeneratedDatabase {
   late final $SenkronKuyruguTable senkronKuyrugu = $SenkronKuyruguTable(this);
   late final $AyarlarTable ayarlar = $AyarlarTable(this);
   late final $UzakAlanDurumuTable uzakAlanDurumu = $UzakAlanDurumuTable(this);
+  late final $CakismaKayitlariTable cakismaKayitlari = $CakismaKayitlariTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2118,6 +2560,7 @@ abstract class _$Veritabani extends GeneratedDatabase {
     senkronKuyrugu,
     ayarlar,
     uzakAlanDurumu,
+    cakismaKayitlari,
   ];
 }
 
@@ -3169,6 +3612,239 @@ typedef $$UzakAlanDurumuTableProcessedTableManager =
       UzakAlanDurumuRow,
       PrefetchHooks Function()
     >;
+typedef $$CakismaKayitlariTableCreateCompanionBuilder =
+    CakismaKayitlariCompanion Function({
+      required String entityId,
+      required String alan,
+      required String kaybedenDeger,
+      required String kazananDeger,
+      required String kazananClientHex,
+      required DateTime olusturuldu,
+      Value<int> rowid,
+    });
+typedef $$CakismaKayitlariTableUpdateCompanionBuilder =
+    CakismaKayitlariCompanion Function({
+      Value<String> entityId,
+      Value<String> alan,
+      Value<String> kaybedenDeger,
+      Value<String> kazananDeger,
+      Value<String> kazananClientHex,
+      Value<DateTime> olusturuldu,
+      Value<int> rowid,
+    });
+
+class $$CakismaKayitlariTableFilterComposer
+    extends Composer<_$Veritabani, $CakismaKayitlariTable> {
+  $$CakismaKayitlariTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get alan => $composableBuilder(
+    column: $table.alan,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kaybedenDeger => $composableBuilder(
+    column: $table.kaybedenDeger,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kazananDeger => $composableBuilder(
+    column: $table.kazananDeger,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kazananClientHex => $composableBuilder(
+    column: $table.kazananClientHex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get olusturuldu => $composableBuilder(
+    column: $table.olusturuldu,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CakismaKayitlariTableOrderingComposer
+    extends Composer<_$Veritabani, $CakismaKayitlariTable> {
+  $$CakismaKayitlariTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get alan => $composableBuilder(
+    column: $table.alan,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kaybedenDeger => $composableBuilder(
+    column: $table.kaybedenDeger,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kazananDeger => $composableBuilder(
+    column: $table.kazananDeger,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kazananClientHex => $composableBuilder(
+    column: $table.kazananClientHex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get olusturuldu => $composableBuilder(
+    column: $table.olusturuldu,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CakismaKayitlariTableAnnotationComposer
+    extends Composer<_$Veritabani, $CakismaKayitlariTable> {
+  $$CakismaKayitlariTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get entityId =>
+      $composableBuilder(column: $table.entityId, builder: (column) => column);
+
+  GeneratedColumn<String> get alan =>
+      $composableBuilder(column: $table.alan, builder: (column) => column);
+
+  GeneratedColumn<String> get kaybedenDeger => $composableBuilder(
+    column: $table.kaybedenDeger,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get kazananDeger => $composableBuilder(
+    column: $table.kazananDeger,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get kazananClientHex => $composableBuilder(
+    column: $table.kazananClientHex,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get olusturuldu => $composableBuilder(
+    column: $table.olusturuldu,
+    builder: (column) => column,
+  );
+}
+
+class $$CakismaKayitlariTableTableManager
+    extends
+        RootTableManager<
+          _$Veritabani,
+          $CakismaKayitlariTable,
+          CakismaKaydiRow,
+          $$CakismaKayitlariTableFilterComposer,
+          $$CakismaKayitlariTableOrderingComposer,
+          $$CakismaKayitlariTableAnnotationComposer,
+          $$CakismaKayitlariTableCreateCompanionBuilder,
+          $$CakismaKayitlariTableUpdateCompanionBuilder,
+          (
+            CakismaKaydiRow,
+            BaseReferences<
+              _$Veritabani,
+              $CakismaKayitlariTable,
+              CakismaKaydiRow
+            >,
+          ),
+          CakismaKaydiRow,
+          PrefetchHooks Function()
+        > {
+  $$CakismaKayitlariTableTableManager(
+    _$Veritabani db,
+    $CakismaKayitlariTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CakismaKayitlariTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CakismaKayitlariTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CakismaKayitlariTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> entityId = const Value.absent(),
+                Value<String> alan = const Value.absent(),
+                Value<String> kaybedenDeger = const Value.absent(),
+                Value<String> kazananDeger = const Value.absent(),
+                Value<String> kazananClientHex = const Value.absent(),
+                Value<DateTime> olusturuldu = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CakismaKayitlariCompanion(
+                entityId: entityId,
+                alan: alan,
+                kaybedenDeger: kaybedenDeger,
+                kazananDeger: kazananDeger,
+                kazananClientHex: kazananClientHex,
+                olusturuldu: olusturuldu,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String entityId,
+                required String alan,
+                required String kaybedenDeger,
+                required String kazananDeger,
+                required String kazananClientHex,
+                required DateTime olusturuldu,
+                Value<int> rowid = const Value.absent(),
+              }) => CakismaKayitlariCompanion.insert(
+                entityId: entityId,
+                alan: alan,
+                kaybedenDeger: kaybedenDeger,
+                kazananDeger: kazananDeger,
+                kazananClientHex: kazananClientHex,
+                olusturuldu: olusturuldu,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CakismaKayitlariTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Veritabani,
+      $CakismaKayitlariTable,
+      CakismaKaydiRow,
+      $$CakismaKayitlariTableFilterComposer,
+      $$CakismaKayitlariTableOrderingComposer,
+      $$CakismaKayitlariTableAnnotationComposer,
+      $$CakismaKayitlariTableCreateCompanionBuilder,
+      $$CakismaKayitlariTableUpdateCompanionBuilder,
+      (
+        CakismaKaydiRow,
+        BaseReferences<_$Veritabani, $CakismaKayitlariTable, CakismaKaydiRow>,
+      ),
+      CakismaKaydiRow,
+      PrefetchHooks Function()
+    >;
 
 class $VeritabaniManager {
   final _$Veritabani _db;
@@ -3181,4 +3857,6 @@ class $VeritabaniManager {
       $$AyarlarTableTableManager(_db, _db.ayarlar);
   $$UzakAlanDurumuTableTableManager get uzakAlanDurumu =>
       $$UzakAlanDurumuTableTableManager(_db, _db.uzakAlanDurumu);
+  $$CakismaKayitlariTableTableManager get cakismaKayitlari =>
+      $$CakismaKayitlariTableTableManager(_db, _db.cakismaKayitlari);
 }

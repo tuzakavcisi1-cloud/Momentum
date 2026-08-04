@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 
+import '../veri/gorev_deposu.dart';
 import '../veri/hlc.dart';
 import '../veri/veritabani.dart';
 import 'alan_anahtari.dart';
@@ -13,6 +14,11 @@ class _GorevGuncellemesi {
   int? guncellendiWallMs; // kazanan yazimlarin EN BUYUK wallMs'i
   int? olusturulduWallMs; // gorulen TUM op/alan-HLC'lerinin EN KUCUK wallMs'i
   bool herhangiBirKanalKazandi = false;
+  // GOREV-SS2 D-SS2-2 on kosulu 1: kanal basina KAZANAN anahtar -- D-SS2-3
+  // sart 3'un ("kazanan biz degiliz") clientHex karsilastirmasi bunsuz
+  // yapilamaz. `_kanalUygula`da kazanan kanalla BIRLIKTE yazilir.
+  AlanAnahtari? baslikKazananAnahtari;
+  AlanAnahtari? tamamlandiKazananAnahtari;
 }
 
 Hlc _hlcOku(Map<String, Object?> hlcMap) => Hlc.fromJson(hlcMap);
@@ -26,12 +32,31 @@ class UzakDegisiklikUygulayici {
   final Veritabani _db;
   final UzakAlanDurumuDeposu _metaDepo;
   final Future<AlanAnahtari?> Function(String entityId, String alan) kuyrukTabaniSaglayici;
+  // GOREV-SS2 D-SS2-2 on kosulu 2: cihazin KENDI clientId'si -- D-SS2-3 sart
+  // 3'un ("kazanan biz degiliz") normHex karsilastirmasi bunsuz yapilamaz.
+  final String clientId;
+  // GOREV-SS2 D-SS2-11: turun BASINDA alinan anlik goruntuden cevaplanir.
+  // Varsayilan (test/T3 asamasi): daima false -- sessiz yanlis-pozitif
+  // uretmez, cakisma sart 2'si hic saglanmaz.
+  final Future<bool> Function(String entityId, String alan) bekleyenYerelYazimVarMi;
+  // GOREV-SS2 D-SS2-9: `olusturuldu` BUNDAN yazilir, `DateTime.now()`'in
+  // DOGRUDAN cagrilmasi YASAKTIR (GorevDeposu'nun disiplininin aynisi).
+  final DateTime Function() saat;
 
   UzakDegisiklikUygulayici(
     this._db, {
+    // GOREV-SS2 T2 (regresyon yok sarti): var olan ~20 test cagri yeri
+    // clientId GECIRMEZ; varsayilan '' hicbir gercek clientId ile ESLESMEZ
+    // (GUID BOS OLAMAZ) -- D-SS2-3 sart 3 (echo elemesi) T3'ten once hic
+    // saglanamayacagi icin bu varsayilan yanlis-pozitif URETMEZ.
+    this.clientId = '',
     Future<AlanAnahtari?> Function(String entityId, String alan)? kuyrukTabaniSaglayici,
+    Future<bool> Function(String entityId, String alan)? bekleyenYerelYazimVarMi,
+    DateTime Function()? saat,
   }) : _metaDepo = UzakAlanDurumuDeposu(_db),
-       kuyrukTabaniSaglayici = kuyrukTabaniSaglayici ?? ((_, _) async => null);
+       kuyrukTabaniSaglayici = kuyrukTabaniSaglayici ?? ((_, _) async => null),
+       bekleyenYerelYazimVarMi = bekleyenYerelYazimVarMi ?? ((_, _) async => false),
+       saat = saat ?? (() => DateTime.now().toUtc());
 
   /// D2: `changes[i] = {cursor, payload}`; `payload` bir WireOp'tur, HER
   /// yazimin KENDI HLC'si vardir. Tie-break `payload['operationId']`.
@@ -184,6 +209,7 @@ class UzakDegisiklikUygulayici {
     // D4: yalniz UC eslemeden biri -- rozete (senkronDurumu) ASLA dokunulmaz.
     if (alan == 'fields:title') {
       g.baslik = fieldsDegeri ?? '';
+      g.baslikKazananAnahtari = anahtar; // GOREV-SS2 D-SS2-2/1
       g.herhangiBirKanalKazandi = true;
       g.guncellendiWallMs = g.guncellendiWallMs == null ? anahtar.wall : (anahtar.wall > g.guncellendiWallMs! ? anahtar.wall : g.guncellendiWallMs);
     } else if (alan == 'fields:isDeleted') {
@@ -194,6 +220,7 @@ class UzakDegisiklikUygulayici {
     } else if (alan == 'groups:completion') {
       final status = groupFields?['status'] as String?;
       g.tamamlandi = status == 'done'; // Ordinal, TAM dize
+      g.tamamlandiKazananAnahtari = anahtar; // GOREV-SS2 D-SS2-2/1
       g.herhangiBirKanalKazandi = true;
       g.guncellendiWallMs = g.guncellendiWallMs == null ? anahtar.wall : (anahtar.wall > g.guncellendiWallMs! ? anahtar.wall : g.guncellendiWallMs);
     }
@@ -239,7 +266,78 @@ class UzakDegisiklikUygulayici {
           // senkronDurumu YAZILMAZ (D4 PAZARLIKSIZ -- rozet dokunulmazligi).
         );
         await (_db.update(_db.gorevler)..where((t) => t.id.equals(entityId))).write(companion);
+
+        // GOREV-SS2 D-SS2-2: tespit noktasi -- `mevcut` burada ZATEN OKUNMUS
+        // (yukarida), ekstra SELECT yok. Kanal kazanmadiysa (deger null)
+        // hic cagrilmaz -- sart 1 boylece PEK cagiranin kendisinde saglanir.
+        if (g.baslik != null) {
+          await _cakismaTespitEtVeYaz(
+            entityId: entityId,
+            alan: 'fields:title',
+            kanonikYeni: kanonikDize('fields:title', g.baslik!),
+            kanonikEski: kanonikDize('fields:title', mevcut.baslik),
+            kazananAnahtari: g.baslikKazananAnahtari!,
+          );
+        }
+        if (g.tamamlandi != null) {
+          await _cakismaTespitEtVeYaz(
+            entityId: entityId,
+            alan: 'groups:completion',
+            kanonikYeni: kanonikDize('groups:completion', g.tamamlandi!),
+            kanonikEski: kanonikDize('groups:completion', mevcut.tamamlandi),
+            kazananAnahtari: g.tamamlandiKazananAnahtari!,
+          );
+        }
       }
+    }
+  }
+
+  /// GOREV-SS2 D-SS2-3 PAZARLIKSIZ: dort sart (hepsi AND, kayit YOKSA) --
+  /// kanal bu partide kazandi (cagiran zaten saglar), kuyrukta bekleyen
+  /// yerel yazim var, kazanan BIZ DEGILIZ, degerler farkli.
+  /// BAYATLAMA (`/e`): kayit VARSA sart 2 ve 4 ARANMAKSIZIN -- ama sart 3
+  /// ARANARAK -- kazananDeger/kazananClientHex GUNCELLENIR, kaybedenDeger
+  /// KORUNUR. Sart 3 `/e`'de de arandigi icin kendi echo'muz kaybedeni
+  /// EZEMEZ (M180b, tur 2 B2-4).
+  Future<void> _cakismaTespitEtVeYaz({
+    required String entityId,
+    required String alan,
+    required String kanonikYeni,
+    required String kanonikEski,
+    required AlanAnahtari kazananAnahtari,
+  }) async {
+    final kazananBiziz = kazananAnahtari.clientHex == normHex(clientId);
+
+    final mevcutKayit = await (_db.select(_db.cakismaKayitlari)
+          ..where((t) => t.entityId.equals(entityId) & t.alan.equals(alan)))
+        .getSingleOrNull();
+
+    if (mevcutKayit == null) {
+      if (kazananBiziz) return; // sart 3
+      final bekleyenVar = await bekleyenYerelYazimVarMi(entityId, alan);
+      if (!bekleyenVar) return; // sart 2
+      if (kanonikEski == kanonikYeni) return; // sart 4
+      await _db.into(_db.cakismaKayitlari).insert(
+        CakismaKayitlariCompanion.insert(
+          entityId: entityId,
+          alan: alan,
+          kaybedenDeger: kanonikEski,
+          kazananDeger: kanonikYeni,
+          kazananClientHex: kazananAnahtari.clientHex,
+          olusturuldu: saat(),
+        ),
+      );
+    } else {
+      if (kazananBiziz) return; // sart 3 -- `/e`'de de aranir (M180b).
+      await (_db.update(_db.cakismaKayitlari)
+            ..where((t) => t.entityId.equals(entityId) & t.alan.equals(alan)))
+          .write(
+        CakismaKayitlariCompanion(
+          kazananDeger: Value(kanonikYeni),
+          kazananClientHex: Value(kazananAnahtari.clientHex),
+          // kaybedenDeger KORUNUR -- yazilmiyor.
+        ),
+      );
     }
   }
 }

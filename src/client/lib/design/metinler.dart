@@ -55,4 +55,17 @@ class Metinler {
   // ikon-yalniz ekle dugmesi tasidigindan A11Y-3 (ikon-yalniz buton yasak)
   // bunu zorunlu kilar, DESIGN.md §6 bu eylem icin ayri bir metin tanimlamaz.
   static const String ekleDugmesi = 'Ekle';
+
+  // GOREV-SS2 [D-SS2-8] -- cakisma cozum ekrani. F6'nin 13 dizgesine DAHIL
+  // DEGIL (GOREV-R10/A9'un ayni EK deseni). Kanonik dize (D-SS2-4) EKRANDA
+  // GOSTERILMEZ -- bu etiketler yerellestirilmis karsiliklardir.
+  static const String cakismaKaydiYok = 'Çakışan bir değişiklik bulunamadı.';
+  static const String cakismaAlaniBaslik = 'Başlık';
+  static const String cakismaAlaniTamamlanma = 'Tamamlanma durumu';
+  static const String cakismaDegerTamamlandi = 'Tamamlandı';
+  static const String cakismaDegerAcik = 'Açık';
+  static const String cakismaBenimki = 'Benimki';
+  static const String cakismaOnlarinki = 'Onlarınki';
+  static const String cakismaBenimkiniTut = 'Benimkini tut';
+  static const String cakismaOnlarinkiniAl = 'Onlarınkini al';
 }

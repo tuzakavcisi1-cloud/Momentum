@@ -30,10 +30,17 @@ class SenkronDongusu {
   final HlcUretici _hlc;
   final String _clientId;
   final String _devUserId;
-  final UzakDegisiklikUygulayici _uygulayici;
+  late final UzakDegisiklikUygulayici _uygulayici;
   late final ItmeYenidenDeneme _itmeYenidenDeneme;
 
   String? _mevcutCursorJson;
+
+  // GOREV-SS2 D-SS2-11: turun BASINDA (itme yaniti islenmeden ONCE) alinan
+  // anlik goruntu -- Ö8'in kapadigi pencereyi acar: Applied/Duplicate kuyruk
+  // satirlari bu goruntuden SONRA silinir, canli sorgu (kuyrukEnBuyuk) bu
+  // turda basariyla uygulanan bir yazimi KACIRIR. Tur bitince anlamsizlasir,
+  // yeniden atanir -- eskisi TASINMAZ.
+  List<SenkronKuyruguRow>? _turBasiAnlikGoruntu;
 
   Future<void>? _devamEdenTur;
   // K3 (Onur, kilitli): tek-uçuş kilidi devam eden turu döndürdüğünde
@@ -68,12 +75,16 @@ class SenkronDongusu {
        _hlc = hlc,
        _clientId = clientId,
        _devUserId = devUserId,
-       _mevcutCursorJson = baslangicCursorJson,
-       _uygulayici = uygulayici ??
-           UzakDegisiklikUygulayici(
-             db,
-             kuyrukTabaniSaglayici: (entityId, alan) => kuyrukEnBuyuk(db, entityId, alan),
-           ) {
+       _mevcutCursorJson = baslangicCursorJson {
+    _uygulayici = uygulayici ??
+        UzakDegisiklikUygulayici(
+          db,
+          clientId: clientId,
+          kuyrukTabaniSaglayici: (entityId, alan) => kuyrukEnBuyuk(db, entityId, alan),
+          // D-SS2-11: canli sorgu DEGIL -- turun basinda alinan anlik
+          // goruntuden cevaplar (asagida _anlikGoruntudenBekliyorMu).
+          bekleyenYerelYazimVarMi: _anlikGoruntudenBekliyorMu,
+        );
     _itmeYenidenDeneme = ItmeYenidenDeneme(
       turCalistir: () {
         _yenidenDenemeIcinden = true;
@@ -141,6 +152,29 @@ class SenkronDongusu {
     );
   }
 
+  /// D-SS2-11: "o turda gönderilen oplar ∪ hâlâ bekliyor olanlar" -- Ö7 ile
+  /// AYNI sınır (`zehirli` HARİÇ, `bekliyor`+`gonderildi` dâhil). Bu sorgu
+  /// `_bekleyenleriSec()`'in sayfalama/işaretleme adımından ÖNCE koşar; o
+  /// anda hem bu round'da seçilecek satırlar hem de sayfa dışında kalanlar
+  /// hâlâ `bekliyor`dur.
+  Future<List<SenkronKuyruguRow>> _turBasiSatirlariGetir() {
+    return (_db.select(
+      _db.senkronKuyrugu,
+    )..where((t) => t.durum.isIn(['bekliyor', 'gonderildi']))).get();
+  }
+
+  /// `UzakDegisiklikUygulayici`'ya `bekleyenYerelYazimVarMi` olarak enjekte
+  /// edilir -- CANLI sorgu DEĞİL, `_turBasiAnlikGoruntu`'ya bakar (D-SS2-11).
+  Future<bool> _anlikGoruntudenBekliyorMu(String entityId, String alan) async {
+    final satirlar = _turBasiAnlikGoruntu;
+    if (satirlar == null) return false;
+    for (final satir in satirlar) {
+      if (satir.entityId != entityId) continue;
+      if (hamAlanHlcCikar(satir.govdeJson, alan) != null) return true;
+    }
+    return false;
+  }
+
   /// Ortak yuvarlak döngüsü -- `kuyrugaBak=true` (itme): pending satırları
   /// seçer/gönderir. `kuyrugaBak=false` (çekme, D0): HER round `ops:[]`
   /// gönderir. D7/2 boşaltma: bir round `hasMore` + dolu sayfa dönerse
@@ -150,6 +184,10 @@ class SenkronDongusu {
     if (kuyrugaBak) {
       await gonderildiKurtar();
     }
+    // D-SS2-11: TURUN BASINDA, itme yaniti islenmeden ONCE alinir -- bu
+    // yuvarlak dongusu cagrisinin TAMAMI (ic bosaltma yuvarlaklari dahil)
+    // AYNI goruntuyu kullanir.
+    _turBasiAnlikGoruntu = await _turBasiSatirlariGetir();
     var bosaltmaSayaci = 0;
     // Cekme turu (kuyrugaBak=false) HER ZAMAN en az bir istek atar (D0).
     // Itme turu (kuyrugaBak=true) once kuyruga bakar -- bekleyen YOKSA VE

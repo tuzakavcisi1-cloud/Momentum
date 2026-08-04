@@ -123,6 +123,7 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
                         ),
                         senkronDurumu: gorunum.senkronDurumu,
                         cakismaVarMi: gorunum.cakismaVarMi,
+                        depo: widget.depo,
                       );
                     },
                   );

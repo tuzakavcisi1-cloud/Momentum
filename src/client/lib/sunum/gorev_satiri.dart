@@ -16,6 +16,11 @@ class GorevSatiri extends StatelessWidget {
   final ValueChanged<bool> onTamamlaDegisti;
   final SenkronDurumTuru senkronDurumu;
   final bool cakismaVarMi;
+  // GOREV-SS2 D-SS2-8: `cakismaVarMi` iken `CakismaRozeti`'ye `entityId` +
+  // `depo` geçirmek için gerekir. `cakismaVarMi == false` olan mevcut
+  // çağrı yerleri (testler dâhil) bunu HİÇ bilmez -- `null` varsayılanı
+  // güvenlidir çünkü o durumda `CakismaRozeti` zaten inşa edilmez.
+  final GorevDeposu? depo;
 
   const GorevSatiri({
     super.key,
@@ -23,6 +28,7 @@ class GorevSatiri extends StatelessWidget {
     required this.onTamamlaDegisti,
     this.senkronDurumu = SenkronDurumTuru.yerel,
     this.cakismaVarMi = false,
+    this.depo,
   });
 
   /// GOREV-A7 D-A7-3: baslik icin ayrilan ASGARI genislik. 96dp'dir ve
@@ -162,7 +168,7 @@ class GorevSatiri extends StatelessWidget {
   List<Widget> _rozetler() {
     return [
       if (cakismaVarMi) ...[
-        const CakismaRozeti(),
+        CakismaRozeti(entityId: gorev.id, depo: depo),
         SizedBox(width: MBosluk.xs),
       ],
       Flexible(child: SenkronRozeti(durum: senkronDurumu)),

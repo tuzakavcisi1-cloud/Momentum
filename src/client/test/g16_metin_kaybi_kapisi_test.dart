@@ -68,6 +68,38 @@ double _y4ButonYatayDolgu(double olcek) {
   throw ArgumentError('izgaranin disinda olcek: $olcek');
 }
 
+/// GOREV-SS2 [T5]: `Y6`/`Y7` icin minimal sahte depo -- `CakismaCozumSayfasi`
+/// artik `entityId`+`depo` alir (M184). `a11y_kapisi_test.dart`'in `_SabitDepo`
+/// deseninin aynisi, dosyaya OZGU (Dart gorunurlugu dosya-bazlidir).
+class _SahteDepoY6Y7 implements GorevDeposu {
+  final List<CakismaKaydi> _kayitlar;
+  const _SahteDepoY6Y7(this._kayitlar);
+
+  @override
+  Stream<List<GorevGorunum>> gorevlerGorunur() => const Stream.empty();
+  @override
+  Future<void> ekle(String baslik) async {}
+  @override
+  Future<void> duzenle(String id, String yeniBaslik) async {}
+  @override
+  Future<void> tamamlaGeriAl(String id, {required bool tamamlandi}) async {}
+  @override
+  Future<void> sil(String id) async {}
+  @override
+  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) => Stream.value(_kayitlar);
+  @override
+  Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
+}
+
+// GOREV-SS2 [T5]: Y7'nin govde olcumu icin UZUN bir cakisma degeri --
+// eski Y1 fixture'iyla (uzun baslik) AYNI gerekce: kisa bir dize kapiyi
+// KORLESTIRIR.
+const _y7Kayit = CakismaKaydi(
+  alan: 'fields:title',
+  kaybedenDeger: 'Sozlesmeyi gozden gecir ve imzala ve sonra raporu tamamla',
+  kazananDeger: 'Baska bir cihazdan gelen uzun baslik metni burada devam eder',
+);
+
 Gorev _y1Gorev() => Gorev(
   id: 'g16-y1',
   // Uzun baslik BILINCLI (g13_rozet_tasma_kapisi_test.dart:51-53 ile ayni
@@ -151,23 +183,25 @@ final _y5 = _Bilesen(
 // test tasimaz).
 final _y6 = _Bilesen(
   kod: 'Y6',
-  aciklama: 'cakisma_rozeti.dart:97 (AppBar basligi, Metinler.duyuruCakismaVar)',
-  olustur: () => const CakismaCozumSayfasi(),
+  aciklama: 'cakisma_rozeti.dart (AppBar basligi, Metinler.duyuruCakismaVar)',
+  olustur: () => const CakismaCozumSayfasi(entityId: 'y6', depo: _SahteDepoY6Y7([])),
   bul: () => find.text(Metinler.duyuruCakismaVar),
   // BEYAN EDILMIS SINIR: genislik formulu YOK -- yalniz OLCEK yarisi (A2)
   // kontrol edilir (yukaridaki gerekce).
 );
 
-// GOREV-A9 [K93/spec SS5/G16]: `_y7` -- govde. Yapi dogrulandi: Scaffold.body
-// -> Center(loosen) -> Padding(all: MBosluk.m) -> Text; formul `_y3`'unkiyle
-// (hata_durumu.dart govdesi) BIREBIR AYNI (MBosluk.m=16 olculdu ⇒ g-32), yeni
-// formul icat edilmedi. A1+A4'e girer (_olcumKapsami).
+// GOREV-SS2 [T5 -- ONCEKI Y7 GECERSIZ, YENIDEN OLCULDU]: govde artik TEK
+// merkezi Text DEGIL, YAN YANA iki deger blogu (Ö11 sonrasi olcum). Yapi:
+// Scaffold.body -> StreamBuilder -> ListView(padding: all(MBosluk.m)) ->
+// Row(2x Expanded, aralarinda SizedBox(width: MBosluk.m)) -> Column -> Text.
+// Genislik formulu: (g - 2*MBosluk.m [liste dolgusu] - MBosluk.m [Row araligi]) / 2.
+// A1+A4'e girer (_olcumKapsami).
 final _y7 = _Bilesen(
   kod: 'Y7',
-  aciklama: 'cakisma_rozeti.dart:106 (govde, Metinler.cakismaVar)',
-  olustur: () => const CakismaCozumSayfasi(),
-  bul: () => find.text(Metinler.cakismaVar),
-  beklenenGenislik: (g, s) => g - 2 * MBosluk.m,
+  aciklama: 'cakisma_rozeti.dart (govde, deger blogu -- kaybedenDeger)',
+  olustur: () => const CakismaCozumSayfasi(entityId: 'y7', depo: _SahteDepoY6Y7([_y7Kayit])),
+  bul: () => find.text(_y7Kayit.kaybedenDeger),
+  beklenenGenislik: (g, s) => (g - 3 * MBosluk.m) / 2,
 );
 
 final _hepsi = <_Bilesen>[_y1, _y2, _y3, _y4, _y5, _y6, _y7]; // A2 -- 7

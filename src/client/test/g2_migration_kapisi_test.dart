@@ -16,6 +16,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'generated_migrations/schema.dart';
 import 'generated_migrations/schema_v3.dart' as v3;
+import 'generated_migrations/schema_v4.dart' as v4;
 
 Future<String?> _createTableSql(GeneratedDatabase db, String tablo) async {
   final satirlar = await db
@@ -44,9 +45,9 @@ void main() {
   Veritabani dosyaDbAc(String ad) =>
       Veritabani(NativeDatabase(File('${gecici.path}/$ad.sqlite')));
 
-  test('D1: schemaVersion == 4', () async {
+  test('D1: schemaVersion == 5 (GOREV-SS2 T1: 4->5 zorunlu guncelleme)', () async {
     final db = dosyaDbAc('m1');
-    expect(db.schemaVersion, 4);
+    expect(db.schemaVersion, 5);
     await db.close();
   });
 
@@ -125,6 +126,52 @@ void main() {
     expect(satirlar.single.hlcWall, 2000);
     expect(satirlar.single.winOpId, 'op2');
     await db.close();
+  });
+
+  test('SS2 G31/c: v4->v5 migration hatasiz -- cakisma_kayitlari tablosu var', () async {
+    final verifier = SchemaVerifier(GeneratedHelper());
+    final schema = await verifier.schemaAt(4);
+    final yeniDb = Veritabani(schema.newConnection());
+
+    final sql = await _createTableSql(yeniDb, 'cakisma_kayitlari');
+    expect(sql, isNotNull, reason: 'migration sonrasi cakisma_kayitlari tablosu var olmali');
+    await yeniDb.close();
+  });
+
+  test('SS2 G31/c: v4teki uc Gorevler satiri migration sonrasi ucu de aynen durur', () async {
+    final verifier = SchemaVerifier(GeneratedHelper());
+    final schema = await verifier.schemaAt(4);
+    final eskiDb = v4.DatabaseAtV4(schema.newConnection());
+    for (final id in ['ss2-v4-1', 'ss2-v4-2', 'ss2-v4-3']) {
+      await eskiDb.customStatement(
+        "INSERT INTO gorevler (id, baslik, tamamlandi, olusturuldu, guncellendi, senkron_durumu, silindi) "
+        "VALUES (?, ?, 0, ?, ?, 'yerel', 0)",
+        [id, 'Gorev $id', DateTime.utc(2026, 1, 1).toIso8601String(), DateTime.utc(2026, 1, 1).toIso8601String()],
+      );
+    }
+    await eskiDb.close();
+
+    final yeniDb = Veritabani(schema.newConnection());
+    final satirlar = await yeniDb.select(yeniDb.gorevler).get();
+    expect(satirlar.map((s) => s.id).toSet(), {'ss2-v4-1', 'ss2-v4-2', 'ss2-v4-3'});
+    await yeniDb.close();
+  });
+
+  test('SS2 G31/c: Gorevler CREATE TABLE SQL metni v4 ve v5te bayt bayt AYNI', () async {
+    final verifier = SchemaVerifier(GeneratedHelper());
+
+    final v4Schema = await verifier.schemaAt(4);
+    final v4Db = v4.DatabaseAtV4(v4Schema.newConnection());
+    final v4Sql = await _createTableSql(v4Db, 'gorevler');
+    await v4Db.close();
+
+    final v5Schema = await verifier.schemaAt(4);
+    final v5Db = Veritabani(v5Schema.newConnection()); // migration'i tetikler
+    final v5Sql = await _createTableSql(v5Db, 'gorevler');
+    await v5Db.close();
+
+    expect(v4Sql, isNotNull);
+    expect(v5Sql, v4Sql, reason: 'D-SS2-1: Gorevlere DOKUNULMAZ, alterTable cagrilmaz');
   });
 
   test('D1: ayarlar.imlecSahibi sutunu var -- eski (migration\'dan gelen) satirda null', () async {

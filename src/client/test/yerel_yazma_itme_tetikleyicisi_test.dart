@@ -46,6 +46,13 @@ class _SahteDepo implements GorevDeposu {
   @override
   Future<void> sil(String id) async => cagrilar.add('sil:$id');
 
+  @override
+  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) => Stream.value(const []);
+
+  @override
+  Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async =>
+      cagrilar.add('cakismaCoz:$entityId:$secim');
+
   void yayinla(List<GorevGorunum> g) => _denetleyici.add(g);
 
   void kapat() => _denetleyici.close();

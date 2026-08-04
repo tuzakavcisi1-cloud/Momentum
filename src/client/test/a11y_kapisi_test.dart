@@ -137,6 +137,10 @@ class _SabitDepo implements GorevDeposu {
   Future<void> tamamlaGeriAl(String id, {required bool tamamlandi}) async {}
   @override
   Future<void> sil(String id) async {}
+  @override
+  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) => Stream.value(const []);
+  @override
+  Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
 }
 
 /// A11Y-7/hata durumunu tetiklemek icin: akis HER ZAMAN hata verir.
@@ -152,6 +156,10 @@ class _HataliDepo implements GorevDeposu {
   Future<void> tamamlaGeriAl(String id, {required bool tamamlandi}) async {}
   @override
   Future<void> sil(String id) async {}
+  @override
+  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) => Stream.value(const []);
+  @override
+  Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
 }
 
 Gorev _ornekGorev(String baslik) => Gorev(

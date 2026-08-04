@@ -25,6 +25,25 @@ Gorev _sahteGorev({bool tamamlandi = false}) => Gorev(
   silindi: false,
 );
 
+/// GOREV-SS2 [T5]: `CakismaRozeti`/`CakismaCozumSayfasi` artik `entityId`+
+/// `depo` alir (M184) -- bu dosyaya OZGU minimal sahte depo.
+class _SahteDepo implements GorevDeposu {
+  @override
+  Stream<List<GorevGorunum>> gorevlerGorunur() => const Stream.empty();
+  @override
+  Future<void> ekle(String baslik) async {}
+  @override
+  Future<void> duzenle(String id, String yeniBaslik) async {}
+  @override
+  Future<void> tamamlaGeriAl(String id, {required bool tamamlandi}) async {}
+  @override
+  Future<void> sil(String id) async {}
+  @override
+  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) => Stream.value(const []);
+  @override
+  Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
+}
+
 void main() {
   group('MomentumTema', () {
     test('acik ve koyu ThemeData ayri brightness tasir', () {
@@ -180,11 +199,16 @@ void main() {
   group('CakismaRozeti', () {
     testWidgets('dokununca cozum sayfasi acar', (tester) async {
       await tester.pumpWidget(
-        _sarmala(const Scaffold(body: CakismaRozeti())),
+        _sarmala(
+          Scaffold(body: CakismaRozeti(entityId: 'g1', depo: _SahteDepo())),
+        ),
       );
       await tester.tap(find.byType(CakismaRozeti));
       await tester.pumpAndSettle();
-      expect(find.text(Metinler.cakismaVar), findsOneWidget);
+      expect(find.byType(CakismaCozumSayfasi), findsOneWidget);
+      // GOREV-SS2 [T5]: sahte depo SIFIR cakisma kaydi doner -- BOS DURUM
+      // ZORUNLU (D-SS2-8): 0 kayitla acilis NORMAL haldir.
+      expect(find.text(Metinler.cakismaKaydiYok), findsOneWidget);
     });
   });
 

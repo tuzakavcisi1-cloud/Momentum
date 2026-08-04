@@ -15,7 +15,8 @@ library;
 //
 // GOREV-A9 [K93/spec SS5/G5] -- GENISLETME: R1 (mevcut, degismez) + R2 (YENI:
 // ellipsis tasiyan HER govde maxLines de tasir) + R4 (YENI: pozitif kontrol --
-// tarayicinin bulduğu Text( aday sayisi = 8, arac kendini kanitlar). R3 (govde
+// tarayicinin bulduğu Text( aday sayisi = 12 [GOREV-SS2 T5'te 8'den guncellendi],
+// arac kendini kanitlar). R3 (govde
 // toplayicinin KENDISI dogru topluyor mu) ayri bir test DEGILDIR -- yalniz
 // mutantlarla (M105/M107) sinanir (spec SS7 kriter 4'un sayi hesabi: yalniz
 // R2+R4 +2 test ekler).
@@ -153,7 +154,7 @@ void main() {
   });
 
   test(
-    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 8 (arac kendini kanitlar)',
+    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 12 (arac kendini kanitlar)',
     () {
       final dosyalar = _taranacakDosyalar();
       final adaylar = <String>[];
@@ -164,13 +165,16 @@ void main() {
       }
       // OLCULDU (GOREV-A9, oturum 43): bos_durum 1 * cakisma_rozeti 2 *
       // gorev_satiri 1 * hata_durumu 2 * senkron_rozeti 1 * yukleme_durumu 1
-      // = 8. Taban DEGISIRSE bu test KIRMIZI olur ve taban BILEREK guncellenir
-      // -- "olcum araci ONCE KENDINI kanitlar" doktrininin bu kapidaki karsiligi.
+      // = 8. 🔴 GOREV-SS2 [T5] TABAN BILEREK GUNCELLENDI: cakisma_rozeti.dart
+      // 2 -> 6 Text( cagrisina cikti (bos durum + AppBar basligi + iki buton
+      // etiketi + alan etiketi + iki deger blogu basligi -- deger metinlerinin
+      // KENDISI zaten sayiliyordu) ⇒ toplam 8 - 2 + 6 = 12. "olcum araci ONCE
+      // KENDINI kanitlar" doktrininin bu kapidaki karsiligi.
       expect(
         adaylar.length,
-        8,
+        12,
         reason:
-            'Text( aday sayisi 8 DEGIL -- ya tarayici bozuldu (regex hic '
+            'Text( aday sayisi 12 DEGIL -- ya tarayici bozuldu (regex hic '
             'eslesmiyor ⇒ R1/R2 kor) ya taban degisti (yeni bir Text( eklendi/'
             'silindi). Bulunanlar:\n${adaylar.join('\n')}',
       );

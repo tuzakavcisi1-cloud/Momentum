@@ -94,12 +94,29 @@ class UzakAlanDurumu extends Table {
   Set<Column> get primaryKey => {entityType, entityId, alan};
 }
 
-@DriftDatabase(tables: [Gorevler, SenkronKuyrugu, Ayarlar, UzakAlanDurumu])
+/// GOREV-SS2 D-SS2-1: cakisma kayitlari, salt-ekleme (schemaVersion 4 -> 5).
+/// PK `(entityId, alan)` -- alan basina TEK kayit (cakisma gecmisi K95'te
+/// kapsam disi). `entityType` YOK -- bu dilimde tek entity turu (`task`)
+/// vardir ve sutun hicbir yerde okunmayacakti (olu sutun yazilmaz).
+@DataClassName('CakismaKaydiRow')
+class CakismaKayitlari extends Table {
+  TextColumn get entityId => text()();
+  TextColumn get alan => text()(); // 'fields:title' | 'groups:completion' -- BASKASI YOK
+  TextColumn get kaybedenDeger => text()(); // YEREL deger, ezilmeden ONCE -- kanonik dize
+  TextColumn get kazananDeger => text()(); // UZAK deger -- AYNI kanonik dize fonksiyonundan
+  TextColumn get kazananClientHex => text()();
+  DateTimeColumn get olusturuldu => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {entityId, alan};
+}
+
+@DriftDatabase(tables: [Gorevler, SenkronKuyrugu, Ayarlar, UzakAlanDurumu, CakismaKayitlari])
 class Veritabani extends _$Veritabani {
   Veritabani([QueryExecutor? baglanti]) : super(baglanti ?? _uretimBaglantisi());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   /// GOREV-slice-3c D1/T3: v1->v2 SQLite bir CHECK kisitini ALTER TABLE ile
   /// degistiremez -- `gorevler` (yeni 5-degerli CHECK ile) `TableMigration`
@@ -109,6 +126,9 @@ class Veritabani extends _$Veritabani {
   /// GOREV-slice-3d D1/D7-4: v3->v4 SALT-EKLEMEdir -- `Gorevler`e DOKUNULMAZ,
   /// `alterTable` cagrilmaz; `uzakAlanDurumu` yeni tablo + `ayarlar.imlecSahibi`
   /// yeni sutun AYNI blokta (Ö6: iki ayri drift_dev komutu -- dump + generate).
+  /// GOREV-SS2 D-SS2-1: v4->v5 de SALT-EKLEMEDIR -- `cakismaKayitlari` yeni
+  /// tablo, `Gorevler`e DOKUNULMAZ. Sira PAZARLIKSIZ (T1): v4 dump ONCE
+  /// alinir (schemaVersion hala 4 iken), sonra bump, sonra generate.
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
@@ -131,6 +151,11 @@ class Veritabani extends _$Veritabani {
           // eklemek "duplicate column" ile patlar.
           await m.addColumn(ayarlar, ayarlar.imlecSahibi);
         }
+      }
+      // GOREV-SS2 D-SS2-1: v4->v5 SALT-EKLEMEDIR -- `Gorevler`e DOKUNULMAZ,
+      // `alterTable` cagrilmaz (Ö10).
+      if (from < 5) {
+        await m.createTable(cakismaKayitlari);
       }
     },
   );
