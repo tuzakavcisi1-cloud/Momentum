@@ -81,9 +81,11 @@ koşulamadı** — üründe **başlık düzenleme UI'ı YOK**, çakışma **tama
 **örneklemdir** ④ telefon **USB tüneliyle** bağlandı ⇒ **NAT/SignalR borcu KAPANMADI**.
 Borçlar `B-SS2-1`…`5`.
 🟢 **`R8` SÖNDÜ (oturum 55'te ÖLÇÜLDÜ):** `urun_kodu_satiri = 1773`, `radar.py . --olc-urun-kodu`
-ile **git'ten türetildi**; radar artık *"ürün kodu durgunluğu"* bildirmiyor. 🔴 **ÖLÇÜLDÜ: ⑨ web
-borcunun HAZIR SPEC'İ YOK** — 25 spec'in **hiçbiri web değil** ⇒ o yol bir **spec turu** ister.
-→ **kriter 8 + `SS2` kabulü** → ⑨ web + **backend CI** (`D-A13-4`) + release → ⑩ `ADR 0004` + vitrin.
+ile **git'ten türetildi**; radar artık *"ürün kodu durgunluğu"* bildirmiyor. 🟢 **⑨ WEB — `GOREV-W1` v2 KİLİTLİ (`K137`, oturum 57).** Web borcu **spec turu olarak
+DEĞİL**, `K53/5` gereği **yürüyen iskelet** olarak kuruldu; gerekçe `R8` **mutantıyla** ölçüldü.
+Ölçülen taban: `flutter build web` **EXIT 0** · Drift web **tam bağlı** · 🔴 **backend'de CORS
+YOK** (92 dosya). İş **Claude Code'da** (`T1`–`T7`); kabul kriterleri spec `## 7`'de.
+→ **backend CI** (`D-A13-4`) + release → ⑩ `ADR 0004` + vitrin.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` ÇAKIŞMASI: kanonik metin `ORTAM.md`'de** (oturum 50'de
 ölçüldü). Buraya **kopyalanmaz** — üç satırlık özet oturum 53'te `kanonik-kopya` olarak budandı.
 
@@ -119,6 +121,11 @@ borcunun HAZIR SPEC'İ YOK** — 25 spec'in **hiçbiri web değil** ⇒ o yol bi
 - 🔒 **K127 — KİLİT ÖNCESİ BAĞIMSIZ DENETİM (Onur kilitledi, 3 Ağu 2026):** kilit checkpoint'i **denetçinin ÇIKTI YOLUNU** taşır; yoksa *"denetim KOŞULMADI"* diye **açıkça** yazar. Kanonik metin **`CLAUDE.md`**'de, buraya kopyalanmaz. **K53/1 ile çelişmez** — turun *sayısını* değil **zamanlamasını** sabitler. 🟢 `K133`'te *"yoksa açıkça yazar"* şıkkı **ilk kez** kullanıldı. 🔴 **Mekanik kapısı YOK** ⇒ borç `B-O52-2`. Gerekçe: hafıza K127.
 - 🔒 **K129 · K130 — `A13` KABUL + spec yeniden kilitlendi (Onur, 3 Ağu 2026, oturum 53).** Kurallar `A13/G27`–`G30` kapılarında + `M162`–`M170` mutantlarında koşuyor. 🔴 **Yaşayan beş sınır (hepsi borç, `B-O53-1`…`5`):** `G29/b` **kör** · `--fatal-infos` **taşıyıcı değil** · `G27/a`·`G27/c`·`G30/b` **mutantsız** · kriter 7'nin **dinamik ayaklarının aracı yok** · aksiyonlar **pinsiz**. Ders: **okunan onarım, ölçülmüş onarım değildir.** Gerekçe: hafıza K129/K130.
 - 🔒 **K133 · K136 — `SS2` KİLİTLENDİ ve KABUL EDİLDİ** (Onur; 3 ve 4 Ağu 2026). K73 gereği kilit §5'ten **ÇEKİLDİ**; kurallar bugün `SS2/G31`–`G34` kapılarında ve `M171`–`M188` mutantlarında **koşuyor**. 🔴 **Yaşayan üç sınır:** ① `spec-kapi-kapsama.py` *"mutant ISIRIR mı"* **sormaz** (`B-SS2-4`) ② üründe **başlık düzenleme UI'ı YOK** ⇒ kriter 8 **tamamlanma anahtarıyla** koşuldu ③ `M172`'nin *beklenen* metni gerçeği tarif etmiyor (`B-SS2-5`). Gerekçeler: hafıza K133 · K135 · K136.
+- 🔒 **K137 — `GOREV-W1` v2 KİLİTLENDİ (Onur, 4 Ağu 2026, oturum 57).** Kimlik **§9'da**.
+  `K127` şartı **ÖDENDİ**: iki bağımsız denetçi kilitten **ÖNCE** koştu, **6 bloker** buldu, altısı da
+  kapandı; çıktı yolları spec `## 0`'dadır. 🔴 **Yaşayan sınır: 18 mutantın ISIRDIĞI ÖLÇÜLMEDİ**
+  — `cors-kapisi.py` ve `_preflight.py` henüz **yok**; `spec-kapi-kapsama.py` kendi beyanıyla
+  *"ısırmayı değil kapsamayı"* ölçer. Gerekçe: hafıza `K137`.
 - **K44-a** — **Önce araç, sonra belge.**
 - **K34-f** — Bir aracı **onaran el**, onu **yazan elden AYRI** olmalı.
 - **K26** — Üretici kendi denetçisini spawn edemez. **Üreten ≠ denetleyen.**
@@ -209,6 +216,7 @@ python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GO
 | `GOREV-A13-ios-iskeleti-ci.md` | **36.155** | **`9C7213F2`** | 🔒 **K130 kilidi (Onur kilitledi 3 Ağu 2026, oturum 53 — KABUL sonrası)** — `BCD0AA81` (K127) · `56871800` (K126) · `D2DA483E` · `3E543DBE` **hepsi GEÇERSİZDİR**. Kilit **kabul öncesi bağımsız denetim** (K127) spec'te ölçümle yanlışlanmış iki gerekçe bulunca açıldı; `D-A13-3` + §9/9 düzeltildi, §9'a 11 yeni beyan eklendi. Kapıları **`A13/G27`–`A13/G30`** (K108). U+FFFD 0 · CRLF 0. 🔴 **Beyanlı-kilit sepetinde** — `tek-kopya-kapisi.py` kapsamına **eklenmedi** (sepet `BORCLAR.md`'de) |
 
 | `GOREV-SS2-cakisma-cozumu.md` | **46.003** | **`420E9F91`** | 🔒 **K133 kilidi (Onur kilitledi 3 Ağu 2026, oturum 55)** — `66CC4AAE` (v2) ve `90314998` (v1) **GEÇERSİZDİR**. U+FFFD 0 · CRLF 0. Kapıları **`SS2/G31`–`SS2/G34`** (K108). 🔴 **Beyanlı-kilit sepetinde** — `tek-kopya-kapisi.py` kapsamına **eklenmedi** (sepet `BORCLAR.md`'de) |
+| `GOREV-W1-web-yuruyen-iskelet.md` | **33.077** | **`5CF3F921`** | 🔒 **K137 kilidi (Onur kilitledi 4 Ağu 2026, oturum 57)** — kilit satırı **ÖNCESİ** `606F04F5` (32.801 b) ve **v1** `DFA8FF77` (19.941 b) **GEÇERSİZDİR**. U+FFFD 0 · CRLF 0. Kapıları **`W1/G35`–`W1/G38`**, mutantları `M189`–`M199` (K108). 🔴 **Beyanlı-kilit sepetinde** — `tek-kopya-kapisi.py` kapsamına **eklenmedi** |
 
 ⚠ **Kimlik `sha256`+bayttır, satır DEĞİL** ve **DAİMA son yazımdan SONRA** ölçülür.
 
