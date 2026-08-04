@@ -1,0 +1,3 @@
+ERROR:  column "received_at" does not exist
+LINE 1: select client_id, count(*) as op_sayisi, max(received_at) as...
+                                                     ^

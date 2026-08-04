@@ -1,0 +1,2 @@
+DOKUNUS: emulator-5554  (540,1779)  desc='PROBE-B\nPROBE-B'  onceki checked=false
+SONRASI : checked=false

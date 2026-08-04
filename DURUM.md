@@ -71,14 +71,15 @@ KENDİ koşumuyla geçti (K26); **iOS bu depoda İLK KEZ derlendi**. Hüküm
 gerekçe §5/K130). 🟢 §9/5 · §9/10 KAPANDI, §9/4 kısmen. 🔴 Kota `[ÖLÇÜLMEDİ]`.
 🔴 **ÖLÇÜLMEYEN (değişmedi):** çakışma rozeti · çift yönün kabul kriterleri · **fiziksel cihaz**
 (NAT kurulu soketi koruduğu için SignalR yeniden bağlanma yolu **hiç egzersiz edilmedi**).
-🟢 **⑧ `SS2` v3 KİLİTLENDİ (`K133`) ve `T0`–`T8` UYGULANDI (`K134`, oturum 55).** Beş bloker
-kapandı, 13 major borçlandı (`S11`–`S14` + `B-SS2-4`); üçüncü denetim turu `K53/1` gereği
-**açılmadı**. Claude Code `b900bae` ile **+5831/−69** yazdı. 🔴 **KABUL VERİLMEDİ:** Cowork'ün kendi
-koşumuyla **kriter 1·2·3·5·6·7·9 geçti** (`analyze` 0 · `test` **522/522** · `verify.ps1` EXIT 0,
-backend **120/120**, CVE 0);
-`ss2-kapisi.py` altın küme **14/14** (oturum 56'da 10→14: oturum 55'in iki MINOR'u **pinlendi** +
-**blok yorum KÖR KAPISI onarıldı**, mutantla kanıtlı). 🔴 **kriter 8 (uçtan uca) ÖLÇÜLMEDİ.**
-Hükümler: `KANIT/SS2/03-v3-KILIT.md` + hafıza K134.
+🟢 **⑧ `SS2` KABUL EDİLDİ (`K136`, oturum 56 · Onur kilitledi).** Dokuz kriterin dokuzu
+Cowork'ün KENDİ koşumuyla ölçüldü (K26); **çakışma cihazda ilk kez uçtan uca görüldü**: rozet
+çıktı, ekran iki değeri gösterdi, *Benimkini tut* karşı cihaza ULAŞTI, iki `clientId` ve HLC
+sırası **sunucu veritabanından** ölçüldü. Hüküm `KANIT/SS2/04-COWORK-KABUL-HUKMU.md`.
+🔴 **Kabul KAPANMAMIŞ SINIRLARLA verildi** (`A13`/`K130` emsali): ① kriter 8 spec'in **lafzıyla
+koşulamadı** — üründe **başlık düzenleme UI'ı YOK**, çakışma **tamamlanma anahtarıyla** üretildi
+② kuyruğun **kendiliğinden** boşalma süresi **ÖLÇÜLMEDİ** (Yenile ile zorlandı) ③ kriter 4 bir
+**örneklemdir** ④ telefon **USB tüneliyle** bağlandı ⇒ **NAT/SignalR borcu KAPANMADI**.
+Borçlar `B-SS2-1`…`5`.
 🟢 **`R8` SÖNDÜ (oturum 55'te ÖLÇÜLDÜ):** `urun_kodu_satiri = 1773`, `radar.py . --olc-urun-kodu`
 ile **git'ten türetildi**; radar artık *"ürün kodu durgunluğu"* bildirmiyor. 🔴 **ÖLÇÜLDÜ: ⑨ web
 borcunun HAZIR SPEC'İ YOK** — 25 spec'in **hiçbiri web değil** ⇒ o yol bir **spec turu** ister.
@@ -117,14 +118,7 @@ borcunun HAZIR SPEC'İ YOK** — 25 spec'in **hiçbiri web değil** ⇒ o yol bi
 - **K41** — ADR 0003 v7 **DONDURULDU**; açılması üç şartın BİRLİKTE sağlanmasına + Onur'un açık onayına bağlı.
 - 🔒 **K127 — KİLİT ÖNCESİ BAĞIMSIZ DENETİM (Onur kilitledi, 3 Ağu 2026):** kilit checkpoint'i **denetçinin ÇIKTI YOLUNU** taşır; yoksa *"denetim KOŞULMADI"* diye **açıkça** yazar. Kanonik metin **`CLAUDE.md`**'de, buraya kopyalanmaz. **K53/1 ile çelişmez** — turun *sayısını* değil **zamanlamasını** sabitler. 🟢 `K133`'te *"yoksa açıkça yazar"* şıkkı **ilk kez** kullanıldı. 🔴 **Mekanik kapısı YOK** ⇒ borç `B-O52-2`. Gerekçe: hafıza K127.
 - 🔒 **K129 · K130 — `A13` KABUL + spec yeniden kilitlendi (Onur, 3 Ağu 2026, oturum 53).** Kurallar `A13/G27`–`G30` kapılarında + `M162`–`M170` mutantlarında koşuyor. 🔴 **Yaşayan beş sınır (hepsi borç, `B-O53-1`…`5`):** `G29/b` **kör** · `--fatal-infos` **taşıyıcı değil** · `G27/a`·`G27/c`·`G30/b` **mutantsız** · kriter 7'nin **dinamik ayaklarının aracı yok** · aksiyonlar **pinsiz**. Ders: **okunan onarım, ölçülmüş onarım değildir.** Gerekçe: hafıza K129/K130.
-- 🔒 **K133 — `SS2` v3 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 55):** tur 2'nin **beş
-  blokeri kapandı** — sınıflama `K53/3`'e göre yapıldı ve **hiçbiri borçlanamıyordu** (üçü KAPI:
-  `G32/a`·`G31/a`·`G33/c` kör; biri ÜRÜN: `/e`'nin şart 3'ü atlaması **yeni veri kaybı**; biri spec
-  içi çelişki). 13 major **borçlandı**. Kilit **kapanmamış sınırlarla** verildi (`A13`/`K130`
-  emsali). Üçüncü kâğıt turu `K53/1` gereği **açılmadı**; gerekçe ve dört kapı çıktısı
-  `KANIT/SS2/03-v3-KILIT.md`'de. 🔴 **Yaşayan sınır:** `spec-kapi-kapsama.py` *"mutant ISIRIR mı"*
-  **sormaz** ⇒ v3'ün üç onarımı yalnız **`T7`'de koşan kodla** kanıtlanır (borç `B-SS2-4`).
-  Gerekçe: hafıza K133.
+- 🔒 **K133 · K136 — `SS2` KİLİTLENDİ ve KABUL EDİLDİ** (Onur; 3 ve 4 Ağu 2026). K73 gereği kilit §5'ten **ÇEKİLDİ**; kurallar bugün `SS2/G31`–`G34` kapılarında ve `M171`–`M188` mutantlarında **koşuyor**. 🔴 **Yaşayan üç sınır:** ① `spec-kapi-kapsama.py` *"mutant ISIRIR mı"* **sormaz** (`B-SS2-4`) ② üründe **başlık düzenleme UI'ı YOK** ⇒ kriter 8 **tamamlanma anahtarıyla** koşuldu ③ `M172`'nin *beklenen* metni gerçeği tarif etmiyor (`B-SS2-5`). Gerekçeler: hafıza K133 · K135 · K136.
 - **K44-a** — **Önce araç, sonra belge.**
 - **K34-f** — Bir aracı **onaran el**, onu **yazan elden AYRI** olmalı.
 - **K26** — Üretici kendi denetçisini spawn edemez. **Üreten ≠ denetleyen.**
