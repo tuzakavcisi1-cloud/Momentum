@@ -84,7 +84,10 @@ Borçlar `B-SS2-1`…`5`.
 ile **git'ten türetildi**; radar artık *"ürün kodu durgunluğu"* bildirmiyor. 🟢 **⑨ WEB — `GOREV-W1` v2 KİLİTLİ (`K137`, oturum 57).** Web borcu **spec turu olarak
 DEĞİL**, `K53/5` gereği **yürüyen iskelet** olarak kuruldu; gerekçe `R8` **mutantıyla** ölçüldü.
 Ölçülen taban: `flutter build web` **EXIT 0** · Drift web **tam bağlı** · 🔴 **backend'de CORS
-YOK** (92 dosya). İş **Claude Code'da** (`T1`–`T7`); kabul kriterleri spec `## 7`'de.
+YOK** (92 dosya). **KABUL EDİLDİ** (`K138`, Onur, 5 Ağu 2026) — hüküm `KANIT/W1/01-COWORK-KABUL-HUKMU.md`;
+on bir kriterin **dokuzu** Cowork'ün kendi koşumuyla. 🔴 Kabul **kapanmamış sınırlarla**: 13 statik
+mutant **okundu, ölçülmedi** · dört koşan mutant **yeniden koşulmadı** (`K80`) · `B-W1-1`…`B-W1-4`
+(`B-W1-3`/`B-W1-4` **`BORCLAR.md`'ye YAZILAMADI** — tavan SARI, karar `K40` gereği Onur'da).
 → **backend CI** (`D-A13-4`) + release → ⑩ `ADR 0004` + vitrin.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` ÇAKIŞMASI: kanonik metin `ORTAM.md`'de** (oturum 50'de
 ölçüldü). Buraya **kopyalanmaz** — üç satırlık özet oturum 53'te `kanonik-kopya` olarak budandı.
