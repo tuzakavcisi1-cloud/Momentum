@@ -1,8 +1,8 @@
 # DEVİR — oturum 56 → 57 (4 Ağu 2026)
 
-**PROJE:** `C:\dev\Momentum` · main = **`1203833`** · 🔴 **PUSH ONUR'DA (7 commit ileri)**
-**Çalışma ağacı:** 5 bilinen `verify.ps1` artefaktı + 🔴 **iki APK (353 MB, untracked, `.gitignore` KAPSAMINDA DEĞİL)** · `index.lock` YOK
-**Kapanış sağlığı:** **454.209 / 550k** 🟢 · `DURUM.md` **30.329 b, pay 2.439 (YEŞİL)** · `BORCLAR.md` **31.923 b, pay 845 (SARI, bilinçli)**
+**PROJE:** `C:\dev\Momentum` · 🔴 **HEAD ve PUSH DURUMU BU BELGEYE YAZILMAZ — açılışta ÖLÇÜLÜR** (`K82-b`, `DURUM.md` §2 adım 7). Aşağıdaki satır bir **anlık ölçüm kaydıdır**, canlı durum değildir: oturum 56 kapanışında `SS2` kabulü `1203833`, devir notu `a051760`, ardından **push edildi** ve `fetch` sonrası **0 geri / 0 ileri** ölçüldü.
+**Çalışma ağacı:** yalnız 5 bilinen `verify.ps1` artefaktı · `index.lock` YOK. 🟢 İki APK (**353 MB**) oturum sonunda **`C:\dev\_momentum_apk\`'ya TAŞINDI** — `.gitignore`'a **dokunulmadı** (bu projede `*.log` deseni 7 verify kaydını sessizce yutmuştu, `K111`).
+**Kapanış sağlığı:** **465.688 / 550k** 🟢 (SARI eşiğine 84.312) · `DURUM.md` **30.329 b, pay 2.439 (YEŞİL)** · `BORCLAR.md` **31.923 b, pay 845 (SARI, bilinçli)**
 **Kimlikler:** `DURUM.md` `375A2536` · `BORCLAR.md` `13542A23` · `PROJE_HAFIZA.md` **1.000.748 b** `3E80DFE1` · `araclar/ss2-kapisi.py` `AC744C65`
 
 ## BU OTURUMDA OLANLAR
@@ -28,10 +28,10 @@ B'de `[X]` + *"Gönderilmemiş değişiklik"* → kuyruk boşaldı → **A'da `[
 `clientId`: A `019fcc78-aa7b-7c74-aa33-fd37fc9aebdc` · B `019fcc71-8358-71ca-8b6e-e968848cf9dc`.
 
 ## 🔴 SIRADAKİ İŞ (öncelik sırası)
-1. **PUSH** (7 commit) — Onur'da.
-2. **`.gitignore` kararı:** `KANIT/o56/apk-*.apk` **353 MB**, untracked ama **ignore EDİLMİYOR**. Bir `git add -A` depoyu şişirir. 🔴 `*.log` satırı bu projede 7 verify kaydını **sessizce yutmuştu** (K111 borcu) ⇒ geniş desen YAZILMAMALI; dar desen + **kapı** gerekir.
-3. **Ortam kapatma (K80 — Onur'un izniyle):** backend PID **10404**, emülatör `emulator-5554`, telefon `fba69c15`. Kapatma **ölçülür** (`netstat :5298` boş).
-4. ⑨ **web borcu** — 25 spec'in hiçbiri web değil ⇒ **spec turu** ister · backend CI (`D-A13-4`) · release · ⑩ `ADR 0004` + vitrin.
+1. 🟢 **PUSH YAPILDI** (ölçüldü: `0 geri / 0 ileri`) · 🟢 **APK'lar repo dışına taşındı** ·
+   🟢 **Ortam kapatıldı ve ÖLÇÜLDÜ**: `netstat :5298`'de **LISTENING satırı YOK**, `adb devices`'ta
+   **emülatör YOK**, boş RAM **624 MiB → 1,54 GiB**. Docker **açık** bırakıldı (healthy).
+2. ⑨ **web borcu** — 25 spec'in hiçbiri web değil ⇒ **spec turu** ister · backend CI (`D-A13-4`) · release · ⑩ `ADR 0004` + vitrin.
 
 ## AÇIK / YAPILMAYAN (gizlenmiyor)
 - 🔴 **`PROJE_RADAR.jsonl`'a bu oturumun kaydı YAZILMADI** — bilinçli, bütçe gerekçesiyle. Radar'ın tablosu bu oturum için **bayat**.
