@@ -92,7 +92,30 @@ if (hasDatabase)
     healthChecks.AddCheck<NpgsqlReadyHealthCheck>("postgres", tags: ["ready"]);
 }
 
+// GOREV-W1 D-W1-1: allow-list is read from configuration, never a bare literal in code; an empty
+// list means the CORS policy plain does not exist (no AllowAnyOrigin/SetIsOriginAllowed fallback).
+var corsAllowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+
+// W1/D-W1-2: CORS registration is Development-only (K-D5-style deny-by-default posture) -- this is
+// a SEPARATE IsDevelopment() block from the one at :49 (K61 dev-identity shield); the marker comment
+// exists because a dosya-geneli arama cannot tell the two blocks apart (denetim BLOKER-3).
+if (builder.Environment.IsDevelopment() && corsAllowedOrigins.Length > 0) // W1/D-W1-2
+{
+    builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy
+        .WithOrigins(corsAllowedOrigins)
+        .WithHeaders("Content-Type", "X-Momentum-Dev-User")
+        .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")));
+}
+
 var app = builder.Build();
+
+// W1/D-W1-2: mirrors the registration guard above (same corsAllowedOrigins captured by closure) --
+// D-W1-3: UseCors must run before endpoint execution; there is no UseRouting call in this file, so
+// middleware order is invisible at compile time and a wrong position would only fail at request time.
+if (builder.Environment.IsDevelopment() && corsAllowedOrigins.Length > 0) // W1/D-W1-2
+{
+    app.UseCors();
+}
 
 // Exception -> ProblemDetails, active in every environment (no Developer Exception Page leak).
 app.UseExceptionHandler();

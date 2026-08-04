@@ -41,9 +41,9 @@ VARLIKLAR = [
     },
     {
         "ad": "drift_worker.js",
-        "url": "https://github.com/simolus3/drift/releases/download/drift-2.34.0/drift_worker.js",
+        "url": "https://github.com/simolus3/drift/releases/download/drift-2.34.3/drift_worker.js",
         "repo": "simolus3/drift",
-        "tag": "drift-2.34.0",
+        "tag": "drift-2.34.3",
         "hedef": os.path.join(KOK, "src", "client", "web", "drift_worker.js"),
     },
 ]

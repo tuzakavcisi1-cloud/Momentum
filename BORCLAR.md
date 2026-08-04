@@ -332,3 +332,6 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
 
 - 🟢 **KAPANMIŞ ÜÇ KALEM ARŞİVE TAŞINDI [oturum 56, `K135`]:** `spec-kapi-kapsama.py` kural yarısı (`K124`) · `A13` §9/5 · `A13` §9/10. Tam metinleri `PROJE_HAFIZA.md` `K135`'te; burada **yer kaplamaları** tavanı borç KAPANMADIĞI hâlde daraltıyordu.
 - 🟡 **`B-SS2-5` — `M172`'nin *beklenen* metni gerçeği tarif etmiyor [oturum 56'da ölçüldü, Onur borçlandırdı].** Kilitli spec (`K133`) satır 382 yalnız `G32/a` bekler; ölçülen gerçek **beş ayak** (`G32/a`·`e`·`e2`·`g`·`h`) — şart 4 çakışma kaydını **tamamen bastırıyor**. Sınıf **beyansız-sınır**; kilit **açılmadı** (çekirdek sözleşme ayakta: `M172` `G32/a`'yı **adıyla** düşürdü). Gerekçe + kapanış şartı: hafıza `K135-EK3`.
+
+### OTURUM 57'DE AÇILAN — `W1` BORÇLARI (`K137`)
+- 🟡 **`B-W1-1`·`B-W1-2` — tam gerekçe spec §6b'de, kopyalanmaz** (`kanonik-kopya`; kaynak `GOREV-W1-web-yuruyen-iskelet.md` §6b). Kimlikler: `B-W1-1` `W1/G38/b` mutantsız (mutantı `K112` kapsamı olurdu). `B-W1-2` `W1/G37/c` (`missingFeatures` beyanı) mekanik kapısız, belge disiplinidir — ölçülen: `chosenImplementation=sharedIndexedDb`, `missingFeatures={dedicatedWorkersInSharedWorkers, sharedArrayBuffers}` (COOP/COEP borcu, muhtemel sebep dev-sunucu başlık eksikliği).
