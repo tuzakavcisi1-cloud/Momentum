@@ -74,10 +74,6 @@
 
 ### Araç / kapı
 
-- 🟢 **KAPANDI — `spec-kapi-kapsama.py`'nin KURAL YARISI ARTIK ÇALIŞIYOR [`K124`, oturum 51].**
-  `GOREV-A12` kabul edildi (7/7 kriter + 3/3 şart, **Cowork'ün kendi koşumu**, K26). Ölçüm ve gerekçe
-  arşivde: `PROJE_HAFIZA.md` **K124**, kanıt `KANIT/A12/`. Kalan kör nokta **ayrı kalemdir: `B-O51-1`**.
-
 - 🟡 **`_start_api.cmd` `ASPNETCORE_ENVIRONMENT` borcu ÖLÇÜLEMEDİ [oturum 48'de DENENDİ].** Aynı depoda
   ikinci bir `dotnet run` örneği, birincinin **dll'leri kilitlemesi** yüzünden derlenemiyor (`MSB3027`) ⇒
   değişkensiz davranış ölçülemedi. Ölçmenin yolu: tek örnek, değişkensiz kaldırma (ortamı boşaltmayı ister).
@@ -305,10 +301,6 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
   pin bir bakım borcudur.
 
 ### OTURUM 53'TE KAPANAN / DEĞİŞEN
-- 🟢 **`A13` §9/5 KAPANDI** — `workflow` token yetkisi ölçüldü (push **GCM** token'ını kullanıyor,
-  onda `workflow` **vardı**; `gh` token'ında yok ama `gh workflow run` **`repo` ile çalıştı**).
-  🔴 **Ders:** `credential.helper` **ölçülmeden** yazılan bir çare, yanlış token'ı hedefler.
-- 🟢 **`A13` §9/10 KAPANDI** — `ci-kapisi.py` yazıldı, altın küme **13/13** (iki ayrı el koştu).
 - 🟡 **`A13` §9/4 KISMEN KAPANDI** — Timing API: dört koşumun da **billable MACOS 0 ms /
   UBUNTU 0 ms**. **Kalan kontenjan hâlâ `[ÖLÇÜLMEDİ]`** (`gh` token'ında `user` yetkisi yok).
 - 🔴 **`B-O52-2` (K127'nin mekanik kapısı yok) HÂLÂ AÇIK — ama bu turda K127 kapısız hâliyle
@@ -336,3 +328,7 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
   geri yazım → `sha256` ile özdeşlik). 🔴 `git restore` ile geri alma **YASAK** (`core.autocrlf`
   bayt-özdeşliği kör kılar — `ORTAM.md`). 🔴 **Araç ÜRÜN KODU SAYILMAZ (`K53/4`)** ⇒ bu borç
   `R8` sönmeden açılamaz.
+
+
+- 🟢 **KAPANMIŞ ÜÇ KALEM ARŞİVE TAŞINDI [oturum 56, `K135`]:** `spec-kapi-kapsama.py` kural yarısı (`K124`) · `A13` §9/5 · `A13` §9/10. Tam metinleri `PROJE_HAFIZA.md` `K135`'te; burada **yer kaplamaları** tavanı borç KAPANMADIĞI hâlde daraltıyordu.
+- 🟡 **`B-SS2-5` — `M172`'nin *beklenen* metni gerçeği tarif etmiyor [oturum 56'da ölçüldü, Onur borçlandırdı].** Kilitli spec (`K133`) satır 382 yalnız `G32/a` bekler; ölçülen gerçek **beş ayak** (`G32/a`·`e`·`e2`·`g`·`h`) — şart 4 çakışma kaydını **tamamen bastırıyor**. Sınıf **beyansız-sınır**; kilit **açılmadı** (çekirdek sözleşme ayakta: `M172` `G32/a`'yı **adıyla** düşürdü). Gerekçe + kapanış şartı: hafıza `K135-EK3`.

@@ -17,6 +17,14 @@ NE OLCER (ve NE OLCMEZ):
 🔴 **DUZ METIN TARAR, DART AYRISTIRICISI DEGIL** [BEYAN EDILMIS SINIR]. Her
 satirin ilk tirnaksiz `//`'den SONRASI yorum sayilir ve ATILIR -- yorum
 satirindaki bir desen GORUNMEZ (M171c yanlis-pozitif kontrolu tam bunu ister).
+🔴 **BLOK YORUM (`/* ... */`) DA ATILIR [oturum 56'da ONARILDI -- ONCESINDE KOR
+KAPIYDI].** Olculmus gerekce (`KANIT/o56/14-g33c-yorum-olcumu.txt`): gercek kod
+`schemaVersion => 4` iken dogru deger YALNIZ blok yorumda birakilinca arac
+YANLIS SUSUYORDU (vaka D), ve blok yorumdaki `distinct`'siz bir `.count(`
+YANLIS-POZITIF veriyordu (vaka C). `//` ayagi (M171b/M171c) blok yolunu
+GORMUYORDU. Onarim `_blok_yorumsuz()`'tadir; altin kume vaka 11-14 ile pinli.
+KALAN BEYAN EDILMIS SINIR: uc tirnakli (`'''`/`\"\"\"`) Dart literalleri ve
+ham/kacisli dizeler TAM ayristirilmaz; bu bir Dart ayristiricisi degildir.
 Blok aramalari (`G31/b`, `G33/c`) SATIR BAZLI DEGILDIR -- acan parantezden/
 suslu parantezden kapanana kadar olan ARALIK taranir (K126 dersi: recete
 satir bazli olursa cok-satirli cagrilarda ya kacirir ya da MESRU baska bir
@@ -33,10 +41,56 @@ def _yaz(s):
     sys.stdout.write(s.encode("ascii", "replace").decode("ascii") + "\n")
 
 
+def _blok_yorumsuz(metin):
+    """Blok yorumlari (/* ... */) BOSLUGA cevirir. SATIR SAYISINI ve satir ici
+    KONUMLARI korur -- g33c_distinct'in satir numarasi hesabi buna dayanir, bu
+    yuzden silme degil BOSLUKLA DOLDURMA yapilir. Tirnak literallerine saygilidir
+    ve '//' satir yorumunun ICINE BAKMAZ (oradaki '/*' bir blok ACMAZ); onlari
+    _yorumsuz_satirlar'in per-satir gecisi zaten temizler. Kapanmayan bir blok
+    dosya sonuna kadar yorum sayilir (Dart derleyicisi de oyle yapar)."""
+    ci = list(metin)
+    n = len(metin)
+    i = 0
+    tek = cift = False
+    while i < n:
+        ch = metin[i]
+        if tek or cift:
+            if ch == "\\":
+                i += 2
+                continue
+            if ch == "'" and tek:
+                tek = False
+            elif ch == '"' and cift:
+                cift = False
+            elif ch == "\n":
+                tek = cift = False
+            i += 1
+            continue
+        if ch == "'":
+            tek = True
+        elif ch == '"':
+            cift = True
+        elif ch == "/" and i + 1 < n and metin[i + 1] == "/":
+            while i < n and metin[i] != "\n":
+                i += 1
+            continue
+        elif ch == "/" and i + 1 < n and metin[i + 1] == "*":
+            j = metin.find("*/", i + 2)
+            son = (j + 2) if j != -1 else n
+            for k in range(i, son):
+                if ci[k] != "\n":
+                    ci[k] = " "
+            i = son
+            continue
+        i += 1
+    return "".join(ci)
+
+
 def _yorumsuz_satirlar(metin):
-    """Her satirin ilk tirnaksiz '//' isaretinden SONRASINI yorum sayip atar."""
+    """Once BLOK yorumlari (bkz. _blok_yorumsuz), sonra her satirin ilk tirnaksiz
+    '//' isaretinden SONRASINI yorum sayip atar."""
     sonuc = []
-    for satir in metin.split("\n"):
+    for satir in _blok_yorumsuz(metin).split("\n"):
         tek = cift = False
         kesim = len(satir)
         i = 0
@@ -246,6 +300,31 @@ def altin_kume():
                        []))
     sonuc.append(_vaka("10) hic count() cagrisi yoksa -- KIRMIZI (bicim/varlik kontrolu)",
                        _VERITABANI_TEMIZ, "// gorevlerGorunur burada degil", ["G33c"]))
+    # 11-14: YORUM-ATLAMA ayaginin G33/c ve BLOK yolu [oturum 56, Cowork; K34-f:
+    # araci Claude Code yazdi, onaran/pinleyen el AYRI]. 11-12 oturum 55'in
+    # kapatilmamis MINOR'uydu (davranis zaten dogruydu, PIN yoktu); 13-14 ise
+    # OLCULEREK dogdu ve 14 bir KOR KAPIYDI (KANIT/o56/14-g33c-yorum-olcumu.txt).
+    sonuc.append(_vaka("11) M176c: distinct:true satiri '//' ile YORUMA cevrilir -- KIRMIZI",
+                       _VERITABANI_TEMIZ,
+                       _GOREV_DEPOSU_TEMIZ.replace(
+                           "      filter: kuyruk.durum.equals('bekliyor'),\n      distinct: true,\n",
+                           "      filter: kuyruk.durum.equals('bekliyor'),\n      // distinct: true,\n"),
+                       ["G33c"]))
+    sonuc.append(_vaka("12) M176d: kod bozulmaz, YORUMDA distinct'siz .count( -- SUSMALI (yanlis-pozitif)",
+                       _VERITABANI_TEMIZ,
+                       _GOREV_DEPOSU_TEMIZ
+                       + "\n    // final eski = kuyruk.opId.count(filter: kuyruk.durum.equals('x'));\n",
+                       []))
+    sonuc.append(_vaka("13) BLOK yorum /* ... */ icinde distinct'siz .count( -- SUSMALI [o56 onarimi]",
+                       _VERITABANI_TEMIZ,
+                       _GOREV_DEPOSU_TEMIZ
+                       + "\n    /* final eski = kuyruk.opId.count(filter: kuyruk.durum.equals('x')); */\n",
+                       []))
+    sonuc.append(_vaka("14) BLOK yorumda schemaVersion => 5, GERCEK kod => 4 -- KIRMIZI [o56: KOR KAPIYDI]",
+                       _VERITABANI_TEMIZ.replace(
+                           "int get schemaVersion => 5;",
+                           "int get schemaVersion => 4;\n  /* int get schemaVersion => 5; */"),
+                       _GOREV_DEPOSU_TEMIZ, ["G31a"]))
     _yaz("=" * 74)
     gecti = sum(1 for x in sonuc if x)
     _yaz("HUKUM: %d/%d GECTI -- %s" % (gecti, len(sonuc),

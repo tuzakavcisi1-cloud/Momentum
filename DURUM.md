@@ -75,7 +75,9 @@ gerekçe §5/K130). 🟢 §9/5 · §9/10 KAPANDI, §9/4 kısmen. 🔴 Kota `[ÖL
 kapandı, 13 major borçlandı (`S11`–`S14` + `B-SS2-4`); üçüncü denetim turu `K53/1` gereği
 **açılmadı**. Claude Code `b900bae` ile **+5831/−69** yazdı. 🔴 **KABUL VERİLMEDİ:** Cowork'ün kendi
 koşumuyla **kriter 1·2·3·5·6·7·9 geçti** (`analyze` 0 · `test` **522/522** · `verify.ps1` EXIT 0,
-backend **120/120**, CVE 0 · altın küme **10/10**), **kriter 8 (uçtan uca) ÖLÇÜLMEDİ**.
+backend **120/120**, CVE 0);
+`ss2-kapisi.py` altın küme **14/14** (oturum 56'da 10→14: oturum 55'in iki MINOR'u **pinlendi** +
+**blok yorum KÖR KAPISI onarıldı**, mutantla kanıtlı). 🔴 **kriter 8 (uçtan uca) ÖLÇÜLMEDİ.**
 Hükümler: `KANIT/SS2/03-v3-KILIT.md` + hafıza K134.
 🟢 **`R8` SÖNDÜ (oturum 55'te ÖLÇÜLDÜ):** `urun_kodu_satiri = 1773`, `radar.py . --olc-urun-kodu`
 ile **git'ten türetildi**; radar artık *"ürün kodu durgunluğu"* bildirmiyor. 🔴 **ÖLÇÜLDÜ: ⑨ web
@@ -96,9 +98,7 @@ borcunun HAZIR SPEC'İ YOK** — 25 spec'in **hiçbiri web değil** ⇒ o yol bi
 
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
-- **K77 · K78 · K79 · K81 — slice-3e KAPANDI** (Cowork'ün kendi koşumuyla, K26). Kilitler K73 gereği **çekildi**; kurallar bugün `G12`'nin 15 ayağında, `yoklama-yasagi-kapisi.py`'nin `Y1`–`Y4`'ünde ve `M58`–`M73`+`M71b` mutantlarında **koşuyor**. 🔴 **Yaşayan üç beyan:** ① `Y1` **sembol bazlı** ve gövde kuralı beyaz listedekiler **dâhil** herkese uygulanır ② `CursorHint` **yoksayılır** (`D6`) ③ web'de sinyal **`kIsWeb` ile kapalı**, web ayağı **`[DOĞRULANMADI]`**. 🔴 **İki açık borç:** `Y3`'ün mutantı yok · `G12` kriter 8 **UYGULANMAZ**. Gerekçeler: hafıza K77–K81.
-- **K76 · K75 · K74 · K71** — **`R9` ve `R10` KABUL EDİLDİ**; kilitler K73 gereği **ÇEKİLDİ**, kurallar `G10`/`G11` kapılarında + `M41`–`M57` mutantlarında **koşuyor**. 🔴 **Yaşayan iki sınır:** ① `D2` kural 3'ün `K != 'yerel'` istisnası (eski satırlar sunucuda olsa da *"Yalnızca bu cihazda"* der) ② `R9` öncesi inmiş satırlar `'yerel'` KALIR (migration yasak). 🔴 **`K46` AÇIK** ⇒ `DESIGN.md` **v2**. Gerekçeler: hafıza K71/K74/K75/K76.
-- **K116 · K120 — `A11` KABUL EDİLDİ (K121, Onur kilitledi, 2 Ağu 2026)** ⇒ K73 gereği kilitler §5'ten **ÇEKİLDİ**; `D0` daraltması, `denemeSayisi` muafiyeti, `ItmeYenidenDeneme` ve `Y1`'in kapsayan-gövde kuralı bugün prozada değil **`A11/G22`–`A11/G24` kapılarında ve `M139`–`M155` mutantlarında** koşuyor. 🔴 **Yaşayan üç beyan:** ① `GOREV-slice-3d-cekme.md`'deki `D0` metni **bilerek bayat** (K70 kilitli) — kanonik metin `GOREV-A11` §3'tür ② `main.dart:149` sinyal dinleyicisini ölçen kapı **YOK** (`B-O50-1`) ③ `durdur()` üretimde çağrılmıyor · `408`/`429` kapsam dışı · **fiziksel cihaz ölçülmedi**. Gerekçeler: hafıza K116/K120/K121.
+- 🔒 **K71–K81 · K116–K120 — slice-3e · `R9`/`R10` · `A11` KABUL EDİLDİ; anlatım oturum 56'da arşive taşındı (`K135-EK2`).** Kurallar prozada değil **kapıda** koşuyor (K73). 🔴 **BAŞKA HİÇBİR CANLI BELGEDE İZİ OLMAYAN ALTI BEYAN BURADA KALIR** (ölçüldü: `KANIT/o56/25-beyan-izi.txt`): ① `CursorHint` **yoksayılır** (`D6`) ② `Y3`'ün mutantı **YOK** ③ `G12` kriter 8 **UYGULANMAZ** ④ `D2` kural 3'ün `K != 'yerel'` istisnası ⑤ `R9` öncesi inmiş satırlar **`'yerel'` KALIR** (migration yasak) ⑥ `GOREV-slice-3d-cekme.md`'deki `D0` metni **bilerek bayat** (K70; kanonik metin `GOREV-A11` §3). 🟢 Kalan **yedi** beyan `BORCLAR.md`'de yaşıyor; buraya **kopyalanmaz** (`kanonik-kopya`).
 - 🔒 **K111 — .NET 10 (Onur kilitledi, 2 Ağu 2026):** çatı `net10.0`, SDK pini `10.0.302`; kural **`verify.ps1`'de ve `global.json` pininde** koşuyor. Geçiş **ATOMİK** (ara durum ölçülerek kırık bulundu). `LangVersion=latest` riski + geçici CVE pini `BORCLAR.md`'de. Gerekçe: hafıza K111.
 - 🔒 **K108 — KAPI KİMLİĞİ SPEC-YERELDİR** (Onur kilitledi, 2 Ağu 2026): atıf **daima** kapsam önekli (`A10/G18`). Ölçülmüş gerekçe: `A9b/G17` ≠ `A10/G17`, `A10/G18` ≠ `A9c/G18` — aynı ad, farklı kapı, ikisi de kabul edilmiş işin içinde. Kapısı **var**: `kapi-ad-teklik-kapisi.py`, açılışta **§2 adım 4b**.
 - **K73** — **Bir dilimin kilitleri, dilim KABUL EDİLDİĞİNDE §5'ten çekilir** ve tek satırlık atıfla temsil edilir; kural o andan sonra **prozada değil KAPIDA** yaşar. Arşivde hiçbir şey silinmez. 🔴 Kapısı **olmayan** kilit çekilemez — `K72` bu yüzden §5'te DURUYOR.
@@ -151,6 +151,8 @@ borcunun HAZIR SPEC'İ YOK** — 25 spec'in **hiçbiri web değil** ⇒ o yol bi
 | `belge-tavan-kapisi.py` (banner **1.0.0**, etiket bayat ⇒ `B-O50-2`) | canlı belge **bayt tavanı + PAY**; `T1` aşım (KIRMIZI) · `T2` dar pay (SARI, eşik %5) · `T0` dosya yok. Tavanı **kendi değiştirmez** (K40) — 🟢 **vaka 10 artık kapsam tablosundaki HER tavanı PİNLER**: K40'ın *"eşik değiştiren altın kümeye vaka ekler"* şartı **prozadan kapıya taşındı** ve K89'dan beri taşınan *"küme `VARSAYILAN_KAPSAM`'a dokunmuyor"* borcu **KAPANDI**; **vaka 13** (oturum 52) gevşetmenin *fiilen canlı* olduğunu pinler | **13/13** |
 | `oturum-sagligi.py` **1.0.0** | K21'in mekanik kapısı: kanonik eşik (`S1`) · yüzde avı (`S2`) · eşik kopyası (`S3`) · token+payda (`S4`/`S5`, `--transcript` ister, yoksa **OLCULMEDI**) · kimlik tazeliği (`D1`, **yazım anıyla**). Çıkış 4 = kanonik temiz ama sağlık ölçülmedi | **26/26** |
 | `kapi-ad-teklik-kapisi.py` **1.0.0** | K108: `N1` kapsam öneksiz **belirsiz** atıf (KIRMIZI) · `N2` spec içi tekrar · `N3` etiketsiz paylaşım (bilgi). Yol/dosya adı (`KANIT/…/02-G2/`) ve `(GENİŞLETME)` etiketli paylaşım **yanlış-pozitif değildir** — ikisi de ayrı vakayla kanıtlı | **18/18** |
+| `ss2-kapisi.py` [`SS2/T0`] | `SS2/G31/a,b` + `G33/c` **statik** ayakları; düz metin tarar, Dart ayrıştırmaz. 🔴 `//` **ve** `/* */` yorumları atar — **blok yolu oturum 56'da ONARILDI, öncesinde KÖR KAPIYDI** (`M-o56-1` ile kanıtlı) | **14/14** |
+| `ci-kapisi.py` [`A13`] | CI iş akışının statik ayakları (altın kümede ölçülen kodlar: `G28a` … `G30c`). 🔴 Envantere **oturum 56'da eklendi** — oturum 53'ten beri tabloda yoktu | **13/13** |
 | `dosya-kimlik.py` | bayt + sha256 + U+FFFD + CRLF | — |
 | `mcp-arac-probe.py` | MCP'nin **gerçek** araç listesi (`tools/list`) | — |
 | `pub-surum-olc.py` | pub.dev `/api` sürüm + advisory | — |
@@ -160,7 +162,7 @@ borcunun HAZIR SPEC'İ YOK** — 25 spec'in **hiçbiri web değil** ⇒ o yol bi
 | `adr-kapi-taramasi.py` | ADR 0003 kapısı (**dondurulmuş**, dokunma) | — |
 | `verify.ps1` | backend build+test+CVE zinciri | — |
 
-🔴 **ENVANTER OTURUM 47'DE YENİDEN SAYILDI: `araclar\` altında **27** dosya; **21** çalıştırılabilir (20 `.py` + `verify.ps1`), tablo **21** satır; kalan 6 veri/yardımcı (3 `.json` · `.md` · `.sha256` · `.gitkeep`).** Eski *"20 dosya"* beyanı bu ayrımı yapmıyordu. *Envanterde olmayan kapı tetiklenemez*; `KAPILAR.md`'nin varlık sebebi budur.
+🔴 **ENVANTER OTURUM 56'DA YENİDEN SAYILDI (ölçüldü, beyan değil): `araclar\` altında **29** dosya; **23** çalıştırılabilir (22 `.py` + `verify.ps1`), tablo **23** satır; kalan 6 veri/yardımcı (3 `.json` · `.md` · `.sha256` · `.gitkeep`) + 2 dizin (`__pycache__`, `fixture`).** Oturum 47'nin *"27 dosya / 21 çalıştırılabilir"* sayımı **bayatlamıştı**: `ss2-kapisi.py` (oturum 55) ve `ci-kapisi.py` (oturum 53) tabloya **hiç girmemişti** — yani iki kapı **envantersiz** koşuyordu. *Envanterde olmayan kapı tetiklenemez*; `KAPILAR.md`'nin varlık sebebi budur.
 
 ---
 
