@@ -12,172 +12,219 @@
 > 🔴 **BU DOSYA ARTIK OTURUM AÇILIŞINDA OKUNMAZ [K53, 26 Tem 2026].** Canlı durum **`DURUM.md`**'dedir (≤12 KB). Burası **APPEND-ONLY KARAR ARŞİVİDİR**: yeni checkpoint üste eklenir, **hiçbir şey silinmez, hiçbir şey yerinde düzeltilmez** (bayat satır varsa **düzeltme notu** yazılır). Buraya yalnız *"bu karar neden alındı?"* diye sorulduğunda bakılır.
 
 <!-- DIZIN:BAS -- MEKANIK URETIM, ELLE DUZENLEME: python araclar/hafiza-dizin.py . -->
-### DIZIN — 159 kayit (mekanik uretim, surum 1.1.0)
+### DIZIN — 160 kayit (mekanik uretim, surum 1.1.0)
 
 | satir | tur | oturum | kilit | konu |
 |---|---|---|---|---|
-| 182 | CHECKPOINT | 55 | K133 | SS2 v3 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 55 |
-| 241 | CHECKPOINT | - | K133-EK | DURUM.md §5 BUDANDI (Onur kilitledi, aynı oturum |
-| 267 | CHECKPOINT | 54 | K132 | K132 · SS2 İKİ TUR DENETİMDEN GEÇTİ, İKİSİNDE DE KİLİTLENEMEDİ · R8 SERT DURAK YANDI (3 Ağu 2026, oturum 54 |
-| 329 | CHECKPOINT | 54 | K131 K95 | K131 · OTURUM 54 AÇILIŞI: 10/10 ÖLÇÜLDÜ · DEVİR NOTUNUN ÜÇ MADDESİ ÖLÜ ÇIKTI · K95'İN "ÖLÇÜLMEDİ" SORUSU ÖLÇÜL |
-| 359 | CHECKPOINT | 52 | K128 | K128 · A13 KRİTER 1–6 COWORK'ÇE DOĞRULANDI; 7–8 PUSH BEKLİYOR (oturum 52, 3 Ağu 2026 |
-| 398 | CHECKPOINT | 52 | K127 | K127 · KİLİT ÖNCESİ BAĞIMSIZ DENETİM ZORUNLU + A13 DÜZELTİLDİ VE YENİDEN KİLİTLENDİ (Onur kilitledi, 3 Ağu 202 |
-| 445 | CHECKPOINT | - | K127 | KURALIN KENDİSİ (Onur kilitledi |
-| 461 | CHECKPOINT | 52 | K126 | K126 · GOREV-A13 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 52 |
-| 513 | CHECKPOINT | 52 | K125 | K125 · GOREV-A13 YAZILDI VE ÖLÇÜLDÜ — KİLİT ADAYI (oturum 52, 3 Ağu 2026 |
-| 578 | CHECKPOINT | 51 | K124 | K124 · GOREV-A12 KABUL EDİLDİ (Onur kilitledi, 3 Ağu 2026, oturum 51 |
-| 651 | CHECKPOINT | 51 | K123 | K123 · A12 KRİTER 0 ISIRDI: İKİ KÂĞIT İDDİASI YANLIŞLANDI · ŞIK 2 + ÜÇ ŞART KİLİTLENDİ (3 Ağu 2026, oturum 51  |
-| 711 | CHECKPOINT | 51 | K122 | K122 · OTURUM 51 AÇILIŞI: 10/10 ÖLÇÜLDÜ · A12 TABANI ALINDI · SPEC'TE BAYAT SAYI BULUNDU (3 Ağu 2026, oturum 5 |
-| 772 | CHECKPOINT | 50 | K121 | K121 · GOREV-A11 KABUL EDİLDİ (Onur kilitledi, 2 Ağu 2026, oturum 50 |
-| 823 | CHECKPOINT | 50 | K120 | K120 · A11 KABUL KOŞUMU TAMAMLANDI: 16/17 ISIRDI, M141 KÖR AYAK — KABUL EDİLMEDİ (2 Ağu 2026, oturum 50 |
-| 893 | CHECKPOINT | 49 | K119 | K119 · A11 BAĞIMSIZ KABUL DENETİMİ: KISMİ GEÇTİ, KABUL EDİLMEDİ (2 Ağu 2026, oturum 49 |
-| 940 | CHECKPOINT | 49 | K118 K117 | K117 · BORCLAR.md TAVANI 24 KB · K118 · A12 SPEC'İ (2 Ağu 2026, oturum 49 · Onur: *"önerini yap"* |
-| 995 | CHECKPOINT | 49 | K116 | K116 · D0 DARALTILDI, Y1 KAÇAĞI KİLİTLENDİ, A11 v2 HAZIR (2 Ağu 2026, oturum 49 · Onur DÖRT kilit verdi |
-| 1043 | CHECKPOINT | 49 | K115 | K115 · ÇEVRİMDIŞI ÖLÇÜLDÜ; AĞ-DÖNÜŞ TETİKLEYİCİSİ YOK (2 Ağu 2026, oturum 49 · Onur İKİ kilit verdi |
-| 1102 | CHECKPOINT | 49 | K114 | K114 · ORTAM.md AYRILDI, AÇILIŞTA OKUNUR (2 Ağu 2026, oturum 49 · Onur kilitledi |
-| 1158 | DEVİR | 48 | K113 K112 K111 | NOTU (2 Ağu 2026 — oturum 48 → 49: .NET 10 (K111) · cihaz senkron kanıtı (K112) · bulgu kapatıldı (K113) |
-| 1242 | CHECKPOINT | 48 | K113 K112 | K112 BULGUSU KAPATILDI: YEREL YAZMA ARTIK İTMEYİ TETİKLİYOR (2 Ağu 2026, oturum 48 · Onur kilitledi |
-| 1292 | CHECKPOINT | 48 | K112 | ③ CİHAZDA UÇTAN UCA SENKRON: YÜRÜYEN İSKELET KOŞTU (2 Ağu 2026, oturum 48 |
-| 1333 | CHECKPOINT | 48 | K111 | .NET 10 GEÇİŞİ KAPANDI (2 Ağu 2026, oturum 48 · Onur kilitledi) — *spec yazılmadan, koşan deneyle* |
-| 1410 | DEVİR | 47 | K108 | NOTU (2 Ağu 2026 — oturum 47 → 48: K108 kapısı doğdu, A9c KABUL, D5 kapandı |
-| 1516 | CHECKPOINT | 47 | K110 | GOREV-A9c KABUL EDİLDİ; D5 KÖR KAPISI KAPANDI (2 Ağu 2026 — oturum 47 |
-| 1572 | CHECKPOINT | 47 | K109 | GOREV-A9c v2 KİLİTLENDİ (2 Ağu 2026 — oturum 47 |
-| 1598 | CHECKPOINT | 47 | K108 | KAPI ADI ÇAKIŞMASI ÖLÇÜLDÜ; KİMLİK SPEC-YEREL İLAN EDİLDİ; KAPISI YAZILDI (2 Ağu 2026 — oturum 47 |
-| 1667 | DEVİR | 46 | - | NOTU (2 Ağu 2026 — oturum 46 → 47: A10 KABUL, R8 DÜŞTÜ, push doğrulandı |
-| 1715 | CHECKPOINT | 46 | K107 | 1 Ağu 2026, oturum 46 · .gitignore KAYNAK-KÜMESİ TUZAĞI KAPANDI (Onur kilidi) · PUSH kuralı TEYİT EDİLDİ |
-| 1743 | CHECKPOINT | 46 | K106 | 1 Ağu 2026, oturum 46 · GOREV-A10 KABUL EDİLDİ · R8 DÜŞTÜ (80 satır ürün kodu) |
-| 1797 | CHECKPOINT | 46 | K105 | 1 Ağu 2026, oturum 46 · GOREV-A10 v2 KİLİTLENDİ (Onur) · PUSH kuralının kapsamı |
-| 1830 | CHECKPOINT | 46 | K104 | 1 Ağu 2026, oturum 46 · R8 SERT DURAK ISIRDI · GOREV-A10 v1→v2 (tek tur, iki mercek) · İKİ TASARIM KİLİDİ |
-| 1892 | CHECKPOINT | 45 | K103 | 1 Ağu 2026, oturum 45 · GOREV-A9c İKİ BAĞIMSIZ DENETİM TURU GÖRDÜ (v1→v3) · CLAUDE.md ölü beyanı KAPANDI |
-| 1966 | CHECKPOINT | 45 | K102 | 1 Ağu 2026, oturum 45 · .NET 10 adım 3–5 · A9b altın küme DENETLENDİ · D5 onarımı KİLİTLENDİ (GOREV-A9c) |
-| 2051 | CHECKPOINT | 45 | K101 K73 | 1 Ağu 2026, oturum 45 · Açılış 9 adım ÖLÇÜLDÜ · K73 budaması · .NET 10 adım 1–2 KAPANDI |
-| 2233 | CHECKPOINT | 44 | K100 K26 | 1 Ağu 2026, oturum 44 · A9b KABUL · A9 KAPANDI (Cowork bağımsız ölçtü, K26 |
-| 2305 | CHECKPOINT | 44 | K99 | 1 Ağu 2026, oturum 44 · GOREV-A9b v2 KİLİTLENDİ (Onur) + iki alt kilit |
-| 2347 | CHECKPOINT | 44 | K98 | 1 Ağu 2026, oturum 44 · GOREV-A9b v2 DENETİMDEN GEÇTİ — KİLİT ONUR'DA |
-| 2411 | CHECKPOINT | 44 | K97 K34 | 1 Ağu 2026, oturum 44 · AÇILIŞ ÖLÇÜMÜ · K34-f ATFI KESİNLEŞTİ · İKİ DÜZELTME NOTU |
-| 2540 | CHECKPOINT | 43 | K96 K73 | 1 Ağu 2026, oturum 43 · DURUM.md T2 SARI ISIRDI ⇒ BUDANDI (K73) |
-| 2552 | CHECKPOINT | 43 | K94 | 1 Ağu 2026, oturum 43 · GOREV-A9 ÜRÜN+KAPI KABUL, DİLİM KAPANMADI — kriter 12 AÇIK |
-| 2607 | CHECKPOINT | 43 | K95 | 1 Ağu 2026, oturum 43 · YOL HARİTASI KİLİTLERİ (Onur) |
-| 2632 | CHECKPOINT | 43 | K93 | 1 Ağu 2026, oturum 43 · GOREV-A9 v3 KİLİTLENDİ — bir denetim turu 15 bloker buldu, üçü mimariyi değiştirdi |
-| 2689 | CHECKPOINT | 43 | K92 | 1 Ağu 2026, oturum 43 · AÇILIŞ ÖLÇÜLDÜ · İKİ BAYAT SATIR DÜZELTİLDİ · SIRADAKİ İŞ ⑤ KİLİTLENDİ |
-| 2731 | CHECKPOINT | 42 | K91 K26 | 1 Ağu 2026, oturum 42 · GOREV-A8 BUILD KABUL EDİLDİ — Cowork beyana güvenmeden ÖLÇTÜ (K26) |
-| 2791 | CHECKPOINT | 42 | K90 | 30 Tem 2026, oturum 42 · GOREV-A8 KİLİTLENDİ: metin kaybı BEŞ GERÇEK EKRANDA · iki denetim turu, sekiz bloker |
-| 2864 | CHECKPOINT | 42 | K89-DÜZELTME | 2 — 30 Tem 2026, oturum 42 · KİMLİK BEYANI SON YAZIMDAN ÖNCE ÖLÇÜLMÜŞ — KAPI ÜÇÜNCÜ KEZ ISIRDI |
-| 2888 | CHECKPOINT | 42 | K89-DÜZELTME | 30 Tem 2026, oturum 42 · KAPI KENDİ YAZARINI İKİ KEZ DAHA ISIRDI — ÖLÇÜM GERİLEMESİ KAPATILDI |
-| 2910 | CHECKPOINT | 42 | K89 | 30 Tem 2026, oturum 42 · ① KAPI-TETİK TABLOSU YAZILDI (KAPILAR.md) + DÖRT BAYAT SATIR ÖLÇÜLEREK DÜZELTİLDİ |
-| 2936 | CHECKPOINT | 40 | K88 K34 K26 | 30 Tem 2026, oturum 40 · 4a + 2a ONARILDI (Code, K34-f) ve BAĞIMSIZ DOĞRULANDI (Cowork, K26) |
-| 2950 | CHECKPOINT | 40 | K87 K26 | 30 Tem 2026, oturum 40 · A‑7 BUILD K26 İLE BAĞIMSIZ DOĞRULANDI (COWORK) · üç Onur kararı · BORCLAR budandı |
-| 2964 | CHECKPOINT | 40 | K86 K21 | 30 Tem 2026, oturum 40 · A‑7 BUILD BİTTİ VE CİHAZDA DOĞRULANDI · v4'ün iki kilidi tuttu · kriter 7 şartlı PASS |
-| 3063 | CHECKPOINT | 39 | K85 K26 | 30 Tem 2026, oturum 39 · BAĞIMSIZ DENETİM (K26) BLOKER BULDU · GOREV-A7 v4 · ÇÖZÜM ÖLÇÜLDÜ |
-| 3143 | CHECKPOINT | 39 | K84 | 30 Tem 2026, oturum 39 · GOREV-A7 SPEC'İ YAZILDI · KÖR KAPI KOŞARAK ÖLÇÜLDÜ · KİLİT VE BUILD ONUR'DA |
-| 3226 | CHECKPOINT | 39 | K83-DÜZELTME | 30 Tem 2026, oturum 39 · TARİH KUSURU: BULUT UTC ≠ ONUR'UN TAKVİMİ (kapı yakaladı, el üretti |
-| 3248 | CHECKPOINT | 39 | K83 | 29 Tem 2026, oturum 39 · RADAR DURDUR KİLİDİ · DURUM.md §8 ⇒ BORCLAR.md · İKİ BAYAT SAYI ÖLÇÜLEREK DÜZELTİLDİ  |
-| 3353 | DEVİR | 38 | - | NOTU — oturum 38 → 39 (30 Tem 2026) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 3465 | CHECKPOINT | 38 | K82 | 29 Tem 2026, oturum 38: K82 — oturum-sagligi.py DOĞDU ve İLK KOŞUMDA KENDİ YANLIŞ-POZİTİFİNİ ÜRETTİ |
-| 3492 | DEVİR | 37 | - | NOTU — oturum 37 → 38 (29 Tem 2026 |
-| 3586 | CHECKPOINT | 37 | K81 K79 | G12 KABUL EDİLDİ + K79/3 DARALTILDI (29 Tem 2026, oturum 37 · Onur onayladı |
-| 3667 | CHECKPOINT | 37 | K80 | ORTAMI KİM KALDIRIR: kural CLAUDE.md'ye yazıldı (29 Tem 2026, oturum 37 · Onur kilitledi |
-| 3708 | CHECKPOINT | 37 | K79 | G12 SPEC'İ KİLİTLENDİ (29 Tem 2026, oturum 37 · Onur kilitledi |
-| 3768 | CHECKPOINT | 37 | K78 | slice-3e YÜRÜYEN İSKELET KABUL EDİLDİ (29 Tem 2026, oturum 37 · Onur onayladı |
-| 3847 | CHECKPOINT | 37 | K77 | slice-3e TASARIM KİLİDİ (29 Tem 2026, oturum 37 · Onur kilitledi |
-| 3928 | DEVİR | 36 | - | oturum 36 → 37 [29 Tem 2026] |
-| 3962 | CHECKPOINT | 36 | K76 | R10 KABUL EDİLDİ · G11-A9 KÖR AYAK onarıldı · D2 kural 3 daraltması KİLİTLENDİ [29 Tem 2026, oturum 36] |
-| 4033 | CHECKPOINT | 36 | K75 K46 | R10 TASARIMI KİLİTLENDİ: rozet KUYRUKTAN türetilir + K46 AÇILDI [28 Tem 2026, oturum 36] |
-| 4124 | CHECKPOINT | 35 | K74 K72 | 28 Tem 2026 · oturum 35 KAPANIŞ: K74 — R9 KABUL EDİLDİ (Cowork'ün kendi koşumu); K72 §5'ten ÇEKİLDİ |
-| 4217 | CHECKPOINT | 35 | K73 | 28 Tem 2026 · oturum 35: K73 — KABUL EDİLEN DİLİMİN KİLİTLERİ §5'TEN ÇEKİLİR; belge-tavan-kapisi.py DOĞDU |
-| 4310 | CHECKPOINT | 35 | K72 | 28 Tem 2026 · oturum 35: K72 — R9 KİLİDİ: P6/D4 DARALTILDI; spec yazıldı, DENETLENDİ, KIRILDI, düzeltildi |
-| 4409 | CHECKPOINT | 35 | K71 | 28 Tem 2026 · oturum 35: K71 — KABUL KRİTERİ 9 ÖLÇÜLDÜ (GEÇTİ); R9 KUSURU DOĞDU; DURUM.md §8 ARŞİVLENDİ |
-| 4512 | CHECKPOINT | 34 | K70 | 28 Tem 2026 · oturum 34 KAPANIŞ: K70 — slice-3d (ÇEKME) KABUL EDİLDİ; spec KİLİTLENDİ |
-| 4599 | CHECKPOINT | 34 | K69 | 28 Tem 2026 · oturum 34: K69 — slice-3d spec'i YAZILDI; üç karar kilitlendi |
-| 4893 | CHECKPOINT | 33 | K68 | 28 Tem 2026 · oturum 33: K68 — slice-3d (ÇEKME) TASARIM KİLİDİ + üç ölçüm bulgusu |
-| 4974 | CHECKPOINT | 32 | K67 | 28 Tem 2026 · oturum 32 KAPANIŞ: K67 — iddia-kapisi.py; iki kör sınıf mekanikleşti |
-| 5021 | CHECKPOINT | 32 | K26 | 28 Tem 2026 · oturum 32 — slice-3c BAĞIMSIZ DOĞRULANDI (K26); dört bulgu |
-| 5124 | CHECKPOINT | 32 | K64 | 27 Tem 2026 · oturum 32 KAPANIŞ: K64 — spec v2 KİLİTLENDİ |
-| 5150 | CHECKPOINT | 32 | K63 | 27 Tem 2026 · oturum 32: K63 — spec v2, İKİ BAĞIMSIZ DENETÇİ SPEC'İ KIRDI |
-| 5224 | CHECKPOINT | 32 | K62 | 27 Tem 2026 · oturum 32: K62 — slice-3c spec'i yazıldı, D0–D6 kilitlendi |
-| 5276 | CHECKPOINT | 32 | K61 | 27 Tem 2026 · oturum 32 AÇILIŞ: K61 — dev-kimlik kalkanı KİLİTLENDİ |
-| 5321 | CHECKPOINT | 31 | K60 | 27 Tem 2026 — oturum 31 KAPANIS: K60 kapıya çevrildi + adım 3 engeli ölçüldü |
-| 5359 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: slice-3b KAPANDI — A2 8/8, commit 5df3caf |
-| 5410 | CHECKPOINT | 31 | K59 | 27 Tem 2026 — oturum 31: K59 — SPEC v6; A2'nin SAĞLANAMAZ ŞARTI ÖLÇÜMLE ONARILDI |
-| 5457 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: T8+T9 BAĞIMSIZ DOĞRULANDI — 1 MAJÖR, 4 MİNÖR BULGU |
-| 5516 | CHECKPOINT | 31 | K58 | 27 Tem 2026 — oturum 31: K58 — TAVAN 12→32 KB + ARŞİV DİZİNİ |
-| 5573 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: G3 ADJUDİKASYONU + TAŞIMA/T8 BAĞIMSIZ DOĞRULAMASI |
-| 5648 | CHECKPOINT | 30 | K57 | EK (26 Tem 2026 — oturum 30: K57 KESİNLEŞTİ + sayi-tazeligi.py DOĞDU |
-| 5701 | CHECKPOINT | 30 | K57 | 26 Tem 2026 — oturum 30: K57 — BAYAT ÇAPRAZ-ATIF KESİMİ; ARAÇ SENKRONU |
-| 5816 | CHECKPOINT | 29 | K56 | 26 Tem 2026 — oturum 29: K56 — REPO ASCII KÖKE TAŞINIYOR; KAPI SUSTURULMADI |
-| 5836 | CHECKPOINT | 29 | K54 K53 | 26 Tem 2026 — oturum 29: K53 VERİMLİLİK REFORMU + K54 SPEC v4 (KİLİT GÜNCELLEMESİ) |
-| 5880 | CHECKPOINT | 29 | K52 | 26 Tem 2026 — oturum 29: K52 — SPEC KİLİTLENDİ; esdeger-mutant SINIFI BUILD'E DEVREDİLDİ |
-| 5894 | CHECKPOINT | 29 | K51 | 26 Tem 2026 — oturum 29: K51 — RADAR KIRMIZI'DA MEKANİKLEŞTİR KİLİTLENDİ; ARAÇ YAZILDI VE İLK KOŞUMDA ÜÇ DENET |
-| 5913 | CHECKPOINT | 29 | K50 K49 | 26 Tem 2026 — oturum 29: K50 — RED-TEAM v2'Yİ DE KIRDI; K49'UN ÖNGÖRDÜĞÜ GERİ DÜŞÜŞ TETİKLENDİ |
-| 5936 | CHECKPOINT | 29 | K48 | 26 Tem 2026 — oturum 29: K48 — SPEC v1 ÜÇ BAĞIMSIZ DENETÇİ TARAFINDAN YIKILDI; SONRA DENETÇİLER DE DENETLENDİ  |
-| 5967 | CHECKPOINT | 29 | K47 | 26 Tem 2026 — oturum 29: K47 — SPEC'İN DÖRT ÇATALI KİLİTLENDİ; DEVİR NOTUNUN İKİ VARSAYIMI ÖLÇÜMLE YANLIŞLANDI |
-| 5999 | CHECKPOINT | 29 | K46 | 26 Tem 2026 — oturum 29 açılış: K46 — RADAR KIRMIZI'DA DÖRT ŞIK SUNULDU, ONUR DARALTI KİLİTLEDİ |
-| 6016 | DEVİR | 28 | - | NOTU (26 Tem 2026 — oturum 28 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 6053 | CHECKPOINT | 28 | K45 | 26 Tem 2026 — oturum 28: K45 — MEKANİK KAPI YAZILDI VE KENDİNİ KANITLADI (12/12); DESIGN.md v1 YAZILDI; KONTRA |
-| 6067 | CHECKPOINT | 28 | K44 | 26 Tem 2026 — oturum 28: K44 — RADAR slice-3b'Yİ DE ISIRDI (R3); KİLİT = MEKANİKLEŞTİR, ÖNCE ARAÇ SONRA BELGE. |
-| 6080 | CHECKPOINT | 28 | K43 | 26 Tem 2026 — oturum 28: K43 — dart MCP SUNUCUSU KURULDU VE ARAÇ KÜMESİ ÖLÇÜLDÜ; COWORK'ÜN KENDİ İDDİASI YANLI |
-| 6098 | CHECKPOINT | 28 | K42 | 26 Tem 2026 — oturum 28: K42 — slice-3b DÖRT ÇATAL KİLİTLENDİ; CEPHE ARTIK İSTEMCİDİR |
-| 6130 | CHECKPOINT | 28 | K41 | 26 Tem 2026 — oturum 28 açılış+kilit: K41 — RADAR KIRMIZI'DA DÖRT ŞIKTAN DURDUR KİLİTLENDİ; ADR 0003 v7 OLDUĞU |
-| 6156 | CHECKPOINT | 26 | K40 K38 | 26 Tem 2026 — oturum 26 EK: K40 — PROJE RADARI KURULDU VE KOŞTU; HÜKÜM KIRMIZI; RADAR K38'İ BAĞIMSIZ OLARAK DO |
-| 6170 | CHECKPOINT | 27 | K39 | 26 Tem 2026 — oturum 27: K39 — İKİ KİLİT: BU EL YAZIM ELİDİR (ARACI KOŞAR, ONARMAZ) · ATIF DENETİMİNİN EKSENİ  |
-| 6210 | CHECKPOINT | 26 | K38 | 26 Tem 2026 — oturum 26 EK: K38 — ADR 0003'ÜN UZAMASININ KÖK NEDENİ ÖLÇÜLDÜ; ÜÇ YAPISAL KARAR KİLİTLENDİ |
-| 6226 | CHECKPOINT | 27 | - | 26 Tem 2026 — oturum 27 açılış: PROTOKOL TAM KOŞTU; OTURUM 26'NIN BEYAN ETTİĞİ OKUMA SINIRI KAPANDI |
-| 6241 | CHECKPOINT | 26 | K37 | 26 Tem 2026 — oturum 26 açılış: K37 — ÜÇ ÇATAL KİLİTLENDİ; B6-1'İN ÖLÇÜMÜ TURDAN ÖNCE KOŞTU |
-| 6295 | CHECKPOINT | 25 | K36 | 26 Tem 2026 — oturum 25: K36 — v7 YAZIMI BAŞLADI; BELGE YARIMDIR. 4/9 BLOKER + 3/31 MAJÖR KAPANDI, 1 YENİ MAJÖ |
-| 6339 | CHECKPOINT | 25 | K35 | 26 Tem 2026 — oturum 25: K35 — ADR 0002 ALTI TURDAN SONRA İLK KEZ AÇILDI; DOKUZ ATIFIN SEKİZİ TUTTU, BİRİ UYDU |
-| 6361 | CHECKPOINT | 25 | K34 | 26 Tem 2026 — oturum 25 açılış: K34 — KAPI-6'NIN YEDİ ÇATALININ YEDİSİ DE KİLİTLENDİ |
-| 6382 | DEVİR | 23 | - | NOTU (25 Tem 2026 — oturum 23 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 6417 | DEVİR | 24 | - | NOTU (25 Tem 2026 — oturum 24 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 6464 | CHECKPOINT | 24 | K33 | 25 Tem 2026 — oturum 24 kapanış: K33 — 6. TUR KAPI KOŞTU; HÜKÜM KİLİTLENEMEZ; ARACIN ALTIN KÜMESİ İLK KEZ MUTA |
-| 6476 | CHECKPOINT | 24 | K32 | 25 Tem 2026 — oturum 24 açılış: K32 — 6. TUR BAĞIMSIZ KAPI AÇILDI; DÖRT ÇATAL KİLİTLENDİ |
-| 6490 | DEVİR | 22 | - | NOTU (25 Tem 2026 — oturum 22 GERÇEK kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 6529 | CHECKPOINT | 23 | K31 | 25 Tem 2026 — oturum 23 kapanış: K31 — v6 BİTTİ VE KANONİK YOLA ALINDI; ARAÇ 30 → 7 BULGU |
-| 6542 | CHECKPOINT | 23 | K30 | 25 Tem 2026 — oturum 23 açılış: K30 — v6'NIN KALAN İŞİ İÇİN DÖRT KARAR KİLİTLENDİ |
-| 6557 | DEVİR | 22 | - | NOTU (25 Tem 2026 — oturum 22 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 6599 | DEVİR | 21 | - | NOTU (25 Tem 2026 — oturum 21 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 6660 | CHECKPOINT | 21 | K24 | 25 Tem 2026 — oturum 21 kapanış: K24 — ADR 0003 v5 YAZILDI, KANONİK YOLA ALINDI |
-| 6661 | CHECKPOINT | 22 | K29 K5 K3 | 25 Tem 2026 — oturum 22: K29 — v6 YAZIMI BAŞLADI; K1=0 · K2=0 · K3=0 · K5=0. BELGE YARIMDIR |
-| 6684 | CHECKPOINT | 22 | K28 | 25 Tem 2026 — oturum 22: K28 — KAPI-5'İN DÖRT ADAY BLOKERİ KİLİTLENDİ |
-| 6694 | CHECKPOINT | 22 | K27 | 25 Tem 2026 — oturum 22: K27 — ÖLÇÜM ARACI ONARILDI, ALTIN KÜME 21 KONTROLE ÇIKTI, FARKLI MODELLE SALDIRILDI |
-| 6707 | CHECKPOINT | 22 | K26 | 25 Tem 2026 — oturum 22: K26 — ÜRETEN ≠ DENETLEYEN YENİDEN TANIMLANDI: OTURUM SINIRI DEĞİL, KANAL KURALI |
-| 6720 | CHECKPOINT | 22 | K25 | 25 Tem 2026 — oturum 22: K25 — 5. TUR BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
-| 6747 | CHECKPOINT | 21 | K23 K22 K1 | 25 Tem 2026 — oturum 21: K23 — v5 YAZIMI SÜRÜYOR: 8/9 BLOKER + K22-a KAPANDI, K1=0 |
-| 6758 | CHECKPOINT | 21 | K22 K20 | 25 Tem 2026 — oturum 21: K22 — Y-1 VE K20-a KİLİTLENDİ; v5 YAZIMI DEVAM EDİYOR |
-| 6764 | CHECKPOINT | 21 | K21 | 25 Tem 2026 — oturum 21: K21 — OTURUM DEVRİ ARTIK ÖLÇÜME BAĞLIDIR; HİSSE DEĞİL |
-| 6777 | CHECKPOINT | 21 | K20 | 25 Tem 2026 — oturum 21 kapanış: K20 — v5 YAPISI KURULDU, İÇERİK YARIM; ÖLÇÜM ARACI CANLI |
-| 6789 | CHECKPOINT | 21 | K19 | 25 Tem 2026 — oturum 21: K19 — v5 YAZIM OTURUMU AÇILDI; DÖRT ÇATAL DAHA KİLİTLENDİ |
-| 6807 | CHECKPOINT | 20 | K18 | 25 Tem 2026 — oturum 20 devamı: K18 — KAPI-4'ÜN DÖRT AĞIR ÇATALI KİLİTLENDİ |
-| 6817 | CHECKPOINT | 20 | K17 | 25 Tem 2026 — oturum 20: K17 — v4'E 4. BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
-| 6843 | CHECKPOINT | 19 | K16 | 25 Tem 2026 — oturum 19: K16 — v4 YAZIM OTURUMU; ÜÇ YENİ ÇATAL KİLİTLENDİ |
-| 6862 | CHECKPOINT | 18 | K15 | 25 Tem 2026 — oturum 18: K15 — ADR 0003 v3'E ÜÇÜNCÜ BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
-| 6889 | CHECKPOINT | 17 | K14 | 25 Tem 2026 — oturum 17: K14 — v3'ÜN DOKUZ KARAR ÇATALI KİLİTLENDİ |
-| 6915 | CHECKPOINT | 16 | K13 | 25 Tem 2026 — oturum 16: K13 — ADR 0003 v2'YE İKİNCİ VE SON KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
-| 6937 | CHECKPOINT | 15 | K12 | 25 Tem 2026 — oturum 15: K12 — TAKVİM ÇATALI KİLİTLENDİ; ÖNCELİK = KALİTE > HIZ |
-| 6954 | CHECKPOINT | 14 | K11 | 25 Tem 2026 — oturum 14: K11 — ADR 0003'ÜN BLOKER ÇATALLARI KİLİTLENDİ + ADR BÖLÜNDÜ |
-| 6972 | CHECKPOINT | - | K10 | 25 Tem 2026 — harici Cowork tasarım oturumu → K10: FRONTEND TASARIM YÖNÜ KİLİTLENDİ, ağırlığı Onur DARALTTI |
-| 6995 | CHECKPOINT | 13 | K9 | 25 Tem 2026 — oturum 13: ARGON2ID PAKET KAPISI KOŞULDU → GEÇTİ (Konscious); K9 kilitlendi |
-| 7020 | CHECKPOINT | 12 | K8 | 20 Tem 2026 — oturum 12 devamı: K8 — slice-3a-auth TASARIMI KİLİTLENDİ, build BEKLEMEDE |
-| 7029 | CHECKPOINT | 12 | K7 | 20 Tem 2026 — oturum 12: İKİ AÇIK KARAR KAPANDI + K7 — kod/spec HENÜZ YAZILMADI |
-| 7038 | CHECKPOINT | 11 | - | 20 Tem 2026 — oturum 11 devamı: ÖDEV KAPSAMI YAZIYA GEÇTİ → ÖNCELİK DEĞİŞTİ |
-| 7053 | CHECKPOINT | 11 | - | 20 Tem 2026 — oturum 11: BÖLÜNMÜŞ İKİ SPEC'E BİR TUR BAĞIMSIZ DENETİM — TEMİZ DEĞİL, 2 BLOKER + 4 MAJÖR |
-| 7073 | CHECKPOINT | 10 | - | 20 Tem 2026 — oturum 10: DÜZELTME-1 [v5] ÇAPRAZ-TUTARLILIK TARAMASI — TEMİZ DEĞİL, 5 BLOKER |
-| 7091 | DEVİR | 9 | - | NOTU (19 Tem 2026 — oturum 9: slice-3a BAĞIMSIZ DOĞRULANDI — DÜZELT (dar kapsam: yalnız D5-a) |
-| 7116 | DEVİR | 8 | - | NOTU (19 Tem 2026 — oturum 8 kapanış: slice-3a BUILD GELDİ, DOĞRULAMA TEMİZ OTURUMA DEVREDİLDİ |
-| 7130 | DEVİR | 8 | - | NOTU (19 Tem 2026 — oturum 8: slice-3a SPEC [v5] HAZIR, BEŞ DENETİM TURU GEÇTİ — KİLİT ONUR'DA |
-| 7150 | DEVİR | 7 | - | NOTU (19 Tem 2026 — oturum 7 devamı: slice-2c BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşulsuz) |
-| 7165 | DEVİR | 7 | - | NOTU (19 Tem 2026 — oturum 7: slice-2b2 BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşullu) |
-| 7181 | DEVİR | 6 | - | NOTU (19 Tem 2026 — oturum 6: slice-2b1 BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşullu) |
-| 7200 | DEVİR | 5 | - | NOTU (18 Tem 2026 — oturum 5: slice-2a SPEC HAZIR + spec-QA GEÇTİ |
-| 7208 | DEVİR | 4 | - | NOTU (18 Tem 2026 — oturum 4: ADR 0002 KİLİTLENDİ |
-| 7217 | DEVİR | 3 | - | NOTU (18 Tem 2026 — oturum 3: slice-1 BUILD + BAĞIMSIZ DOĞRULANDI |
-| 7223 | DEVİR | 3 | - | NOTU (18 Tem 2026 — oturum 3: ADR 0001 KİLİTLENDİ |
-| 7228 | DEVİR | 2 | - | NOTU (18 Tem 2026 — oturum 2 kapanış |
-| 7301 | CHECKPOINT | 53 | K129 | GOREV-A13 KABUL EDİLDİ (Onur kilitledi, 3 Ağu 2026, oturum 53 |
-| 7327 | CHECKPOINT | - | K130 K127 | SPEC KİLİDİ AÇILDI VE YENİLENDİ · K127'NİN İLK GERÇEK SINAVI |
-| 7411 | DEVİR | 53 | - | oturum 53 → 54 (3 Ağu 2026, cihazdan ölçüldü |
+| 183 | CHECKPOINT | 55 | K134 | SS2 T0–T8 UYGULANDI (Claude Code) + COWORK KABUL KOŞUMU · R8 SÖNDÜ (oturum 55 |
+| 229 | CHECKPOINT | 55 | K133 | SS2 v3 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 55 |
+| 288 | CHECKPOINT | - | K133-EK | DURUM.md §5 BUDANDI (Onur kilitledi, aynı oturum |
+| 314 | CHECKPOINT | 54 | K132 | K132 · SS2 İKİ TUR DENETİMDEN GEÇTİ, İKİSİNDE DE KİLİTLENEMEDİ · R8 SERT DURAK YANDI (3 Ağu 2026, oturum 54 |
+| 376 | CHECKPOINT | 54 | K131 K95 | K131 · OTURUM 54 AÇILIŞI: 10/10 ÖLÇÜLDÜ · DEVİR NOTUNUN ÜÇ MADDESİ ÖLÜ ÇIKTI · K95'İN "ÖLÇÜLMEDİ" SORUSU ÖLÇÜL |
+| 406 | CHECKPOINT | 52 | K128 | K128 · A13 KRİTER 1–6 COWORK'ÇE DOĞRULANDI; 7–8 PUSH BEKLİYOR (oturum 52, 3 Ağu 2026 |
+| 445 | CHECKPOINT | 52 | K127 | K127 · KİLİT ÖNCESİ BAĞIMSIZ DENETİM ZORUNLU + A13 DÜZELTİLDİ VE YENİDEN KİLİTLENDİ (Onur kilitledi, 3 Ağu 202 |
+| 492 | CHECKPOINT | - | K127 | KURALIN KENDİSİ (Onur kilitledi |
+| 508 | CHECKPOINT | 52 | K126 | K126 · GOREV-A13 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 52 |
+| 560 | CHECKPOINT | 52 | K125 | K125 · GOREV-A13 YAZILDI VE ÖLÇÜLDÜ — KİLİT ADAYI (oturum 52, 3 Ağu 2026 |
+| 625 | CHECKPOINT | 51 | K124 | K124 · GOREV-A12 KABUL EDİLDİ (Onur kilitledi, 3 Ağu 2026, oturum 51 |
+| 698 | CHECKPOINT | 51 | K123 | K123 · A12 KRİTER 0 ISIRDI: İKİ KÂĞIT İDDİASI YANLIŞLANDI · ŞIK 2 + ÜÇ ŞART KİLİTLENDİ (3 Ağu 2026, oturum 51  |
+| 758 | CHECKPOINT | 51 | K122 | K122 · OTURUM 51 AÇILIŞI: 10/10 ÖLÇÜLDÜ · A12 TABANI ALINDI · SPEC'TE BAYAT SAYI BULUNDU (3 Ağu 2026, oturum 5 |
+| 819 | CHECKPOINT | 50 | K121 | K121 · GOREV-A11 KABUL EDİLDİ (Onur kilitledi, 2 Ağu 2026, oturum 50 |
+| 870 | CHECKPOINT | 50 | K120 | K120 · A11 KABUL KOŞUMU TAMAMLANDI: 16/17 ISIRDI, M141 KÖR AYAK — KABUL EDİLMEDİ (2 Ağu 2026, oturum 50 |
+| 940 | CHECKPOINT | 49 | K119 | K119 · A11 BAĞIMSIZ KABUL DENETİMİ: KISMİ GEÇTİ, KABUL EDİLMEDİ (2 Ağu 2026, oturum 49 |
+| 987 | CHECKPOINT | 49 | K118 K117 | K117 · BORCLAR.md TAVANI 24 KB · K118 · A12 SPEC'İ (2 Ağu 2026, oturum 49 · Onur: *"önerini yap"* |
+| 1042 | CHECKPOINT | 49 | K116 | K116 · D0 DARALTILDI, Y1 KAÇAĞI KİLİTLENDİ, A11 v2 HAZIR (2 Ağu 2026, oturum 49 · Onur DÖRT kilit verdi |
+| 1090 | CHECKPOINT | 49 | K115 | K115 · ÇEVRİMDIŞI ÖLÇÜLDÜ; AĞ-DÖNÜŞ TETİKLEYİCİSİ YOK (2 Ağu 2026, oturum 49 · Onur İKİ kilit verdi |
+| 1149 | CHECKPOINT | 49 | K114 | K114 · ORTAM.md AYRILDI, AÇILIŞTA OKUNUR (2 Ağu 2026, oturum 49 · Onur kilitledi |
+| 1205 | DEVİR | 48 | K113 K112 K111 | NOTU (2 Ağu 2026 — oturum 48 → 49: .NET 10 (K111) · cihaz senkron kanıtı (K112) · bulgu kapatıldı (K113) |
+| 1289 | CHECKPOINT | 48 | K113 K112 | K112 BULGUSU KAPATILDI: YEREL YAZMA ARTIK İTMEYİ TETİKLİYOR (2 Ağu 2026, oturum 48 · Onur kilitledi |
+| 1339 | CHECKPOINT | 48 | K112 | ③ CİHAZDA UÇTAN UCA SENKRON: YÜRÜYEN İSKELET KOŞTU (2 Ağu 2026, oturum 48 |
+| 1380 | CHECKPOINT | 48 | K111 | .NET 10 GEÇİŞİ KAPANDI (2 Ağu 2026, oturum 48 · Onur kilitledi) — *spec yazılmadan, koşan deneyle* |
+| 1457 | DEVİR | 47 | K108 | NOTU (2 Ağu 2026 — oturum 47 → 48: K108 kapısı doğdu, A9c KABUL, D5 kapandı |
+| 1563 | CHECKPOINT | 47 | K110 | GOREV-A9c KABUL EDİLDİ; D5 KÖR KAPISI KAPANDI (2 Ağu 2026 — oturum 47 |
+| 1619 | CHECKPOINT | 47 | K109 | GOREV-A9c v2 KİLİTLENDİ (2 Ağu 2026 — oturum 47 |
+| 1645 | CHECKPOINT | 47 | K108 | KAPI ADI ÇAKIŞMASI ÖLÇÜLDÜ; KİMLİK SPEC-YEREL İLAN EDİLDİ; KAPISI YAZILDI (2 Ağu 2026 — oturum 47 |
+| 1714 | DEVİR | 46 | - | NOTU (2 Ağu 2026 — oturum 46 → 47: A10 KABUL, R8 DÜŞTÜ, push doğrulandı |
+| 1762 | CHECKPOINT | 46 | K107 | 1 Ağu 2026, oturum 46 · .gitignore KAYNAK-KÜMESİ TUZAĞI KAPANDI (Onur kilidi) · PUSH kuralı TEYİT EDİLDİ |
+| 1790 | CHECKPOINT | 46 | K106 | 1 Ağu 2026, oturum 46 · GOREV-A10 KABUL EDİLDİ · R8 DÜŞTÜ (80 satır ürün kodu) |
+| 1844 | CHECKPOINT | 46 | K105 | 1 Ağu 2026, oturum 46 · GOREV-A10 v2 KİLİTLENDİ (Onur) · PUSH kuralının kapsamı |
+| 1877 | CHECKPOINT | 46 | K104 | 1 Ağu 2026, oturum 46 · R8 SERT DURAK ISIRDI · GOREV-A10 v1→v2 (tek tur, iki mercek) · İKİ TASARIM KİLİDİ |
+| 1939 | CHECKPOINT | 45 | K103 | 1 Ağu 2026, oturum 45 · GOREV-A9c İKİ BAĞIMSIZ DENETİM TURU GÖRDÜ (v1→v3) · CLAUDE.md ölü beyanı KAPANDI |
+| 2013 | CHECKPOINT | 45 | K102 | 1 Ağu 2026, oturum 45 · .NET 10 adım 3–5 · A9b altın küme DENETLENDİ · D5 onarımı KİLİTLENDİ (GOREV-A9c) |
+| 2098 | CHECKPOINT | 45 | K101 K73 | 1 Ağu 2026, oturum 45 · Açılış 9 adım ÖLÇÜLDÜ · K73 budaması · .NET 10 adım 1–2 KAPANDI |
+| 2280 | CHECKPOINT | 44 | K100 K26 | 1 Ağu 2026, oturum 44 · A9b KABUL · A9 KAPANDI (Cowork bağımsız ölçtü, K26 |
+| 2352 | CHECKPOINT | 44 | K99 | 1 Ağu 2026, oturum 44 · GOREV-A9b v2 KİLİTLENDİ (Onur) + iki alt kilit |
+| 2394 | CHECKPOINT | 44 | K98 | 1 Ağu 2026, oturum 44 · GOREV-A9b v2 DENETİMDEN GEÇTİ — KİLİT ONUR'DA |
+| 2458 | CHECKPOINT | 44 | K97 K34 | 1 Ağu 2026, oturum 44 · AÇILIŞ ÖLÇÜMÜ · K34-f ATFI KESİNLEŞTİ · İKİ DÜZELTME NOTU |
+| 2587 | CHECKPOINT | 43 | K96 K73 | 1 Ağu 2026, oturum 43 · DURUM.md T2 SARI ISIRDI ⇒ BUDANDI (K73) |
+| 2599 | CHECKPOINT | 43 | K94 | 1 Ağu 2026, oturum 43 · GOREV-A9 ÜRÜN+KAPI KABUL, DİLİM KAPANMADI — kriter 12 AÇIK |
+| 2654 | CHECKPOINT | 43 | K95 | 1 Ağu 2026, oturum 43 · YOL HARİTASI KİLİTLERİ (Onur) |
+| 2679 | CHECKPOINT | 43 | K93 | 1 Ağu 2026, oturum 43 · GOREV-A9 v3 KİLİTLENDİ — bir denetim turu 15 bloker buldu, üçü mimariyi değiştirdi |
+| 2736 | CHECKPOINT | 43 | K92 | 1 Ağu 2026, oturum 43 · AÇILIŞ ÖLÇÜLDÜ · İKİ BAYAT SATIR DÜZELTİLDİ · SIRADAKİ İŞ ⑤ KİLİTLENDİ |
+| 2778 | CHECKPOINT | 42 | K91 K26 | 1 Ağu 2026, oturum 42 · GOREV-A8 BUILD KABUL EDİLDİ — Cowork beyana güvenmeden ÖLÇTÜ (K26) |
+| 2838 | CHECKPOINT | 42 | K90 | 30 Tem 2026, oturum 42 · GOREV-A8 KİLİTLENDİ: metin kaybı BEŞ GERÇEK EKRANDA · iki denetim turu, sekiz bloker |
+| 2911 | CHECKPOINT | 42 | K89-DÜZELTME | 2 — 30 Tem 2026, oturum 42 · KİMLİK BEYANI SON YAZIMDAN ÖNCE ÖLÇÜLMÜŞ — KAPI ÜÇÜNCÜ KEZ ISIRDI |
+| 2935 | CHECKPOINT | 42 | K89-DÜZELTME | 30 Tem 2026, oturum 42 · KAPI KENDİ YAZARINI İKİ KEZ DAHA ISIRDI — ÖLÇÜM GERİLEMESİ KAPATILDI |
+| 2957 | CHECKPOINT | 42 | K89 | 30 Tem 2026, oturum 42 · ① KAPI-TETİK TABLOSU YAZILDI (KAPILAR.md) + DÖRT BAYAT SATIR ÖLÇÜLEREK DÜZELTİLDİ |
+| 2983 | CHECKPOINT | 40 | K88 K34 K26 | 30 Tem 2026, oturum 40 · 4a + 2a ONARILDI (Code, K34-f) ve BAĞIMSIZ DOĞRULANDI (Cowork, K26) |
+| 2997 | CHECKPOINT | 40 | K87 K26 | 30 Tem 2026, oturum 40 · A‑7 BUILD K26 İLE BAĞIMSIZ DOĞRULANDI (COWORK) · üç Onur kararı · BORCLAR budandı |
+| 3011 | CHECKPOINT | 40 | K86 K21 | 30 Tem 2026, oturum 40 · A‑7 BUILD BİTTİ VE CİHAZDA DOĞRULANDI · v4'ün iki kilidi tuttu · kriter 7 şartlı PASS |
+| 3110 | CHECKPOINT | 39 | K85 K26 | 30 Tem 2026, oturum 39 · BAĞIMSIZ DENETİM (K26) BLOKER BULDU · GOREV-A7 v4 · ÇÖZÜM ÖLÇÜLDÜ |
+| 3190 | CHECKPOINT | 39 | K84 | 30 Tem 2026, oturum 39 · GOREV-A7 SPEC'İ YAZILDI · KÖR KAPI KOŞARAK ÖLÇÜLDÜ · KİLİT VE BUILD ONUR'DA |
+| 3273 | CHECKPOINT | 39 | K83-DÜZELTME | 30 Tem 2026, oturum 39 · TARİH KUSURU: BULUT UTC ≠ ONUR'UN TAKVİMİ (kapı yakaladı, el üretti |
+| 3295 | CHECKPOINT | 39 | K83 | 29 Tem 2026, oturum 39 · RADAR DURDUR KİLİDİ · DURUM.md §8 ⇒ BORCLAR.md · İKİ BAYAT SAYI ÖLÇÜLEREK DÜZELTİLDİ  |
+| 3400 | DEVİR | 38 | - | NOTU — oturum 38 → 39 (30 Tem 2026) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 3512 | CHECKPOINT | 38 | K82 | 29 Tem 2026, oturum 38: K82 — oturum-sagligi.py DOĞDU ve İLK KOŞUMDA KENDİ YANLIŞ-POZİTİFİNİ ÜRETTİ |
+| 3539 | DEVİR | 37 | - | NOTU — oturum 37 → 38 (29 Tem 2026 |
+| 3633 | CHECKPOINT | 37 | K81 K79 | G12 KABUL EDİLDİ + K79/3 DARALTILDI (29 Tem 2026, oturum 37 · Onur onayladı |
+| 3714 | CHECKPOINT | 37 | K80 | ORTAMI KİM KALDIRIR: kural CLAUDE.md'ye yazıldı (29 Tem 2026, oturum 37 · Onur kilitledi |
+| 3755 | CHECKPOINT | 37 | K79 | G12 SPEC'İ KİLİTLENDİ (29 Tem 2026, oturum 37 · Onur kilitledi |
+| 3815 | CHECKPOINT | 37 | K78 | slice-3e YÜRÜYEN İSKELET KABUL EDİLDİ (29 Tem 2026, oturum 37 · Onur onayladı |
+| 3894 | CHECKPOINT | 37 | K77 | slice-3e TASARIM KİLİDİ (29 Tem 2026, oturum 37 · Onur kilitledi |
+| 3975 | DEVİR | 36 | - | oturum 36 → 37 [29 Tem 2026] |
+| 4009 | CHECKPOINT | 36 | K76 | R10 KABUL EDİLDİ · G11-A9 KÖR AYAK onarıldı · D2 kural 3 daraltması KİLİTLENDİ [29 Tem 2026, oturum 36] |
+| 4080 | CHECKPOINT | 36 | K75 K46 | R10 TASARIMI KİLİTLENDİ: rozet KUYRUKTAN türetilir + K46 AÇILDI [28 Tem 2026, oturum 36] |
+| 4171 | CHECKPOINT | 35 | K74 K72 | 28 Tem 2026 · oturum 35 KAPANIŞ: K74 — R9 KABUL EDİLDİ (Cowork'ün kendi koşumu); K72 §5'ten ÇEKİLDİ |
+| 4264 | CHECKPOINT | 35 | K73 | 28 Tem 2026 · oturum 35: K73 — KABUL EDİLEN DİLİMİN KİLİTLERİ §5'TEN ÇEKİLİR; belge-tavan-kapisi.py DOĞDU |
+| 4357 | CHECKPOINT | 35 | K72 | 28 Tem 2026 · oturum 35: K72 — R9 KİLİDİ: P6/D4 DARALTILDI; spec yazıldı, DENETLENDİ, KIRILDI, düzeltildi |
+| 4456 | CHECKPOINT | 35 | K71 | 28 Tem 2026 · oturum 35: K71 — KABUL KRİTERİ 9 ÖLÇÜLDÜ (GEÇTİ); R9 KUSURU DOĞDU; DURUM.md §8 ARŞİVLENDİ |
+| 4559 | CHECKPOINT | 34 | K70 | 28 Tem 2026 · oturum 34 KAPANIŞ: K70 — slice-3d (ÇEKME) KABUL EDİLDİ; spec KİLİTLENDİ |
+| 4646 | CHECKPOINT | 34 | K69 | 28 Tem 2026 · oturum 34: K69 — slice-3d spec'i YAZILDI; üç karar kilitlendi |
+| 4940 | CHECKPOINT | 33 | K68 | 28 Tem 2026 · oturum 33: K68 — slice-3d (ÇEKME) TASARIM KİLİDİ + üç ölçüm bulgusu |
+| 5021 | CHECKPOINT | 32 | K67 | 28 Tem 2026 · oturum 32 KAPANIŞ: K67 — iddia-kapisi.py; iki kör sınıf mekanikleşti |
+| 5068 | CHECKPOINT | 32 | K26 | 28 Tem 2026 · oturum 32 — slice-3c BAĞIMSIZ DOĞRULANDI (K26); dört bulgu |
+| 5171 | CHECKPOINT | 32 | K64 | 27 Tem 2026 · oturum 32 KAPANIŞ: K64 — spec v2 KİLİTLENDİ |
+| 5197 | CHECKPOINT | 32 | K63 | 27 Tem 2026 · oturum 32: K63 — spec v2, İKİ BAĞIMSIZ DENETÇİ SPEC'İ KIRDI |
+| 5271 | CHECKPOINT | 32 | K62 | 27 Tem 2026 · oturum 32: K62 — slice-3c spec'i yazıldı, D0–D6 kilitlendi |
+| 5323 | CHECKPOINT | 32 | K61 | 27 Tem 2026 · oturum 32 AÇILIŞ: K61 — dev-kimlik kalkanı KİLİTLENDİ |
+| 5368 | CHECKPOINT | 31 | K60 | 27 Tem 2026 — oturum 31 KAPANIS: K60 kapıya çevrildi + adım 3 engeli ölçüldü |
+| 5406 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: slice-3b KAPANDI — A2 8/8, commit 5df3caf |
+| 5457 | CHECKPOINT | 31 | K59 | 27 Tem 2026 — oturum 31: K59 — SPEC v6; A2'nin SAĞLANAMAZ ŞARTI ÖLÇÜMLE ONARILDI |
+| 5504 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: T8+T9 BAĞIMSIZ DOĞRULANDI — 1 MAJÖR, 4 MİNÖR BULGU |
+| 5563 | CHECKPOINT | 31 | K58 | 27 Tem 2026 — oturum 31: K58 — TAVAN 12→32 KB + ARŞİV DİZİNİ |
+| 5620 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: G3 ADJUDİKASYONU + TAŞIMA/T8 BAĞIMSIZ DOĞRULAMASI |
+| 5695 | CHECKPOINT | 30 | K57 | EK (26 Tem 2026 — oturum 30: K57 KESİNLEŞTİ + sayi-tazeligi.py DOĞDU |
+| 5748 | CHECKPOINT | 30 | K57 | 26 Tem 2026 — oturum 30: K57 — BAYAT ÇAPRAZ-ATIF KESİMİ; ARAÇ SENKRONU |
+| 5863 | CHECKPOINT | 29 | K56 | 26 Tem 2026 — oturum 29: K56 — REPO ASCII KÖKE TAŞINIYOR; KAPI SUSTURULMADI |
+| 5883 | CHECKPOINT | 29 | K54 K53 | 26 Tem 2026 — oturum 29: K53 VERİMLİLİK REFORMU + K54 SPEC v4 (KİLİT GÜNCELLEMESİ) |
+| 5927 | CHECKPOINT | 29 | K52 | 26 Tem 2026 — oturum 29: K52 — SPEC KİLİTLENDİ; esdeger-mutant SINIFI BUILD'E DEVREDİLDİ |
+| 5941 | CHECKPOINT | 29 | K51 | 26 Tem 2026 — oturum 29: K51 — RADAR KIRMIZI'DA MEKANİKLEŞTİR KİLİTLENDİ; ARAÇ YAZILDI VE İLK KOŞUMDA ÜÇ DENET |
+| 5960 | CHECKPOINT | 29 | K50 K49 | 26 Tem 2026 — oturum 29: K50 — RED-TEAM v2'Yİ DE KIRDI; K49'UN ÖNGÖRDÜĞÜ GERİ DÜŞÜŞ TETİKLENDİ |
+| 5983 | CHECKPOINT | 29 | K48 | 26 Tem 2026 — oturum 29: K48 — SPEC v1 ÜÇ BAĞIMSIZ DENETÇİ TARAFINDAN YIKILDI; SONRA DENETÇİLER DE DENETLENDİ  |
+| 6014 | CHECKPOINT | 29 | K47 | 26 Tem 2026 — oturum 29: K47 — SPEC'İN DÖRT ÇATALI KİLİTLENDİ; DEVİR NOTUNUN İKİ VARSAYIMI ÖLÇÜMLE YANLIŞLANDI |
+| 6046 | CHECKPOINT | 29 | K46 | 26 Tem 2026 — oturum 29 açılış: K46 — RADAR KIRMIZI'DA DÖRT ŞIK SUNULDU, ONUR DARALTI KİLİTLEDİ |
+| 6063 | DEVİR | 28 | - | NOTU (26 Tem 2026 — oturum 28 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 6100 | CHECKPOINT | 28 | K45 | 26 Tem 2026 — oturum 28: K45 — MEKANİK KAPI YAZILDI VE KENDİNİ KANITLADI (12/12); DESIGN.md v1 YAZILDI; KONTRA |
+| 6114 | CHECKPOINT | 28 | K44 | 26 Tem 2026 — oturum 28: K44 — RADAR slice-3b'Yİ DE ISIRDI (R3); KİLİT = MEKANİKLEŞTİR, ÖNCE ARAÇ SONRA BELGE. |
+| 6127 | CHECKPOINT | 28 | K43 | 26 Tem 2026 — oturum 28: K43 — dart MCP SUNUCUSU KURULDU VE ARAÇ KÜMESİ ÖLÇÜLDÜ; COWORK'ÜN KENDİ İDDİASI YANLI |
+| 6145 | CHECKPOINT | 28 | K42 | 26 Tem 2026 — oturum 28: K42 — slice-3b DÖRT ÇATAL KİLİTLENDİ; CEPHE ARTIK İSTEMCİDİR |
+| 6177 | CHECKPOINT | 28 | K41 | 26 Tem 2026 — oturum 28 açılış+kilit: K41 — RADAR KIRMIZI'DA DÖRT ŞIKTAN DURDUR KİLİTLENDİ; ADR 0003 v7 OLDUĞU |
+| 6203 | CHECKPOINT | 26 | K40 K38 | 26 Tem 2026 — oturum 26 EK: K40 — PROJE RADARI KURULDU VE KOŞTU; HÜKÜM KIRMIZI; RADAR K38'İ BAĞIMSIZ OLARAK DO |
+| 6217 | CHECKPOINT | 27 | K39 | 26 Tem 2026 — oturum 27: K39 — İKİ KİLİT: BU EL YAZIM ELİDİR (ARACI KOŞAR, ONARMAZ) · ATIF DENETİMİNİN EKSENİ  |
+| 6257 | CHECKPOINT | 26 | K38 | 26 Tem 2026 — oturum 26 EK: K38 — ADR 0003'ÜN UZAMASININ KÖK NEDENİ ÖLÇÜLDÜ; ÜÇ YAPISAL KARAR KİLİTLENDİ |
+| 6273 | CHECKPOINT | 27 | - | 26 Tem 2026 — oturum 27 açılış: PROTOKOL TAM KOŞTU; OTURUM 26'NIN BEYAN ETTİĞİ OKUMA SINIRI KAPANDI |
+| 6288 | CHECKPOINT | 26 | K37 | 26 Tem 2026 — oturum 26 açılış: K37 — ÜÇ ÇATAL KİLİTLENDİ; B6-1'İN ÖLÇÜMÜ TURDAN ÖNCE KOŞTU |
+| 6342 | CHECKPOINT | 25 | K36 | 26 Tem 2026 — oturum 25: K36 — v7 YAZIMI BAŞLADI; BELGE YARIMDIR. 4/9 BLOKER + 3/31 MAJÖR KAPANDI, 1 YENİ MAJÖ |
+| 6386 | CHECKPOINT | 25 | K35 | 26 Tem 2026 — oturum 25: K35 — ADR 0002 ALTI TURDAN SONRA İLK KEZ AÇILDI; DOKUZ ATIFIN SEKİZİ TUTTU, BİRİ UYDU |
+| 6408 | CHECKPOINT | 25 | K34 | 26 Tem 2026 — oturum 25 açılış: K34 — KAPI-6'NIN YEDİ ÇATALININ YEDİSİ DE KİLİTLENDİ |
+| 6429 | DEVİR | 23 | - | NOTU (25 Tem 2026 — oturum 23 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 6464 | DEVİR | 24 | - | NOTU (25 Tem 2026 — oturum 24 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 6511 | CHECKPOINT | 24 | K33 | 25 Tem 2026 — oturum 24 kapanış: K33 — 6. TUR KAPI KOŞTU; HÜKÜM KİLİTLENEMEZ; ARACIN ALTIN KÜMESİ İLK KEZ MUTA |
+| 6523 | CHECKPOINT | 24 | K32 | 25 Tem 2026 — oturum 24 açılış: K32 — 6. TUR BAĞIMSIZ KAPI AÇILDI; DÖRT ÇATAL KİLİTLENDİ |
+| 6537 | DEVİR | 22 | - | NOTU (25 Tem 2026 — oturum 22 GERÇEK kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 6576 | CHECKPOINT | 23 | K31 | 25 Tem 2026 — oturum 23 kapanış: K31 — v6 BİTTİ VE KANONİK YOLA ALINDI; ARAÇ 30 → 7 BULGU |
+| 6589 | CHECKPOINT | 23 | K30 | 25 Tem 2026 — oturum 23 açılış: K30 — v6'NIN KALAN İŞİ İÇİN DÖRT KARAR KİLİTLENDİ |
+| 6604 | DEVİR | 22 | - | NOTU (25 Tem 2026 — oturum 22 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 6646 | DEVİR | 21 | - | NOTU (25 Tem 2026 — oturum 21 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 6707 | CHECKPOINT | 21 | K24 | 25 Tem 2026 — oturum 21 kapanış: K24 — ADR 0003 v5 YAZILDI, KANONİK YOLA ALINDI |
+| 6708 | CHECKPOINT | 22 | K29 K5 K3 | 25 Tem 2026 — oturum 22: K29 — v6 YAZIMI BAŞLADI; K1=0 · K2=0 · K3=0 · K5=0. BELGE YARIMDIR |
+| 6731 | CHECKPOINT | 22 | K28 | 25 Tem 2026 — oturum 22: K28 — KAPI-5'İN DÖRT ADAY BLOKERİ KİLİTLENDİ |
+| 6741 | CHECKPOINT | 22 | K27 | 25 Tem 2026 — oturum 22: K27 — ÖLÇÜM ARACI ONARILDI, ALTIN KÜME 21 KONTROLE ÇIKTI, FARKLI MODELLE SALDIRILDI |
+| 6754 | CHECKPOINT | 22 | K26 | 25 Tem 2026 — oturum 22: K26 — ÜRETEN ≠ DENETLEYEN YENİDEN TANIMLANDI: OTURUM SINIRI DEĞİL, KANAL KURALI |
+| 6767 | CHECKPOINT | 22 | K25 | 25 Tem 2026 — oturum 22: K25 — 5. TUR BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
+| 6794 | CHECKPOINT | 21 | K23 K22 K1 | 25 Tem 2026 — oturum 21: K23 — v5 YAZIMI SÜRÜYOR: 8/9 BLOKER + K22-a KAPANDI, K1=0 |
+| 6805 | CHECKPOINT | 21 | K22 K20 | 25 Tem 2026 — oturum 21: K22 — Y-1 VE K20-a KİLİTLENDİ; v5 YAZIMI DEVAM EDİYOR |
+| 6811 | CHECKPOINT | 21 | K21 | 25 Tem 2026 — oturum 21: K21 — OTURUM DEVRİ ARTIK ÖLÇÜME BAĞLIDIR; HİSSE DEĞİL |
+| 6824 | CHECKPOINT | 21 | K20 | 25 Tem 2026 — oturum 21 kapanış: K20 — v5 YAPISI KURULDU, İÇERİK YARIM; ÖLÇÜM ARACI CANLI |
+| 6836 | CHECKPOINT | 21 | K19 | 25 Tem 2026 — oturum 21: K19 — v5 YAZIM OTURUMU AÇILDI; DÖRT ÇATAL DAHA KİLİTLENDİ |
+| 6854 | CHECKPOINT | 20 | K18 | 25 Tem 2026 — oturum 20 devamı: K18 — KAPI-4'ÜN DÖRT AĞIR ÇATALI KİLİTLENDİ |
+| 6864 | CHECKPOINT | 20 | K17 | 25 Tem 2026 — oturum 20: K17 — v4'E 4. BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
+| 6890 | CHECKPOINT | 19 | K16 | 25 Tem 2026 — oturum 19: K16 — v4 YAZIM OTURUMU; ÜÇ YENİ ÇATAL KİLİTLENDİ |
+| 6909 | CHECKPOINT | 18 | K15 | 25 Tem 2026 — oturum 18: K15 — ADR 0003 v3'E ÜÇÜNCÜ BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
+| 6936 | CHECKPOINT | 17 | K14 | 25 Tem 2026 — oturum 17: K14 — v3'ÜN DOKUZ KARAR ÇATALI KİLİTLENDİ |
+| 6962 | CHECKPOINT | 16 | K13 | 25 Tem 2026 — oturum 16: K13 — ADR 0003 v2'YE İKİNCİ VE SON KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
+| 6984 | CHECKPOINT | 15 | K12 | 25 Tem 2026 — oturum 15: K12 — TAKVİM ÇATALI KİLİTLENDİ; ÖNCELİK = KALİTE > HIZ |
+| 7001 | CHECKPOINT | 14 | K11 | 25 Tem 2026 — oturum 14: K11 — ADR 0003'ÜN BLOKER ÇATALLARI KİLİTLENDİ + ADR BÖLÜNDÜ |
+| 7019 | CHECKPOINT | - | K10 | 25 Tem 2026 — harici Cowork tasarım oturumu → K10: FRONTEND TASARIM YÖNÜ KİLİTLENDİ, ağırlığı Onur DARALTTI |
+| 7042 | CHECKPOINT | 13 | K9 | 25 Tem 2026 — oturum 13: ARGON2ID PAKET KAPISI KOŞULDU → GEÇTİ (Konscious); K9 kilitlendi |
+| 7067 | CHECKPOINT | 12 | K8 | 20 Tem 2026 — oturum 12 devamı: K8 — slice-3a-auth TASARIMI KİLİTLENDİ, build BEKLEMEDE |
+| 7076 | CHECKPOINT | 12 | K7 | 20 Tem 2026 — oturum 12: İKİ AÇIK KARAR KAPANDI + K7 — kod/spec HENÜZ YAZILMADI |
+| 7085 | CHECKPOINT | 11 | - | 20 Tem 2026 — oturum 11 devamı: ÖDEV KAPSAMI YAZIYA GEÇTİ → ÖNCELİK DEĞİŞTİ |
+| 7100 | CHECKPOINT | 11 | - | 20 Tem 2026 — oturum 11: BÖLÜNMÜŞ İKİ SPEC'E BİR TUR BAĞIMSIZ DENETİM — TEMİZ DEĞİL, 2 BLOKER + 4 MAJÖR |
+| 7120 | CHECKPOINT | 10 | - | 20 Tem 2026 — oturum 10: DÜZELTME-1 [v5] ÇAPRAZ-TUTARLILIK TARAMASI — TEMİZ DEĞİL, 5 BLOKER |
+| 7138 | DEVİR | 9 | - | NOTU (19 Tem 2026 — oturum 9: slice-3a BAĞIMSIZ DOĞRULANDI — DÜZELT (dar kapsam: yalnız D5-a) |
+| 7163 | DEVİR | 8 | - | NOTU (19 Tem 2026 — oturum 8 kapanış: slice-3a BUILD GELDİ, DOĞRULAMA TEMİZ OTURUMA DEVREDİLDİ |
+| 7177 | DEVİR | 8 | - | NOTU (19 Tem 2026 — oturum 8: slice-3a SPEC [v5] HAZIR, BEŞ DENETİM TURU GEÇTİ — KİLİT ONUR'DA |
+| 7197 | DEVİR | 7 | - | NOTU (19 Tem 2026 — oturum 7 devamı: slice-2c BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşulsuz) |
+| 7212 | DEVİR | 7 | - | NOTU (19 Tem 2026 — oturum 7: slice-2b2 BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşullu) |
+| 7228 | DEVİR | 6 | - | NOTU (19 Tem 2026 — oturum 6: slice-2b1 BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşullu) |
+| 7247 | DEVİR | 5 | - | NOTU (18 Tem 2026 — oturum 5: slice-2a SPEC HAZIR + spec-QA GEÇTİ |
+| 7255 | DEVİR | 4 | - | NOTU (18 Tem 2026 — oturum 4: ADR 0002 KİLİTLENDİ |
+| 7264 | DEVİR | 3 | - | NOTU (18 Tem 2026 — oturum 3: slice-1 BUILD + BAĞIMSIZ DOĞRULANDI |
+| 7270 | DEVİR | 3 | - | NOTU (18 Tem 2026 — oturum 3: ADR 0001 KİLİTLENDİ |
+| 7275 | DEVİR | 2 | - | NOTU (18 Tem 2026 — oturum 2 kapanış |
+| 7348 | CHECKPOINT | 53 | K129 | GOREV-A13 KABUL EDİLDİ (Onur kilitledi, 3 Ağu 2026, oturum 53 |
+| 7374 | CHECKPOINT | - | K130 K127 | SPEC KİLİDİ AÇILDI VE YENİLENDİ · K127'NİN İLK GERÇEK SINAVI |
+| 7458 | DEVİR | 53 | - | oturum 53 → 54 (3 Ağu 2026, cihazdan ölçüldü |
 
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
+
+## K134 — `SS2` T0–T8 UYGULANDI (Claude Code) + COWORK KABUL KOŞUMU · `R8` SÖNDÜ (oturum 55)
+
+**Commit `b900bae`** — 50 dosya, **+5831/−69**. 🟢 **`R8` SÖNDÜ:** `urun_kodu_satiri = 1773`,
+`radar.py . --olc-urun-kodu 20e615e` ile **git'ten türetildi**, elle yazılmadı. Radar artık
+*"URUN KODU DURGUNLUGU"* bildirmiyor. Oturum 53–54–55'in sıfır serisi kırıldı.
+
+🔴 **BULGU: Claude Code COMMIT ATMADAN bıraktı.** Bütün iş çalışma ağacındaydı; `20e615e..HEAD`
+**boştu**. Ürün kodu git'e girmeden `R8` **sönmez** (`K55`: sayı git'ten türetilir) — yani "bitirdim"
+beyanı, ölçülebilir bir bitiş **değildi**. Commit'i Cowork attı.
+
+**COWORK'ÜN KENDİ KABUL KOŞUMU (K26 — builder'ın beyanı okunmadı, ölçüldü):**
+kriter 1 `flutter analyze` **No issues found!** EXIT 0 · kriter 2 `flutter test` **522/522**
+(`A13`'te 500) · kriter 3 `ss2-kapisi.py .` BULGU YOK **ve** `G32/a` testi `kaybedenDeger` /
+`kazananDeger` / `kazananClientHex`'i **tam dizeyle** ölçüyor (kör değil) · kriter 5
+`spec-kapi-kapsama` EXIT 0 · kriter 6 `ss2-kapisi.py --altin-kume` **10/10** EXIT 0 — ve küme
+v3'ün üç onarımını **gerçekten** taşıyor (`M171b` tersine çevrilmiş · `M171c` ayrı yanlış-pozitif
+vakası · `count()` çok-satır deseni) · kriter 7 **`verify.ps1` EXIT 0**, `== VERIFY PASSED ==`,
+backend **120/120**, CVE **0** · kriter 9 ham çıktılar `KANIT/SS2/` altında.
+
+🔴 **KRİTER 8 ÖLÇÜLMEDİ — KABUL BU OTURUMDA VERİLMEDİ.** Uçtan uca senaryo iki emülatör + backend +
+HLC sırası ister; bağlam yetmedi. *"Sekizde sekiz"* demek `§4`'ün yasakladığı şeydir.
+
+🔴 **KRİTER 7'NİN İKİ KOŞUMU — ORTAM KUSURUNU ÜRÜNE YAZMAMA DERSİNİN ÖLÇÜLMÜŞ HÂLİ.** İlk koşum
+**EXIT 1** verdi ve **53/56** test düştü; sebep üründe değildi — `momentum-postgres` **Exited(255)**
+olduğu için Testcontainers Docker'a bağlanamıyordu. Onur'un **açık izniyle** (K80) `docker start`
+koşuldu, üçüncü yoklamada `healthy` görüldü (sabit bekleme yok, tavanlı yoklama) ve aynı zincir
+**EXIT 0** verdi. **Ölçüm değişmedi, ortam değişti.**
+
+🔴 **BU OTURUMUN İKİNCİ KUSURU — COWORK YANLIŞ HEDEFİ VURDU VE NEREDEYSE BUILDER'I SUÇLUYORDU.**
+Bağımsız mutant örneklemesinde `gorev_deposu.dart`'taki **ilk** `distinct: true` eşleşmesi
+`distinct: false` yapıldı; test **geçti** ⇒ betik *"ESDEGER MUTANT!"* hükmü bastı. Altı eşleşme
+**tek tek** ölçülünce görüldü ki **ikisi yorum satırı**, dördü gerçek `count()` çağrısı ve
+**dördü de** `G33/d`'yi düşürüyor. **Kusur Cowork'teydi; builder'ın beyanı bu noktada DOĞRULANDI.**
+Ders: *bir mutantın ısırmaması, önce mutantın yanlış yere düştüğünü düşündürür.*
+Kanıt: `KANIT/SS2/T7-COWORK-distinct-6li-olcum.txt`.
+
+**İKİ MINOR (üretildi, kapatılmadı):**
+① `M172` **ısırıyor** ama spec'in *"`G32/a` KIRMIZI — kaybeden kazananla bayt-özdeş olur"* beklentisi
+gerçeği tarif etmiyor: kaybeden yazımdan sonra okununca şart 4 **eşitlik** verir ve kayıt **hiç
+oluşmaz** ⇒ `G32/a,e,e2,g,h` **beşi birden** düşer. Mutant hedefini vuruyor, **açıklaması yanlış**.
+② `ss2-kapisi.py`'nin `G33/c` ayağında **yorum-atlama ölçülmemiş**; `G31/a`'da `M171b`/`M171c` ile
+ölçülüyor, `G33/c`'de karşılığı yok. Cowork'ün yukarıdaki kusuru tam bu boşluğun içine düştü.
+
+**SIRADAKİ:** kriter 8 (uçtan uca) → `SS2` kabul hükmü. Docker **açık bırakıldı** (kriter 8 zaten
+istiyor); kapatma `K80` gereği Onur'un izniyle yapılır.
 
 ## K133 — `SS2` v3 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 55)
 
