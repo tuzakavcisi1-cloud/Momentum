@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayat** — borç `B-O50-2` (ayrıntı orada).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 5 Ağu 2026, **oturum 59** — `GOREV-W2` v3 **KİLİTLENDİ** (`K142`), **BUILD KOŞTU** ve Cowork **bağımsız kabul koşumunu** yaptı (`K143`). `K127` iki tur + build turu = **10 bloker** kapandı. 🟢 **`urun_kodu_satiri = 249`** (tamamı elle) ⇒ `K53/4` **ÖDENDİ**, `R8` **SÖNDÜ**. 🔴 Kriter 4'ün lafzı karşılanmadı (13/17); **kabul kilidi + erratum ONUR'DA**. *(Oturum 39–58 anlatımı arşivde — `PROJE_HAFIZA.md` K129–K143.)*
+> **Son güncelleme:** 5 Ağu 2026, **oturum 60** — **`W2` KABUL EDİLDİ (`K144`, Onur kilitledi)**; kriter 4'ün 4/17 aşırı-yakalaması **`K145` ERRATUM**'la **hafızada** düzeltildi (kilitli spec'e dokunulmadı). Açılışın on adımı ölçüldü. *(Oturum 39–59 anlatımı arşivde — `PROJE_HAFIZA.md` K129–K145.)*
 
 ---
 
@@ -66,20 +66,16 @@ dördünü de Onur kilitledi, her kriter **Cowork'ün KENDİ koşumuyla** ölç�
 **`BORCLAR.md`'de**. 🔴 `A12` araç işiydi ⇒ `R8`'i düşürmedi. 🔴 Kota `[ÖLÇÜLMEDİ]`.
 🔴 **ÖLÇÜLMEYEN (değişmedi): fiziksel cihazda NAT** — SignalR yeniden bağlanma yolu bu depoda
 **hiç egzersiz edilmedi** (`SS2`'de telefon **USB tüneliyle** bağlandı ⇒ borç KAPANMADI).
-🟢 **`R8` SÖNDÜ (oturum 55'te ÖLÇÜLDÜ);** sayı daima `--olc-urun-kodu` ile **git'ten** türetilir (K55).
-🟢 **⑨ WEB — `GOREV-W1` v2 KİLİTLİ (`K137`) ve KABUL EDİLDİ (`K138`)**; hüküm
-`KANIT/W1/01-COWORK-KABUL-HUKMU.md`. Oturum 58: 13 statik mutant **gerçek repoda 14/14** koştu
-(`KANIT/W1/02-STATIK-MUTANT-KOSUMU.txt`), ardından bağımsız denetim **üç bloker** buldu ⇒
-`B-W1-5`…`B-W1-7` (tam metin `KANIT/W1/03-DENETIM-o58-BULGULAR.md`). En ağırı: *"CORS yalnız
-Development"* kararı **MUTANTSIZ ve KAPISIZ**. 🔴 Dört **koşan** mutant yeniden koşulmadı (`K80`).
-🔒 **⑩ `GOREV-W2` v3 KİLİTLENDİ (`K142`, Onur, 5 Ağu 2026, oturum 59)** — web depolama katmanı
-**görünür** olur. `K127` **İKİ TUR** ödendi (`KANIT/W2/00-…` + `01-…`, **10 bloker**).
-🟢 **BUILD KOŞTU** (`57cc8d1`+`95d2c00`) ve **COWORK BAĞIMSIZ KABUL KOŞUMUNU YAPTI** (`K143`,
-hüküm `KANIT/W2/05-COWORK-KABUL-HUKMU.md`): 12 kriterin **11'i TAM** · `flutter test` **539/539** ·
-**`urun_kodu_satiri = 249`, tamamı ELLE yazılmış ⇒ `K53/4` ÖDENDİ, `R8` SÖNDÜ.**
-🔴 **Kriter 4'ün LAFZI karşılanmadı: 13/17 tam, 4/17 AŞIRI-YAKALAMA** (kör kapı DEĞİL; kusur
-**spec'in `hedef` sütununda**). **KABUL KİLİDİ + ERRATUM kararı ONUR'DA** (üç şık hükümde).
-→ **backend CI** (`D-A13-4`) + release → ⑪ `ADR 0004` + vitrin.
+🟢 **⑨ `W1` (`K137`/`K138`) · ⑩ `W2` (`K142`/**`K144`**) KABUL EDİLDİ** — Onur kilitledi
+(5 Ağu 2026, oturum 60); hükümler `KANIT/{W1/01,W2/05}-COWORK-KABUL-HUKMU.md`. `W2`: 12 kriterin
+**11'i TAM** · `flutter test` **539/539** · `urun_kodu_satiri = 249` (tamamı **ELLE**) ⇒ `K53/4`
+**ÖDENDİ**, `R8` **SÖNDÜ** (sayı daima `--olc-urun-kodu` ile git'ten türetilir — K55).
+🔴 Kriter 4 **13/17 tam + 4/17 AŞIRI-YAKALAMA** ile kapandı (**kör kapı DEĞİL**; kusur spec'in
+`hedef` sütununda); düzeltme **`K145` ERRATUM**'dur — **hafızada** yaşar, **kilitli spec'e
+dokunulmadı** ⇒ spec ↔ hafıza sapması **beyanlıdır**.
+🔴 Kapanmayan sınırlar: `BORCLAR.md` `B-W1-1`…`B-W1-7` + `KANIT/W2/05-…` §4 · **dört koşan `W1`
+mutantı (`M195`–`M197`, `M199`) yeniden KOŞULMADI (`K80`)**.
+→ **SIRADAKİ: backend CI** (`D-A13-4`) + release → ⑪ `ADR 0004` gövdesi (COOP/COEP) + vitrin → README.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` ÇAKIŞMASI: kanonik metin `ORTAM.md`'de** (oturum 50'de
 ölçüldü). Buraya **kopyalanmaz** — üç satırlık özet oturum 53'te `kanonik-kopya` olarak budandı.
 
@@ -88,8 +84,6 @@ hüküm `KANIT/W2/05-COWORK-KABUL-HUKMU.md`): 12 kriterin **11'i TAM** · `flutt
 (`FOR UPDATE SKIP LOCKED` → `UPDLOCK/READPAST`) **arşivde**.
 🔴 **README YOK** — klonlayana tek satır talimat yok (borç `BORCLAR.md`'de). 🔴 Depo görünürlüğü
 **yazılmaz, ÖLÇÜLÜR**: *"public"* iddiası oturum 47'de çürüdü, oturum 53'te yine **PRIVATE** ölçüldü.
-
-🟡 Ortam ve push durumu bu dosyaya YAZILMAZ, her açılışta ÖLÇÜLÜR (§2 adım 7 ve 9).
 
 ---
 
@@ -106,7 +100,7 @@ hüküm `KANIT/W2/05-COWORK-KABUL-HUKMU.md`): 12 kriterin **11'i TAM** · `flutt
 - **K57‑b** — `araclar/radar.py` **plugin 0.2.0 ile BAYT-ÖZDEŞ** (`46E3A8BC`); proje-yerel not **eklenmez** ⇒ sapma **tek sha ile** ölçülür.
 - **K58** — `DURUM.md` tavanı **32 KB**; kapısı `belge-tavan-kapisi.py`, §2 adım 3'te koşar. 🔴 Aracın **banner sürümü bayat** (`1.0.0`), borç `B-O50-2`. 🔴 **Yeni checkpoint `<!-- DIZIN:SON -->` ALTINA** eklenir (`hafiza-dizin.py`). Gerekçe (R4 freni + dikkat): hafıza K58.
 - 🔒 **K117 · K126 — `BORCLAR.md` TAVANI 32 KB (Onur; 2 ve 3 Ağu 2026):** ölçülmüş gerekçe tek cümledir — **bu dosyada budama ancak bir borç KAPANDIĞINDA işe yarar**. 🔴 **Beyan edilmiş bedel: tavan artık `DURUM.md` ile EŞİT;** *"borç listesi canlı durumun yarısı kadar kalmalı"* tasarımı **ÖLDÜ**. K40 şartı **vaka 13** ile ödendi. Gerekçe: hafıza K117/K126.
-- 🟢 **K21'in mekanik kapısı ARTIK VAR:** `araclar/oturum-sagligi.py` **1.0.0**, altın küme **26/26**; `S4` her açılışta ÖLÇÜLÜR (§2 adım 8), buraya **yazılmaz**. 🔴 **Bu satır oturum 45'e kadar *"araç YOK"* diyordu — ölü beyan, K101'de budandı.** Kalan borç (*"alıntı ≠ beyan"* yanlış-pozitifi, K97/§2b): `BORCLAR.md`.
+- 🟢 **K21'in mekanik kapısı ARTIK VAR:** `araclar/oturum-sagligi.py` **1.0.0**, altın küme **26/26**; `S4` her açılışta ÖLÇÜLÜR (§2 adım 8), buraya **yazılmaz**. *(Bu satırın "araç YOK" ölü beyanı K101'de budandı — arşivde.)* Kalan borç (*"alıntı ≠ beyan"* yanlış-pozitifi, K97/§2b): `BORCLAR.md`.
 - **K55** — Başka bir el çalışırken `git add -A` **YASAK**; `urun_kodu_satiri` = *"o oturumda repoya giren ürün kodu, **hangi el olursa olsun**"*.
 - **K56** — Kanonik kök **saf ASCII** (`C:\dev\Momentum`); `android.overridePathCheck` **eklenmez**, junction **kullanılmaz**.
 - **K46** — `DESIGN.md`'ye **tek bayt yazılmaz** (BD‑1…BD‑7 borçları açık).
@@ -115,11 +109,11 @@ hüküm `KANIT/W2/05-COWORK-KABUL-HUKMU.md`): 12 kriterin **11'i TAM** · `flutt
 - 🔒 **K127 — KİLİT ÖNCESİ BAĞIMSIZ DENETİM (Onur kilitledi, 3 Ağu 2026):** kilit checkpoint'i **denetçinin ÇIKTI YOLUNU** taşır; yoksa *"denetim KOŞULMADI"* diye **açıkça** yazar. Kanonik metin **`CLAUDE.md`**'de, buraya kopyalanmaz. **K53/1 ile çelişmez** — turun *sayısını* değil **zamanlamasını** sabitler. 🟢 `K133`'te *"yoksa açıkça yazar"* şıkkı **ilk kez** kullanıldı. 🔴 **Mekanik kapısı YOK** ⇒ borç `B-O52-2`. Gerekçe: hafıza K127.
 - 🔒 **K129 · K130 — `A13` KABUL + spec yeniden kilitlendi (Onur, 3 Ağu 2026, oturum 53).** Kurallar `A13/G27`–`G30` kapılarında + `M162`–`M170` mutantlarında koşuyor. 🔴 **Yaşayan beş sınır (hepsi borç, `B-O53-1`…`5`):** `G29/b` **kör** · `--fatal-infos` **taşıyıcı değil** · `G27/a`·`G27/c`·`G30/b` **mutantsız** · kriter 7'nin **dinamik ayaklarının aracı yok** · aksiyonlar **pinsiz**. Ders: **okunan onarım, ölçülmüş onarım değildir.** Gerekçe: hafıza K129/K130.
 - 🔒 **K133 · K136 — `SS2` KİLİTLENDİ ve KABUL EDİLDİ** (Onur; 3 ve 4 Ağu 2026). K73 gereği kilit §5'ten **ÇEKİLDİ**; kurallar bugün `SS2/G31`–`G34` kapılarında ve `M171`–`M188` mutantlarında **koşuyor**. 🔴 **Yaşayan üç sınır:** ① `spec-kapi-kapsama.py` *"mutant ISIRIR mı"* **sormaz** (`B-SS2-4`) ② üründe **başlık düzenleme UI'ı YOK** ⇒ kriter 8 **tamamlanma anahtarıyla** koşuldu ③ `M172`'nin *beklenen* metni gerçeği tarif etmiyor (`B-SS2-5`). Gerekçeler: hafıza K133 · K135 · K136.
-- 🔒 **K137 — `GOREV-W1` v2 KİLİTLENDİ (Onur, 4 Ağu 2026, oturum 57).** Kimlik **§9'da**.
-  `K127` şartı **ÖDENDİ**: iki bağımsız denetçi kilitten **ÖNCE** koştu, **6 bloker** buldu, altısı da
-  kapandı; çıktı yolları spec `## 0`'dadır. 🔴 **Yaşayan sınır: 18 mutantın ISIRDIĞI ÖLÇÜLMEDİ**
-  — `cors-kapisi.py` ve `_preflight.py` henüz **yok**; `spec-kapi-kapsama.py` kendi beyanıyla
-  *"ısırmayı değil kapsamayı"* ölçer. Gerekçe: hafıza `K137`.
+- 🔒 **K137/K138 · K142/K144 — `W1` ve `W2` KİLİTLENDİ *ve* KABUL EDİLDİ ⇒ K73 gereği ÇEKİLDİ.**
+  Kurallar bugün prozada değil **`W1/G35`–`G38` + `W2/G39`–`G42` kapılarında** koşuyor. 🔴 **Bu satır
+  oturum 60'a kadar *"`cors-kapisi.py` ve `_preflight.py` henüz YOK"* diyordu — ÖLÜ BEYAN: ölçüldü,
+  İKİSİ DE VAR** (`araclar/cors-kapisi.py` **24.450 b** · `KANIT/W1/_preflight.py`). Yaşayan sınırlar
+  `BORCLAR.md` (`B-W1-1`…`B-W1-7`) ve `KANIT/W2/05-COWORK-KABUL-HUKMU.md` §4'tedir.
 - **K44-a** — **Önce araç, sonra belge.**
 - **K34-f** — Bir aracı **onaran el**, onu **yazan elden AYRI** olmalı.
 - **K26** — Üretici kendi denetçisini spawn edemez. **Üreten ≠ denetleyen.**
