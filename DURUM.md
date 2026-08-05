@@ -50,15 +50,12 @@
 
 ## 4. SIRADAKİ İŞ
 
-🔒 **K89–K100 KAPANDI (oturum 42–44):** `KAPILAR.md` · `A8` v2 · `A9` v3 · `A9b` v2 · **A9 KABUL**; arşivde.
+🔒 **K89–K100 (o42–44) · `A10` (K106) · `.gitignore` tuzağı (K107) KAPANDI; `GOREV-A9c` KİLİTLİ
+(K109 — iş Claude Code'a hazır, araç onarımı ⇒ `R8`'i düşürmez).** Anlatımlar ve `D5` kör kapı arşivde.
 
-🟢 **`GOREV-A10` KABUL (K106) · `.gitignore` tuzağı KAPANDI (K107) · `GOREV-A9c` KİLİTLİ (K109,
-iş Claude Code'a hazır, araç onarımı ⇒ `R8`'i düşürmez).** Gerekçeler ve `D5` kör kapı **arşivde**.
-
-🟢 **①–④ KAPANDI, ANLATIMLARI ARŞİVDE (K73):** `.NET 10` geçişi (**K111**, ATOMİK) · **A10** (**K106**) ·
-cihaz→sunucu senkron (**K112/K113**, **2,1 s**) · çevrimdışı ayağı (**K115**) ve onun doğurduğu **K116**
-dört kilidi. Kanıtlar: `KANIT/net10-adim6/` · `KANIT/ucuncu-cihaz-senkron/` · `KANIT/cevrimdisi-senkron/`.
-Paket borçları `BORCLAR.md`'de.
+🟢 **①–④ KAPANDI, ANLATIMLARI ARŞİVDE (K73):** `.NET 10` (**K111**, ATOMİK) · cihaz→sunucu senkron
+(**K112/K113**, **2,1 s**) · çevrimdışı ayağı (**K115**) ve onun doğurduğu **K116** dört kilidi.
+Kanıtlar `KANIT/{net10-adim6,ucuncu-cihaz-senkron,cevrimdisi-senkron}/`. Paket borçları `BORCLAR.md`'de.
 
 🟢 **⑤ `A11` (K121) · ⑥ `A12` (K124) · ⑦ `A13` (K129/K130) · ⑧ `SS2` (K136) KABUL EDİLDİ** —
 dördünü de Onur kilitledi, her kriter **Cowork'ün KENDİ koşumuyla** ölçüldü (K26). Hükümler
@@ -76,12 +73,15 @@ dokunulmadı** ⇒ spec ↔ hafıza sapması **beyanlıdır**.
 🔴 Kapanmayan sınırlar: `BORCLAR.md` `B-W1-1`…`B-W1-7` + `KANIT/W2/05-…` §4 · **dört koşan `W1`
 mutantı (`M195`–`M197`, `M199`) yeniden KOŞULMADI (`K80`)**.
 → **SIRADAKİ: backend CI** (`D-A13-4`) + release → ⑪ `ADR 0004` gövdesi (COOP/COEP) + vitrin → README.
-🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` ÇAKIŞMASI: kanonik metin `ORTAM.md`'de** (oturum 50'de
-ölçüldü). Buraya **kopyalanmaz** — üç satırlık özet oturum 53'te `kanonik-kopya` olarak budandı.
+🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` çakışması: kanonik metin `ORTAM.md`'de.**
 
-🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026).** Reddedilmedi; **iki koşul birlikte** sağlanınca açılır:
-① cihaz senkron kanıtı kapandı ② hedef şirket yığını MSSQL. Ölçülen maliyet, `Rule3` ve en riskli parça
-(`FOR UPDATE SKIP LOCKED` → `UPDLOCK/READPAST`) **arşivde**.
+🔒 **⑫ `W3` (çapraz-köken izolasyonu) v1, `K127` turunda DÜŞTÜ (`K146`)** — 6 bloker + 14 major,
+`KANIT/W3/00-DENETIM-o60.md`. En ağırı `B1`: izolasyon açılsa bile drift mevcut IndexedDB'de
+**kalabilir**. 🔒 **`K147`: ÖNCE ÖLÇ, SONRA v2** ⇒ **oturum 61'in İLK işi
+`KANIT/W3/01-OLCUM-TALIMATI-o61.md`**; ölçümü **Onur/Code** koşar (`K80`), gelmeden v2 yazılmaz.
+
+🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026):** iki koşul **birlikte** sağlanınca açılır —
+① cihaz senkron kanıtı ② hedef şirket yığını MSSQL. Maliyet ve `Rule3` **arşivde**.
 🔴 **README YOK** — klonlayana tek satır talimat yok (borç `BORCLAR.md`'de). 🔴 Depo görünürlüğü
 **yazılmaz, ÖLÇÜLÜR**: *"public"* iddiası oturum 47'de çürüdü, oturum 53'te yine **PRIVATE** ölçüldü.
 
