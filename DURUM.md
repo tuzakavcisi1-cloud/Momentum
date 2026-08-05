@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayat** — borç `B-O50-2` (ayrıntı orada).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 5 Ağu 2026, **oturum 59** — açılışın 10 adımı koştu (canlı bağlam **168.780** ⇒ YEŞİL). **`GOREV-W2` v3 KİLİTLENDİ (`K142`)**: web depolama katmanı **görünür** olur. `K127` **iki tur** ödendi ve turlar **10 BLOKER** buldu; en ağırı iki kez aynı sınıftı — *dilimin tek dikişi ölçülmüyordu*. 🔴 Bu oturum **0 satır ürün kodu** üretti; `K53/4` sert durağı **ödenmedi**, iş Claude Code'a hazır. *(Oturum 39–58 anlatımı arşivde — `PROJE_HAFIZA.md` K129–K141.)*
+> **Son güncelleme:** 5 Ağu 2026, **oturum 59** — `GOREV-W2` v3 **KİLİTLENDİ** (`K142`), **BUILD KOŞTU** ve Cowork **bağımsız kabul koşumunu** yaptı (`K143`). `K127` iki tur + build turu = **10 bloker** kapandı. 🟢 **`urun_kodu_satiri = 249`** (tamamı elle) ⇒ `K53/4` **ÖDENDİ**, `R8` **SÖNDÜ**. 🔴 Kriter 4'ün lafzı karşılanmadı (13/17); **kabul kilidi + erratum ONUR'DA**. *(Oturum 39–58 anlatımı arşivde — `PROJE_HAFIZA.md` K129–K143.)*
 
 ---
 
@@ -38,7 +38,7 @@
 |---|---|
 | **Backend** | ✅ slice-1 → 3e (3e'de **tek bayt yazılmadı**, ayak 2b2'de bitmişti). `araclar\verify.ps1` ⇒ build **0 uyarı/0 hata** · **test 120/120** · CVE 0 · EXIT 0. |
 | **Veritabanı** | PostgreSQL / Docker; konteyner adı **`momentum-postgres`**. 🔴 **ÇALIŞMA DURUMU BURAYA YAZILMAZ — §2 adım 9'da ÖLÇÜLÜR (K80).** *(Oturum 42: bu hücre `✅ … Up (healthy)` diyordu; ölçüm `docker ps -a` ⇒ **`Exited (255)`** çıktı. K80'i doğuran bayat-PID vakasının ikinci kopyasıydı.)* |
-| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 + A7/A8/A9 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). 🟢 **`ios/` VAR ve CI'da DERLENİYOR** (`A13`, K129): `Runner.app` **18,7 MB**. Kapılar **spec-yereldir** (K108; envanter `GOREV_CLAUDE_CODE/`'da ÖLÇÜLÜR). Ölçülen mutantlar **`M1`–`M170`** (dilim dilim; sayı ve ısırma durumu **kabul hükümlerinde**, buraya yazılmaz). Son koşumlar **Cowork'ün kendisi** (K26): `flutter test` **500/500** (CI'da da 500) · `analyze --fatal-infos` **0** · release APK (K106). 🔴 A‑7 `DESIGN.md`'de kapanmadı (K46). Tur tur anlatım **arşivde** (K73). |
+| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 + A7/A8/A9 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). 🟢 **`ios/` VAR ve CI'da DERLENİYOR** (`A13`, K129): `Runner.app` **18,7 MB**. Kapılar **spec-yereldir** (K108; envanter `GOREV_CLAUDE_CODE/`'da ÖLÇÜLÜR). Ölçülen mutantlar **`M1`–`M170`** (dilim dilim; sayı ve ısırma durumu **kabul hükümlerinde**, buraya yazılmaz). Son koşumlar **Cowork'ün kendisi** (K26): `flutter test` **539/539** · `analyze --fatal-infos` **0** · release APK (K106). 🔴 A‑7 `DESIGN.md`'de kapanmadı (K46). Tur tur anlatım **arşivde** (K73). |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
 | **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR** *(bu satır bir kez "aynı iki artefakt" dedi, ölçüm **11** verdi: sayı yazan satır bayatlar, ölçüme atan bayatlamaz — K82-b)*. 🔒 **K83 — Onur DURDUR'u kilitledi:** park yürürlükte, dört-şık ritüeli **tekrarlanmaz**. 🔴 **`R8` DURUMU DA YAZILMAZ, ÖLÇÜLÜR:** K104'te **ısırdı** (44–45 sıfır), K106'da **düştü**; sayı daima `--olc-urun-kodu <sha>` ile **git'ten** türetilir (K55). |
@@ -73,10 +73,12 @@ dördünü de Onur kilitledi, her kriter **Cowork'ün KENDİ koşumuyla** ölç�
 `B-W1-5`…`B-W1-7` (tam metin `KANIT/W1/03-DENETIM-o58-BULGULAR.md`). En ağırı: *"CORS yalnız
 Development"* kararı **MUTANTSIZ ve KAPISIZ**. 🔴 Dört **koşan** mutant yeniden koşulmadı (`K80`).
 🔒 **⑩ `GOREV-W2` v3 KİLİTLENDİ (`K142`, Onur, 5 Ağu 2026, oturum 59)** — web depolama katmanı
-**görünür** olur (sınıflandırma + şerit + **dikiş kapısı**). Kimlik §9'da; iş **Claude Code'a hazır**.
-`K127` **İKİ TUR** ödendi: `KANIT/W2/00-DENETIM-o59.md` + `KANIT/W2/01-v2-DOGRULAMA-o59.md`
-(**10 bloker**, hepsi metne alındı). 🔴 v3 **yeniden denetlenmedi** (radar `R1`: üçüncü tur YASAK) —
-**beyan edilmiş sınır**; kalan risk build turunda ısırır.
+**görünür** olur. `K127` **İKİ TUR** ödendi (`KANIT/W2/00-…` + `01-…`, **10 bloker**).
+🟢 **BUILD KOŞTU** (`57cc8d1`+`95d2c00`) ve **COWORK BAĞIMSIZ KABUL KOŞUMUNU YAPTI** (`K143`,
+hüküm `KANIT/W2/05-COWORK-KABUL-HUKMU.md`): 12 kriterin **11'i TAM** · `flutter test` **539/539** ·
+**`urun_kodu_satiri = 249`, tamamı ELLE yazılmış ⇒ `K53/4` ÖDENDİ, `R8` SÖNDÜ.**
+🔴 **Kriter 4'ün LAFZI karşılanmadı: 13/17 tam, 4/17 AŞIRI-YAKALAMA** (kör kapı DEĞİL; kusur
+**spec'in `hedef` sütununda**). **KABUL KİLİDİ + ERRATUM kararı ONUR'DA** (üç şık hükümde).
 → **backend CI** (`D-A13-4`) + release → ⑪ `ADR 0004` + vitrin.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` ÇAKIŞMASI: kanonik metin `ORTAM.md`'de** (oturum 50'de
 ölçüldü). Buraya **kopyalanmaz** — üç satırlık özet oturum 53'te `kanonik-kopya` olarak budandı.
