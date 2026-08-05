@@ -3,21 +3,15 @@
 > 🔴 **AÇILIŞTA OKUNMAZ.** Bu dosya `DURUM.md` §8'den **30 Tem 2026'da (oturum 39, Onur'un kilidi K83)** ayrıldı.
 > Açılış protokolü **`DURUM.md` + `CLAUDE.md`** ile sınırlıdır; burası yalnız **iş bir borca dokunduğunda** açılır
 > (`PROJE_HAFIZA.md` ayrımının aynısı).
-> **TAVAN: ≤ 24.576 b** 🔴 **[K117, oturum 49 — Onur; ESKİ 16.384 GEÇERSİZDİR].** Gerekçe `DURUM.md`'nin
-> tavanından **farklıdır ve büyümeyi ÖDÜLLENDİRMEZ:** bu liste
-> büyüdüğünde kapının ısırması **doğru sinyaldir** — borç kapanmıyor demektir. Ayrım anındaki içerik **10.395 b**.
-> Eşik değişikliği K40 gereği **Onur'dan** gelir ve `belge-tavan-kapisi.py`'nin altın kümesine vaka eklemeyi zorunlu kılar.
-> 🟢 **K117'de bu şart MEKANİKLEŞTİ:** aracın **vaka 10**'u kapsam tablosundaki **her tavanı pinler**; eşiği
-> değiştirip altın kümeyi güncellemeyen el artık **KIRMIZI** alır. Yükseltmenin ölçülmüş gerekçesi ve
-> **beyan edilmiş bedeli** (bu bir gevşetmedir) `PROJE_HAFIZA.md` **K117**'dedir.
-> **Kapanan kalem buradan ÇIKARILIR**, gerekçesi `PROJE_HAFIZA.md`'ye yazılır (K71 emsali). Kapanmış bir kalemi
-> burada aramak **bayat okuma üretir**.
+> **TAVAN: ≤ 32.768 b** 🔴 **[K126, oturum 52 — Onur; ESKİ 16.384 ve 24.576 GEÇERSİZDİR].** Kanonik eşik
+> `belge-tavan-kapisi.py` kapsam tablosundadır; **bu satır ondan TÜRETİLMİŞTİR, kaynak DEĞİLDİR.** Liste
+> büyüdüğünde kapının ısırması **doğru sinyaldir** — borç kapanmıyor demektir. Eşik değişikliği K40 gereği
+> **Onur'dan** gelir ve altın kümeye vaka eklemeyi zorunlu kılar; şart **mekanikleşti** (K117 vaka 10 ·
+> K126 vaka 13). İki gevşetmenin de gerekçesi ve beyan edilmiş bedeli: `PROJE_HAFIZA.md` **K117** / **K126**.
+> **Kapanan kalem buradan ÇIKARILIR**, gerekçesi `PROJE_HAFIZA.md`'ye yazılır (K71; oturum 35'te kapananlar
+> ve bayat çıkan altı iddia oradadır). Kapanmış kalemi burada aramak **bayat okuma üretir**.
 
 ---
-
-> 🔴 **KAPANMIŞ kalemler ve BAYAT çıkan altı iddia buradan ÇIKARILDI** ⇒ `PROJE_HAFIZA.md` **K71**
-> (28 Tem 2026, oturum 35). Bu bölüm yalnız **bugün açık olanı** taşır. Kapanmış bir kalemi burada
-> aramak bayat okuma üretir; gerekçesi arşivdedir.
 
 ### Ürün / kod
 
@@ -90,8 +84,6 @@
 - 🔴 **DEVİR NOTU KENDİ KABININ KİMLİĞİNİ YAZMAMALI [K82, ölçüldü].** Not `PROJE_HAFIZA.md 684.530 b`
   diyor, yazım anında **691.599 b** — notu yazmak dosyayı büyütür ⇒ beyan **yapısal olarak imkânsız**.
   Araç `D1-OZ` ile SARI der; kural henüz `CLAUDE.md`'ye **yazılmadı** (Onur'un kilidi).
-- 🟡 **`oturum-sagligi.py` `tek-kopya-kapisi.py` kapsamına EKLENMEDİ** — eklemek kapının kilitli sha'sını
-  bozar + 11/11 mutantı yeniden koşturur; `GOREV-slice-3e-G12.md` ile **aynı beyanlı-kilit** durumu.
 - 🟡 **`oturum-sagligi.py` §3'ü GÖRMÜYOR [ölçüldü, oturum 38].** `D1` yalnız ÜÇ hücreli kimlik tablosunu
   ayrıştırır; §3'ün iki hücreli satırları **kapsam dışı**. Boşluk aynı gün ısırdı: §3 `DESIGN.md` v1
   `534DFF68`'i (§9'un **GEÇERSİZ** dediği sha) ve `156/156`'yı (gerçek **171/171**) taşıyordu — ikisi de
@@ -221,21 +213,16 @@ gerektirecek. Kapanış: `mutantlar()`'ın atıf kümesini yalnız §6 tablosunu
 değil, kapı-ayak → o ayağın **ölçtüğü** kararlar eşlemesinden de (`## 5.` tablolarındaki ayak
 metninden, veya spec yazarının ayrı bir eşleme bloğundan) türetmesi gerekir — bu, `S2` mantığına
 dokunmayı gerektirdiği için `A12`'nin mikro-dilim kapsamı **dışında** bırakıldı (araç kodu
-`D-A12-1`/`D-A12-2` dışında değiştirilmedi). Örnek dokuz kayıt (isim, mutant, kapı-ayak):
-`D-A11-1`←`M151`(`G24/c`) · `D-A11-2`←`M139,M140,M143`(`G22/a,b,e`) · `D-A11-3`←`M149,M155`(`G23/c,d,i,j`) ·
-`D-A11-4`←`M152`(`G22/j`) · `D-A11-5`←`M145,M147,M150`(`G22/h`+`G23/f,g,h`) · `D-A11-6`←`M142,M154`(`G22/m,l`) ·
-`D-A12-1`←`M156,M161`(`G25/a,b`) · `D-A12-2`←`M157,M158`(`G25/c,d`) · `D-A12-3`←`M160`(`G26/a`).
+`D-A12-1`/`D-A12-2` dışında değiştirilmedi). 🔴 **Dokuz kaydın (isim ← mutant ← kapı-ayak) kanonik
+yeri `GOREV-A11` ve `GOREV-A12` §6b'dir; buraya KOPYALANMAZ** (`kanonik-kopya`).
 
-### `B-O52-1` — K81 BİÇİM STANDARDI YARIM: **MUTANT TABLOSUNUN SÜTUN SIRASI YAZILI DEĞİL**
+### `B-O52-1` — K81 BİÇİM STANDARDI: ① YAPILDI, ② AÇIK (kural prozada, kapıda değil)
 
-🔴 **Ölçüldü (oturum 52, `GOREV-A13` ilk yazımı):** `spec-kapi-kapsama.py` mutant hedefini
-**`hucreler[2]`**'den okur (`mutantlar()`). `hedef` sütunu dördüncü sıraya konunca araç
-**`[S1]` × 4 + `[S2]` × 5** verdi: sekiz mutantın hiçbiri hiçbir kapıya bağlanmadı, dört kapının
-dördü de *"mutantsız"* göründü. K81 **bölüm başlıklarını** standartlaştırdı ama **sütun sırasını
-yazmadı** ⇒ standart yarım. **Kapanış (iki yol, biri seçilir):** ① `CLAUDE.md`'nin K81 maddesine
-tek cümle eklenir (*"§6 tablosunda 3. sütun `hedef`tir"*) — ucuz ama **kapısız**; ② araç, başlık
-satırındaki `hedef` sütununu **adıyla** bulur (sabit indeks yerine) ve bulamazsa `[S0] BİÇİM` der —
-pahalı ama **mekanik**. K53/2 gereği ikincisi *"koşan kod olmadan ölçülebilir"* sınıfındadır.
+🔴 **Ölçüldü (oturum 52):** `spec-kapi-kapsama.py` mutant hedefini **`hucreler[2]`**'den okur;
+`hedef` dördüncü sütuna konunca **sekiz mutantın hiçbiri hiçbir kapıya bağlanmadı**.
+🟢 **① KAPANDI [oturum 58'de doğrulandı]:** kural `CLAUDE.md` K126 satırında **ve** `GOREV-W1` §6'da
+yazılı — ucuz ama **kapısız**. 🔴 **② AÇIK:** araç `hedef` sütununu **adıyla** bulmalı (sabit indeks
+yerine), bulamazsa `[S0] BİÇİM` demeli. `K53/2`: bu sınıf **koşan kod olmadan ölçülebilir**.
 
 ### `B-O52-2` — `K127`'NİN MEKANİK KAPISI YOK (kural prozada yaşıyor)
 
@@ -253,10 +240,9 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
 
 ## OTURUM 53 — `A13` KABULÜNÜN AÇTIĞI BEŞ BORÇ (K129/K130)
 
-> Hepsi **kabul öncesi bağımsız denetimde** (K127) bulundu; hiçbiri **yanlış-YEŞİL** üretmiyor,
-> hepsi *fazlalık / gösterilemeyen iddia* sınıfındadır. Kabul **bu sınırlar YAZILARAK** verildi.
+> Hepsi **kabul öncesi bağımsız denetimde** (K127) bulundu; hiçbiri **yanlış-YEŞİL** üretmiyor.
 > Kaynak: `KANIT/A13/00-DENETIM-kabul-oncesi.md` · beyanlar `GOREV-A13` §9/11–21.
-> 🔴 **Onarımların hepsi BUILDER'ın işidir (K34-f)** — Cowork ölçer ve raporlar, onarmaz.
+> 🔴 **Onarımlar BUILDER'ın işidir (K34-f)** — Cowork ölçer, onarmaz.
 
 - 🔴 **`B-O53-1` — `A13/G29/b` KÖR AYAK.** `Xcode build done.` tam dizgesi `main` (ios **success**,
   91.9s) ve `M169` (ios **failure**, 43.7s) loglarının **ikisinde de** geçiyor ⇒ ayırt etme gücü
@@ -300,12 +286,8 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
   statik mutant. *Beyan edilmiş bedel:* pin, güvenlik yamalarını da dondurur ⇒ Dependabot'suz
   pin bir bakım borcudur.
 
-### OTURUM 53'TE KAPANAN / DEĞİŞEN
-- 🟡 **`A13` §9/4 KISMEN KAPANDI** — Timing API: dört koşumun da **billable MACOS 0 ms /
-  UBUNTU 0 ms**. **Kalan kontenjan hâlâ `[ÖLÇÜLMEDİ]`** (`gh` token'ında `user` yetkisi yok).
-- 🔴 **`B-O52-2` (K127'nin mekanik kapısı yok) HÂLÂ AÇIK — ama bu turda K127 kapısız hâliyle
-  bile İŞE YARADI:** denetim kilitten önce koştu ve **1 bloker** yakaladı. Kapı olmadığı için
-  *koştuğunu* garanti eden bir şey yok; **bu tur onu Onur'un talimatı garanti etti.**
+- 🟡 **`A13` §9/4:** Timing API ölçüldü (billable MACOS/UBUNTU **0 ms**); **kalan kontenjan
+  `[ÖLÇÜLMEDİ]`** (`gh` token'ında `user` yetkisi yok).
 
 ### OTURUM 55'TE AÇILAN — `SS2` v3 KİLİDİNİN BORÇLARI (`K133`)
 
@@ -323,15 +305,33 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
   🔴 **Ölçülmüş bedel:** aynı ders **üç tur üst üste** alıntılanıp uygulanmadı
   (`A13/M167` → `SS2` v1 `M172`/`M173`/`M175` → v2 `M172`) ve iki bağımsız denetim turu (~307k +
   ~120k token) onu **elle** yakalamak zorunda kaldı. Kapı olsaydı üçü de ilk turda düşerdi.
-  **Kapanış yolu:** mutantı **gerçekten uygulayıp** kapıyı koşan, sonra geri alan bir koşucu;
-  referans **`KANIT/A11/_mutant_kosucu.py`** (ikili yedek → bayt düzeyinde yama → kapı → `wb` ile
-  geri yazım → `sha256` ile özdeşlik). 🔴 `git restore` ile geri alma **YASAK** (`core.autocrlf`
-  bayt-özdeşliği kör kılar — `ORTAM.md`). 🔴 **Araç ÜRÜN KODU SAYILMAZ (`K53/4`)** ⇒ bu borç
-  `R8` sönmeden açılamaz.
+  **Kapanış yolu:** mutantı gerçekten uygulayıp kapıyı koşan, sonra geri alan bir koşucu; referans
+  **`KANIT/A11/_mutant_kosucu.py`** — yöntem ve `git restore` yasağı **`ORTAM.md`**'dedir, buraya
+  kopyalanmaz. 🔴 **Araç ÜRÜN KODU SAYILMAZ (`K53/4`)** ⇒ bu borç `R8` sönmeden açılamaz.
 
-
-- 🟢 **KAPANMIŞ ÜÇ KALEM ARŞİVE TAŞINDI [oturum 56, `K135`]:** `spec-kapi-kapsama.py` kural yarısı (`K124`) · `A13` §9/5 · `A13` §9/10. Tam metinleri `PROJE_HAFIZA.md` `K135`'te; burada **yer kaplamaları** tavanı borç KAPANMADIĞI hâlde daraltıyordu.
 - 🟡 **`B-SS2-5` — `M172`'nin *beklenen* metni gerçeği tarif etmiyor [oturum 56'da ölçüldü, Onur borçlandırdı].** Kilitli spec (`K133`) satır 382 yalnız `G32/a` bekler; ölçülen gerçek **beş ayak** (`G32/a`·`e`·`e2`·`g`·`h`) — şart 4 çakışma kaydını **tamamen bastırıyor**. Sınıf **beyansız-sınır**; kilit **açılmadı** (çekirdek sözleşme ayakta: `M172` `G32/a`'yı **adıyla** düşürdü). Gerekçe + kapanış şartı: hafıza `K135-EK3`.
 
 ### OTURUM 57'DE AÇILAN — `W1` BORÇLARI (`K137`)
 - 🟡 **`B-W1-1`·`B-W1-2` — tam gerekçe spec §6b'de, kopyalanmaz** (`kanonik-kopya`; kaynak `GOREV-W1-web-yuruyen-iskelet.md` §6b). Kimlikler: `B-W1-1` `W1/G38/b` mutantsız (mutantı `K112` kapsamı olurdu). `B-W1-2` `W1/G37/c` (`missingFeatures` beyanı) mekanik kapısız, belge disiplinidir — ölçülen: `chosenImplementation=sharedIndexedDb`, `missingFeatures={dedicatedWorkersInSharedWorkers, sharedArrayBuffers}` (COOP/COEP borcu, muhtemel sebep dev-sunucu başlık eksikliği).
+- 🔴 **`B-W1-3` — `radar --olc-urun-kodu` SATICI VARLIĞINI ÜRÜN KODU SAYIYOR [oturum 57'de ölçüldü].**
+  `W1` kabulünde `urun_kodu_satiri = 6773`; bunun **6.743'ü** `src/client/web/drift_worker.js` —
+  **indirilmiş** ikili (`web-varlik-indir.py`, `web-varlik.sha256` pinli). ⇒ `K53/4`'ün sert durağı `R8`,
+  **tek satır insan kodu yazılmadan da sönebilir**: sayaç yazılan kodu değil repoya giren **baytı** ölçüyor.
+  Sınıf: `ölçüm-aracının-varsayımı`. **Kapanış:** satıcı/üretilmiş yolları ele + altın kümeye **iki vaka**
+  (satıcı dosyası sayılmaz — sussun · aynı dizindeki elle yazılmış dosya sayılır — ısırsın). 🔴 Onarım
+  `araclar/radar.py`'de ⇒ **K57-b'yi (plugin ile bayt-özdeşlik) bozar** ⇒ üst akış + **ayrı el (K34-f)**.
+- 🟡 **`B-W1-4` — PİN ↔ `pubspec.lock` SÜRÜM KAPISI YOK [oturum 57].** `web-varlik.sha256` **TOFU**'dur:
+  indirilen baytın sha'sını doğrular, o baytın **hangi sürüme ait olduğunu doğrulamaz** — aracın kendi
+  beyanı: *"sürüm karşılaştırması YAPMAZ"*. ⇒ `pubspec.lock` Drift'i yükseltirse worker **eski sürümde
+  kalır** ve uyumsuzluk kapıda değil **çalışma anında** görünür. Çekirdek yazıldı ama **kaydedilmedi**
+  (`_o57_pin_denetimi.py`, `%TEMP%` — kaybolmuş sayılır). **Kapanış:** `araclar/pin-surum-kapisi.py`
+  (`pubspec.lock` drift sürümü ↔ pin dosyasının sürüm etiketi) + altın küme: eşleşir (sussun) · lock
+  yükselmiş pin eski (ısırsın) · pin dosyası yok (`T0`).
+
+### OTURUM 58'DE AÇILAN — STATİK MUTANT KOŞUMUNUN VE BAĞIMSIZ DENETİMİN BULGULARI
+- 🔴 **`B-W1-5`·`B-W1-6`·`B-W1-7` — tam metin `KANIT/W1/03-DENETIM-o58-BULGULAR.md`'de, kopyalanmaz.**
+  **`B-W1-5`** `G35/b` `IsDevelopment()`'ı **hiç aramıyor** (ölçüldü: dizge yalnız fikstürlerde) ⇒
+  `if (true) // W1/D-W1-2` kapıyı YEŞİL geçer; *CORS yalnız Development* kararı **mutantsız ve
+  kapısız**. **`B-W1-6`** `M193b` **sahte-geçiş** — yorum-atlama tamamen sökülse bile SUS; kusur
+  önce **SPEC'tedir**. **`B-W1-7`** koşucu/kapı kusurları: hedef ayak doğrulanmıyor · `try/finally`
+  yok · `G35/d` dosya geneli arıyor · dize literalleri atılmıyor.

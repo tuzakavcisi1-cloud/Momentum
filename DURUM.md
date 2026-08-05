@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayat** — borç `B-O50-2` (ayrıntı orada).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 3 Ağu 2026, **oturum 55 (`K133` — `SS2` v3 KİLİTLENDİ)** — açılışın 10 adımı koştu; tur 2 denetiminin **beş blokeri de kapatıldı** (`K53/3`'e göre **hiçbiri borçlanamıyordu**: üçü kör kapı, biri ürün veri kaybı, biri spec içi çelişki), 13 majoru borçlandı. Kilit **kapanmamış sınırlarla** verildi (`A13`/`K130` emsali); hüküm `KANIT/SS2/03-v3-KILIT.md`. *(Oturum 39–54 anlatımı arşivde — `PROJE_HAFIZA.md` K129–K133.)*
+> **Son güncelleme:** 5 Ağu 2026, **oturum 58** — açılışın 10 adımı koştu (canlı bağlam **168.518** token ⇒ YEŞİL). `W1` kabulünün *"13 statik mutant okundu, ölçülmedi"* sınırı **KAPANDI** (gerçek repoda **14/14**); ardından **bağımsız denetim üç BLOKER** buldu ⇒ `B-W1-5`…`B-W1-7`. 🔒 **`BORCLAR.md` tavanı YÜKSELTİLMEDİ:** `T1` bir kez KIRMIZI verdi, tavan yerine **bayat madde** düzeltildi (`K40` kilidini Onur bu turda Cowork'e devretti — gerekçe hafızada `K139`). *(Oturum 39–57 anlatımı arşivde — `PROJE_HAFIZA.md` K129–K138.)*
 
 ---
 
@@ -60,34 +60,27 @@ cihaz→sunucu senkron (**K112/K113**, **2,1 s**) · çevrimdışı ayağı (**K
 dört kilidi. Kanıtlar: `KANIT/net10-adim6/` · `KANIT/ucuncu-cihaz-senkron/` · `KANIT/cevrimdisi-senkron/`.
 Paket borçları `BORCLAR.md`'de.
 
-🟢 **⑤ `A11` KABUL (K121, oturum 50) · ⑥ `A12` KABUL (K124, oturum 51)** — ikisi de Onur kilitledi,
-sekiz/yedi kriterin hepsi Cowork'ün kendi koşumuyla geçti (K26). Hükümler `KANIT/A11/07-KABUL-HUKMU.md`
-ve `KANIT/A12/04-COWORK-KABUL-HUKMU.md`; **anlatımlar arşivde (K73)**. 🔴 Yaşayan iki borç:
-`B-O50-1` (`A11` kriter 7'nin kapısı yok) · `B-O51-1` (`A12`'nin bilerek açık kör noktası).
-🔴 `A12` **araç işiydi ⇒ `R8`'i düşürmedi**.
-🟢 **⑦ `A13` KABUL (K129/K130, oturum 53 · Onur kilitledi).** Dokuz kriterin dokuzu Cowork'ün
-KENDİ koşumuyla geçti (K26); **iOS bu depoda İLK KEZ derlendi**. Hüküm
-`KANIT/A13/10-COWORK-KABUL-HUKMU.md`. Kabul **kapanmamış beş sınırla** verildi (`B-O53-1`…`5`;
-gerekçe §5/K130). 🟢 §9/5 · §9/10 KAPANDI, §9/4 kısmen. 🔴 Kota `[ÖLÇÜLMEDİ]`.
-🔴 **ÖLÇÜLMEYEN (değişmedi):** çakışma rozeti · çift yönün kabul kriterleri · **fiziksel cihaz**
-(NAT kurulu soketi koruduğu için SignalR yeniden bağlanma yolu **hiç egzersiz edilmedi**).
-🟢 **⑧ `SS2` KABUL EDİLDİ (`K136`, oturum 56 · Onur kilitledi).** Dokuz kriterin dokuzu
-Cowork'ün KENDİ koşumuyla ölçüldü (K26); **çakışma cihazda ilk kez uçtan uca görüldü**: rozet
-çıktı, ekran iki değeri gösterdi, *Benimkini tut* karşı cihaza ULAŞTI, iki `clientId` ve HLC
-sırası **sunucu veritabanından** ölçüldü. Hüküm `KANIT/SS2/04-COWORK-KABUL-HUKMU.md`.
-🔴 **Kabul KAPANMAMIŞ SINIRLARLA verildi** (`A13`/`K130` emsali): ① kriter 8 spec'in **lafzıyla
-koşulamadı** — üründe **başlık düzenleme UI'ı YOK**, çakışma **tamamlanma anahtarıyla** üretildi
-② kuyruğun **kendiliğinden** boşalma süresi **ÖLÇÜLMEDİ** (Yenile ile zorlandı) ③ kriter 4 bir
-**örneklemdir** ④ telefon **USB tüneliyle** bağlandı ⇒ **NAT/SignalR borcu KAPANMADI**.
-Borçlar `B-SS2-1`…`5`.
+🟢 **⑤ `A11` (K121) · ⑥ `A12` (K124) · ⑦ `A13` (K129/K130) · ⑧ `SS2` (K136) KABUL EDİLDİ** —
+dördünü de Onur kilitledi; her kriter **Cowork'ün KENDİ koşumuyla** ölçüldü (K26). Hükümler
+`KANIT/{A11/07,A12/04,A13/10,SS2/04}-*KABUL*`; anlatımlar **arşivde (K73)**, kapanmamış sınırlar
+**`BORCLAR.md`'de** (`B-O50-1` · `B-O51-1` · `B-O53-1`…`5` · `B-SS2-1`…`5`) — buraya kopyalanmaz.
+Kilometre taşları: **iOS bu depoda İLK KEZ derlendi** (`A13`) · **çakışma cihazda uçtan uca
+görüldü** (`SS2`). 🔴 `A12` **araç işiydi ⇒ `R8`'i düşürmedi**. 🔴 Kota `[ÖLÇÜLMEDİ]`.
+🔴 **ÖLÇÜLMEYEN (değişmedi): fiziksel cihazda NAT** — SignalR yeniden bağlanma yolu bu depoda
+**hiç egzersiz edilmedi** (`SS2`'de telefon **USB tüneliyle** bağlandı ⇒ borç KAPANMADI).
 🟢 **`R8` SÖNDÜ (oturum 55'te ÖLÇÜLDÜ):** `urun_kodu_satiri = 1773`, `radar.py . --olc-urun-kodu`
-ile **git'ten türetildi**; radar artık *"ürün kodu durgunluğu"* bildirmiyor. 🟢 **⑨ WEB — `GOREV-W1` v2 KİLİTLİ (`K137`, oturum 57).** Web borcu **spec turu olarak
-DEĞİL**, `K53/5` gereği **yürüyen iskelet** olarak kuruldu; gerekçe `R8` **mutantıyla** ölçüldü.
-Ölçülen taban: `flutter build web` **EXIT 0** · Drift web **tam bağlı** · 🔴 **backend'de CORS
-YOK** (92 dosya). **KABUL EDİLDİ** (`K138`, Onur, 5 Ağu 2026) — hüküm `KANIT/W1/01-COWORK-KABUL-HUKMU.md`;
-on bir kriterin **dokuzu** Cowork'ün kendi koşumuyla. 🔴 Kabul **kapanmamış sınırlarla**: 13 statik
-mutant **okundu, ölçülmedi** · dört koşan mutant **yeniden koşulmadı** (`K80`) · `B-W1-1`…`B-W1-4`
-(`B-W1-3`/`B-W1-4` **`BORCLAR.md`'ye YAZILAMADI** — tavan SARI, karar `K40` gereği Onur'da).
+ile **git'ten türetildi**; radar artık *"ürün kodu durgunluğu"* bildirmiyor. 🟢 **⑨ WEB — `GOREV-W1` v2 KİLİTLİ (`K137`) ve KABUL EDİLDİ (`K138`, 5 Ağu 2026)**; hüküm
+`KANIT/W1/01-COWORK-KABUL-HUKMU.md`. 🟢 **OTURUM 58: *"13 statik mutant okundu, ölçülmedi"* sınırı
+KAPANDI** — koşucu `KANIT/W1/_statik_mutant_kosucu.py`, ham çıktı `KANIT/W1/02-STATIK-MUTANT-KOSUMU.txt`:
+**14/14**, her ısırma **hedef ayağın bulgu kodunu üretti**, her geri alma **bayt-özdeş** (`git status`
+bağımsız doğruladı). `M-o58-1` **eklendi** (`G35` pozitif kontrolünün mutantı yoktu) ve **ilk yazımında
+EŞDEĞERDİ** — yalnız bulgu kodları çıktıya eklendiği için yakalandı.
+🔴 **BAĞIMSIZ DENETİM (K26) ÜÇ BLOKER BULDU;** en ağırı: *"CORS yalnız Development"* kararı
+**MUTANTSIZ ve KAPISIZ** — `cors-kapisi.py` `IsDevelopment` dizgesini **yalnız fikstürlerinde**
+taşıyor, ölçüm mantığında **hiç aramıyor** ⇒ `if (true) // W1/D-W1-2` kapıyı YEŞİL geçer.
+Tam metin `KANIT/W1/03-DENETIM-o58-BULGULAR.md`; borçlar **`B-W1-5`…`B-W1-7`**.
+🔴 Dört **koşan** mutant yeniden koşulmadı (`K80`). 🟢 `B-W1-1`…`B-W1-7` **hepsi `BORCLAR.md`'de**
+⇒ sarkan atıf KAPANDI (`T1` bir kez KIRMIZI verdi; **tavan yükseltilmedi**, bayat madde düzeltildi).
 → **backend CI** (`D-A13-4`) + release → ⑩ `ADR 0004` + vitrin.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` ÇAKIŞMASI: kanonik metin `ORTAM.md`'de** (oturum 50'de
 ölçüldü). Buraya **kopyalanmaz** — üç satırlık özet oturum 53'te `kanonik-kopya` olarak budandı.
@@ -156,6 +149,7 @@ mutant **okundu, ölçülmedi** · dört koşan mutant **yeniden koşulmadı** (
 | `oturum-sagligi.py` **1.0.0** | K21'in mekanik kapısı: kanonik eşik (`S1`) · yüzde avı (`S2`) · eşik kopyası (`S3`) · token+payda (`S4`/`S5`, `--transcript` ister, yoksa **OLCULMEDI**) · kimlik tazeliği (`D1`, **yazım anıyla**). Çıkış 4 = kanonik temiz ama sağlık ölçülmedi | **26/26** |
 | `kapi-ad-teklik-kapisi.py` **1.0.0** | K108: `N1` kapsam öneksiz **belirsiz** atıf (KIRMIZI) · `N2` spec içi tekrar · `N3` etiketsiz paylaşım (bilgi). Yol/dosya adı (`KANIT/…/02-G2/`) ve `(GENİŞLETME)` etiketli paylaşım **yanlış-pozitif değildir** — ikisi de ayrı vakayla kanıtlı | **18/18** |
 | `ss2-kapisi.py` [`SS2/T0`] | `SS2/G31/a,b` + `G33/c` **statik** ayakları; düz metin tarar, Dart ayrıştırmaz. 🔴 `//` **ve** `/* */` yorumları atar — **blok yolu oturum 56'da ONARILDI, öncesinde KÖR KAPIYDI** (`M-o56-1` ile kanıtlı) | **14/14** |
+| `cors-kapisi.py` [`W1`] | `W1/G35/a`–`d` · `G37/d` · `G38/c` **statik** ayakları; `//` **ve** `/* */` atar, işaretli blok aralığında arar, pozitif kontrol taşır. 🔴 `IsDevelopment()`'ı **HİÇ aramaz** (`B-W1-5`) ⇒ *"CORS yalnız Development"* kararı **kapısız**. 🔴 Envantere **oturum 58'de eklendi** | **18/18** |
 | `ci-kapisi.py` [`A13`] | CI iş akışının statik ayakları (altın kümede ölçülen kodlar: `G28a` … `G30c`). 🔴 Envantere **oturum 56'da eklendi** — oturum 53'ten beri tabloda yoktu | **13/13** |
 | `dosya-kimlik.py` | bayt + sha256 + U+FFFD + CRLF | — |
 | `mcp-arac-probe.py` | MCP'nin **gerçek** araç listesi (`tools/list`) | — |
@@ -166,7 +160,7 @@ mutant **okundu, ölçülmedi** · dört koşan mutant **yeniden koşulmadı** (
 | `adr-kapi-taramasi.py` | ADR 0003 kapısı (**dondurulmuş**, dokunma) | — |
 | `verify.ps1` | backend build+test+CVE zinciri | — |
 
-🔴 **ENVANTER OTURUM 56'DA YENİDEN SAYILDI (ölçüldü, beyan değil): `araclar\` altında **29** dosya; **23** çalıştırılabilir (22 `.py` + `verify.ps1`), tablo **23** satır; kalan 6 veri/yardımcı (3 `.json` · `.md` · `.sha256` · `.gitkeep`) + 2 dizin (`__pycache__`, `fixture`).** Oturum 47'nin *"27 dosya / 21 çalıştırılabilir"* sayımı **bayatlamıştı**: `ss2-kapisi.py` (oturum 55) ve `ci-kapisi.py` (oturum 53) tabloya **hiç girmemişti** — yani iki kapı **envantersiz** koşuyordu. *Envanterde olmayan kapı tetiklenemez*; `KAPILAR.md`'nin varlık sebebi budur.
+🔴 **ENVANTER OTURUM 58'DE YENİDEN SAYILDI (ölçüldü, beyan değil): `araclar\` altında **30** dosya; **24** çalıştırılabilir (23 `.py` + `verify.ps1`), tablo **24** satır; kalan 6 veri/yardımcı (3 `.json` · `.md` · `.sha256` · `.gitkeep`) + 2 dizin (`__pycache__`, `fixture`).** Oturum 56'nın *"29 / 23"* sayımı **tek oturumda bayatladı**: `cors-kapisi.py` (oturum 57) tabloya **hiç girmemişti** ⇒ **`envantersiz-kapı` sınıfı ÜÇÜNCÜ kez ısırdı** (`ci-kapisi.py` o53 · `ss2-kapisi.py` o55 · `cors-kapisi.py` o57). *Envanterde olmayan kapı tetiklenemez*; `KAPILAR.md` bunu **beyan eder, zorlamaz** — sınıfın **hâlâ mekanik kapısı yok**.
 
 ---
 
