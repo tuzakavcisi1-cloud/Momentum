@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayat** — borç `B-O50-2` (ayrıntı orada).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 5 Ağu 2026, **oturum 58** — açılışın 10 adımı koştu (canlı bağlam **168.518** token ⇒ YEŞİL). `W1` kabulünün *"13 statik mutant okundu, ölçülmedi"* sınırı **KAPANDI** (gerçek repoda **14/14**); ardından **bağımsız denetim üç BLOKER** buldu ⇒ `B-W1-5`…`B-W1-7`. 🔒 **`BORCLAR.md` tavanı YÜKSELTİLMEDİ:** `T1` bir kez KIRMIZI verdi, tavan yerine **bayat madde** düzeltildi (`K40` kilidini Onur bu turda Cowork'e devretti — gerekçe hafızada `K139`). *(Oturum 39–57 anlatımı arşivde — `PROJE_HAFIZA.md` K129–K138.)*
+> **Son güncelleme:** 5 Ağu 2026, **oturum 59** — açılışın 10 adımı koştu (canlı bağlam **168.780** ⇒ YEŞİL). **`GOREV-W2` v3 KİLİTLENDİ (`K142`)**: web depolama katmanı **görünür** olur. `K127` **iki tur** ödendi ve turlar **10 BLOKER** buldu; en ağırı iki kez aynı sınıftı — *dilimin tek dikişi ölçülmüyordu*. 🔴 Bu oturum **0 satır ürün kodu** üretti; `K53/4` sert durağı **ödenmedi**, iş Claude Code'a hazır. *(Oturum 39–58 anlatımı arşivde — `PROJE_HAFIZA.md` K129–K141.)*
 
 ---
 
@@ -61,27 +61,23 @@ dört kilidi. Kanıtlar: `KANIT/net10-adim6/` · `KANIT/ucuncu-cihaz-senkron/` �
 Paket borçları `BORCLAR.md`'de.
 
 🟢 **⑤ `A11` (K121) · ⑥ `A12` (K124) · ⑦ `A13` (K129/K130) · ⑧ `SS2` (K136) KABUL EDİLDİ** —
-dördünü de Onur kilitledi; her kriter **Cowork'ün KENDİ koşumuyla** ölçüldü (K26). Hükümler
+dördünü de Onur kilitledi, her kriter **Cowork'ün KENDİ koşumuyla** ölçüldü (K26). Hükümler
 `KANIT/{A11/07,A12/04,A13/10,SS2/04}-*KABUL*`; anlatımlar **arşivde (K73)**, kapanmamış sınırlar
-**`BORCLAR.md`'de** (`B-O50-1` · `B-O51-1` · `B-O53-1`…`5` · `B-SS2-1`…`5`) — buraya kopyalanmaz.
-Kilometre taşları: **iOS bu depoda İLK KEZ derlendi** (`A13`) · **çakışma cihazda uçtan uca
-görüldü** (`SS2`). 🔴 `A12` **araç işiydi ⇒ `R8`'i düşürmedi**. 🔴 Kota `[ÖLÇÜLMEDİ]`.
+**`BORCLAR.md`'de**. 🔴 `A12` araç işiydi ⇒ `R8`'i düşürmedi. 🔴 Kota `[ÖLÇÜLMEDİ]`.
 🔴 **ÖLÇÜLMEYEN (değişmedi): fiziksel cihazda NAT** — SignalR yeniden bağlanma yolu bu depoda
 **hiç egzersiz edilmedi** (`SS2`'de telefon **USB tüneliyle** bağlandı ⇒ borç KAPANMADI).
-🟢 **`R8` SÖNDÜ (oturum 55'te ÖLÇÜLDÜ):** `urun_kodu_satiri = 1773`, `radar.py . --olc-urun-kodu`
-ile **git'ten türetildi**; radar artık *"ürün kodu durgunluğu"* bildirmiyor. 🟢 **⑨ WEB — `GOREV-W1` v2 KİLİTLİ (`K137`) ve KABUL EDİLDİ (`K138`, 5 Ağu 2026)**; hüküm
-`KANIT/W1/01-COWORK-KABUL-HUKMU.md`. 🟢 **OTURUM 58: *"13 statik mutant okundu, ölçülmedi"* sınırı
-KAPANDI** — koşucu `KANIT/W1/_statik_mutant_kosucu.py`, ham çıktı `KANIT/W1/02-STATIK-MUTANT-KOSUMU.txt`:
-**14/14**, her ısırma **hedef ayağın bulgu kodunu üretti**, her geri alma **bayt-özdeş** (`git status`
-bağımsız doğruladı). `M-o58-1` **eklendi** (`G35` pozitif kontrolünün mutantı yoktu) ve **ilk yazımında
-EŞDEĞERDİ** — yalnız bulgu kodları çıktıya eklendiği için yakalandı.
-🔴 **BAĞIMSIZ DENETİM (K26) ÜÇ BLOKER BULDU;** en ağırı: *"CORS yalnız Development"* kararı
-**MUTANTSIZ ve KAPISIZ** — `cors-kapisi.py` `IsDevelopment` dizgesini **yalnız fikstürlerinde**
-taşıyor, ölçüm mantığında **hiç aramıyor** ⇒ `if (true) // W1/D-W1-2` kapıyı YEŞİL geçer.
-Tam metin `KANIT/W1/03-DENETIM-o58-BULGULAR.md`; borçlar **`B-W1-5`…`B-W1-7`**.
-🔴 Dört **koşan** mutant yeniden koşulmadı (`K80`). 🟢 `B-W1-1`…`B-W1-7` **hepsi `BORCLAR.md`'de**
-⇒ sarkan atıf KAPANDI (`T1` bir kez KIRMIZI verdi; **tavan yükseltilmedi**, bayat madde düzeltildi).
-→ **backend CI** (`D-A13-4`) + release → ⑩ `ADR 0004` + vitrin.
+🟢 **`R8` SÖNDÜ (oturum 55'te ÖLÇÜLDÜ);** sayı daima `--olc-urun-kodu` ile **git'ten** türetilir (K55).
+🟢 **⑨ WEB — `GOREV-W1` v2 KİLİTLİ (`K137`) ve KABUL EDİLDİ (`K138`)**; hüküm
+`KANIT/W1/01-COWORK-KABUL-HUKMU.md`. Oturum 58: 13 statik mutant **gerçek repoda 14/14** koştu
+(`KANIT/W1/02-STATIK-MUTANT-KOSUMU.txt`), ardından bağımsız denetim **üç bloker** buldu ⇒
+`B-W1-5`…`B-W1-7` (tam metin `KANIT/W1/03-DENETIM-o58-BULGULAR.md`). En ağırı: *"CORS yalnız
+Development"* kararı **MUTANTSIZ ve KAPISIZ**. 🔴 Dört **koşan** mutant yeniden koşulmadı (`K80`).
+🔒 **⑩ `GOREV-W2` v3 KİLİTLENDİ (`K142`, Onur, 5 Ağu 2026, oturum 59)** — web depolama katmanı
+**görünür** olur (sınıflandırma + şerit + **dikiş kapısı**). Kimlik §9'da; iş **Claude Code'a hazır**.
+`K127` **İKİ TUR** ödendi: `KANIT/W2/00-DENETIM-o59.md` + `KANIT/W2/01-v2-DOGRULAMA-o59.md`
+(**10 bloker**, hepsi metne alındı). 🔴 v3 **yeniden denetlenmedi** (radar `R1`: üçüncü tur YASAK) —
+**beyan edilmiş sınır**; kalan risk build turunda ısırır.
+→ **backend CI** (`D-A13-4`) + release → ⑪ `ADR 0004` + vitrin.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` ÇAKIŞMASI: kanonik metin `ORTAM.md`'de** (oturum 50'de
 ölçüldü). Buraya **kopyalanmaz** — üç satırlık özet oturum 53'te `kanonik-kopya` olarak budandı.
 
@@ -166,16 +162,13 @@ Tam metin `KANIT/W1/03-DENETIM-o58-BULGULAR.md`; borçlar **`B-W1-5`…`B-W1-7`*
 
 ## 7. KANLA YAZILI ORTAM UYARILARI → **`ORTAM.md`**
 
-🔴 **Bu bölümün İÇERİĞİ 2 Ağu 2026'da (oturum 49, Onur kilitledi) `ORTAM.md`'ye TAŞINDI; numara ve
-başlık BİLEREK burada kaldı.** `DURUM.md §7`'ye adıyla atıf yapan **6 canlı satır** ölçüldü
-(`DURUM.md`:13 · `KAPILAR.md`:30 · `GOREV-A8`:54,208 · `GOREV-A9`:369 · `GOREV-A9b`:318,320) —
-bölümü silmek **sarkan atıf** sınıfını doğururdu; `kanonik-kopya`nın kardeşidir ve bu projede
-altı kez ısırmış sınıfın aynısıdır.
+🔴 **İÇERİK 2 Ağu 2026'da (oturum 49, Onur kilitledi) `ORTAM.md`'ye TAŞINDI; numara ve başlık BİLEREK
+burada kaldı** — `DURUM.md §7`'ye adıyla atıf yapan **6 canlı satır** ölçüldü, bölümü silmek **sarkan
+atıf** sınıfını doğururdu (`kanonik-kopya`nın kardeşi, bu projede altı kez ısırdı).
 
-🔴 **`ORTAM.md` AÇILIŞTA OKUNUR** (§2 adım 1) — `BORCLAR.md`/`KAPILAR.md` gibi *okunmaz* sınıfına
-**KONULMADI**. Ölçülmüş gerekçe: tavanın kendi gerekçesi *"okuma kapasitesi DEĞİL, R4 freni +
-dikkat"*tir; ayrı dosya + ayrı tavan R4'ü zaten çözer, listeyi gözden kaldırmak ise ödenmemiş bir
-bedeldir. Kendi tavanını taşır ve `belge-tavan-kapisi.py` kapsamındadır.
+🔴 **`ORTAM.md` AÇILIŞTA OKUNUR** (§2 adım 1) — *okunmaz* sınıfına **KONULMADI**: tavanın gerekçesi
+*"okuma kapasitesi DEĞİL, R4 freni + dikkat"*tir; ayrı dosya + ayrı tavan R4'ü zaten çözer, listeyi
+gözden kaldırmak ödenmemiş bir bedeldir. Kendi tavanını taşır, `belge-tavan-kapisi.py` kapsamındadır.
 
 ---
 
@@ -214,6 +207,7 @@ python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GO
 
 | `GOREV-SS2-cakisma-cozumu.md` | **46.003** | **`420E9F91`** | 🔒 **K133 kilidi (Onur kilitledi 3 Ağu 2026, oturum 55)** — `66CC4AAE` (v2) ve `90314998` (v1) **GEÇERSİZDİR**. U+FFFD 0 · CRLF 0. Kapıları **`SS2/G31`–`SS2/G34`** (K108). 🔴 **Beyanlı-kilit sepetinde** — `tek-kopya-kapisi.py` kapsamına **eklenmedi** (sepet `BORCLAR.md`'de) |
 | `GOREV-W1-web-yuruyen-iskelet.md` | **33.077** | **`5CF3F921`** | 🔒 **K137 kilidi (Onur kilitledi 4 Ağu 2026, oturum 57)** — kilit satırı **ÖNCESİ** `606F04F5` (32.801 b) ve **v1** `DFA8FF77` (19.941 b) **GEÇERSİZDİR**. U+FFFD 0 · CRLF 0. Kapıları **`W1/G35`–`W1/G38`**, mutantları `M189`–`M199` (K108). 🔴 **Beyanlı-kilit sepetinde** — `tek-kopya-kapisi.py` kapsamına **eklenmedi** |
+| `GOREV-W2-depolama-gorunurlugu.md` **v3** | **19.511** | **`CA2D7BF2`** | 🔒 **K142 kilidi (Onur kilitledi 5 Ağu 2026, oturum 59)** — **v1** `C9BC8453` (11.770 b) ve **v2** `94124CE5` (18.156 b) **GEÇERSİZDİR**. U+FFFD 0 · CRLF 0. Kapıları **`W2/G39`–`W2/G42`**, mutantları `M200`–`M216` + `MW20` negatif kontrolü (K108). `K127` **iki tur** ödendi: `KANIT/W2/00-DENETIM-o59.md` (`B950236F`) + `KANIT/W2/01-v2-DOGRULAMA-o59.md` (`1143A34F`). 🔴 **Beyanlı-kilit sepetinde** — `tek-kopya-kapisi.py` kapsamına **eklenmedi** |
 
 ⚠ **Kimlik `sha256`+bayttır, satır DEĞİL** ve **DAİMA son yazımdan SONRA** ölçülür.
 
