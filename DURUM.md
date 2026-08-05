@@ -192,7 +192,7 @@ python araclar\dosya-kimlik.py DURUM.md CLAUDE.md DESIGN.md PROJE_RADAR.jsonl GO
 
 | dosya | bayt | sha8 | neden donmuş |
 |---|---|---|---|
-| `DESIGN.md` **v2** | **18.075** | **`3780ACA4`** | 🔴 **K46 AÇILDI (K75)** — `534DFF68` (v1) **GEÇERSİZDİR**. Açılma kapsamı iki maddedir (bileşik satır + `gonderilmemis`); başka değişiklik Onur'un kilidini ister |
+| `DESIGN.md` **v2** | **18.587** | **`8B8AA35D`** | 🔴 **K142 (Onur, 5 Ağu 2026, oturum 59)** — `3780ACA4` **GEÇERSİZDİR**. Üç satır eklendi: §3.1 `DepolamaSeridi` · §4 depolama geri-düşüşü satırı · §6 `Icons.storage` anlam pini (W2 T7). Açılma kapsamı Onur'un dördüncü kilididir; başka değişiklik yine Onur'un kilidini ister |
 | `GOREV-slice-3b-istemci-iskeleti.md` | **44.560** | **`F0C3A75A`** | 🔒 **K59 kilidi (v6)** — değişen her bayt kilidi bozar. `6056A5BB` · `79A53AA3` · `BE4581BA` · `1AB02B73` **geçersizdir** |
 | `GOREV-slice-3c-senkron.md` | **41.692** | **`537D0579`** | 🔒 **K64 kilidi (v2, Onur onayladı 27 Tem 2026)** — `5899A220` (v1) **GEÇERSİZDİR**. `tek-kopya-kapisi.py` kapsamında **`kilitli`** sınıfındadır ⇒ sapma **her açılışta ölçülür** |
 | `GOREV-slice-3d-cekme.md` | **80.399** | **`889A383F`** | 🔒 **K70 kilidi** (Onur onayladı 28 Tem 2026) — build'i sürdü, iki bağımsız denetimden geçti, `tek-kopya-kapisi.py` kapsamında **`kilitli`** ⇒ sapma **her açılışta** ölçülür |

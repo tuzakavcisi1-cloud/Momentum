@@ -170,11 +170,13 @@ void main() {
       // etiketi + alan etiketi + iki deger blogu basligi -- deger metinlerinin
       // KENDISI zaten sayiliyordu) ⇒ toplam 8 - 2 + 6 = 12. "olcum araci ONCE
       // KENDINI kanitlar" doktrininin bu kapidaki karsiligi.
+      // 🔴 GOREV-W2 [T8] TABAN BILEREK GUNCELLENDI 12 -> 13: depolama_seridi.dart
+      // TEK BIR Text( dugumu ekledi (spec T3: "TEK BIR Text( dugumu" pini).
       expect(
         adaylar.length,
-        12,
+        13,
         reason:
-            'Text( aday sayisi 12 DEGIL -- ya tarayici bozuldu (regex hic '
+            'Text( aday sayisi 13 DEGIL -- ya tarayici bozuldu (regex hic '
             'eslesmiyor ⇒ R1/R2 kor) ya taban degisti (yeni bir Text( eklendi/'
             'silindi). Bulunanlar:\n${adaylar.join('\n')}',
       );
@@ -203,6 +205,12 @@ void main() {
         'Çevrimdışı',
         'Çakışma var',
         'Hata',
+        // GOREV-W2 [T8]: uc yeni sabit (F6'nin KILITLI 13'une DAHIL DEGIL --
+        // ayni EK deseni -- ama bu ham-literal-tekrar taramasi onlari da
+        // kapsar).
+        'Veriler tarayıcı deposunda tutuluyor.',
+        'Veriler kalıcı DEĞİL: sekme kapanınca silinir.',
+        'Depolama geri düşüşü',
       ];
 
       final dosyalar = <File>[

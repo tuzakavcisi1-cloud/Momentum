@@ -12,8 +12,9 @@ import 'package:client/sunum/senkron_rozeti.dart';
 import 'package:client/veri/gorev_deposu.dart';
 import 'package:client/vitrin/durum_vitrini.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'destekler/duyuru_yakala.dart';
 
 // F6 kilidi -- araclar/fixture/metinler-kilit.json ile BIREBIR (donduruldu,
 // kilit aninda dondu). Bu harita fixture'in DART TARAFINDAKI aynasidir;
@@ -58,23 +59,9 @@ const Map<String, String> _fixtureDuyuru = {
   'duyuruHata': 'Hata',
 };
 
-/// SystemChannels.accessibility'i mock'lar; SemanticsService.sendAnnouncement
-/// / announce'un GONDERDIGI dizgeleri yakalar (A11Y-7).
-List<String> _duyurulariYakala(WidgetTester tester) {
-  final yakalanan = <String>[];
-  tester.binding.defaultBinaryMessenger.setMockDecodedMessageHandler<dynamic>(
-    SystemChannels.accessibility,
-    (dynamic mesaj) async {
-      final harita = mesaj as Map;
-      if (harita['type'] == 'announce') {
-        final veri = harita['data'] as Map;
-        yakalanan.add(veri['message'] as String);
-      }
-      return null;
-    },
-  );
-  return yakalanan;
-}
+// GOREV-W2 [T9]: yardimci artik `destekler/duyuru_yakala.dart`'ta TEK
+// KAYNAK -- ozel (`_duyurulariYakala`) degil, `duyurulariYakala` olarak
+// import edilir (kanonik-kopya doğmaz).
 
 // VARSAYILAN azaltilmisAnimasyon: true -- SenkronRozeti'nin 'kuyrukta' varyanti
 // (_DonenOk) gercek bir Timer.periodic baslatir; A11Y-5'in KENDI ISI bunu
@@ -302,7 +289,7 @@ void main() {
     testWidgets(
       'A11Y-7: yukleniyor/senkronize/cevrimdisi/cakisma/hata duyurulari F6 ile birebir',
       (tester) async {
-        final yakalanan = _duyurulariYakala(tester);
+        final yakalanan = duyurulariYakala(tester);
         await tester.pumpWidget(_vitrinSarmalayici());
         await tester.pump();
         expect(
@@ -371,7 +358,7 @@ void main() {
     });
 
     testWidgets('HATA: A11Y-7 duyurusu + metin + yeniden dene', (tester) async {
-      final yakalanan = _duyurulariYakala(tester);
+      final yakalanan = duyurulariYakala(tester);
       await tester.pumpWidget(_gercekEkranSarmalayici(_HataliDepo()));
       await tester.pump();
       expect(find.text(Metinler.birSeylerTersGitti), findsOneWidget);

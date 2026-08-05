@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
+import 'depolama_durumu.dart';
+
 part 'veritabani.g.dart';
 
 /// GOREV-slice-3b T4 + slice-3c T2: `gorevler` tablosu.
@@ -113,7 +115,13 @@ class CakismaKayitlari extends Table {
 
 @DriftDatabase(tables: [Gorevler, SenkronKuyrugu, Ayarlar, UzakAlanDurumu, CakismaKayitlari])
 class Veritabani extends _$Veritabani {
-  Veritabani([QueryExecutor? baglanti]) : super(baglanti ?? _uretimBaglantisi());
+  // GOREV-W2 T2 (denetim BL-3): imza KONUMSAL kalir -- 31 mevcut cagri
+  // (`Veritabani(` deseni, cogu test-executor'i konumsal geciyor) bozulmaz.
+  // `bildirim` YALNIZ uretim baglantisinda (`baglanti == null`) anlam tasir;
+  // `baglanti ??` DUSMEZ -- her test kendi executor'ini acar, uretim
+  // baglantisi asla kurulmaz.
+  Veritabani([QueryExecutor? baglanti, DepolamaBildirimi? bildirim])
+    : super(baglanti ?? _uretimBaglantisi(bildirim));
 
   @override
   int get schemaVersion => 5;
@@ -168,7 +176,7 @@ class Veritabani extends _$Veritabani {
       const DriftDatabaseOptions(storeDateTimeAsText: true);
 }
 
-QueryExecutor _uretimBaglantisi() {
+QueryExecutor _uretimBaglantisi(DepolamaBildirimi? bildirim) {
   return driftDatabase(
     name: 'momentum',
     web: DriftWebOptions(
@@ -177,12 +185,25 @@ QueryExecutor _uretimBaglantisi() {
       // G6 KANITI: chosenImplementation/missingFeatures HER ZAMAN basilir --
       // drift_flutter'in varsayilan isleyicisi yalniz missingFeatures doluyken
       // basar; G6'nin pozitif olcumu (opfs* secildi) icin bu yetersizdir.
+      // GOREV-W2 D-W2-6 PAZARLIKSIZ: bu `print` KALDIRILMAZ -- `W1/G37`nin
+      // kanit zinciridir (borc B-W1-2), UI durum kaydi DEGILDIR.
       onResult: (sonuc) {
         // ignore: avoid_print
         print(
           'MOMENTUM-G6-KANIT chosenImplementation=${sonuc.chosenImplementation} '
           'missingFeatures=${sonuc.missingFeatures}',
         );
+        // GOREV-W2 D-W2-8 PAZARLIKSIZ: dikis TEK NOKTADAN ve bu BIREBIR
+        // argumanlarla yazilir (G42/a) -- sabit dizge, farkli alan ya da
+        // yorum satiri kapiyi GECMEZ. `bildirim` uretimde her zaman gelir
+        // (main.dart T5); testler/durum vitrini `null` gecebilir.
+        if (bildirim != null) {
+          depolamaBildirimiYaz(
+            bildirim,
+            uygulamaAdi: sonuc.chosenImplementation.name,
+            depolamaApi: sonuc.chosenImplementation.storageApi?.name,
+          );
+        }
       },
     ),
   );

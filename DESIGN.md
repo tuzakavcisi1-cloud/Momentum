@@ -133,6 +133,7 @@ W3C'nin bağıl parlaklık ve kontrast formülü uygulandı (`(L1+0.05)/(L2+0.05
 | `BosDurum` | Hiç görev yok | `tipo.baslik.l`, `renk.metin.ikincil`, `bosluk.l` |
 | `YuklenmeDurumu` | İlk yükleme | `hareket.standart`, `renk.metin.ikincil` |
 | `HataDurumu` | Yerel DB / ağ hatası + yeniden dene | `renk.tehlike`, `tipo.govde.m`, `bosluk.m` |
+| `DepolamaSeridi` [W2] | Web depolama geri-düşüşünü/kalıcı-olmadığını gösteren üst şerit; kusur yoksa çizilmez | `renk.cevrimdisi`, `renk.yuzey`, `tipo.etiket.s`, `olcu.ikon`, `bosluk.xs`, `bosluk.s`, `bosluk.m` |
 
 ### 3.2 NICE — tek satır, ilk dilimde YOK
 
@@ -156,6 +157,7 @@ Bu matris **vitrinin kendisidir**: ödevin taç mücevheri *"çevrimdışı-önc
 | **çevrimdışı** | liste + üst şerit | bulut-kapalı ikonu + `renk.cevrimdisi` | "Çevrimdışısınız. Değişiklikler kaydedildi." | "Çevrimdışı" |
 | **çakışma** | liste + `CakismaRozeti` | uyarı ikonu + `renk.tehlike` | "Bu görev başka bir cihazda da değişti." | "Çakışma var" |
 | **hata** | `HataDurumu` | — | "Bir şeyler ters gitti." + "Yeniden dene" | "Hata" |
+| **depolama geri-düşüşü** [W2] (web'de kalıcı OPFS deposu yok) | liste + üst şerit | — | "Veriler tarayıcı deposunda tutuluyor." / "Veriler kalıcı DEĞİL: sekme kapanınca silinir." | "Depolama geri düşüşü" |
 
 **PAZARLIKSIZ:** her durumda **ikon + metin birlikte** vardır (A11Y‑6). Yalnız renkle ayrılan durum **yoktur**.
 
@@ -181,7 +183,7 @@ Bu matris **vitrinin kendisidir**: ödevin taç mücevheri *"çevrimdışı-önc
 
 - **Tek kaynak:** Material Symbols (Flutter yerleşik `Icons`). **İkinci ikon kütüphanesi eklenmez** — yeni bağımlılık = lisans + CVE kapısı (kırmızı çizgi #3).
 - **Boyut:** `olcu.ikon` (24). Büyük varyant `olcu.ikon.buyuk` **NICE**.
-- **Anlam pini [MUST]:** çevrimdışı = `cloud_off` · kuyrukta = `arrow_upward` · yerel = `schedule` · çakışma = `error_outline` · **gönderilmemiş değişiklik = `edit_outlined` [K75]** · sil = `delete_outline`. **Aynı ikon iki farklı anlam taşıyamaz.**
+- **Anlam pini [MUST]:** çevrimdışı = `cloud_off` · kuyrukta = `arrow_upward` · yerel = `schedule` · çakışma = `error_outline` · **gönderilmemiş değişiklik = `edit_outlined` [K75]** · sil = `delete_outline` · **depolama geri-düşüşü = `storage` [W2]**. **Aynı ikon iki farklı anlam taşıyamaz.**
 - **İkon-yalnız etkileşim YASAK** (A11Y‑3): her ikonun ya görünür metni ya `Semantics` etiketi vardır.
 
 ---

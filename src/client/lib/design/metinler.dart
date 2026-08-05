@@ -68,4 +68,13 @@ class Metinler {
   static const String cakismaOnlarinki = 'Onlarınki';
   static const String cakismaBenimkiniTut = 'Benimkini tut';
   static const String cakismaOnlarinkiniAl = 'Onlarınkini al';
+
+  // GOREV-W2 [D-W2-3/D-W2-8] -- depolama seridi. F6'nin 13 dizgesine DAHIL
+  // DEGIL (GOREV-R10/SS2'nin ayni EK deseni) -- K59'un kilitli "13 dizge"
+  // iddiasi bu ucle bayatlamaz.
+  static const String depolamaGeriDususu =
+      'Veriler tarayıcı deposunda tutuluyor.';
+  static const String depolamaKaliciDegil =
+      'Veriler kalıcı DEĞİL: sekme kapanınca silinir.';
+  static const String duyuruDepolamaGeriDususu = 'Depolama geri düşüşü';
 }

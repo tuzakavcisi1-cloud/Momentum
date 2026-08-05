@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../design/tokens.dart';
+import '../veri/depolama_durumu.dart';
 import '../veri/gorev_deposu.dart';
 import 'bos_durum.dart';
+import 'depolama_seridi.dart';
 import 'gorev_ekle_alani.dart';
 import 'gorev_satiri.dart';
 import 'hata_durumu.dart';
@@ -35,11 +38,16 @@ class GorevListesiEkrani extends StatefulWidget {
   // `null` ise (mevcut testler / durum vitrini) hicbir sey tetiklenmez.
   final Future<void> Function()? onYerelYazma;
 
+  // GOREV-W2 T4: `null` ise (mevcut testler/durum vitrini) SERIT HIC CIZILMEZ
+  // -- geriye donuk uyumlu, DepolamaSeridi'ye hic ulasilmaz.
+  final ValueListenable<DepolamaDurumu>? depolama;
+
   const GorevListesiEkrani({
     super.key,
     required this.depo,
     this.onYenile,
     this.onYerelYazma,
+    this.depolama,
   });
 
   @override
@@ -91,6 +99,14 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
       body: SafeArea(
         child: Column(
           children: [
+            // GOREV-W2 T4: listenin USTUNE -- `depolama == null` iken
+            // ValueListenableBuilder hic kurulmaz, DepolamaSeridi hic
+            // olusmaz (geriye donuk uyumlu).
+            if (widget.depolama != null)
+              ValueListenableBuilder<DepolamaDurumu>(
+                valueListenable: widget.depolama!,
+                builder: (context, durum, _) => DepolamaSeridi(durum: durum),
+              ),
             Expanded(
               child: StreamBuilder<List<GorevGorunum>>(
                 stream: _akis,

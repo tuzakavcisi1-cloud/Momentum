@@ -10,6 +10,7 @@ import 'design/tema.dart';
 import 'sunum/gorev_listesi_ekrani.dart';
 import 'veri/ayarlar_deposu.dart';
 import 'veri/ayarlari_hazirla.dart';
+import 'veri/depolama_durumu.dart';
 import 'veri/gorev_deposu.dart';
 import 'veri/hlc.dart';
 import 'veri/senkron_dongusu.dart';
@@ -40,10 +41,12 @@ void main() async {
   // "olu tuzagi engeller" gerekcesi burada da korunur (bkz. durum_vitrini.dart).
   GorevDeposu? depo;
   SenkronDongusu? dongu;
+  DepolamaBildirimi? depolamaBildirimi;
   if (!const bool.fromEnvironment('DURUM_VITRINI')) {
     final kurulum = await _uretimKurulumOlustur();
     depo = kurulum.depo;
     dongu = kurulum.dongu;
+    depolamaBildirimi = kurulum.depolamaBildirimi;
     // D8/2 PAZARLIKSIZ: acilista `gonderildi` olan TUM satirlar `bekliyor`e
     // doner (bir onceki koşum ucusun ortasinda cokmus olabilir).
     await kurulum.dongu.gonderildiKurtar();
@@ -55,14 +58,24 @@ void main() async {
     unawaited(kurulum.dongu.turCalistir());
     unawaited(kurulum.dongu.cekmeTuruCalistir());
   }
-  runApp(MomentumUygulamasi(depo: depo, dongu: dongu));
+  runApp(
+    MomentumUygulamasi(depo: depo, dongu: dongu, depolama: depolamaBildirimi),
+  );
 }
 
 class MomentumUygulamasi extends StatelessWidget {
   final GorevDeposu? depo;
   final SenkronDongusu? dongu;
+  // GOREV-W2 T5: `null` ise (durum vitrini) GorevListesiEkrani'ne HIC gecer,
+  // serit hic cizilmez.
+  final DepolamaBildirimi? depolama;
 
-  const MomentumUygulamasi({super.key, required this.depo, this.dongu});
+  const MomentumUygulamasi({
+    super.key,
+    required this.depo,
+    this.dongu,
+    this.depolama,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +92,7 @@ class MomentumUygulamasi extends StatelessWidget {
               onYenile: dongu == null ? null : () => elleYenile(dongu!),
               // K112: yerel yazma sonrasi ITME turu.
               onYerelYazma: dongu?.turCalistir,
+              depolama: depolama,
             ),
     );
   }
@@ -101,14 +115,26 @@ class _UretimKurulumu {
   // GOREV-slice-3e-G12 T2: sinyal artik BURADA tutulur -- sahipsiz kalirsa
   // `durdur()`u cagiracak kimse olmaz (K79/0 ikinci bulgu).
   final GercekZamanliSinyal sinyal;
-  const _UretimKurulumu(this.depo, this.dongu, this.sinyal);
+  // GOREV-W2 T5: dikisin (Veritabani.onResult) yazdigi, ekranin dinledigi
+  // TEK bildirim.
+  final DepolamaBildirimi depolamaBildirimi;
+  const _UretimKurulumu(
+    this.depo,
+    this.dongu,
+    this.sinyal,
+    this.depolamaBildirimi,
+  );
 }
 
 /// GOREV-slice-3c T3/T4/T5/T6: ayarlar (clientId/devUserId) once yuklenir/
 /// uretilir; HLC ureteci VE senkron dongusu ayni ornegi (`hlc`) PAYLASIR --
 /// biri yeni op damgalar (T4), digeri sunucu yanitiyla birlestirir (D3).
 Future<_UretimKurulumu> _uretimKurulumOlustur() async {
-  final db = Veritabani();
+  // GOREV-W2 T5/D-W2-7: baslangic degeri `olculmedi` SABITINDEDIR -- native
+  // yolda dikis (`onResult`) hic cagrilmadigi icin (olculdu: `drift_flutter`
+  // native implementasyonu `web:` secenegini hic okumuyor) bu deger DEGISMEZ.
+  final depolamaBildirimi = DepolamaBildirimi(const DepolamaDurumu.olculmedi());
+  final db = Veritabani(null, depolamaBildirimi);
   final ayarlarDeposu = AyarlarDeposu(db, idUret: uretimIdUret);
   final ayarlar = await ayarlariHazirla(db, ayarlarDeposu, ezme: devUserIdEzmesi);
   final hlc = HlcUretici(
@@ -150,5 +176,5 @@ Future<_UretimKurulumu> _uretimKurulumOlustur() async {
   sinyal.olaylar.listen((_) => unawaited(dongu.cekmeTuruCalistir()));
   unawaited(sinyal.baslat());
 
-  return _UretimKurulumu(depo, dongu, sinyal);
+  return _UretimKurulumu(depo, dongu, sinyal, depolamaBildirimi);
 }
