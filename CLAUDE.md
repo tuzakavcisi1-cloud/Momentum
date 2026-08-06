@@ -81,6 +81,56 @@ yalnız `mv` ile kenara alabilir; kalıcı silmeyi Onur yapar.
 > - **`--no-optional-locks` her git çağrısında ZORUNLU kalır** (okuma da yazma da).
 > - **PUSH hâlâ Onur'un işidir** — bu errata push'a izin VERMEZ.
 
+## GitHub katkı grafiği + commit kimliği [K149 — 6 Ağu 2026, Onur kilitledi — PAZARLIKSIZ]
+
+**Ölçülmüş olay:** `tuzakavcisi1-cloud/Momentum` commit'leri aylarca `onur-kesim` profilinin katkı
+grafiğine **yazılmadı**. Sebep ölçüldü: `onur-kesim` bu depoya collaborator olarak **3 Ağu 2026
+15:53**'te eklendi; GitHub **eklenmeden ÖNCEKİ** commit'leri grafiğe **yazmıyor** ve **geriye dönük
+hesaplamıyor**. Kanıt: 3 Ağustos'ta 13 commit vardı — davetten önceki **7**'si sayılmadı, sonraki
+**6**'sı sayıldı, grafikte görünen tam **6**'ydı. 6 Ağustos gecesi geçmiş yeniden yazıldı
+(`rebase --root --committer-date-is-author-date` + force push), **238 commit yeni hash'lerle** gitti.
+🔴 **BU İŞLEM TEKRARLANMAYACAK.**
+
+1. 🔒 **YENİ DEPO AÇILIRSA:** depo açılır açılmaz `onur-kesim` **collaborator olarak EKLENİR ve davet
+   KABUL EDİLİR — İLK COMMIT'TEN ÖNCE.** Sonradan eklemek geçmişi geri getirmez; tek çare geçmişi
+   yeniden yazmaktır ve o da **başka oturumların yerel kopyalarını bozar**.
+2. 🔒 **COMMIT KİMLİĞİ — author e-postası ZORUNLU `onurkesimbjk@gmail.com`.** Bu adres `onur-kesim`
+   hesabında **Verified**; başka hiçbir adres grafiğe yazılmaz. Global kimlik 6 Ağu 2026'da kuruldu
+   (`user.name` + `user.email` + `useConfigOnly=true`) ⇒ yeni klonlar doğru kimliği **otomatik** alır.
+   **Yine de her oturumda ÖLÇ:** `git config user.email`. Yanlışsa:
+   `git config user.name "Onur Kesim"` · `git config user.email "onurkesimbjk@gmail.com"`.
+   🔴 **Claude ASLA kendi kimliğini (`claude@…`, `noreply@anthropic.com`) AUTHOR yazmaz.**
+   `Co-Authored-By` satırı **serbesttir**, `author` alanı **değildir**.
+3. 🔒 **DAL:** yalnız **default dal (`main`)** ve `gh-pages` sayılır. Yan daldaki commit'ler `main`'e
+   merge edilene kadar grafikte **GÖRÜNMEZ**.
+4. 🔒 **FORK:** fork edilmiş depodaki commit'ler **hiçbir koşulda** sayılmaz. Fork ile çalışılmaz;
+   doğrudan depoya collaborator olarak yazılır.
+5. 🔒 **FORCE PUSH YAPILACAKSA** (bu depoda tekrar gerekmemeli, kural **genel**): **önce SOR** —
+   ① bu depoda çalışan başka oturum/klon var mı ② yerelde **gönderilmemiş commit** ya da
+   **commit'lenmemiş dosya** var mı. 🔴 `git clone --mirror` yedeği **yereldeki gönderilmemiş işi
+   KAPSAMAZ** — 6 Ağustos'ta tam bu yüzden az kalsın iş kaybediliyordu. Yerel yedek:
+   `git bundle create <ad>.bundle --all`.
+
+### K149-b — 6 AĞU 2026 ÖNCESİ COMMIT HASH'LERİ ÖLÜDÜR (ölçüldü, oturum 60)
+`c8c6e7c` öncesindeki **tüm** hash'ler rebase'te değişti. **Ölçüm** (`KANIT/o60/_olu_hash_avi.py`,
+altın küme 5/5): kanonik belgelerde **64** ölü atıf + `PROJE_HAFIZA.md`'de **234**, `PROJE_RADAR.jsonl`'de
+**44** tarihsel kayıt.
+🔴 **HİÇBİRİ SİLİNMEDİ ve silinmeyecek** — `PROJE_HAFIZA.md`/`PROJE_RADAR.jsonl` **append-only**dir
+(`K53`/`K83`) ve o ölçümler **yazıldıkları anda DOĞRUYDU**. 238 satırlık tarihsel kaydı yeniden yazmak
+arşivi **tahrif** etmek olurdu. Bunun yerine **kanonik yorum kuralı** budur:
+> **6 Ağu 2026'dan önce yazılmış her commit hash'i TARİHSEL ÖLÇÜM KAYDIDIR, canlı referans DEĞİLDİR.**
+> Hiçbir oturum onu `git show`/`git diff`/`git checkout` ile **kullanmaz**. Kullanması gerekiyorsa
+> önce **ölçer**, ölü çıkarsa *"[ÖLÜ HASH — 6 Ağu 2026 rebase'i]"* yazıp devam eder.
+
+🔴 **ÖLÇÜM TUZAĞI (aracın kendi altın kümesi yakaladı):** `git cat-file -t <eski-hash>` bu makinede
+**hâlâ `commit` der** — eski nesneler `.git`'te **dangling** duruyor, `gc` almadı. Ama **temiz bir
+klonda YOKLAR.** `cat-file` ile ölçen bir kapı burada **YEŞİL**, meslektaşın klonunda **KIRMIZI** verir
+= **tekrarlanamaz kapı**. Kanonik yordam: **`git merge-base --is-ancestor <hash> HEAD`** (ulaşılabilirlik).
+🔴 **BEYAN EDİLMİŞ SINIR:** tarama yalnız küçük-harfli 7–40 hex ve yalnız kanonik belgeler +
+`GOREV_CLAUDE_CODE/` + `docs/` üzerinde koştu. `KANIT/**` **taranmadı** (ham araç çıktısı;
+`engineContentHash` gibi 40-hex dizgeler commit atfı **değil**). Prozayla yapılan atıf
+(*"oturum 59'un commit'i"*) **görülmez — ÖLÇÜLMEDİ**.
+
 ## Radar [26 Tem 2026 — K40, PAZARLIKSIZ]
 - **Her oturum açılışında ve her checkpoint'te** radar koşulur: `python araclar\radar.py --altin-kume`
   (çıkış **0** olmalı) → `python araclar\radar.py .`  ⇒ hüküm **YEŞİL/SARI/KIRMIZI** (çıkış 0/1/2).
@@ -167,7 +217,7 @@ görülene kadar yoklanır) → ② backend ayrı süreçte, ortam değişkenler
 **İki dosya, iki iş:**
 - **`DURUM.md` — CANLI DURUM.** Her oturumun okuduğu tek dosya. **≤ 32 KB kalmak ZORUNDA** [K58, 27 Tem 2026 — eski tavan 12 KB'dı]. Durum değişince **YERİNDE değiştirilir** (eski satır silinir, yenisi yazılır — burada tarihçe **birikmez**). Aşarsa budanır.
   > **Tavanın gerekçesi OKUMA KAPASİTESİ DEĞİLDİR** (12 KB ≈ 3,5k token; sınırın kat kat altı). İki gerçek gerekçe: ① **R4 freni** — bu projede ölçüldü, ADR 0003 dokuz turda 120→300 KB büyüdü ve her büyüme yeni çapraz-atıf kusuru doğurdu; ② **dikkat** — 3,5k token okunur, 40k token *göz gezdirilir* ve göz gezdirilen belgede bayat iddia hayatta kalır. 12→32 KB gevşetmesinin ölçülmüş gerekçesi: bayat-atıf sınıfı artık **mekanikleşti** (`sayi-tazeligi.py`, `dosya-kimlik.py`, defter `D1`–`D5`), yani R4'ün dayandığı varsayım zayıfladı.
-  > 🟢 **ZAYIF KONTROL KAPANDI [oturum 45'te ölçüldü]:** tavanı artık `araclar\belge-tavan-kapisi.py` **1.1.0** (altın küme **13/13**) zorluyor ve açılış protokolünün **3. adımında** koşuyor. K58 *"ilk ısırdığında yazılır"* demişti: **ilk ısırış oturum 39'da** (`T2` SARI, `DURUM.md` 31.744 b) oldu ve araç yazıldı; **ikinci ısırış oturum 45'te** (`T2` SARI, 31.149 b) K73 budamasını tetikledi. 🔴 **Bu satır oturum 45'e kadar *"hiçbir kapı zorlamıyor"* diyordu — ÖLÜ BEYAN.** Aynı cümlenin `DURUM.md`'de **iki kopyası** daha vardı ve üçü birlikte düzeltildi: `kanonik-kopya` sınıfının altıncı ısırışı. Ders: **bir sınırı kapatan el, o sınırı BEYAN EDEN her kopyayı aynı anda kapatmak zorundadır** — yoksa kapanan borç belgede açık görünmeye devam eder.
+  > 🟢 **ZAYIF KONTROL KAPANDI [oturum 45'te ölçüldü]:** tavanı artık `araclar\belge-tavan-kapisi.py` (banner **1.0.0**, etiket bayat ⇒ `B-O50-2`; altın küme **15/15**) zorluyor ve açılış protokolünün **3. adımında** koşuyor. K58 *"ilk ısırdığında yazılır"* demişti: **ilk ısırış oturum 39'da** (`T2` SARI, `DURUM.md` 31.744 b) oldu ve araç yazıldı; **ikinci ısırış oturum 45'te** (`T2` SARI, 31.149 b) K73 budamasını tetikledi. 🔴 **Bu satır oturum 45'e kadar *"hiçbir kapı zorlamıyor"* diyordu — ÖLÜ BEYAN.** Aynı cümlenin `DURUM.md`'de **iki kopyası** daha vardı ve üçü birlikte düzeltildi: `kanonik-kopya` sınıfının altıncı ısırışı. Ders: **bir sınırı kapatan el, o sınırı BEYAN EDEN her kopyayı aynı anda kapatmak zorundadır** — yoksa kapanan borç belgede açık görünmeye devam eder.
 - **`PROJE_HAFIZA.md` — APPEND-ONLY KARAR ARŞİVİ.** Karar/kapı/kilit anında **üste** yeni checkpoint eklenir; **hiçbir şey silinmez**, hiçbir şey yerinde düzeltilmez (bayat bir satır varsa **düzeltme notu** yazılır). Oturum açılışında **okunmaz**.
   > **DİZİN [K58]:** dosyanın başındaki `<!-- DIZIN:BAS -->…<!-- DIZIN:SON -->` bloğu **mekanik üretimdir, ELLE DÜZENLENMEZ**: `python araclar\hafiza-dizin.py .`. Append-only ihlali değildir — dizin **kayıt değil, kayıtlardan TÜRETİLMİŞ veridir** ve her koşumda sıfırdan yeniden üretilir. **Yeni checkpoint `<!-- DIZIN:SON -->` satırının ALTINA eklenir.**
 

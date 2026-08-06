@@ -335,3 +335,42 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
   kapısız**. **`B-W1-6`** `M193b` **sahte-geçiş** — yorum-atlama tamamen sökülse bile SUS; kusur
   önce **SPEC'tedir**. **`B-W1-7`** koşucu/kapı kusurları: hedef ayak doğrulanmıyor · `try/finally`
   yok · `G35/d` dosya geneli arıyor · dize literalleri atılmıyor.
+
+
+---
+
+## OTURUM 61 — `K151`/`K152`/`K153`'ÜN AÇTIĞI ALTI BORÇ (hepsi ÖLÇÜLDÜ)
+
+- 🟡 **`B-O61-1` — `tek-kopya-mutant.py` ORTAMA GÖRE FARKLI SONUÇ VERİYOR, KAPI BUNU BİLMİYOR.**
+  Ölçüldü: sandbox (Cowork Linux VM) **10/11**, Windows **11/11** (`KAPILAR.md`:32). `DURUM.md`:140
+  ve `KIMLIKLER.md`:49 *"11/11"* diyor ⇒ `sayi-tazeligi.py` her Cowork koşumunda **T1b SARI** verir
+  ve verecektir. Kapı haklı, belge de haklı; **eksik olan, iddianın HANGİ ORTAMDA doğru olduğunu
+  taşıyan bir alan**. Kapatma: ya gerekçeli muafiyet (`tazelik-muafiyet.json`), ya iddiaya ortam
+  eki (`11/11 [Windows]`) ve kapının bunu okuması. 🔴 **Windows koşumu o61'de ÖLÇÜLEMEDİ** —
+  Desktop Commander yoktu ⇒ *"Windows'ta 11/11"* bu oturumda **doğrulanmadı, devralındı**.
+- 🔴 **`B-O61-2` — `CLAUDE.md`:116'da ARAÇ ADI OLMAYAN ALTIN KÜME İDDİASI (`K149` yazımı).**
+  Satır *"altın küme 5/5"* diyor ama satırda hiçbir `.py` adı yok ⇒ `sayi-tazeligi.py` **T5:
+  BAĞLANAMADI** veriyor: *ölçülmedi, temiz değil*. Ölçen betik büyük olasılıkla
+  `KANIT/o60/_olu_hash_avi.py`; adı yazılırsa T5 kapanır ama betik `araclar/` altında olmadığı için
+  **T2 hayalet araç** doğabilir. Kapatma: betiği `araclar/`'a taşı ya da gerekçeli muafiyet aç.
+- 🔴 **`B-O61-3` — COWORK'TE COMMIT YOK; `KIMLIKLER.md` HEAD'DE DEĞİL.**
+  Bu oturumda Desktop Commander **hiç yüklenmedi** ⇒ `ORTAM.md`:19 gereği commit yapılamadı.
+  `tek-kopya-kapisi.py` bunu **S5** ile söylüyor: *"arkasında ağ yok, kaybolursa geri getirilemez"*.
+  🔴 Aynı sebeple **`git fetch` de düştü** (device VM ağsız; proxy 403) ⇒ *"0 ileri / 0 geri"*
+  bir ölçüm **değil**, bayat yerel referanstır (`§2` adım 7'nin tam uyardığı şey).
+  Kapatma: commit + push **Onur ya da Claude Code** tarafından.
+- 🟡 **`B-O61-4` — `hafiza-dizin.py` MOUNT'TA `os.remove` İLE DÜŞÜYOR.**
+  Ölçüldü: `_atomik_yaz` → `os.remove(yedek)` ⇒ `PermissionError: Operation not permitted`.
+  **Yazım tamamlandı** (dosya doğru), ama `PROJE_HAFIZA.md.yedek` kaldı; `_SILINECEKLER/o61/`'e
+  taşındı (`.gitignore`'da). Sınıf: K60'ın üç adımlı takasının **son adımı** bu bağlamda
+  yapılamıyor. Kapatma: silme başarısızlığını yutup **uyaran** bir dal (silinemedi ⇒ SARI, çökme
+  değil) — ya da Cowork'ün `.yedek`'i karantinaya alması standartlaşsın.
+- 🟡 **`B-O61-5` — KUSURLU `_v2_olc.py` DEPODA DURUYOR.** `K150-b` kusurunu taşıyan betik
+  `KANIT/W3/_v2_olc.py`'de; yerine `KANIT/W3/_olc.py` yazıldı (altın küme **5/5**, mutantla
+  kanıtlı). Eski betik **silinemedi** (Cowork'te silme yetkisi yok) ⇒ ileride yanlışlıkla
+  koşulabilir. Kapatma: Onur/Code silsin ya da başına *"GEÇERSİZ — `_olc.py` kullan"* satırı.
+- 🟡 **`B-O61-6` — KAPI AYAĞI BORÇLANABİLİR Mİ? `spec-kapi-kapsama.py` CEVAP VERMİYOR.**
+  `K153` genişletmesinden sonra araç `W3` v2'de **7 borç okudu** (önce 0 idi) ama `G44/g`,
+  `G45/e`, `G46/h` için **S6: envanterde böyle bir kural yok** diyor. Aracın kuralı: *KAPI
+  borçlanamaz, yalnız KURAL borçlanabilir* (S5) — ama **kapı AYAĞI** hangi sınıfa girer, yazılı
+  değil. v2 fiilen ayak borçlandırmış. Kapatma: sınıf kararı (Onur) + araca ayak deseni.
