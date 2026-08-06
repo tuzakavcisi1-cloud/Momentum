@@ -353,24 +353,45 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
   BAĞLANAMADI** veriyor: *ölçülmedi, temiz değil*. Ölçen betik büyük olasılıkla
   `KANIT/o60/_olu_hash_avi.py`; adı yazılırsa T5 kapanır ama betik `araclar/` altında olmadığı için
   **T2 hayalet araç** doğabilir. Kapatma: betiği `araclar/`'a taşı ya da gerekçeli muafiyet aç.
-- 🟢 **`B-O61-3` — KAPANDI (6 Ağu 2026, oturum 61 sonu, ÖLÇÜLDÜ).** Onur üç commit attı ve push etti: `f67ab5b..d0b5032`; `git fetch` sonrası `rev-list --left-right --count` ⇒ **0 / 0**. `tek-kopya-kapisi.py` **YEŞİL** döndü (`KIMLIKLER.md` HEAD 8.673 b, +0) ⇒ `S5` söndü. 🔴 **SEBEP KAPANMADI, YALNIZ VAKA KAPANDI:** Cowork'te Desktop Commander olmadığında commit **yine yapılamaz**; sınıf her oturumda tekrar doğabilir. Aşağıdaki eski metin **tarihsel kayıttır**: — COWORK'TE COMMIT YOK; `KIMLIKLER.md` HEAD'DE DEĞİL.**
-  Bu oturumda Desktop Commander **hiç yüklenmedi** ⇒ `ORTAM.md`:19 gereği commit yapılamadı.
-  `tek-kopya-kapisi.py` bunu **S5** ile söylüyor: *"arkasında ağ yok, kaybolursa geri getirilemez"*.
-  🔴 Aynı sebeple **`git fetch` de düştü** (device VM ağsız; proxy 403) ⇒ *"0 ileri / 0 geri"*
-  bir ölçüm **değil**, bayat yerel referanstır (`§2` adım 7'nin tam uyardığı şey).
-  Kapatma: commit + push **Onur ya da Claude Code** tarafından.
+- 🟢 **`B-O61-3` — KAPANDI (6 Ağu 2026, oturum 61 sonu, ÖLÇÜLDÜ).** Onur üç commit attı ve push etti: `f67ab5b..d0b5032`; `git fetch` sonrası `rev-list --left-right --count` ⇒ **0 / 0**. `tek-kopya-kapisi.py` **YEŞİL** döndü (`KIMLIKLER.md` HEAD 8.673 b, +0) ⇒ `S5` söndü. 🔴 **SEBEP KAPANMADI, YALNIZ VAKA KAPANDI** — ve o62'de **tekrar ısırdı** (yine DC yok, `fetch` yine koşulamadı). Tarihsel gövde: hafıza `K154`.
 - 🟡 **`B-O61-4` — `hafiza-dizin.py` MOUNT'TA `os.remove` İLE DÜŞÜYOR.**
   Ölçüldü: `_atomik_yaz` → `os.remove(yedek)` ⇒ `PermissionError: Operation not permitted`.
   **Yazım tamamlandı** (dosya doğru), ama `PROJE_HAFIZA.md.yedek` kaldı; `_SILINECEKLER/o61/`'e
   taşındı (`.gitignore`'da). Sınıf: K60'ın üç adımlı takasının **son adımı** bu bağlamda
   yapılamıyor. Kapatma: silme başarısızlığını yutup **uyaran** bir dal (silinemedi ⇒ SARI, çökme
   değil) — ya da Cowork'ün `.yedek`'i karantinaya alması standartlaşsın.
-- 🟢 **`B-O61-5` — KAPANDI (o61 sonu, ÖLÇÜLDÜ):** Onur `Remove-Item KANIT\W3\_v2_olc.py` koştu; `ls KANIT/W3/` ile dosyanın **yok olduğu** doğrulandı ve dosya zaten hiç commit edilmemişti ⇒ git geçmişinde de yok. Eski metin tarihsel kayıttır: — KUSURLU `_v2_olc.py` DEPODA DURUYOR.** `K150-b` kusurunu taşıyan betik
-  `KANIT/W3/_v2_olc.py`'de; yerine `KANIT/W3/_olc.py` yazıldı (altın küme **5/5**, mutantla
-  kanıtlı). Eski betik **silinemedi** (Cowork'te silme yetkisi yok) ⇒ ileride yanlışlıkla
-  koşulabilir. Kapatma: Onur/Code silsin ya da başına *"GEÇERSİZ — `_olc.py` kullan"* satırı.
-- 🟡 **`B-O61-6` — KAPI AYAĞI BORÇLANABİLİR Mİ? `spec-kapi-kapsama.py` CEVAP VERMİYOR.**
+- 🟢 **`B-O61-5` — KAPANDI (o61 sonu, ÖLÇÜLDÜ):** Onur `Remove-Item KANIT\W3\_v2_olc.py` koştu; `ls KANIT/W3/` ile dosyanın **yok olduğu** doğrulandı ve dosya zaten hiç commit edilmemişti ⇒ git geçmişinde de yok. Tarihsel gövde: hafıza `K154`.
+- 🟢 **`B-O61-6` — KARARI KAPANDI (`K155`, Onur, o62): AYAK = KAPI ⇒ BORÇLANAMAZ.**
+  🔴 **SEBEP KAPANMADI:** aracın bu yorumu **zorlayan kodu yok** ⇒ `B-O62-1`.
+  Eski metin tarihsel kayıttır: — KAPI AYAĞI BORÇLANABİLİR Mİ? `spec-kapi-kapsama.py` CEVAP VERMİYOR.**
   `K153` genişletmesinden sonra araç `W3` v2'de **7 borç okudu** (önce 0 idi) ama `G44/g`,
   `G45/e`, `G46/h` için **S6: envanterde böyle bir kural yok** diyor. Aracın kuralı: *KAPI
   borçlanamaz, yalnız KURAL borçlanabilir* (S5) — ama **kapı AYAĞI** hangi sınıfa girer, yazılı
   değil. v2 fiilen ayak borçlandırmış. Kapatma: sınıf kararı (Onur) + araca ayak deseni.
+
+
+## OTURUM 62 — YÜRÜYEN İSKELETİN AÇTIĞI ALTI BORÇ (hepsi ÖLÇÜLDÜ)
+
+- 🔴 **`B-O62-1` — `K155` KAPISIZ.** *"Kapı AYAĞI borçlanamaz"* kilidi (`K155`) **prozada** yaşıyor;
+  `spec-kapi-kapsama.py` hâlâ yalnız `S5`/`S6` veriyor ve ayağı kural sanıp *"envanterde yok"*
+  diyor. **Kapısı olmayan kilit, bir sonraki spec'te sessizce ihlal edilir.**
+  Kapatma: araca **ayak deseni** (`G<n>/<harf>`) + `[S7] AYAK BORÇLANAMAZ` + altın küme vakası.
+- 🔴 **`B-O62-2` — ÜRÜN KODU ONUR'UN MAKİNESİNDE DERLENMEDİ.** `IzolasyonBasliklari.cs` +
+  `Program.cs` **yalnız Cowork'ün bulut konteynerinde** derlendi/koştu (Linux, SDK 10.0.302).
+  `verify.ps1` **koşulmadı**, backend testleri (**120/120**) bu değişiklikle **yeniden koşulmadı**.
+  Kapatma: Onur/Code `verify.ps1` + `dotnet test` koşsun; sonuç `KANIT/W3/`'e insin.
+- 🟡 **`B-O62-3` — `izolasyon-olc.py`'nin `T` AYAĞI CİHAZDA ÖLÇÜLEMEZ.** Onur'un makinesinde
+  playwright **yok** (o60'ta ölçüldü) ⇒ araç orada *"H yeşil, T ÖLÇÜLEMEDİ — tam yeşil değil"*
+  der. Bu **beyan edilmiş** bir sınırdır, gizli değil. Kapatma: ya cihaza bir tarayıcı sürücüsü,
+  ya `T`'nin CI'da koşması.
+- 🟡 **`B-O62-4` — `OnStarting` KARARININ MUTANTI YOK.** Başlıkların `UseExceptionHandler`
+  yolunda doğrudan yazımla **düşeceği** iddiası **okunarak** yazıldı, ölçülmedi. Kapatma: 500
+  üreten bir uç + doğrudan-yazım mutantı ⇒ başlıkların düştüğünü **ölç**.
+- 🟡 **`B-O62-5` — `oturum-sagligi.py` `CANLI_BELGELER`'de `KIMLIKLER.md` YOK.** `K157` kapsamı
+  **bilerek** `D1` ile sınırlı tutuldu (K34-f: onaran el en küçük müdahaleyi yapar) ⇒ `S2` (yüzde
+  avı) ve `S3` (eşik kopyası) `KIMLIKLER.md`'yi **taramıyor**. Kapatma: listeye ekle + vaka yaz.
+- 🟡 **`B-O62-6` — DEFTER KAYDI EKSİKLİĞİ o60'TA DA VAR.** o61'in kaydı o62'de *"geç yazıldı"*
+  ile eklendi; ama `W3` v2 denetimi (**tur 2**) o60'ta koştu ve deftere **yalnız `tur=1`** yazıldı.
+  ⇒ `R2` (bulgu eğimi) ve `R4` (artefakt büyümesi) `W3` için **eksik seriden** hesaplanıyor.
+  Kapatma: o60/tur-2 kaydı da *"geç yazıldı"* beyanıyla eklensin. 🔴 **Sınıf `defter-durustlugu`
+  ve bu, ikinci ısırışıdır — yazılmayan ölçüm kaydı kapıyı körleştirir.**
