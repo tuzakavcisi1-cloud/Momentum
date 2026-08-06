@@ -353,7 +353,7 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
   BAĞLANAMADI** veriyor: *ölçülmedi, temiz değil*. Ölçen betik büyük olasılıkla
   `KANIT/o60/_olu_hash_avi.py`; adı yazılırsa T5 kapanır ama betik `araclar/` altında olmadığı için
   **T2 hayalet araç** doğabilir. Kapatma: betiği `araclar/`'a taşı ya da gerekçeli muafiyet aç.
-- 🔴 **`B-O61-3` — COWORK'TE COMMIT YOK; `KIMLIKLER.md` HEAD'DE DEĞİL.**
+- 🟢 **`B-O61-3` — KAPANDI (6 Ağu 2026, oturum 61 sonu, ÖLÇÜLDÜ).** Onur üç commit attı ve push etti: `f67ab5b..d0b5032`; `git fetch` sonrası `rev-list --left-right --count` ⇒ **0 / 0**. `tek-kopya-kapisi.py` **YEŞİL** döndü (`KIMLIKLER.md` HEAD 8.673 b, +0) ⇒ `S5` söndü. 🔴 **SEBEP KAPANMADI, YALNIZ VAKA KAPANDI:** Cowork'te Desktop Commander olmadığında commit **yine yapılamaz**; sınıf her oturumda tekrar doğabilir. Aşağıdaki eski metin **tarihsel kayıttır**: — COWORK'TE COMMIT YOK; `KIMLIKLER.md` HEAD'DE DEĞİL.**
   Bu oturumda Desktop Commander **hiç yüklenmedi** ⇒ `ORTAM.md`:19 gereği commit yapılamadı.
   `tek-kopya-kapisi.py` bunu **S5** ile söylüyor: *"arkasında ağ yok, kaybolursa geri getirilemez"*.
   🔴 Aynı sebeple **`git fetch` de düştü** (device VM ağsız; proxy 403) ⇒ *"0 ileri / 0 geri"*
@@ -365,7 +365,7 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
   taşındı (`.gitignore`'da). Sınıf: K60'ın üç adımlı takasının **son adımı** bu bağlamda
   yapılamıyor. Kapatma: silme başarısızlığını yutup **uyaran** bir dal (silinemedi ⇒ SARI, çökme
   değil) — ya da Cowork'ün `.yedek`'i karantinaya alması standartlaşsın.
-- 🟡 **`B-O61-5` — KUSURLU `_v2_olc.py` DEPODA DURUYOR.** `K150-b` kusurunu taşıyan betik
+- 🟢 **`B-O61-5` — KAPANDI (o61 sonu, ÖLÇÜLDÜ):** Onur `Remove-Item KANIT\W3\_v2_olc.py` koştu; `ls KANIT/W3/` ile dosyanın **yok olduğu** doğrulandı ve dosya zaten hiç commit edilmemişti ⇒ git geçmişinde de yok. Eski metin tarihsel kayıttır: — KUSURLU `_v2_olc.py` DEPODA DURUYOR.** `K150-b` kusurunu taşıyan betik
   `KANIT/W3/_v2_olc.py`'de; yerine `KANIT/W3/_olc.py` yazıldı (altın küme **5/5**, mutantla
   kanıtlı). Eski betik **silinemedi** (Cowork'te silme yetkisi yok) ⇒ ileride yanlışlıkla
   koşulabilir. Kapatma: Onur/Code silsin ya da başına *"GEÇERSİZ — `_olc.py` kullan"* satırı.

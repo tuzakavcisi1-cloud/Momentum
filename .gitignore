@@ -109,3 +109,5 @@ KANIT/**/_commit_msg*.txt
 KANIT/**/_defter_ekle*.py
 KANIT/**/_ozet*.py
 KANIT/**/_gitignore_olc.py
+
+.claude/

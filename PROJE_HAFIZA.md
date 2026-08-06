@@ -8705,3 +8705,30 @@ düzeltilecek) · `GOREV_CLAUDE_CODE/GOREV-W3-capraz-koken-izolasyonu.md` (v2, *
 **O61 SAĞLIĞI:** son ölçüm **365.631 token** ⇒ `K21`'e göre 🟢 **YEŞİL**. Devir, sağlık eşiği
 yüzünden **değil**, Onur'un açık isteğiyle yazıldı — kalan iş (v3 ~35 KB + üç ajanlı tur) temiz bir
 oturum ister.
+
+
+---
+
+## DEVİR EKİ — oturum 61 (commit sonrası, ÖLÇÜLDÜ)
+
+🔴 Yukarıdaki devir notu *"o61 commit ATAMADI, HEAD'i açılışta ÖLÇ"* diyor. Bu **doğruydu ama
+bayatladı**: Onur notu aldıktan sonra üç commit attı ve push etti. Not **düzeltilmiyor**
+(append-only, `K53`/`K83`); **düzeltme kaydı** buraya yazılıyor.
+
+**Ölçüm (6 Ağu 2026, o61 sonu):**
+`f67ab5b..d0b5032` push edildi · `origin/main...HEAD` ⇒ **0 / 0** ·
+`ff675e9` araçlar (5 dosya, +309/-12) · `1124450` belge taşıması (5 dosya, +786/-256) ·
+`d0b5032` kanıtlar (7 dosya, +936/-271).
+`tek-kopya-kapisi.py` **YEŞİL** (o61 boyunca SARI veren tek sebep söndü) ·
+`belge-tavan-kapisi.py` **YEŞİL**.
+`B-O61-3` ve `B-O61-5` **KAPANDI** (`BORCLAR.md`'de ölçümle işaretlendi).
+Yeniden üretilmiş kanıt (`slice-3c/02-G2/*.json`, `outbox-sorgu.txt`) `git restore` ile HEAD'e
+döndürüldü — **kabul edilmiş kanıt yeni koşumla ezilmedi**.
+
+🔴 **Açık kalan tek kalem:** `.gitignore`'a `.claude/` eklendi, **commit edilmedi**.
+🔴 **`B-O61-3`'ün SEBEBİ kapanmadı:** Cowork'te Desktop Commander yoksa commit yine yapılamaz;
+sınıf her oturumda tekrar doğabilir. Kapanan **vaka**dır, sınıf değil.
+
+**Ders (bu oturumun kendi kusuru):** devir notuna *"HEAD şu"* yazmak yerine *"HEAD'i ÖLÇ"* yazmak
+doğruydu; ama *"commit atılmadı"* **bir durum iddiasıydı** ve nottan on dakika sonra yanlış oldu.
+`K82-b`'nin kapsamı yalnız sha'ya değil, **her devredilen durum cümlesine** uzanır.
