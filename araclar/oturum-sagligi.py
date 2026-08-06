@@ -415,11 +415,12 @@ def kimlik_karsilastir(kok, kaynak, girisler, bulgular):
 TABLO_SATIRI = re.compile(r"^\|(.+)\|\s*$")
 
 
-def d1_durum_tablosu(kok, bulgular):
-    yol = os.path.join(kok, "DURUM.md")
-    if not os.path.isfile(yol):
-        bulgular.append(("OLCULEMEDI", "D1", "DURUM.md YOK ⇒ kimlik tablosu OLCULEMEDI."))
-        return
+# K151 (6 Agu 2026) DURUM.md 9. bolumunu KIMLIKLER.md'ye TASIDI. Kapsam bu yuzden bir
+# LISTEDIR, tek dosya adi DEGIL -- hangi belge tabloyu tasiyorsa oradan okunur.
+KIMLIK_TABLOSU_BELGELERI = ("KIMLIKLER.md", "DURUM.md")
+
+
+def _kimlik_tablosu_girisleri(yol):
     girisler = []
     for no, satir in enumerate(oku(yol).splitlines(), 1):
         m = TABLO_SATIRI.match(satir)
@@ -437,7 +438,37 @@ def d1_durum_tablosu(kok, bulgular):
             continue
         girisler.append((ad_m.group(1).strip(), sayiya(bayt_m.group(1)),
                          sha_m.group(1), no))
-    kimlik_karsilastir(kok, "DURUM.md kimlik tablosu", girisler, bulgular)
+    return girisler
+
+
+def d1_durum_tablosu(kok, bulgular):
+    """K157 (oturum 62): kimlik tablosu ARTIK DURUM.md'de degil KIMLIKLER.md'de.
+
+    Bu fonksiyon K151'den oturum 62'ye kadar yalniz DURUM.md'ye bakti ve her kosumda
+    'AYRISTIRILAMADI => OLCULEMEDI' dedi: bir siniri TASIYAN el, o siniri OKUYAN araci
+    tasimadigi icin D1'in kimlik ayagi KOR kaldi. Kapsam artik bir listedir; TABLOYU
+    TASIYAN HER BELGE olculur ve OLCULEMEDI yalnizca HICBIRINDE giris yoksa yazilir --
+    aksi halde tablosuz kalan DURUM.md kalici bir yanlis-pozitif uretirdi."""
+    bulunan, olculdu = [], False
+    for ad in KIMLIK_TABLOSU_BELGELERI:
+        yol = os.path.join(kok, ad)
+        if not os.path.isfile(yol):
+            continue
+        bulunan.append(ad)
+        girisler = _kimlik_tablosu_girisleri(yol)
+        if girisler:
+            olculdu = True
+            kimlik_karsilastir(kok, "%s kimlik tablosu" % ad, girisler, bulgular)
+    if olculdu:
+        return
+    if not bulunan:
+        bulgular.append(("OLCULEMEDI", "D1",
+                         "kimlik tablosu belgesi YOK (%s aranmisti) \u21d2 OLCULEMEDI."
+                         % ", ".join(KIMLIK_TABLOSU_BELGELERI)))
+        return
+    bulgular.append(("OLCULEMEDI", "D1",
+                     "%s: kimlik girisi AYRISTIRILAMADI \u21d2 OLCULEMEDI "
+                     "(bu 'TEMIZ' DEGILDIR)." % " + ".join(bulunan)))
 
 
 DEVIR_GIRISI = re.compile(
@@ -769,6 +800,11 @@ def _isirdi(bulgular, kod, seviye="KIRMIZI"):
     return any(b[0] == seviye for b in _kodlar(bulgular, kod))
 
 
+def _ayristirilamadi(bulgular):
+    """K157: 'AYRISTIRILAMADI' yanlis-pozitifini vaka duzeyinde olcer."""
+    return any(b[1] == "D1" and "AYRISTIRILAMADI" in b[2] for b in bulgular)
+
+
 def altin_kume():
     vakalar = []
 
@@ -875,6 +911,33 @@ def altin_kume():
     b, _ = tara(kok)
     vaka("17) D1 BAYT TUTUYOR ama SHA BAYAT -- ISIRMALI (ayni boyutta degisim)",
          _isirdi(b, "D1"))
+
+    # --- K157 (oturum 62): kapsam bir LISTEDIR. K151 tabloyu KIMLIKLER.md'ye tasiyinca
+    #     bu ayak KORLESTI; asagidaki dort vaka o korlugu PINLER.
+    kok = _fixture({"CLAUDE.md": KANONIK_BLOK_TEMIZ, "veri.txt": hedef,
+                    "KIMLIKLER.md": tablo_taze})
+    b, _ = tara(kok)
+    vaka("17b) TABLO YALNIZ KIMLIKLER.md'de -- OLCULMELI ve SUSMALI",
+         (not _isirdi(b, "D1")) and (not _ayristirilamadi(b)))
+
+    kok = _fixture({"CLAUDE.md": KANONIK_BLOK_TEMIZ, "veri.txt": hedef,
+                    "KIMLIKLER.md": tablo_bayat})
+    b, _ = tara(kok)
+    vaka("17c) KIMLIKLER.md'de BAYAT KIMLIK -- ISIRMALI", _isirdi(b, "D1"))
+
+    kok = _fixture({"CLAUDE.md": KANONIK_BLOK_TEMIZ, "veri.txt": hedef,
+                    "KIMLIKLER.md": tablo_taze,
+                    "DURUM.md": "tablosuz canli durum\n"})
+    b, _ = tara(kok)
+    vaka("17d) KIMLIKLER.md TAZE + DURUM.md TABLOSUZ -- "
+         "DURUM.md 'AYRISTIRILAMADI' DEMEMELI (K151'in urettigi yanlis-pozitif)",
+         (not _isirdi(b, "D1")) and (not _ayristirilamadi(b)))
+
+    kok = _fixture({"CLAUDE.md": KANONIK_BLOK_TEMIZ, "veri.txt": hedef,
+                    "DURUM.md": "tablosuz\n", "KIMLIKLER.md": "tablosuz\n"})
+    b, _ = tara(kok)
+    vaka("17e) HICBIR BELGEDE TABLO YOK -- 'OLCULEMEDI' demeli, TEMIZ DEMEMELI",
+         _ayristirilamadi(b))
 
     taban = {"CLAUDE.md": KANONIK_BLOK_TEMIZ, "veri.txt": hedef}
 

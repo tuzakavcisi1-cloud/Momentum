@@ -7,6 +7,7 @@ using Momentum.Api.Auth;
 using Momentum.Api.Endpoints;
 using Momentum.Api.Health;
 using Momentum.Api.Realtime;
+using Momentum.Api.Web;
 using Momentum.Application.Abstractions;
 using Momentum.Application.Abstractions.Sync;
 using Momentum.Application.Behaviors;
@@ -108,6 +109,12 @@ if (builder.Environment.IsDevelopment() && corsAllowedOrigins.Length > 0) // W1/
 }
 
 var app = builder.Build();
+
+// --- W3 yuruyen iskelet: capraz-koken izolasyon basliklari (COOP/COEP) --------------------
+// EN USTTE durur: UseCors, UseExceptionHandler ve tum uc noktalar dahil HER yanit izole edilir.
+// Kill switch "Izolasyon:Etkin" (varsayilan true); kapaliyken ara katman HIC kurulmaz.
+var izolasyonEtkin = builder.Configuration.GetValue(IzolasyonBasliklari.EtkinAnahtari, true);
+app.UseIzolasyonBasliklari(izolasyonEtkin);
 
 // W1/D-W1-2: mirrors the registration guard above (same corsAllowedOrigins captured by closure) --
 // D-W1-3: UseCors must run before endpoint execution; there is no UseRouting call in this file, so
