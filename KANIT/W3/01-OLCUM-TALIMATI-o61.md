@@ -1,85 +1,116 @@
-# W3 — B1 ÖLÇÜM TALİMATI (oturum 61'in İLK işi)
+# T0 — W3 ÖN-KOŞUL ÖLÇÜMÜ (`D-W3-0` / `K148`)
 
-🔒 **Onur kilitledi (oturum 60):** *"Önce ÖLÇ, sonra v2."* Bu ölçüm koşulmadan `W3` v2 **yazılmaz**.
-**Koşacak el:** Onur ya da Claude Code. **Cowork KOŞMAZ** (`K80` — Cowork ortamı kaldırmaz, doğrular).
-
----
-
-## NEYİ KARARA BAĞLIYOR
-
-`KANIT/W3/00-DENETIM-o60.md` `B1`: `drift 2.34.3`'te `WasmDatabase.open`'ın
-`moveExistingIndexedDbToOpfs` varsayılanı **`false`**; mevcut bir veritabanı varsa drift
-*"veri kaybını önlemek için"* **eski biçimde kalır**. `drift_flutter 0.3.1` bu bayrağı
-**geçiremiyor** ve `veritabani.dart:180` tam da `driftDatabase(name: 'momentum', …)` kullanıyor.
-
-⇒ **Soru:** çapraz-köken izolasyonu açıldığında drift **gerçekten** `opfsLocks`'a geçiyor mu,
-yoksa mevcut IndexedDB veritabanı yüzünden `sharedIndexedDb`'de mi kalıyor?
-
-**Bu ölçüm olmadan yazılacak her v2 satırı tahmindir.** Denetçinin kendi ifadesi:
-*"Kilitten önce koşulması gereken tek ölçüm budur."*
+**KOŞAN: Onur ya da Claude Code — Cowork DEĞİL** (`K80`: Cowork ortam kaldırmaz).
+**Sonuç yazılacak yer:** `KANIT/W3/02-OLCUM-SONUC-o61.md`
+🔴 **Bu ölçüm YEŞİL gelmeden `GOREV-W3` `T1`–`T10`'un tek satırı yazılmaz.**
 
 ---
 
-## KOŞUM
+## Neden bu ölçüm var
 
-**Ön koşul:** backend **GEREKMEZ** — drift depolama seçimini veritabanını açarken yapar, senkron
-istemez. (İstersen `ORTAM.md` reçetesiyle ayağa kaldır; ölçümü değiştirmez, sayfayı normalleştirir.)
+`GOREV-W3` §1/`O5`: bugünkü `chosenImplementation` / `missingFeatures` **hiçbir belgede birebir
+yazılı değil**. Üç şey ölçülmeden dilim **temelsizdir**:
 
-`--web-header` bayrağı **yalnız `flutter run`**'da vardır (`build_web.dart` `usesWebOptions()`
-çağırmaz — Flutter kaynağında doğrulandı). Bu bir **ölçüm aracıdır**, üretim çözümü değildir.
+1. Chrome bugün `opfsShared`'ı **destekliyor mu**? (Desteklıyorsa **izolasyona hiç gerek yok** ve
+   `W3` dilimi **İPTAL EDİLİR**.)
+2. `missingFeatures` içinde `workerError` ya da `fileSystemAccess` **var mı**? (Varsa izolasyon
+   tek başına **hiçbir şeyi çözmez**, kök sebep başkadır.)
+3. İzolasyon fiilen sağlandığında drift **gerçekten** `opfsLocks`'a geçiyor mu?
 
-### Ölçüm A — BUGÜNKÜ TABAN (izolasyon YOK)
-```
+---
+
+## ÖN ŞART — `D-W3-8` GÜVENLİ BAĞLAM
+
+🔴 Sayfa **YALNIZ** `http://localhost:<port>` ya da `https://…` üzerinden açılacak.
+`http://192.168.x.x`, `http://127.0.0.1` **dışı** her adres **güvenli bağlam DEĞİLDİR**
+(MDN: *"your document must be in a secure context and cross-origin isolated"*) ve o koşum
+**`[ÖLÇÜLMEDİ]`** sayılır. Tarayıcı adres çubuğundaki adres **birebir** rapora yazılacak.
+
+---
+
+## KOŞUM 1 — BUGÜNKÜ HÂL (temel çizgi, izolasyon YOK)
+
+```powershell
+cd C:\dev\Momentum\src\client
 flutter run -d chrome --web-port=5000
 ```
-DevTools konsolunda şu satırı bul ve **BİREBİR** kaydet:
-`MOMENTUM-G6-KANIT chosenImplementation=<...> missingFeatures=<...>`
-Ayrıca konsola yaz ve sonucu kaydet: `crossOriginIsolated` (beklenen: **false**)
 
-### Ölçüm B — İZOLASYON AÇIK, MEVCUT VERİTABANI DURUYOR
+Sayfa açılınca **DevTools → Console**:
+```js
+console.log('IZOLE=', crossOriginIsolated, '| SAB=', typeof SharedArrayBuffer);
 ```
-flutter run -d chrome --web-port=5000 --web-header=Cross-Origin-Opener-Policy=same-origin --web-header=Cross-Origin-Embedder-Policy=require-corp
-```
-🔴 **ÖNCE** konsolda `crossOriginIsolated` yaz. **`true` DEĞİLSE ölçüm GEÇERSİZDİR** — sebebini
-(başlıklar gelmedi mi, güvenli bağlam mı) kaydet ve **dur**. `true` ise aynı `MOMENTUM-G6-KANIT`
-satırını **BİREBİR** kaydet.
 
-### Ölçüm C — İZOLASYON AÇIK, TEMİZ KÖKEN (veritabanı YOK)
-```
-flutter run -d chrome --web-port=5001 --web-header=Cross-Origin-Opener-Policy=same-origin --web-header=Cross-Origin-Embedder-Policy=require-corp
-```
-🔴 **`5001` bilinçlidir:** farklı port = **farklı köken** = o kökende `momentum` veritabanı **YOK**.
-Böylece drift serbestçe seçer ve **hiçbir şey silinmez** (yerel veri imha etmeye gerek yok).
-`crossOriginIsolated` + `MOMENTUM-G6-KANIT` satırını **BİREBİR** kaydet.
-
-### Ek kayıt (tek satır, ucuz ama pahalı bir soruyu kapatır)
-Chrome sürümü: `chrome://version` ilk satırı. *(Denetim, `opfsShared`'ın Chrome'da
-desteklenmediğini **yalnız drift'in kendi belgesine** dayandırdı — tedarikçi beyanı, bağımsız
-teyit değil. Chrome bunu sessizce eklediyse `opfsShared` seçilir ve **W3'ün tamamı gereksizdir**.)*
+**Kaydedilecek (BİREBİR kopyala-yapıştır, özetleme):**
+- `MOMENTUM-G6-KANIT` ile başlayan **tam satır** (uygulama kendi basıyor)
+- `chosenImplementation=` değeri
+- `missingFeatures=[…]` **tam listesi**
+- `IZOLE=` ve `SAB=` çıktısı
+- adres çubuğundaki **tam adres**
 
 ---
 
-## HÜKÜM TABLOSU — ölçüm bittiğinde hangi sonuç neyi söyler
+## KOŞUM 2 — İZOLASYONLU (bayrakla zorlanmış)
 
-| A | B | C | HÜKÜM | v2'ye etkisi |
-|---|---|---|---|---|
-| `sharedIndexedDb` | **`opfsLocks`** | — | 🟢 **`B1` ÖLÜ** | v2 **yalnız sunucu işidir**; istemci koduna dokunulmaz |
-| `sharedIndexedDb` | `sharedIndexedDb` | **`opfsLocks`** | 🔴 **`B1` KANITLANDI** | v2 **istemci kodu değişikliğini ZORUNLU kılar** (`driftDatabase` bırakılıp `WasmDatabase.open(..., moveExistingIndexedDbToOpfs: true)`) — ve bu **ürün kodudur**, `R8`'i düşürür |
-| `sharedIndexedDb` | `sharedIndexedDb` | `sharedIndexedDb` | 🔴 **PREMİS ÇÖKTÜ** | izolasyon tek başına yetmiyor ⇒ `missingFeatures` okunur; `workerError`/`fileSystemAccess` çıkarsa W3'ün gerekçesi yeniden yazılır |
-| herhangi | **`opfsShared`** | — | 🔴 **W3 GEREKSİZ** | Chrome desteklemiş; dilim **park edilir**, `ADR 0004` bunu kaydeder |
-| — | `crossOriginIsolated=false` | — | ⚪ **ÖLÇÜLEMEDİ** | `--web-header` etkisiz; ölçüm yolu değişmeli, hüküm YOK |
+🔴 `flutter run`'ın kendi dev sunucusu COOP/COEP **göndermez**. Bu yüzden izolasyon
+**tarayıcı bayrağıyla** taklit edilir:
 
-🔴 **Tabloyu okurken:** `chosenImplementation` satırı **görülmeden** hiçbir satır işaretlenmez.
-Ölçemediğine **"ÖLÇÜLEMEDİ"** yaz — yeşil de kırmızı da **varsayma**.
+```powershell
+# Chrome'un TÜM pencerelerini kapat, sonra:
+& "C:\Program Files\Google\Chrome\Application\chrome.exe" `
+  --user-data-dir="C:\temp\chrome-izole-test" `
+  --enable-features=SharedArrayBuffer `
+  http://localhost:5000
+```
+
+*(`flutter run` **1. koşumdan** ayakta kalsın; yalnız tarayıcı yeniden açılıyor.)*
+
+**Aynı beş kalem** yeniden kaydedilir. Beklenen: `IZOLE= true`.
+
+🔴 **`IZOLE= false` çıkarsa:** bayrak tutmadı ⇒ bu koşum **`[ÖLÇÜLEMEDİ]`** yazılır, **uydurma
+yapılmaz**. O hâlde `W3` dilimi *"ölçülemedi"* ile açık kalır ve `T1` **yine başlamaz**.
 
 ---
 
-## TESLİM
+## KOŞUM 3 — TEMİZ KÖKEN (veri taşıma etkisi olmadan)
 
-Sonuçlar **`KANIT/W3/02-OLCUM-SONUC-o61.md`**'ye yazılır. İçerik:
-① üç koşumun **birebir** konsol satırları ② her koşumda `crossOriginIsolated` değeri
-③ Chrome sürümü ④ hüküm tablosundan **işaretlenen satır** ⑤ ölçülemeyen ne varsa **"ÖLÇÜLEMEDİ"**
-başlığı altında — **boş olamaz**.
+🔴 `D-W3-7` **geri alınamaz veri taşıması** yapar. Bu yüzden üçüncü koşum **temiz bir kökende**,
+**boş** IndexedDB ile yapılır:
 
-Sonra `W3` v2 bu ölçümle yazılır ve `KANIT/W3/00-DENETIM-o60.md`'deki **altı bloker + 14 major**
-madde madde kapatılır.
+```powershell
+flutter run -d chrome --web-port=5001
+```
+Sonra **DevTools → Application → Storage → Clear site data** → sayfayı yenile → aynı beş kalem.
+
+**Amaç:** *"mevcut veritabanı olmasaydı drift ne seçerdi?"* sorusunun yanıtı. Bu, `O2`'nin
+(drift'in mevcut biçimi koruması) **fiilen** kök sebep olup olmadığını ayırır.
+
+---
+
+## HÜKÜM TABLOSU — sonuç dosyasına AYNEN doldurulacak
+
+| # | adres | `IZOLE` | `chosenImplementation` | `missingFeatures` | güven |
+|---|---|---|---|---|---|
+| 1 | | | | | KESİN / ÖLÇÜLEMEDİ |
+| 2 | | | | | KESİN / ÖLÇÜLEMEDİ |
+| 3 | | | | | KESİN / ÖLÇÜLEMEDİ |
+
+### Hüküm kuralları (pazarlıksız)
+
+| gözlenen | hüküm |
+|---|---|
+| Herhangi bir koşumda `opfsShared` | 🔴 **`W3` İPTAL** — Chrome desteklemiş, izolasyona gerek yok. `ADR 0004` bunu kaydeder. |
+| `missingFeatures` içinde `workerError` **ya da** `fileSystemAccess` | 🔴 **`W3` DURDURULUR** — kök sebep izolasyon değil; yeni teşhis dilimi açılır. |
+| Koşum 2'de `IZOLE=true` **ve** `chosenImplementation` hâlâ `sharedIndexedDb`, **ama** koşum 3'te `opfsLocks` | ✅ **`O2` DOĞRULANDI** — sebep drift'in mevcut biçimi koruması. `W3` **tam kapsamıyla** koşar (`D-W3-7` dâhil). |
+| Koşum 2'de `IZOLE=true` **ve** `opfsLocks` | ⚠️ **`D-W3-7` GEREKSİZ olabilir** — yalnız sunucu tarafı yeter. `T5` **düşürülür**, `G47` yeniden yazılır. Onur'a sorulur. |
+| Koşum 2 `IZOLE=false` | 🔴 **`[ÖLÇÜLEMEDİ]`** — `T1` başlamaz, başka ölçüm yolu aranır. |
+
+---
+
+## NE ÖLÇÜLEMEDİ (bu talimatın kendi sınırı)
+
+- **Bayrakla taklit edilen izolasyon ≠ başlıkla sağlanan izolasyon.** `--enable-features` yolu
+  `crossOriginIsolated`'ı `true` yapabilir ama gerçek COOP/COEP davranışını **tam** yansıtmaz;
+  koşum 2 bir **gösterge**dir, `G46`'nın yerine geçmez.
+- **Chrome sürümü kaydedilmeli** (`chrome://version`) — `opfsShared` desteği sürüme bağlıdır ve
+  bu ölçüm **o güne aittir**.
+- Firefox/Safari **ölçülmüyor**; `W3`'ün tüm iddiaları **Chrome'a** özeldir.
