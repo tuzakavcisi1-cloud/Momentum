@@ -45,6 +45,11 @@ VARSAYILAN_KAPSAM = [
     ("DURUM.md", "canli"),
     ("CLAUDE.md", "canli"),
     ("ORTAM.md", "canli"),  # oturum 49 -- DURUM.md 7'den ayrildi; canli => mesru budama %10
+    # oturum 61, K151 -- DURUM.md 9'dan ayrildi. SINIF "kilitli" DEGIL "canli":
+    # icerigi DONMUS kimliklerdir ama DOSYA kilit geldikce buyur ve yanlis yazilmis
+    # bir kayit DUZELTILIR (o61'de W3 v2 icin tam bunu yapmak gerekti) => HEAD sha'sina
+    # sapmasizlik dayatmak bu dosyada YANLIS OLURDU.
+    ("KIMLIKLER.md", "canli"),
     ("DESIGN.md", "kilitli"),
     ("GOREV_CLAUDE_CODE/GOREV-slice-3b-istemci-iskeleti.md", "kilitli"),
     ("GOREV_CLAUDE_CODE/GOREV-slice-3c-senkron.md", "kilitli"),  # K64 -- v2 onaylandi

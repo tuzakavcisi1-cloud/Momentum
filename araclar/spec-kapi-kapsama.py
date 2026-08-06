@@ -144,15 +144,36 @@ def borclar(metin):
         return {}, []
     kabul, hata = {}, []
     for s in govde.split("\n"):
+        kapatma = None
         m = re.match(r"^\s*-\s*KURAL:\s*([^|]+)\|\s*GEREKCE:\s*(.*)$", s)
-        if not m:
-            continue
-        ad = re.sub(r"[`*]", "", m.group(1)).strip()
-        gerekce = m.group(2).strip()
+        if m:
+            ad = re.sub(r"[`*]", "", m.group(1)).strip()
+            gerekce = m.group(2).strip()
+        else:
+            # DORT ALANLI BICIM [K153, Onur kilitledi o61] -- W1/W3 ayirici bicimi:
+            #   <ID> | <KURAL + aciklama> | <NEDEN MUTANT YOK> | <KAPATMA YOLU>
+            # Olculdu (o61): W3 v2'nin 6b'si TAM bu bicimde, 11 satir, hicbiri eski
+            # desene uymuyordu => arac SIFIR borc okudu ve dokuz S2 verdi (K150-c).
+            # v1 bu araci GECIYORDU ⇒ regresyondu. Bicim daha fazla bilgi tasiyor
+            # (borc ID'si + kapatma yolu); arac KUCULTULMEDI, GENISLETILDI.
+            p = [x.strip() for x in s.split("|")]
+            if len(p) != 4 or not re.match(r"^[`*]*B-[A-Za-z0-9]+-\d+[`*]*$", p[0]):
+                continue
+            im = re.match(r"^[`*]*([^\s`*]+)", p[1])
+            if not im:
+                continue
+            ad = im.group(1).strip()
+            gerekce = p[2].strip()
+            kapatma = p[3].strip()
         if re.match(r"^G\d+$", ad):
             hata.append(("S5", "KAPI BORCLANAMAZ: " + ad + " -- yalniz KURAL borclanabilir"))
         elif len(gerekce) < 20:
             hata.append(("S4", "GEREKCESIZ BORC: " + ad + " -- gerekce en az 20 karakter olmali"))
+        elif kapatma is not None and not kapatma:
+            # DORT ALANLI bicim KAPATMA YOLU vaat eder; bos birakilirsa bicim
+            # bilgi tasidigini IDDIA edip tasimamis olur -- gerekcesiz borcun kardesi.
+            hata.append(("S4", "KAPATMASIZ BORC: " + ad
+                         + " -- dort alanli bicim KAPATMA YOLU alanini bos birakamaz"))
         else:
             kabul[ad] = gerekce
     return kabul, hata
@@ -391,6 +412,21 @@ govde metni
 | **M2** | boz | G1 / D-A11-99 | kirmizi |
 ## 7. son
 """
+    # --- K153 [oturum 61]: DORT ALANLI 6b BICIMI -----------------------------
+    _BORC4 = ("## 6b. MUTANT BORCU\n```\n"
+              "B-X-1 | kontrast kurali | ilk dilim tavani 8 mutant, kontrast risk "
+              "sirasinda disarida kaldi | Playwright kurulumu -- AYRI DILIM\n```\n")
+    sonuc.append(_vaka("22) DORT ALANLI beyanli borc (K153) -- SUSMALI",
+                       _KONTRASTSIZ.replace("## 7. son", _BORC4 + "## 7. son"), []))
+    sonuc.append(_vaka("23) DORT ALANLI ama KAPATMA YOLU BOS -- S4 isirmali",
+                       _KONTRASTSIZ.replace(
+                           "## 7. son",
+                           "## 6b. MUTANT BORCU\n```\nB-X-1 | kontrast kurali | ilk dilim "
+                           "tavani 8 mutant, kontrast disarida kaldi | \n```\n## 7. son"),
+                       # S2 de gelir ve GELMELIDIR: borc REDDEDILDIGI icin kural
+                       # yeniden "mutantsiz ve borcsuz" durumuna duser -- reddedilen
+                       # borc, borc SAYILMAZ.
+                       ["S2", "S4"]))
     sonuc.append(_vaka("21) A12/G25/h: yeni-desenli hayalet atif -- S3 isirmali (bozulmadi)",
                        _UC_HAYALET_ATIF_YENI, ["S3"]))
     _yaz("=" * 74)

@@ -36,7 +36,7 @@ VARSAYILAN_KAPSAM = [
     ("DURUM.md", 32768, "K58 -- R4 freni + dikkat; 12 KB'den yukseltildi"),
     ("CLAUDE.md", 32768, "acilista TAM okunur; DURUM.md ile ayni gerekce"),
     ("DESIGN.md", 32768, "K46 ile donduruldu; tavan yine de olculur"),
-    ("BORCLAR.md", 32768, "K83 -- DURUM.md 8'den ayrildi, acilista OKUNMAZ. Tavan "
+    ("BORCLAR.md", 40960, "K83 -- DURUM.md 8'den ayrildi, acilista OKUNMAZ. Tavan "
      "DURUM.md'nin YARISI idi (16384) ve bu bilincliydi: listenin buyumesi borcun "
      "kapanmadigi sinyalidir. OTURUM 49'DA 24576'YA YUKSELTILDI (Onur) -- OLCULMUS "
      "GEREKCE: (1) oturum 48 budamayi OLCTU, 2 kalem kapandi 2 yeni dogdu, net +258 b "
@@ -53,7 +53,7 @@ VARSAYILAN_KAPSAM = [
      "turda da olculerek ISE YARAMAZ. BEYAN EDILMIS BEDEL: tavan artik DURUM.md ile "
      "ESIT; 'borc listesi canli durumun yarisi kadar kalmali' tasarimi OLMUSTUR. K40 "
      "sarti odendi: vaka 13 yeni tavanin GEVSEK bolgesini pinler (eski tavani asan, "
-     "yeni tavanin altindaki bir boyutta kapi SUSMALI)."),
+     "yeni tavanin altindaki bir boyutta kapi SUSMALI). OTURUM 61'DE 40960'A YUKSELTILDI (Onur, K152) -- UCUNCU GEVSETME. Olculmus gerekce: pay 151 b'ye dustu ve dosya BUGUN sayildi -- 56 isaretli kalem (29 sari + 27 kirmizi), KAPANMIS kalem 0, bolum basligi 5, govdede 'KAPANDI/ODENDI' gecen 3 satir (321 b). Yani K117 ve K126'nin 'bu dosyada budanacak OLU KUTLE YOK' olcumu ucuncu kez dogrulandi: budama secenek DEGIL, tek alternatif borcu YAZMAMAKTI. K126'nin kendi dersi burada da kesiyor: gorunur borcu gorunmez yapan bir esik, uzun listeden KOTUDUR. BEYAN EDILMIS BEDEL: tavan artik DURUM.md'yi de ASIYOR (40960 > 32768) -- yani en uzun canli belge artik ACILISTA OKUNMAYAN bir listedir; bu, 'borc listesi kisa kalmali' tasariminin olduguna dair UCUNCU ve son itiraftir. K40 sarti odendi: vaka 15 yeni tavanin GEVSEK bolgesini pinler (32768'i asan, 40960'in altindaki bir boyutta kapi SUSMALI)."),
     ("KAPILAR.md", 16384, "K89 -- kapi-tetik tablosu; DURUM.md 2'den ayrildi (Onur, sik B), "
      "acilista OKUNMAZ. Tavan ORTAM.md ile ayni (16 KB; BORCLAR.md 24 KB'ye oturum 49'da, 32 KB'ye oturum 52'de cikti, bu tablo HIC CIKMADI): bu tablo buyurse kapi sayisi "
      "degil ANLATIM buyumus demektir. OLU BEYAN KAPANDI [oturum 49] -- eskiden burada su yaziyordu: bu eklemeyi altin kume "
@@ -64,6 +64,18 @@ VARSAYILAN_KAPSAM = [
      "mayin listesidir. Tavan KAPILAR.md ile ayni (16 KB) -- BORCLAR.md ile DEGIL, o oturum 49'da 24 KB, oturum 52'de 32 KB oldu -- ve bu bilinclidir: bu liste buyurse mayin "
      "sayisi degil ANLATIM buyumus demektir -- mekaniklesen madde SILINIR (K73). Kapsam eklemesi "
      "kor kalmasin diye T1 mutantiyla olculdu (M138): 17000 b'lik ORTAM.md ile kapi KIRMIZI verdi"),
+    ("KIMLIKLER.md", 16384, "Oturum 61 -- DURUM.md 9'dan ayrildi (Onur kilitledi, K151). "
+     "DONMUS kimlik sozlesmeleri. ORTAM.md'den FARKI: bu dosya acilista OKUNMAZ -- basvuru "
+     "malzemesidir, operasyonel mayin listesi degil; KAPILAR.md/BORCLAR.md sinifindadir. "
+     "Tavan KAPILAR.md ve ORTAM.md ile ayni (16 KB): bu tablo buyurse KILIT sayisi degil "
+     "ANLATIM buyumus demektir -- kimlik satiri bir tabloda dort hucredir, paragraf degil. "
+     "OLCULMUS TASIMA GEREKCESI (oturum 61): DURUM.md payi 7 BAYTA dustu (32761/32768) ve "
+     "budama bu dosyada UCUNCU kez gundeme geldi; 9 ise ACILISTA OKUNMAYAN 5565 b'lik bir "
+     "basvuru tablosuydu, yani R4 frenini tasiyan bolum DEGILDI -- tavani yukseltmek yerine "
+     "yanlis dosyadaki yuk tasindi. BEYAN EDILMIS BEDEL: DURUM.md 9 artik SARKAN degil "
+     "YONLENDIRICI bir bolumdur (7/ORTAM.md emsali); DURUM.md 9'a adiyla atif yapan 11 canli "
+     "satir olculdu, bu yuzden numara ve baslik BILEREK birakildi. Kapsam eklemesi kor "
+     "kalmasin diye VAKA 14 ile olculdu (17000 b'lik KIMLIKLER.md ile kapi KIRMIZI verir)."),
 ]
 # Pay esigi: tavanin %5'inden az pay kaldiysa SARI. Olculmus gerekce: oturum 34'te
 # pay 38 bayta dustu ve bir SONRAKI her ekleme tavani asti -- yani dar pay,
@@ -185,9 +197,10 @@ def altin_kume():
         "DURUM.md": 32768,
         "CLAUDE.md": 32768,
         "DESIGN.md": 32768,
-        "BORCLAR.md": 32768,   # 16384 -> 24576 (oturum 49) -> 32768 (oturum 52, K126)
+        "BORCLAR.md": 40960,   # 16384 -> 24576 (o49) -> 32768 (o52, K126) -> 40960 (o61, K152)
         "KAPILAR.md": 16384,
         "ORTAM.md": 16384,     # oturum 49'da dogdu
+        "KIMLIKLER.md": 16384, # oturum 61'de dogdu (K151); KAPILAR/ORTAM ile ayni tavan
     }
     olculen = {y: tv for y, tv, _ in VARSAYILAN_KAPSAM}
     ok10 = (olculen == BEKLENEN_KAPSAM)
@@ -219,6 +232,23 @@ def altin_kume():
     # yani gevsetme geri alinirsa altin kume bunu SOYLER, kimse fark etmese de.
     kp("13) BORCLAR.md eski tavani ASAN ama yeni tavanin ALTINDAKI boyut -- SUSMALI",
        [_o(yol="BORCLAR.md", tavan=_borclar_tavan, bayt=25000)],
+       (), ("T1", "T2"), bekle_hukum="YESIL")
+
+    # --- 14) KAPSAM EKLEMESI KOR DEGIL [oturum 61, K151] ---------------------
+    # ORTAM.md'nin oturum 49'daki emsalinin (M138) aynisi: yeni kapsam satirinin
+    # FIILEN isirdigini olcer. Bu vaka olmadan "KIMLIKLER.md kapsama eklendi"
+    # cumlesi, kapinin hic bakmadigi bir dosya icin verilmis SAHTE YESILDIR --
+    # envantersiz-kapi sinifinin (DURUM.md 6) tavan tarafindaki hali.
+    kp("14) KIMLIKLER.md TAVANI ASILDI -- yeni kapsam satiri ISIRMALI",
+       [_o(yol="KIMLIKLER.md", tavan=16384, bayt=17000)],
+       ("T1",), (), bekle_hukum="KIRMIZI")
+
+    # --- 15) UCUNCU GEVSETMENIN GEVSEK BOLGESI PINLI [oturum 61, K152] -------
+    # Vaka 13'un aynisi, yeni esik icin: 35000 b, ESKI tavanin (32768) USTUNDE
+    # ve YENI tavanin (40960) altindadir. Biri tavani sessizce geri cekerse
+    # burasi KIRMIZI verir -- gevsetme geri alinirsa altin kume bunu SOYLER.
+    kp("15) BORCLAR.md ESKI tavani (32768) ASAN, YENI tavanin ALTINDAKI boyut -- SUSMALI",
+       [_o(yol="BORCLAR.md", tavan=_borclar_tavan, bayt=35000)],
        (), ("T1", "T2"), bekle_hukum="YESIL")
 
     print("\n" + "=" * 78)

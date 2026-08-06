@@ -33,7 +33,10 @@ import subprocess
 import sys
 import tempfile
 
-SURUM = "1.1.0"
+SURUM = "1.2.0"
+# 1.2.0 [oturum 61, K151 -- OLCULMUS DARALTMA]: "N/M" deseni YOL PARCASINI ve BOLUM
+# ATFINI de iddia saniyordu (KANIT/W2/00-... -> 2/0, §9/9 -> 9/9). Uc yanlis-pozitif
+# KIRMIZI uretti. Onunde harf/rakam/"/"/"§" varsa artik iddia SAYILMAZ; vakalar 17-18.
 # 1.1.0 [OLCULMUS GENISLETME]: 1.0.0 ilk gercek kosumunda BIR bayat sayi buldu ama
 # UC KOR NOKTASI olculdu: (a) DURUM.md 6 ARAC TABLOSU -- satirda "altin kume" yazmiyor,
 # yazan sey TABLO BASLIGI; (b) DESIGN.md:235 "altin kume 10/10" -- satirda ARAC ADI yok,
@@ -42,7 +45,12 @@ SURUM = "1.1.0"
 
 # Bir satirin "altin kume iddiasi" sayilmasi icin GEREKEN isaretler
 IMZA = ("altin kume", "altinkume", "--altin-kume", "golden set")
-SAYI = re.compile(r"(\d{1,3})\s*/\s*(\d{1,3})")
+# oturum 61 (K151) -- ONUNDEKI karakter harf/rakam/"/"/"§" ise bu bir IDDIA DEGIL,
+# bir YOL PARCASI ya da BOLUM ATFIDIR. Olculdu: `KANIT/W2/00-DENETIM-o59.md` -> (2,0),
+# `KANIT/W2/01-...` -> (2,1), `§9/9` -> (9,9). Ucu de "BAYAT SAYI" diye KIRMIZI verdi.
+# Kusur DURUM.md'de GORUNMUYORDU; ayni metin KIMLIKLER.md'ye tasininca patladi =>
+# bir iddianin okunusu HANGI DOSYADA yasadigina bagliydi. Vakalar 17-18 bunu pinler.
+SAYI = re.compile(r"(?<![0-9A-Za-z/\u00a7])(\d{1,3})\s*/\s*(\d{1,3})")
 ARAC = re.compile(r"([A-Za-z0-9_\-]+\.py)")
 # Araclarin altin kume ciktisindaki vaka satirlari (UC ARACTA DA OLCULDU: radar.py,
 # spec-kapi-kapsama.py, design-token-kapisi.py hepsi bu bicimi basiyor)
@@ -142,6 +150,7 @@ def denetle(kok, dosyalar, onbellek=None):
             b.append(("KIRMIZI", "T0", "%s: OKUNAMADI: %r" % (dosya, ex)))
             continue
         tablo_imzali = False
+        onceki_tablo = False
         for no, satir in enumerate(metin.split("\n"), 1):
             sade = _sadelestir(satir)
             satir_imzali = any(i in sade for i in IMZA)
@@ -149,11 +158,15 @@ def denetle(kok, dosyalar, onbellek=None):
             # MARKDOWN TABLO TAKIBI: basligi "altin kume" iceren bir tablonun HER SATIRI
             # iddia sayilir. (Olculmus kor nokta: DURUM.md 6 arac tablosunda imza
             # SATIRDA degil TABLO BASLIGINDA duruyor; 1.0.0 tabloyu hic gormedi.)
+            # [oturum 61] IMZA YALNIZ TABLONUN ILK (BASLIK) SATIRINDAN alinir.
+            # Once 'tablo icindeki HERHANGI bir imzali satir' tabloyu imzali
+            # yapiyordu => imza o satirdan SONRAKI tum satirlara SIZIYORDU. Vaka 19.
             if tablo_satiri:
-                if satir_imzali:
-                    tablo_imzali = True
+                if not onceki_tablo:
+                    tablo_imzali = satir_imzali
             else:
                 tablo_imzali = False
+            onceki_tablo = tablo_satiri
             if not (satir_imzali or (tablo_imzali and tablo_satiri)):
                 continue
             if not SAYI.search(satir):
@@ -354,6 +367,26 @@ def altin_kume():
         kontrol("16) MUAFIYET DOSYASI YOKKEN -- kapi normal calismali",
                 "`python araclar/vekil5.py --altin-kume` (**5/5**)\n",
                 (), ("T6", "T7", "T1"))
+        # --- 1.2.0 [oturum 61, K151]: YOL/BOLUM ATFI IDDIA DEGILDIR -------
+        kontrol("17) YOL PARCASI (KANIT/W2/00-...) -- IDDIA DEGIL, SUSMALI",
+                "altin kume `araclar/vekil5.py --altin-kume` (**5/5**); "
+                "kanit `KANIT/W2/00-DENETIM-o59.md`\n",
+                (), ("T1", "T1b", "T5"))
+        kontrol("18) BOLUM ATFI (\u00a79/9) -- IDDIA DEGIL, SUSMALI",
+                "altin kume `araclar/vekil5.py --altin-kume` (**5/5**); "
+                "\u00a79/9 duzeltildi, \u00a79'a 11 beyan eklendi\n",
+                (), ("T1", "T1b", "T5"))
+        # 19) [oturum 61] TABLO IMZASININ SIZMASI -- kodun yaptigi, yorumun
+        # yazdigindan GENISTI: yorum "basligi imzali tablonun her satiri" diyor,
+        # kod ise "bir satiri imzali olan tablonun O SATIRDAN SONRAKI her satiri"
+        # yapiyordu. KIMLIKLER.md'de bir satirin "altin kume" demesi, sonraki iki
+        # kimlik satirini iddia sandirdi (fiilen olculdu, oturum 61).
+        kontrol("19) TABLO BASLIGI IMZASIZ, ORTA SATIR IMZALI -- SONRAKI satir IDDIA DEGIL",
+                "| dosya | bayt | not |\n"
+                "|---|---|---|\n"
+                "| `A.md` | 10 | altin kume `araclar/vekil5.py` **5/5** kostu |\n"
+                "| `B.md` | 20 | `araclar/vekil5.py` kapsaminda; **9/9** eski olcum |\n",
+                (), ("T1", "T1b"))
 
     print("\n" + "=" * 78)
     print("HUKUM: %d/%d GECTI -- %s" % (gecti, gecti + kaldi,
@@ -377,7 +410,12 @@ def main():
     if not a.kok:
         ap.print_help()
         return 3
-    hedefler = a.dosyalar or ["DURUM.md", "DESIGN.md", "CLAUDE.md"]
+    # K151 (oturum 61): DURUM.md 9 KIMLIKLER.md'ye tasindi. O bolumdeki "altin kume
+    # N/M" iddialari (or. tek-kopya-kapisi 19/19 + tek-kopya-mutant 11/11) hedef
+    # listesine EKLENMEZSE kapi gormeyen bir dosyaya KACAR -- tasima, kapi kapsamini
+    # sessizce daraltmanin kibar adi olurdu. Canli kanit: bu ekleme yapilinca
+    # DURUM.md:199'da SARI veren T1b bulgusu KIMLIKLER.md'de AYNEN tekrar eder.
+    hedefler = a.dosyalar or ["DURUM.md", "DESIGN.md", "CLAUDE.md", "KIMLIKLER.md"]
     return rapor(denetle(a.kok, hedefler), hedefler)
 
 
