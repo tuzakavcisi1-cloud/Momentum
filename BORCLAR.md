@@ -353,14 +353,14 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
   BAĞLANAMADI** veriyor: *ölçülmedi, temiz değil*. Ölçen betik büyük olasılıkla
   `KANIT/o60/_olu_hash_avi.py`; adı yazılırsa T5 kapanır ama betik `araclar/` altında olmadığı için
   **T2 hayalet araç** doğabilir. Kapatma: betiği `araclar/`'a taşı ya da gerekçeli muafiyet aç.
-- 🟢 **`B-O61-3` — KAPANDI (6 Ağu 2026, oturum 61 sonu, ÖLÇÜLDÜ).** Onur üç commit attı ve push etti: `f67ab5b..d0b5032`; `git fetch` sonrası `rev-list --left-right --count` ⇒ **0 / 0**. `tek-kopya-kapisi.py` **YEŞİL** döndü (`KIMLIKLER.md` HEAD 8.673 b, +0) ⇒ `S5` söndü. 🔴 **SEBEP KAPANMADI, YALNIZ VAKA KAPANDI** — ve o62'de **tekrar ısırdı** (yine DC yok, `fetch` yine koşulamadı). Tarihsel gövde: hafıza `K154`.
+- 🟢 **`B-O61-3` — KAPANDI (o61 sonu, ÖLÇÜLDÜ):** commit+push yapıldı. 🔴 **SEBEP KAPANMADI** — DC yoksa commit yine yapılamaz; o62'de **tekrar ısırdı** (`fetch` yine koşulamadı). Gövde: hafıza `K154`.
 - 🟡 **`B-O61-4` — `hafiza-dizin.py` MOUNT'TA `os.remove` İLE DÜŞÜYOR.**
   Ölçüldü: `_atomik_yaz` → `os.remove(yedek)` ⇒ `PermissionError: Operation not permitted`.
   **Yazım tamamlandı** (dosya doğru), ama `PROJE_HAFIZA.md.yedek` kaldı; `_SILINECEKLER/o61/`'e
   taşındı (`.gitignore`'da). Sınıf: K60'ın üç adımlı takasının **son adımı** bu bağlamda
   yapılamıyor. Kapatma: silme başarısızlığını yutup **uyaran** bir dal (silinemedi ⇒ SARI, çökme
   değil) — ya da Cowork'ün `.yedek`'i karantinaya alması standartlaşsın.
-- 🟢 **`B-O61-5` — KAPANDI (o61 sonu, ÖLÇÜLDÜ):** Onur `Remove-Item KANIT\W3\_v2_olc.py` koştu; `ls KANIT/W3/` ile dosyanın **yok olduğu** doğrulandı ve dosya zaten hiç commit edilmemişti ⇒ git geçmişinde de yok. Tarihsel gövde: hafıza `K154`.
+- 🟢 **`B-O61-5` — KAPANDI (o61 sonu, ÖLÇÜLDÜ):** kusurlu `_v2_olc.py` Onur tarafından silindi, hiç commit'lenmemişti. Gövde: hafıza `K154`.
 - 🟢 **`B-O61-6` — KARARI KAPANDI (`K155`, Onur, o62): AYAK = KAPI ⇒ BORÇLANAMAZ.**
   🔴 **SEBEP KAPANMADI:** aracın bu yorumu **zorlayan kodu yok** ⇒ `B-O62-1`.
   Eski metin tarihsel kayıttır: — KAPI AYAĞI BORÇLANABİLİR Mİ? `spec-kapi-kapsama.py` CEVAP VERMİYOR.**
@@ -395,3 +395,18 @@ KOŞULMADI"* açıkça yazılı (sussun) · ikisi de yok (ısırsın).
   ⇒ `R2` (bulgu eğimi) ve `R4` (artefakt büyümesi) `W3` için **eksik seriden** hesaplanıyor.
   Kapatma: o60/tur-2 kaydı da *"geç yazıldı"* beyanıyla eklensin. 🔴 **Sınıf `defter-durustlugu`
   ve bu, ikinci ısırışıdır — yazılmayan ölçüm kaydı kapıyı körleştirir.**
+
+
+## OTURUM 62 — İKİNCİ TUR: ÖLÇÜLMÜŞ ÜÇ BORÇ DAHA
+
+- 🟡 **`B-O62-7` — `K61` KALKANI WEB'DE SignalR WebSocket'İ KAPATIYOR.** Ölçüldü: `negotiate`
+  **200**, `WebSocket` **düşüyor**; **pozitif kontrol** izolasyon kapalıyken de aynı hata ⇒
+  **COOP/COEP suçsuz**. Sebep: kalkan **başlık** istiyor, tarayıcı WS'e başlık **ekleyemez**.
+  Bugün bloker DEĞİL (`kIsWeb`). 🔴 `SSE`/`LongPolling` **ÖLÇÜLMEDİ** (tahmin). Kapatma: gerçek
+  zamanlı web'e açılırken karar — `K61` **KİLİTLİ**. Kanıt: `KANIT/W3/01-F4-F5-OLCUMU-o62.md`.
+- 🔴 **`B-O62-8` — `B-11` (ATOMİK OLMAYAN GÖÇ) HÂLÂ ÖLÇÜLMEDİ.** `K158` `T5`'i ertelediği için
+  `moveExistingIndexedDbToOpfs` hiç tetiklenmedi ⇒ *"yarıda kalırsa öksüz kopya"* iddiası **ölçüm
+  dışı**. Kapatma: `T5` açılırsa **ÖNCE** bu ölçülür — sıra tersine çevrilemez.
+- 🟡 **`B-O62-9` — `/scalar/v1`'i KAPSAYAN AYAK YOK.** `F/4`: Scalar varlıkları DLL'de, CDN yok
+  (**`1.62.9`**); bir üst sürüm CDN'e dönerse `require-corp` altında **sessizce** kırılır ve bunu
+  ölçen kapı **yok**. Kapatma: `izolasyon-olc.py`'ye başarısız-istek sayan bir ayak.

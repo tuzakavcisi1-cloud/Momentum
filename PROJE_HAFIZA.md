@@ -8860,3 +8860,57 @@ da eksik ⇒ `defter-durustlugu` sınıfının **ikinci** ısırışı).
 7. **`R8`'in fiilen sönmesi** — ürün kodu **çalışma ağacında**, commit edilmedi (push Onur'da);
    `--olc-urun-kodu` git'ten ölçer ⇒ commit inene kadar `R8` **kırmızı kalır**. Bekleyen:
    **76 satır** (69 yeni dosya + 7 `Program.cs`).
+
+
+---
+
+## K158 — `T5` ERTELENDİ ve SINIR BEYAN EDİLDİ (Onur kilitledi, 6 Ağu 2026, oturum 62)
+
+**Karar:** `K151/③` (koşullu import + dosya bölmesi) **YAZILMAYACAK.** `K151` kilidinin üçüncü
+maddesi bu kararla **ertelenmiştir**; diğer üç maddesi (§9→`KIMLIKLER.md` · `T0` başlıklı yerel
+sunucu · `G45/d` pinli sayan-raporlayan) **aynen yürürlüktedir**.
+
+### Kararı doğuran üç ölçüm (hepsi bu oturumda, bulut konteynerinde)
+
+**① Başlıklar temiz kurulumu ZATEN taşıyor.** Gerçek `flutter build web` çıktısı iki koşulda
+koştu; tek fark yanıt başlıkları, üründe tek bayt değişmedi:
+`izolasyonsuz → sharedIndexedDb` · `COOP+COEP → opfsLocks`. (`KANIT/W3/02-O2-OLCUMU-o62.md`)
+
+**② Mevcut deposu olan tarayıcı GEÇMİYOR.** Kalıcı profille üç koşum: depo oluştuktan sonra
+izolasyon açılsa bile `chosenImplementation` **`sharedIndexedDb`** kaldı, OPFS **boş** kaldı —
+`missingFeatures`'tan `sharedArrayBuffers` düşmesine rağmen. **Göç hiç başlamadı.**
+🔴 Bu ölçüm **`02`'nin kendi hükmünü daralttı** (*"`B1` çürüdü"* → *"yalnız temiz kurulumda"*);
+`B2` sınıfı **üretenin kendi çıktısında** ısırdı ve **erratumla** kapatıldı.
+(`KANIT/W3/03-VERI-GOCU-OLCUMU-o62.md`)
+
+**③ Sürüm yükseltme yolu ÖLÜ.** `drift 2.34.3` `WasmDatabase.open`'da
+`moveExistingIndexedDbToOpfs` **var** (`wasm.dart:163`), ama `drift_flutter 0.3.1`
+`driftDatabase()` onu **geçirmiyor** (`web.dart:19-24`, dört parametre). pub.dev `/api` ölçümü:
+**`latest = 0.3.1`, 11 Tem 2026** ⇒ daha yeni sürüm **YOK**. (`pub-surum-olc` yolu; `ORTAM.md`
+gereği yalnız `/api` kanıttır.)
+
+### Beyan — ZORUNLU, gizlenemez
+
+Spec'e ve `README`'ye **açıkça** yazılacak:
+> *"Mevcut bir `sharedIndexedDb` deposu olan tarayıcı çapraz-köken izolasyon açıldığında OPFS'e
+> **geçmez**; `drift_flutter 0.3.1` `moveExistingIndexedDbToOpfs` bayrağını geçiremiyor ve o
+> sürüm pub.dev'deki en sonudur. Veri göçü **bilerek kapsam dışıdır**."*
+
+**Ölçülmüş tercih gerekçesi:** bayrağın koruduğu şey **mevcut kullanıcının verisidir**; bu depo
+**private** (o53'te ölçüldü) ve sahada kullanıcı **yoktur** ⇒ kazanç bugün **teorik**, bedel
+(dosya bölmesi + `W2`'nin `onResult` dikişini taşıma + **ölçülmemiş** `B-11` riski) **gerçektir**.
+🔴 Karşı argüman kayda geçer: ödevde değerlendirilen **mimari olgunluktur** ve *"göçü düşünmüş
+olmak"* bir sinyaldir. Onur bu ikisi arasında **ERTELE + BEYAN ET**'i seçti.
+
+### Kazanç (ölçülmüş)
+
+Denetimin üç blokeri **düştü**: `B-2` (`T5` kabul edilmiş `W2`'yi kırıyor) · `B-6`
+(`WasmDatabase.open` VM'de derlenmiyor ⇒ `G47/a`↔`G47/d` birbirini dışlıyor) · `B-11` (atomik
+olmayan göç). `W2`'nin `onResult` dikişine (`D-W2-6`/`D-W2-8`, **PAZARLIKSIZ**) **dokunulmadı**.
+
+### Kapanmayan
+
+🔴 **`B-11` ÖLÇÜLMEDİ, ERTELENDİ** — göç hiç tetiklenmediği için *"yarıda kalırsa öksüz kopya"*
+riski **hâlâ ölçüm dışı**. `T5` ileride açılırsa **önce bu ölçülür**.
+🔴 **`K61` kalkanı web'de SignalR WebSocket'i kapatıyor** — ölçüldü, pozitif kontrolle
+COOP/COEP suçsuz; borç yazıldı, karar ertelendi.
