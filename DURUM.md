@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayat** — borç `B-O50-2` (ayrıntı orada).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 7 Ağu 2026, **oturum 63** — 🔒 **`K159`** (Onur): **İSTEMCİ AYNI KÖKENDEN SUNULUYOR**, gerçek tarayıcıda **`crossOriginIsolated=true`** ÖLÇÜLDÜ, mutant `M-W3-2` ısırdı · 🔒 **`K160`**: `BORCLAR.md` **SIKIŞTIRILDI** (39.086→17.669 b, hiçbir borç kapanmadı/silinmedi). *(Oturum 39–62 arşivde — `PROJE_HAFIZA.md` K129–K160.)*
+> **Son güncelleme:** 7 Ağu 2026, **oturum 63** (Onur, üç kilit) — 🔒 `K159` **istemci AYNI KÖKENDEN**, `crossOriginIsolated=true` ÖLÇÜLDÜ, `M-W3-2` ısırdı · 🔒 `K160` `BORCLAR.md` **SIKIŞTIRILDI** (39→17,7 KB, hiçbir borç kapanmadı) · 🔒 `K161` **vaka ölçmek SINIF KAPATMAZ** — `/v2` kusurunu **iki bağımsız denetçi** buldu. *(o39–62 arşivde — `PROJE_HAFIZA.md` K129–K161.)*
 
 ---
 
@@ -41,7 +41,7 @@
 | **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 + A7/A8/A9 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). 🟢 **`ios/` VAR ve CI'da DERLENİYOR** (`A13`, K129). Kapılar **spec-yereldir** (K108; envanter `GOREV_CLAUDE_CODE/`'da ÖLÇÜLÜR). Mutantlar **`M1`–`M170`**; sayı ve ısırma durumu **kabul hükümlerinde**, buraya yazılmaz. Son koşumlar **Cowork'ün kendisi** (K26): `flutter test` **539/539** · `analyze --fatal-infos` **0**. 🔴 A‑7 `DESIGN.md`'de kapanmadı (K46). Tur tur anlatım **arşivde** (K73). |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
-| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR** *(bu satır bir kez "aynı iki artefakt" dedi, ölçüm **11** verdi: sayı yazan satır bayatlar, ölçüme atan bayatlamaz — K82-b)*. 🔒 **K83 — Onur DURDUR'u kilitledi:** park yürürlükte, dört-şık ritüeli **tekrarlanmaz**. 🔴 **`R8` DURUMU DA YAZILMAZ, ÖLÇÜLÜR:** K104'te **ısırdı** (44–45 sıfır), K106'da **düştü**; sayı daima `--olc-urun-kodu <sha>` ile **git'ten** türetilir (K55). |
+| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR**. 🔒 **K83 — Onur DURDUR'u kilitledi:** park yürürlükte, dört-şık ritüeli **tekrarlanmaz**. 🔴 **`R8` DURUMU DA YAZILMAZ, ÖLÇÜLÜR:** sayı daima `--olc-urun-kodu <sha>` ile **git'ten** türetilir (K55). |
 | **Git** | **PUSH DAİMA ONUR'DA.** İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR** — komut ve **`fetch` şartı yalnız §2 adım 7'de**; buraya **kopyalanmaz** (kanonik-kopya kusuru bu projede beş kez ısırdı). |
 
 **Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · **.NET 10.0.302** (K111; 9.0.316 de kurulu) · **Windows masaüstü ☠** · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
@@ -66,19 +66,16 @@ yeniden bağlanma **hiç egzersiz edilmedi**.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` çakışması: kanonik metin `ORTAM.md`'de.**
 
 🔒 **⑫ `W3` — SPEC ÜÇ TURDA DA YAZILMADI; İSKELET İKİ KEZ İNDİ VE KOŞTU (`K154` · `K159`).**
-Spec v1/v2 denetimde düştü (`K146`/`K150`; bulgular `KANIT/W3/{00,03}-DENETIM-o60.md`).
-🟢 **o62 (`K154`):** `Web/IzolasyonBasliklari.cs` + `Program.cs` ⇒ COOP/COEP her yanıtta; mutant
-`M-W3-1` ısırdı. 🟢 **o63 (`K159`):** `Web/IstemciServisi.cs` (yeni, **113 satır**) + `Program.cs`
-(+15) ⇒ **istemci API ile AYNI KÖKENDEN sunuluyor**; gerçek build + gerçek tarayıcı ⇒
-**`crossOriginIsolated = true`**, `SharedArrayBuffer=function`. **21 vakalık HTTP ölçümü:** dört API
-yüzeyi **gölgelenmiyor**, `K61` ve `D4` kalkanları **canlı**, **21/21 yanıt COOP+COEP taşıyor**.
-Mutant **`M-W3-2` ısırdı** (aynı köken + `Izolasyon:Etkin=false` ⇒ `false`/`undefined`).
-🔴 **`K159-b` — `--no-web-resources-cdn` BİR TERCİH DEĞİL KAPI ŞARTIDIR:** varsayılan Flutter build'i
-CanvasKit'i `gstatic`'ten çeker, `require-corp` CORP'suz çapraz kaynağı **fiilen bloklar** (pozitif+
-negatif kontrollü ölçüm). CI'da zorlanmıyor ⇒ `B-O63-2`.
-Kanıt: **`KANIT/W3/04-ISTEMCI-IZOLASYONU-o63.md`** (o62'nin dört ölçümü `01`–`03`'te; `02`'nin
-ERRATUM'u `K158`'in gerekçesidir). Kapı: `araclar/izolasyon-olc.py` (§6) — **o63'te genişletilmedi**.
-→ **SIRADAKİ: `K158` beyanı (spec + README) → `ADR 0004` gövdesi (COOP/COEP; malzeme artık ÖLÇÜLMÜŞ).**
+Spec v1/v2 denetimde düştü (`K146`/`K150`). 🟢 **o62:** COOP/COEP her yanıtta; `M-W3-1` ısırdı.
+🟢 **o63:** `Web/IstemciServisi.cs` (**128 satır**) ⇒ istemci **aynı kökenden** sunuluyor; gerçek
+build + gerçek tarayıcı ⇒ **`crossOriginIsolated = true`**; 21 vakalık HTTP ölçümünde dört API
+yüzeyi **gölgelenmiyor**, `K61`+`D4` kalkanları canlı, **21/21 yanıt COOP+COEP**; `M-W3-2` ısırdı.
+🔴 **`K159-b` — `--no-web-resources-cdn` KAPI ŞARTIDIR:** varsayılan build CanvasKit'i `gstatic`'ten
+çeker, `require-corp` CORP'suz kaynağı **fiilen bloklar** (pozitif+negatif kontrollü). ⇒ `B-O63-2`.
+Kanıt **`KANIT/W3/04`–`06`** (o62'ninkiler `01`–`03`; `02`'nin ERRATUM'u `K158`'in gerekçesi).
+🔴 Kapı `izolasyon-olc.py` o63'te genişletildi ama **taslak DENETİMDE DÜŞTÜ** ⇒ `araclar/`'a
+**girmedi** (`B-O63-5`).
+→ **SIRADAKİ: `K158` beyanı (spec + README) → `ADR 0004` gövdesi (malzeme artık ÖLÇÜLMÜŞ).**
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026):** ① cihaz senkron kanıtı ② hedef yığın MSSQL —
 **birlikte** sağlanınca açılır. Maliyet ve `Rule3` **arşivde**.
@@ -119,8 +116,10 @@ ERRATUM'u `K158`'in gerekçesidir). Kapı: `araclar/izolasyon-olc.py` (§6) — 
 - 🔒 **K156 — K21 EŞİKLERİ KANONİKTİR (Onur, o62):** Momentum içinde **`CLAUDE.md`'deki eşikler** geçerlidir; Onur'un kişisel talimatındaki eşikler **bu depoda uygulanmaz**. Sayı buraya **kopyalanmaz** (K21'in kendi kuralı).
 - 🔒 **K157 — `oturum-sagligi.py` D1 KAPSAMI BİR LİSTEDİR (o62):** altın küme **26 → 30**. **Ders: bir sınırı TAŞIYAN el, o sınırı OKUYAN aracı da taşımak zorundadır.**
 - 🔒 **K158 — `T5` ERTELENDİ ve SINIR BEYAN EDİLDİ (Onur, o62).** `K151/③` (koşullu import + dosya bölmesi) **yazılmayacak**. Ölçülmüş gerekçe: ① başlıklar **temiz kurulumu** zaten `opfsLocks`'a taşıyor ② **mevcut deposu olan** tarayıcı `sharedIndexedDb`'de kalır ve `drift_flutter` **0.3.1 = pub.dev'deki EN SON sürüm** bayrağı geçirmiyor ⇒ sürüm yükseltme yolu **ÖLÜ** ③ bayrağın koruduğu şey **mevcut kullanıcı verisi**, bu depoda kullanıcı **YOK**. **BEYAN ZORUNLU** (spec + README): *"mevcut IndexedDB deposu olan tarayıcı OPFS'e geçmez; göç bilerek kapsam dışıdır."* 🟢 Bedeli: denetimin `B-2`/`B-6`/`B-11` blokerlerinin **üçü de düştü**; `W2`'nin `onResult` dikişine **dokunulmadı**. 🔴 `B-11` **ölçülmedi**, ertelendi — borç. Gerekçe: hafıza K158.
-- 🔒 **K159 — İSTEMCİNİN İZOLASYONU (Onur, 7 Ağu 2026, o63):** kök dizin **yapılandırmadan** okunur (`Istemci:KokDizin`; boşsa ara katman **hiç kurulmaz** ⇒ kill switch bedava) · **her ortamda** açık (üçüncü bir `IsDevelopment()` bloğu doğmasın — denetimin `BLOKER-3`'ü) · sıra **zorunlu**: izolasyon başlıkları → statik servis → **açık `app.UseRouting()`**. 🔴 **`K159-c` — İKİ KUSUR TUR İÇİNDE ÜRETİLDİ, ÖLÇÜM BULDU, AYNI TURDA KAPANDI:** ① eşleşmeyen `/v1/**` **200+`index.html`** dönüyordu ⇒ `SpaDisiOnEkler` ② `/assets/NOTICES` SPA kabuğu dönüyordu ve **ilk düzeltme (`ServeUnknownFileTypes`) kâğıtta doğru, koşumda ÖLÜ çıktı** — kök neden `StaticFileMiddleware`'in `ValidateNoEndpoint`'i. **Ders `K53/5`'in kendi gerekçesidir.** Yeni borçlar `B-O63-1`…`4`.
-- 🔒 **K160 — `BORCLAR.md` SIKIŞTIRILDI (Onur, o63):** dosya artık **indekstir** — kimlik + tek cümle; tam gerekçeler hafıza `K160` arşivinde. **39.086 → 17.669 b**, hiçbir borç **kapanmadı/silinmedi**. 🔴 Aynı turda **ölü beyan** düzeltildi: dosyanın kendi başlığı `K152`'den beri bayat olan `≤ 32.768 b` tavanını yazıyordu ⇒ artık **sayı yazmıyor, kapıya atıyor**.
+- 🔒 **K159 — İSTEMCİNİN İZOLASYONU (Onur, o63):** kök dizin **yapılandırmadan** okunur (`Istemci:KokDizin`; boşsa ara katman **hiç kurulmaz** ⇒ kill switch bedava) · **her ortamda** açık · sıra **zorunlu**: izolasyon başlıkları → statik servis → **açık `app.UseRouting()`**. 🔴 **`K159-c`:** `/assets/NOTICES` SPA kabuğu dönüyordu ve **ilk düzeltmem (`ServeUnknownFileTypes`) kâğıtta doğru, koşumda ÖLÜ çıktı** — kök neden `StaticFileMiddleware`'in `ValidateNoEndpoint`'i. **Ders `K53/5`'in kendi gerekçesidir.** Borçlar `B-O63-1`…`6`.
+- 🔒 **K161 — VAKA ÖLÇMEK SINIF KAPATMAZ (Onur, o63).** `K159-c` bir vakayı (`/v1/…` → 404) ölçüp sınıfı kapandı sandı; koruma literal `/v1`, rota ailesi `MapGroup("/v{version:apiVersion}")` idi ⇒ **`/v2/YOK` → 200 + `index.html`** CANLI kaldı. 🔒 **K161-b: SPA'dan dışlanan yol, rota ailesinin ŞABLONUNU taşır**, literal örneğini değil. Kapandı; `/v1`–`/v1.0` **404**, `/vault`/`/version` doğru şekilde SPA'ya düşüyor. 🔴 **Kusuru ÜRETEN el bulmadı — `K26` gereği salınan İKİ BAĞIMSIZ DENETÇİ buldu.** Kanıt `KANIT/W3/05-…o63.md`.
+- 🔴 **`izolasyon-olc.py` `B`/`S`/`F` TASLAĞI DENETİMDE DÜŞTÜ (16 bulgu) ⇒ `araclar/`'a KONULMADI** (`B-O63-5`; `KANIT/W3/06-…o63.py`'de saklandı, onarım **ayrı ele** — `K34-f`). Taslak **25/25** altın küme + **dört gerçek mutant** geçmişti. **Ders: kendi kapısını kendi altın kümesiyle kanıtlayan el, hâlâ kör bir kapı teslim edebilir.**
+- 🔒 **K160 — `BORCLAR.md` SIKIŞTIRILDI (Onur, o63):** dosya artık **indekstir** (kimlik + tek cümle; gerekçeler hafıza `K160` arşivinde). **39.086 → 17.669 b**, hiçbir borç **kapanmadı/silinmedi**. 🔴 Aynı turda **ölü beyan** düzeltildi: başlık `K152`'den beri bayat `≤ 32.768 b` tavanını yazıyordu ⇒ artık kapıya atıyor.
 - **K44-a** — **Önce araç, sonra belge.**
 - **K34-f** — Bir aracı **onaran el**, onu **yazan elden AYRI** olmalı.
 - **K26** — Üretici kendi denetçisini spawn edemez. **Üreten ≠ denetleyen.**

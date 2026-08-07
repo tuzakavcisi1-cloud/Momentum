@@ -46,18 +46,33 @@ public static class IstemciServisi
     public const string VarsayilanBelge = "index.html";
 
     /// <summary>
-    /// SPA geri-düşüşünün DOKUNAMAYACAĞI yol önekleri — eşleşmeyen bir API yolu 404 döner,
+    /// SPA geri-düşüşünün DOKUNAMAYACAĞI yol ŞABLONLARI — eşleşmeyen bir API yolu 404 döner,
     /// <see cref="VarsayilanBelge"/> DÖNMEZ.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// ÖLÇÜLMÜŞ GEREKÇE (oturum 63): bu liste yokken <c>GET /v1/BULUNMAYAN-UC</c> ölçümde
     /// <b>200 + index.html</b> döndü. <c>MapFallbackToFile</c>'ın <c>/{*path:nonfile}</c> deseni
     /// uzantısız her yolu yakalar; eşleşen uç noktalar korunur ama <b>eşleşmeyen</b> API yolları
     /// SPA kabuğuna düşer. Bir API'nin bilinmeyen uç nokta için HTML döndürmesi kusurdur.
-    /// Liste açıkça yazılır ki bayatladığında <b>ölçülebilsin</b>; koda gömülü sessiz bir
-    /// yönlendirme kuralından iyidir.
+    /// </para>
+    /// <para>
+    /// 🔴 BURADAKİLER LİTERAL ÖNEK DEĞİL, <b>ROTA ŞABLONUDUR</b> — ölçülmüş gerekçe (oturum 63,
+    /// bağımsız denetim): liste ilk yazımda literal <c>"/v1"</c> içeriyordu, oysa gerçek rota ailesi
+    /// <c>MapGroup("/v{version:apiVersion}")</c> ile kuruluyor. Sonuç ÖLÇÜLDÜ:
+    /// <c>GET /v1/YOK</c> → <b>404</b> ama <c>GET /v2/YOK</c> → <b>200 + index.html</b>.
+    /// Yani koruma yalnız BİR sürüm için koşuyordu ve bunu üreten el fark etmedi; iki bağımsız
+    /// denetçi buldu. <b>Ders: SPA'dan dışlanan yol, korumak istediği rota ailesinin ŞABLONUNU
+    /// birebir aynalamak zorundadır — literal bir kopyası DEĞİL.</b>
+    /// </para>
+    /// <para>
+    /// <c>apiVersion</c> kısıtı <c>AddApiVersioning</c> tarafından kaydedilir; bu yüzden
+    /// <c>/vault/...</c> gibi yalnızca <c>v</c> ile başlayan alakasız bir yol bu şablona
+    /// UYMAZ ve doğru şekilde SPA kabuğuna düşer (ölçüldü).
+    /// </para>
     /// </remarks>
-    public static readonly string[] SpaDisiOnEkler = ["/v1", "/health", "/hubs", "/scalar", "/openapi"];
+    public static readonly string[] SpaDisiOnEkler =
+        ["/v{version:apiVersion}", "/health", "/hubs", "/scalar", "/openapi"];
 
     /// <summary>
     /// İstemciyi aynı kökenden sunar. Kurulduysa <c>true</c>, kurulmadıysa <c>false</c> döner —
