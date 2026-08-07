@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayat** — borç `B-O50-2` (ayrıntı orada).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 7 Ağu 2026, **oturum 63** (Onur, üç kilit) — 🔒 `K159` **istemci AYNI KÖKENDEN**, `crossOriginIsolated=true` ÖLÇÜLDÜ, `M-W3-2` ısırdı · 🔒 `K160` `BORCLAR.md` **SIKIŞTIRILDI** (39→17,7 KB, hiçbir borç kapanmadı) · 🔒 `K161` **vaka ölçmek SINIF KAPATMAZ** — `/v2` kusurunu **iki bağımsız denetçi** buldu. *(o39–62 arşivde — `PROJE_HAFIZA.md` K129–K161.)*
+> **Son güncelleme:** 7 Ağu 2026, **oturum 63** (Onur, dört kilit) — 🔒 `K159` **istemci AYNI KÖKENDEN** (`crossOriginIsolated=true` ÖLÇÜLDÜ) · 🔒 `K160` `BORCLAR.md` **SIKIŞTIRILDI** · 🔒 `K161` **vaka ölçmek SINIF KAPATMAZ** (`/v2` kusurunu iki bağımsız denetçi buldu) · 🟢 `K162` beyanlar + **README** + **120/120**. *(o39–62 arşivde — `PROJE_HAFIZA.md` K129–K162.)*
 
 ---
 
