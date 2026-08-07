@@ -116,6 +116,21 @@ var app = builder.Build();
 var izolasyonEtkin = builder.Configuration.GetValue(IzolasyonBasliklari.EtkinAnahtari, true);
 app.UseIzolasyonBasliklari(izolasyonEtkin);
 
+// --- W3: istemci AYNI KOKENDEN sunulur (izolasyon basliklarindan HEMEN SONRA) ------------
+// Sira zorunludur: COOP/COEP belgeyi ancak o belgenin KENDI yaniti tasirsa izole eder; statik
+// dosya ara katmani izolasyon ara katmaninin ARDINDAN gelmezse istemci belgesi basliksiz iner.
+// Kok dizin yapilandirmadan okunur (W1/D-W1-1 deseni); bos ya da yoksa ara katman HIC kurulmaz.
+var istemciKokDizini = builder.Configuration[IstemciServisi.KokDizinAnahtari];
+app.UseIstemciServisi(istemciKokDizini);
+
+// W3/D-W3-2: UseRouting ACIKCA burada cagrilir -- WebApplication onu normalde ARDISIK HATTIN EN
+// BASINA kendisi ekler ve o zaman statik dosya ara katmani yonlendirmeden SONRA kosar.
+// OLCULMUS SONUC (oturum 63): StaticFileMiddleware, ESLESMIS bir uc nokta varsa dosyayi SUNMAZ
+// (ValidateNoEndpoint); SPA geri-dususu `/{*path:nonfile}` UZANTISIZ her yolu esledigi icin
+// `assets/NOTICES` diskte dururken 200 + index.html donuyordu. Yonlendirmeyi statikten SONRAYA
+// almak bunu kapatir. UseCors HALA UseRouting ile uc nokta yurutmesi ARASINDADIR (D-W1-3 korunur).
+app.UseRouting();
+
 // W1/D-W1-2: mirrors the registration guard above (same corsAllowedOrigins captured by closure) --
 // D-W1-3: UseCors must run before endpoint execution; there is no UseRouting call in this file, so
 // middleware order is invisible at compile time and a wrong position would only fail at request time.
