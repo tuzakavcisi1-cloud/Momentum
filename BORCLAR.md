@@ -112,7 +112,7 @@
 
 ### o62 borçları — yürüyen iskeletin açtığı dokuz
 - 🔴 **`B-O62-1`** — `K155` (*"kapı AYAĞI borçlanamaz"*) **kapısız**, prozada yaşıyor; araç ayağı kural sanıp *"envanterde yok"* diyor.
-- 🔴 **`B-O62-2`** — ürün kodu **Onur'un makinesinde derlenmedi**; `verify.ps1` ve 120 test bu değişiklikle koşulmadı. 🔴 **o63'te AYNEN TEKRARLANDI.**
+- 🔴 **`B-O62-2` — ÜÇÜNCÜ OTURUM AÇIK.** Ürün kodu **Onur'un makinesinde derlenmedi**; `verify.ps1` koşulmadı. 🟢 o63'te **bulutta** ölçüldü: gerçek PostgreSQL + docker daemon ile `dotnet test Momentum.sln` ⇒ **120/120, 0 hata**; düşen tek testin (`D9…_kalir`, **fail-loud** `MOMENTUM_KANIT_DIZIN`) **o63 regresyonu olmadığı pozitif kontrolle** kanıtlandı. 🔴 Ama `verify.ps1` bir **PowerShell zinciridir** ve Windows'ta hâlâ koşmadı ⇒ borç **kapanmadı**.
 - 🟡 **`B-O62-3`** — `izolasyon-olc.py`'nin `T` ayağı cihazda ölçülemez (playwright yok); **beyan edilmiş** sınır.
 - 🟡 **`B-O62-4`** — `OnStarting` kararının mutantı yok; iddia **okunarak** yazıldı, ölçülmedi.
 - 🟡 **`B-O62-5`** — `oturum-sagligi.py` `CANLI_BELGELER`'de `KIMLIKLER.md` yok ⇒ `S2`/`S3` orayı taramıyor.

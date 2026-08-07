@@ -423,6 +423,32 @@ kapı **kendi ölçümünü** yazar).
 8. **Üretim dağıtım topolojisi** (CDN, ters vekil, ayrı statik host) bu dilimde **yok**; ters vekil
    COOP/COEP'i **ezebilir** ve bu **ölçülmez**.
 
+9. 🔴 **VERİ GÖÇÜ BİLEREK KAPSAM DIŞIDIR — `K158` ZORUNLU BEYANI (Onur kilitledi, oturum 62).**
+   **MEVCUT `sharedIndexedDb` deposu olan bir tarayıcı OPFS'e GEÇMEZ**; verisi IndexedDB'de kalır.
+   `T5` (`WasmDatabase.open(..., moveExistingIndexedDbToOpfs: true)`) **ERTELENDİ ve YAZILMAYACAK.**
+   Üç ölçülmüş gerekçe: ① COOP/COEP başlıkları **temiz kurulumu** zaten `opfsLocks`'a taşıyor
+   (gerçek `flutter build web`, iki koşul, üründe tek bayt değişmedi) ② **kalıcı profille üç koşum:**
+   izolasyon açık, `chosenImplementation` yine `sharedIndexedDb`, **OPFS BOŞ** ⇒ göç hiç başlamadı
+   ③ **sürüm yükseltme yolu ÖLÜ:** drift 2.34.3 `wasm.dart:163` bayrağı taşıyor ama
+   `drift_flutter` 0.3.1 `web.dart:19-24` **geçirmiyor** ve pub.dev `/api` ölçümü
+   `latest = 0.3.1` (11 Tem 2026) diyor.
+   **Beyan edilmiş bedel:** bayrağın koruduğu şey **mevcut kullanıcı verisidir**; bu depo private ve
+   sahada kullanıcı **yok** ⇒ kazanç teorik, bedel gerçek. 🔴 **`B-11` (atomik olmayan göç) HÂLÂ
+   ÖLÇÜLMEDİ** (`B-O62-8`); `T5` bir gün açılırsa **ÖNCE o ölçülür**, sıra tersine çevrilemez.
+   Kanıt: `KANIT/W3/02-O2-OLCUMU-o62.md` (ERRATUM'lu) + `03-VERI-GOCU-OLCUMU-o62.md`.
+
+10. 🔴 **WEB BUILD `--no-web-resources-cdn` OLMADAN ALINAMAZ — `K159-b` (oturum 63).**
+    Flutter'ın **varsayılan** `flutter build web` çıktısı CanvasKit'i
+    `https://www.gstatic.com/flutter-canvaskit/<engineRevision>` adresinden çeker. Birincil kaynak
+    `flutter_bootstrap.js`'in kendi üçlü işleci:
+    `canvasKitBaseUrl ? … : (engineRevision && !useLocalCanvasKit ? <gstatic> : "canvaskit")`;
+    bayrak yalnız `--no-web-resources-cdn` ile `true` olur
+    (`flutter_command.dart:1479` + `build_info.dart:1098`). o63'te **pozitif+negatif kontrollü**
+    ölçüldü: `require-corp` altında CORP'**suz** çapraz-köken betik **BLOKLANDI**, CORP'**lu** olan
+    **YÜKLENDİ**. ⇒ Bayrak bir tercih değil **KAPI ŞARTIDIR**; onsuz derlenen bir sürümde bu
+    spec'in izolasyon iddiası **çürür**. 🔴 **CI'da zorlanmıyor** (`B-O63-2`).
+    Kanıt: `KANIT/W3/04-ISTEMCI-IZOLASYONU-o63.md` §5.
+
 ---
 
 ## 9. NE ÖLÇÜLEMEDİ *(v2 yazımı sırasında)*
