@@ -16,5 +16,17 @@
     "desen": "20/28",
     "borc": "ARAC-YANLIS-POZITIFI",
     "gerekce": "10 BD blogu TEK BIR uzun satirdir. Satir, BD-6'nin 'altin kume' alintisi yuzunden IMZALI gorunuyor; ama yakalanan sayi BD-5'in TIPOGRAFI oranidir (punto/satir yuksekligi), altin kume DEGILDIR. Bu, aracin OLCULMUS yanlis-pozitifidir: uzun paragraf satirlarinda imza ile sayi arasindaki YAKINLIK olculmuyor. Esik UYDURULMADI (K40); borc DURUM.md 8'de acik, kalici onarim AYRI EL'e (K34-f). T8-BEKLIYOR kayitlari 27 Tem 2026'da SILINDI: pub-cve-kapisi.py (8 vaka) ve pub-lisans-kapisi.py (4 vaka) DOGDU, kapi artik o iki sayiyi GERCEKTEN kosarak dogruluyor."
+  },
+  {
+    "dosya": "CLAUDE.md",
+    "desen": "altın küme 5/5)",
+    "borc": "B-O64-2",
+    "gerekce": "KANIT/o60/_olu_hash_avi.py KOK'u SABIT WINDOWS YOLUYLA yaziyor (C:\\dev\\Momentum gomulu) => sandbox/mount kosumunda FileNotFoundError ile duser; iddia o60'ta WINDOWS'ta olculdu ve bu ortamda YENIDEN URETILEMEZ (o64'te olculdu: EXIT 1, FileNotFoundError). Ayrica arac adi satir 115'te, iddia satir 116'da -- satir kaydirma kusuru; satirlari birlestirmek araci KOSTURACAGI icin yeni bir KIRMIZI uretirdi. MUAFIYET SESSIZ DEGILDIR: kok parametrelesince (B-O64-2) desen silinir ve kapi gercek olcumu yapar."
+  },
+  {
+    "dosya": "DURUM.md",
+    "desen": "Taslak altın küme **23/23**",
+    "borc": "B-O63-5",
+    "gerekce": "Bu bir ARAC DEGIL, DENETIMDE DUSMUS BIR TASLAKTIR ve K34-f geregi araclar/'a BILEREK KONULMADI; KANIT/W3/06-KAPI-TASLAGI-DENETIMDE-DUSTU-o63.py'de donmus duruyor. sayi-tazeligi araci yalnizca araclar/ altindaki adlari cozer => tam yol yazilsa da 'HAYALET ARAC' der. Sayi UYDURULMADI: o64'te FIILEN kosuldu, EXIT 0, 23/23 (T ayaginin iki playwright vakasi kosmadi ve N/M'ye SAYILMADI - aracin kendi beyani). MUAFIYET SESSIZ DEGILDIR: B-O63-5 kapanip taslak onarilarak araclar/'a girdiginde bu desen SILINIR ve kapi gercek olcumu yapar."
   }
 ]

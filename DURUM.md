@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayat** — borç `B-O50-2` (ayrıntı orada).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 7 Ağu 2026, **oturum 63** (Onur, dört kilit) — 🔒 `K159` **istemci AYNI KÖKENDEN** (`crossOriginIsolated=true` ÖLÇÜLDÜ) · 🔒 `K160` `BORCLAR.md` **SIKIŞTIRILDI** · 🔒 `K161` **vaka ölçmek SINIF KAPATMAZ** (`/v2` kusurunu iki bağımsız denetçi buldu) · 🟢 `K162` beyanlar + **README** + **120/120**. *(o39–62 arşivde — `PROJE_HAFIZA.md` K129–K162.)*
+> **Son güncelleme:** 8 Ağu 2026, **oturum 66** — 🔴 `K165` **`ADR 0004` gövdesi v2 DE denetimde düştü** (ÜÇ bağımsız denetçi) ⇒ **Onur ADR'yi PARK ETTİ, sıra `T1`/`T2` ürün koduna geçti**. *(o64 `K163`/`K164`, o63'ün dört kilidi ve o39–62 arşivde: `PROJE_HAFIZA.md` K129–K165.)*
 
 ---
 
@@ -20,7 +20,7 @@
 2. `python araclar\tek-kopya-kapisi.py .` — regresyon kapısı (K60). KIRMIZI ise **önce dosyayı kurtar** (`git restore <yol>`), sonra iş yap.
 3. `python araclar\belge-tavan-kapisi.py .` — canlı belge tavanı (K73). `T1` KIRMIZI ise checkpoint yazmadan **ÖNCE** budanır.
 4. `python araclar\sayi-tazeligi.py .` 🔴 **[o39'da EKLENDİ — ölçülmüş gerekçe]** Protokolde **YOKTU** ve elle koşulduğunda **KIRMIZI** verdi. **Çağrılmayan kapı, kör kapı kadar kördür.**
-4b. `python araclar\kapi-ad-teklik-kapisi.py .` 🔴 **[K108 — oturum 47'de EKLENDİ]** Kapı kimliği **spec-yereldir**; birden fazla spec'te ilan edilmiş bir kimliğe **kapsam öneksiz** atıf KIRMIZI'dır (`A10/G18` yaz, çıplak kimlik yazma — kapı bu satırı da denetler ve ilk yazımda **beni ısırdı**). Numara **4b'dir çünkü** yeniden numaralama §2'ye yapılan *"adım 7/8/9"* atıflarını kırardı.
+4b. `python araclar\kapi-ad-teklik-kapisi.py .` 🔴 **[K108 — oturum 47'de EKLENDİ]** Kapı kimliği **spec-yereldir**; birden fazla spec'te ilan edilmiş bir kimliğe **kapsam öneksiz** atıf KIRMIZI'dır (`A10/G18` yaz, çıplak kimlik yazma — kapı bu satırı da denetler ve ilk yazımda **beni ısırdı**).
 5. `python araclar\oturum-sagligi.py --altin-kume` (**30/30**, EXIT 0) → `python araclar\oturum-sagligi.py .`
 6. `python araclar\radar.py --altin-kume` (EXIT 0) → `python araclar\radar.py .` — **KIRMIZI ise yeni tur YASAK**; dört şık Onur'a sunulur, **varsayılan DEVRET**. *(30 Tem 2026'dan beri yürürlükteki kilit: **K83 / DURDUR** — §4.)*
 7. **ÖNCE** `git --no-optional-locks fetch origin`, sonra `log --oneline -1` + `rev-list --left-right --count origin/main...HEAD` + `status --porcelain` + `Test-Path .git\index.lock`. 🔴 **Son commit ve push durumu hiçbir belgeye YAZILMAZ, burada ÖLÇÜLÜR (K82-b).** 🔴 **`fetch` ATLANIRSA "0 geri" BİR ÖLÇÜM DEĞİL, BAYAT BİR YEREL REFERANSTIR [oturum 42'de ölçüldü: `.git\FETCH_HEAD` **29 Tem 17:01** yazıyordu ⇒ karşılaştırılan `origin/main` ~24 saat bayattı].**
@@ -38,10 +38,10 @@
 |---|---|
 | **Backend** | ✅ slice-1 → 3e (3e'de **tek bayt yazılmadı**, ayak 2b2'de bitmişti). `araclar\verify.ps1` ⇒ build **0 uyarı/0 hata** · **test 120/120** · CVE 0 · EXIT 0. |
 | **Veritabanı** | PostgreSQL / Docker; konteyner adı **`momentum-postgres`**. 🔴 **ÇALIŞMA DURUMU BURAYA YAZILMAZ — §2 adım 9'da ÖLÇÜLÜR (K80).** *(Oturum 42: bu hücre `✅ … Up (healthy)` diyordu; ölçüm `docker ps -a` ⇒ **`Exited (255)`** çıktı. K80'i doğuran bayat-PID vakasının ikinci kopyasıydı.)* |
-| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 + A7/A8/A9 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme (`UzakAlanDurumu` v4 + yerel LWW + `hasMore` + snapshot/artımlı) · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). 🟢 **`ios/` VAR ve CI'da DERLENİYOR** (`A13`, K129). Kapılar **spec-yereldir** (K108; envanter `GOREV_CLAUDE_CODE/`'da ÖLÇÜLÜR). Mutantlar **`M1`–`M170`**; sayı ve ısırma durumu **kabul hükümlerinde**, buraya yazılmaz. Son koşumlar **Cowork'ün kendisi** (K26): `flutter test` **539/539** · `analyze --fatal-infos` **0**. 🔴 A‑7 `DESIGN.md`'de kapanmadı (K46). Tur tur anlatım **arşivde** (K73). |
+| **İstemci (Flutter)** | 🟢 **slice-3b→3e + R9/R10 + A7/A8/A9 BİTTİ — senkron ÇİFT YÖNLÜ + gerçek zamanlı sinyal.** Drift çevrimdışı CRUD · itme kuyruğu · çekme · rozet **kuyruktan türetiliyor** · SignalR-JSON sinyali (web'de `kIsWeb` ile KAPALI). 🟢 **`ios/` VAR ve CI'da DERLENİYOR** (`A13`, K129). Mutantlar `M1`–`M170`; sayı ve ısırma **kabul hükümlerinde**. Son koşum (K26): `flutter test` **539/539** · `analyze --fatal-infos` **0**. 🔴 A‑7 `DESIGN.md`'de kapanmadı (K46). Anlatım **arşivde** (K73). |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
 | **ADR 0003 (kimlik)** | 🧊 v7 **DONDURULDU** (K41). Kanonik v6. **DOKUNMA** |
-| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI** (oturum 40'ta yeniden ölçüldü), **yapısaldır** (park mekanizması yok ⇒ `BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR**. 🔒 **K83 — Onur DURDUR'u kilitledi:** park yürürlükte, dört-şık ritüeli **tekrarlanmaz**. 🔴 **`R8` DURUMU DA YAZILMAZ, ÖLÇÜLÜR:** sayı daima `--olc-urun-kodu <sha>` ile **git'ten** türetilir (K55). |
+| **Radar** | `radar.py` **plugin 0.2.0 ile bayt-özdeş** · altın küme **18/18**. Hüküm **KIRMIZI**, **yapısaldır** (`BORCLAR.md`). 🔴 **KIRMIZI ARTEFAKTLARIN ADI VE SAYISI BURAYA YAZILMAZ — §2 adım 6'da ÖLÇÜLÜR**. 🔒 **K83 — Onur DURDUR'u kilitledi:** park yürürlükte, dört-şık ritüeli **tekrarlanmaz**. 🔴 **`R8` DURUMU DA YAZILMAZ, ÖLÇÜLÜR:** sayı daima `--olc-urun-kodu <sha>` ile **git'ten** türetilir (K55). |
 | **Git** | **PUSH DAİMA ONUR'DA.** İleri/geri durumu **yazılmaz, açılışta ÖLÇÜLÜR** — komut ve **`fetch` şartı yalnız §2 adım 7'de**; buraya **kopyalanmaz** (kanonik-kopya kusuru bu projede beş kez ısırdı). |
 
 **Ortam:** Flutter 3.44.6 · Dart 3.12.2 · Android SDK 36.1.0 ✓ · Chrome/web ✓ · **.NET 10.0.302** (K111; 9.0.316 de kurulu) · **Windows masaüstü ☠** · dart MCP **1.1.0, 14 araç** (`.mcp.json` → `dart pub global run dart_mcp_server`).
@@ -52,75 +52,95 @@
 
 🟢 **KAPANDI, ANLATIMLARI ARŞİVDE (K73):** K89–K100 · `A10` · `GOREV-A9c` · ①–④ (`K111` · `K112`/`K113` · `K115`/`K116`); kanıtlar `KANIT/`'ta, paket borçları `BORCLAR.md`'de.
 
-🟢 **⑤–⑩ KABUL EDİLDİ, ANLATIMLARI ARŞİVDE (K73):** `A11` (K121) · `A12` (K124) · `A13`
-(K129/K130) · `SS2` (K136) · `W1` (K137/K138) · `W2` (K142/**K144**) — hepsini Onur kilitledi,
-her kriter **Cowork'ün KENDİ koşumuyla** (K26). Hükümler
-`KANIT/{A11/07,A12/04,A13/10,SS2/04,W1/01,W2/05}-*KABUL*`. `W2`'nin kriter-4 sapması ve gerekçesi
-**hafızada** (`K145` ERRATUM), kilitli spec'e **dokunulmadı** — sapma **beyanlı**.
-🔴 **Kapanmayan sınırlar:** `B-W1-1`…`B-W1-7` + `KANIT/W2/05-…` §4 · dört `W1` mutantı (`M195`–`M197`, `M199`) **yeniden KOŞULMADI** · **cihazda NAT** ⇒ SignalR yeniden bağlanma **hiç egzersiz edilmedi**.
-→ **SIRADAKİ: backend CI** (`D-A13-4`) + release → ⑪ `ADR 0004` gövdesi (COOP/COEP) + vitrin → README.
+🟢 **⑤–⑩ KABUL EDİLDİ, ANLATIMLARI ARŞİVDE (K73):** `A11` (K121) · `A12` (K124) · `A13` (K129/K130) ·
+`SS2` (K136) · `W1` (K137/K138) · `W2` (K142/**K144**) — hepsini Onur kilitledi, her kriter **Cowork'ün
+KENDİ koşumuyla** (K26). Hükümler `KANIT/{A11/07,A12/04,A13/10,SS2/04,W1/01,W2/05}-*KABUL*`; `W2`'nin
+kriter-4 sapması **hafızada** (`K145` ERRATUM), sapma **beyanlı**.
+🔴 **Kapanmayan sınırlar:** `B-W1-1`…`B-W1-7` + `KANIT/W2/05-…` §4 · dört `W1` mutantı (`M195`–`M197`,
+`M199`) **yeniden KOŞULMADI** · **cihazda NAT** ⇒ SignalR yeniden bağlanma **hiç egzersiz edilmedi**.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` çakışması: kanonik metin `ORTAM.md`'de.**
 
-🔒 **⑫ `W3` — SPEC ÜÇ TURDA DA YAZILMADI; İSKELET İKİ KEZ İNDİ VE KOŞTU (`K154` · `K159`).**
-Spec v1/v2 denetimde düştü (`K146`/`K150`). 🟢 **o62:** COOP/COEP her yanıtta; `M-W3-1` ısırdı.
-🟢 **o63:** `Web/IstemciServisi.cs` (**128 satır**) ⇒ istemci **aynı kökenden** sunuluyor; gerçek
-build + gerçek tarayıcı ⇒ **`crossOriginIsolated = true`**; 21 vakalık HTTP ölçümünde dört API
-yüzeyi **gölgelenmiyor**, `K61`+`D4` kalkanları canlı, **21/21 yanıt COOP+COEP**; `M-W3-2` ısırdı.
-🔴 **`K159-b` — `--no-web-resources-cdn` KAPI ŞARTIDIR:** varsayılan build CanvasKit'i `gstatic`'ten
-çeker, `require-corp` CORP'suz kaynağı **fiilen bloklar** (pozitif+negatif kontrollü). ⇒ `B-O63-2`.
-Kanıt **`KANIT/W3/04`–`06`** (o62'ninkiler `01`–`03`; `02`'nin ERRATUM'u `K158`'in gerekçesi).
-🔴 Kapı `izolasyon-olc.py` o63'te genişletildi ama **taslak DENETİMDE DÜŞTÜ** ⇒ `araclar/`'a
-**girmedi** (`B-O63-5`).
-🟢 **`K162` (o63): `K158` ve `K159-b` BEYANLARI spec §8'e (madde 9 ve 10) YAZILDI** ⇒ `K158` **yarım değil**.
-→ **SIRADAKİ: `ADR 0004` gövdesi (COOP/COEP; malzeme ÖLÇÜLMÜŞ) → backend CI (`D-A13-4`) + release.**
+🔒 **⑫ `W3b` — SPEC **v3 KİLİTLENDİ** (Onur, 8 Ağu 2026, o66).** `W3`'ün yalnız `T1`/`T2` ayakları +
+yapılandırma. `GOREV_CLAUDE_CODE/GOREV-W3b-web-yayina-alma.md` · `spec-kapi-kapsama.py` **EXIT 0**
+(4 kapı · 5 kural · 18 mutant · 5 beyanlı borç) · `kapi-ad-teklik-kapisi.py` **YEŞİL**.
+🟢 **`K127` şartı KARŞILANDI — denetim kilitten ÖNCE koştu**, çıktı yolu spec `§0`'da (agentId
+`a0fe359b259f347d8`; v1 düştü: 5 bloker + 15 major).
+🔒 **Onur kilitte denetçinin İKİ AÇIK SORUSUNU da kapattı (spec `§0b`):** **MJ9** ⇒ `B-W3b-1`
+**kabul kriteri 8**'e **terfi etti** (canlı `GET /` ⇒ 200 + `flutter_bootstrap.js` + **negatif
+kontrol**; el **Claude Code**, `K80`) · **MJ11** ⇒ `R8`'in getirisi **İNCEDİR**, beyanla kabul
+edildi (spec `§8/7`).
+🔴 **`W3` (ana spec) v1/v2 denetimde düştü (`K146`/`K150`) ve AÇILMADI.** `W3/G43`+`W3/G44` kapsamı
+(*"YALNIZ `Program.cs`"*) **ürüne kör**, implementasyonu da **yok**; düzeltme `W3`'ün sonraki
+sürümüne ait. o62/o63 kazanımları (COOP/COEP · aynı köken · `crossOriginIsolated=true` · 21/21) ve
+`K159-b`'nin **ölçülmüş** gerekçesi **hafızada** (`K159`–`K162`); kanıt `KANIT/W3/01`–`08`.
+🔴 `B-O63-2` **AÇIK** — `izolasyon-olc.py`'nin `H` ayağı bayrağı **ölçemez**; kapanış yolu `W3b/G51`.
+🔴 Kapı taslağı denetimde düştü, `araclar/`'a **girmedi** (`B-O63-5`).
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026):** ① cihaz senkron kanıtı ② hedef yığın MSSQL —
 **birlikte** sağlanınca açılır. Maliyet ve `Rule3` **arşivde**.
 🟢 **README VAR (o63, `K162`)** — mimari · **ölçülmüş** çalıştırma sırası · **iki zorunlu şart** · ölçüm disiplini · beyan edilmiş sınırlar. 🔴 Depo görünürlüğü
 **yazılmaz, ÖLÇÜLÜR**: *"public"* iddiası oturum 47'de çürüdü, oturum 53'te yine **PRIVATE** ölçüldü.
 
+🟢 **o64 (`K163`) ve o65 (`K165`/`K166`) anlatımı HAFIZADA;** budanan metinler
+`_SILINECEKLER/o64|o65|o66/`'da.
+🔴 **o64 VE o65 `urun_kodu_satiri` = 0** ⇒ **`R8` SERT DURAK: o66 ÜRÜN KODUYLA BAŞLAR** (`K53/4`),
+yeni belge/ADR/spec/araç turu **AÇILMAZ**. Cowork ürün kodu **yazamaz** (rol bölümü) ⇒ `T1`/`T2`
+**Claude Code'un** işidir. 🔴 **Beyan (o66, Onur kabul etti):** `radar.py`:41-42 ürün yolu
+`src/,lib/,app/` · hariç `araclar/` ⇒ bu görevde `R8`'i söndüren şey **yalnız `appsettings.json`'daki
+1–3 satır JSON**'dur; sönme **gerçek ama İNCE** (spec `§8/7`).
+🔒 **`ADR 0004` GÖVDESİ PARK EDİLDİ (Onur, o65).** İki kez denetimde düştü (`K164` iki denetçi ·
+`K165` ÜÇ denetçi: A/B **GEÇMEZ**, C **ONARIM YETERSİZ**). Kâğıt onarım turu **AÇILMAZ**; gövde
+`T1`/`T2` **koştuktan sonra** ölçülmüş gerçeklerle yazılır. Gövde `docs/ADR/`'ye **GİRMEDİ**, iskelet
+(**3.656 b**) yerinde; taslaklar `KANIT/W3/07`, `08`. Ders: *ölçemediğini SANMAK, ölçmemekten pahalıdır.*
+🔴 **ÖLÇÜLDÜ (o65): `T3` ✅ `T4` ✅ VAR** (`IzolasyonBasliklari.cs` · `IstemciServisi.cs`:111/112/122)
+**ama `T1` ❌ `T2` ❌ YOK:** `wwwroot` dizini yok · `.gitignore`'da girdi yok · `araclar/web-yayina-al.py`
+yok · `Istemci:KokDizin` **hiçbir `appsettings*.json`'da tanımlı değil**.
+→ **SIRADAKİ: Claude Code `T1`+`T2`+`T3`+`T4` (`GOREV-W3b` v3, ÜRÜN KODU) → Cowork kapı + 20 mutant
+koşumu (16 Cowork · 4 Claude Code) → kabul → `ADR 0004` gövdesi → backend CI (`D-A13-4`).**
+
 ---
 
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
-- 🔒 **K71–K81 · K116–K120 — slice-3e · `R9`/`R10` · `A11` KABUL EDİLDİ; anlatım o56'da arşive taşındı (`K135-EK2`).** Kurallar prozada değil **kapıda** koşuyor (K73). 🔴 **BAŞKA HİÇBİR CANLI BELGEDE İZİ OLMAYAN ALTI BEYAN BURADA KALIR** (`KANIT/o56/25-beyan-izi.txt`): ① `CursorHint` **yoksayılır** (`D6`) ② `Y3`'ün mutantı **YOK** ③ `G12` kriter 8 **UYGULANMAZ** ④ `D2` kural 3'ün `K != 'yerel'` istisnası ⑤ `R9` öncesi inmiş satırlar **`'yerel'` KALIR** (migration yasak) ⑥ `GOREV-slice-3d-cekme.md`'deki `D0` metni **bilerek bayat** (K70; kanonik metin `GOREV-A11` §3). 🟢 Kalan **yedi** beyan `BORCLAR.md`'de yaşıyor; buraya **kopyalanmaz** (`kanonik-kopya`).
+- 🔒 **K71–K81 · K116–K120 — slice-3e · `R9`/`R10` · `A11` KABUL EDİLDİ; anlatım o56'da arşive taşındı (`K135-EK2`).** 🔴 **BAŞKA HİÇBİR CANLI BELGEDE İZİ OLMAYAN ALTI BEYAN BURADA KALIR** (`KANIT/o56/25-beyan-izi.txt`): ① `CursorHint` **yoksayılır** (`D6`) ② `Y3`'ün mutantı **YOK** ③ `G12` kriter 8 **UYGULANMAZ** ④ `D2` kural 3'ün `K != 'yerel'` istisnası ⑤ `R9` öncesi inmiş satırlar **`'yerel'` KALIR** (migration yasak) ⑥ `GOREV-slice-3d-cekme.md`'deki `D0` metni **bilerek bayat** (K70; kanonik metin `GOREV-A11` §3). 🟢 Kalan yedi beyan `BORCLAR.md`'de.
 - 🔒 **K111 — .NET 10 (Onur, 2 Ağu 2026):** çatı `net10.0`, SDK pini `10.0.302`; kural **`verify.ps1` ve `global.json` pininde** koşuyor. Geçiş **ATOMİK**. Riskler `BORCLAR.md`'de.
 - 🔒 **K108 — KAPI KİMLİĞİ SPEC-YERELDİR** (Onur, 2 Ağu 2026): atıf **daima** kapsam önekli (`A10/G18`). Kapısı `kapi-ad-teklik-kapisi.py` (§2 adım 4b). Gerekçe: hafıza K108.
 - **K73** — **Bir dilimin kilitleri, dilim KABUL EDİLDİĞİNDE §5'ten çekilir** ve tek satırlık atıfla temsil edilir; kural o andan sonra **prozada değil KAPIDA** yaşar. Arşivde hiçbir şey silinmez. 🔴 Kapısı **olmayan** kilit çekilemez (`K72` bu yüzden durur).
 - **slice-3b · 3c · 3d kilitleri (K57–K70)** — hepsi **KABUL EDİLDİ** ⇒ §5'ten **ÇEKİLDİ**; kurallar kapılarda ve **40 mutantta** koşuyor, sapma her açılışta `tek-kopya-kapisi.py` ile ölçülür. 🔴 `P6`/`D4` **K72** ile daraltıldı, düzeltmesi **K74** (kapısı `G10`). Gerekçeler: hafıza K57–K74.
-- **K61** — **Dev-kimlik kalkanı KİLİTLİ:** yalnız `Development`'ta `DevCurrentUser` (**`X-Momentum-Dev-User`** → `UserId`; başlık yok/bozuk ⇒ **401**, sessiz varsayılan YOK); üretimde `NullCurrentUser` korunur ve bunu bir **MUTANT** kanıtlar. `UserId` ⟂ `ClientId`. Beyan edilen sınır: kimlik **çözümü değil**, ölçüm **iskelesi**.
+- **K61** — **Dev-kimlik kalkanı KİLİTLİ:** yalnız `Development`'ta `DevCurrentUser` (**`X-Momentum-Dev-User`** → `UserId`; başlık yok/bozuk ⇒ **401**, sessiz varsayılan YOK); üretimde `NullCurrentUser` ve bunu bir **MUTANT** kanıtlar. `UserId` ⟂ `ClientId`. Sınır: kimlik **çözümü değil**, ölçüm **iskelesi**.
 - **K53** — Verimlilik reformu: kâğıt denetim turu tavanı **1** · radar KIRMIZI'da varsayılan **DEVRET** · koşan-uygulama-mutant tavanı **3** · iki oturum 0 ürün kodu = **sert durak (`R8`)** · hafıza bölündü.
-- **K60** — **Tek kopya dosyaya yazan her betik ATOMİK yazar** (`.tmp` → takas). Kapısı `tek-kopya-kapisi.py`. **Sınır:** kapı hasarı **önlemez**, sessiz kalmasını imkânsız kılar. 🔴 `os.replace` bu makinede `WinError 5` ⇒ takas **üç adımlı yedekli** (`ORTAM.md`).
+- **K60** — **Tek kopya dosyaya yazan her betik ATOMİK yazar** (`.tmp` → takas). Kapısı `tek-kopya-kapisi.py`. **Sınır:** kapı hasarı **önlemez**, sessiz kalmasını imkânsız kılar. 🔴 Ele göre değişen takas yordamı: **`ORTAM.md`** (Windows üç adımlı · `device_bash` tek adımlı).
 - **K57‑b** — `araclar/radar.py` plugin 0.2.0 ile **BAYT-ÖZDEŞ** (`46E3A8BC`); proje-yerel not **eklenmez**.
-- **K58** — `DURUM.md` tavanı **32 KB**; kapısı `belge-tavan-kapisi.py`, §2 adım 3'te koşar. 🔴 Aracın **banner sürümü bayat** (`1.0.0`), borç `B-O50-2`. 🔴 **Yeni checkpoint `<!-- DIZIN:SON -->` ALTINA** eklenir (`hafiza-dizin.py`). Gerekçe (R4 freni + dikkat): hafıza K58.
-- 🔒 **K117 · K126 · K152 — `BORCLAR.md` tavanının ÜÇ gevşetmesi (o49/o52/o61);** K40 şartı **vaka 10 · 13 · 15** ile ödendi. 🔴 **Üçü de *"bu dosyada budanacak ölü kütle YOK"* dedi — `K160` bunu DARALTTI:** o ölçümler **kalem** sayıyordu, oysa budanabilir olan **anlatımdı** (39.086 → 17.669 b, kalem sayısı **değişmeden**). Gerekçe: hafıza K117/K126/K152/K160.
+- **K58** — `DURUM.md` tavanı **32 KB**; kapısı `belge-tavan-kapisi.py`, §2 adım 3'te koşar. 🔴 Aracın **banner sürümü bayat** (`1.0.0`) ⇒ `B-O50-2`. 🔴 **Yeni checkpoint `<!-- DIZIN:SON -->` ALTINA** (`hafiza-dizin.py`). Gerekçe (R4 freni + dikkat): hafıza K58.
+- 🔒 **K117 · K126 · K152 — `BORCLAR.md` tavanının ÜÇ gevşetmesi (o49/o52/o61);** K40 şartı vaka **10 · 13 · 15** ile ödendi. 🔴 `K160` daralttı: o ölçümler **kalem** sayıyordu, budanabilir olan **anlatımdı**. Gerekçe: hafıza.
 - 🟢 **K21'in mekanik kapısı ARTIK VAR:** `araclar/oturum-sagligi.py` **1.0.0**, altın küme **30/30**; `S4` her açılışta ÖLÇÜLÜR (§2 adım 8), buraya **yazılmaz**. Kalan borç (*"alıntı ≠ beyan"*): `BORCLAR.md`.
 - **K55** — Başka bir el çalışırken `git add -A` **YASAK**; `urun_kodu_satiri` = *"o oturumda repoya giren ürün kodu, **hangi el olursa olsun**"*.
 - **K56** — Kanonik kök **saf ASCII** (`C:\dev\Momentum`); `android.overridePathCheck` eklenmez, junction kullanılmaz.
 - **K46** — `DESIGN.md`'ye **tek bayt yazılmaz** (BD‑1…BD‑7 açık).
 - **K41** — ADR 0003 v7 **DONDURULDU**; açılması üç şartın BİRLİKTE sağlanmasına + Onur'un açık onayına bağlı.
-- 🔒 **K127 — KİLİT ÖNCESİ BAĞIMSIZ DENETİM (Onur, 3 Ağu 2026):** kilit checkpoint'i **denetçinin ÇIKTI YOLUNU** taşır; yoksa *"denetim KOŞULMADI"* diye **açıkça** yazar. Kanonik metin **`CLAUDE.md`**'de. **K53/1 ile çelişmez** — turun sayısını değil **zamanlamasını** sabitler. 🔴 **Mekanik kapısı YOK** ⇒ `B-O52-2`.
+- 🔒 **K127 — KİLİT ÖNCESİ BAĞIMSIZ DENETİM (Onur, 3 Ağu 2026):** kilit checkpoint'i **denetçinin ÇIKTI YOLUNU** taşır; yoksa *"denetim KOŞULMADI"* diye **açıkça** yazar. **Kanonik metin `CLAUDE.md`'de**, `K53/1` ile çelişmez (turun sayısını değil **zamanlamasını** sabitler). 🔴 Mekanik kapısı **YOK** ⇒ `B-O52-2`.
 - 🔒 **K129 · K130 — `A13` KABUL + spec yeniden kilitlendi (Onur, o53).** Kurallar `A13/G27`–`G30` + `M162`–`M170`'te koşuyor. 🔴 Yaşayan beş sınır **`B-O53-1`…`5`**'te. Ders: **okunan onarım, ölçülmüş onarım değildir.**
 - 🔒 **K133 · K136 — `SS2` KİLİTLENDİ ve KABUL EDİLDİ** (Onur, o55/o56); kurallar `SS2/G31`–`G34` + `M171`–`M188`'de **koşuyor**. 🔴 Yaşayan üç sınır: `B-SS2-4` · başlık düzenleme UI'ı **yok** (kriter 8 tamamlanma anahtarıyla) · `B-SS2-5`.
-- 🔒 **K137/K138 · K142/K144 — `W1`+`W2` KİLİTLENDİ *ve* KABUL EDİLDİ ⇒ K73 gereği ÇEKİLDİ.** Kurallar prozada değil **`W1/G35`–`G38` + `W2/G39`–`G42` kapılarında** koşuyor. 🔴 Bu satır o60'a kadar *"`cors-kapisi.py` ve `_preflight.py` YOK"* diyordu — **ÖLÜ BEYAN**, ölçüldü, ikisi de **VAR**. Yaşayan sınırlar `BORCLAR.md` (`B-W1-1`…`B-W1-7`) + `KANIT/W2/05-…` §4.
-- 🔒 **K149 · K149-b — GITHUB KATKI GRAFİĞİ + COMMIT KİMLİĞİ (Onur, 6 Ağu 2026).** 🔴 **KANONİK METİN `CLAUDE.md`'DE — BURAYA KOPYALANMAZ.** *(Bu satır o63'e kadar "kopyalanmaz" derken kuralın yarısını kopyalıyordu — `kanonik-kopya`, budandı.)* Tek hatırlatma: 6 Ağu 2026 öncesi **tüm** commit hash'leri **ÖLÜDÜR**; ulaşılabilirlik `merge-base --is-ancestor` ile ölçülür, `cat-file` ile **ölçülmez**.
-- 🔒 **K148 · K148-b (Onur, o60):** `W3` ölçümü **BUILD'in önündedir**; ölçümü koşan Onur/Code (`K80`). **Ders: yürürlükteki kilit ŞIKKIN İÇİNDE yeniden yazılır** ve **elle sayılan her sayı yanlıştır** (`_v2_olc.py` iki elle-sayımı çürüttü, dört kör ayak buldu). Gerekçe: hafıza K148.
-- 🔒 **K151 — DÖRT KARAR (Onur, o61):** ① `§9` → **`KIMLIKLER.md`** ② `T0` **başlıklı yerel sunucuyla** ölçülür (bayrak yolu **ÖLÜ**) ③ `T5` → `K158` ile **ERTELENDİ** ④ `G45/d` pinli sayan-raporlayan (o62'de doğrulandı). `K151-b`/`c`: hafıza K151.
-- 🔒 **K153 — `spec-kapi-kapsama.py` DÖRT ALANLI §6b'yi OKUR (o61).** Altın küme 21/21 → **23/23**; boş `KAPATMA` ⇒ `S4`. Gerekçe: hafıza K153.
+- 🔒 **K137/K138 · K142/K144 — `W1`+`W2` KİLİTLENDİ *ve* KABUL EDİLDİ ⇒ K73 gereği ÇEKİLDİ.** Kurallar prozada değil **`W1/G35`–`G38` + `W2/G39`–`G42` kapılarında** koşuyor. Yaşayan sınırlar: `BORCLAR.md` (`B-W1-1`…`B-W1-7`) + `KANIT/W2/05-…` §4. 🔴 Bu satırın o60'a kadar taşıdığı **ÖLÜ BEYAN** ve `K145` ERRATUM: **hafızada**.
+- 🔒 **K167 — `GOREV-W3b` v3 KİLİTLENDİ (Onur, 8 Ağu 2026, o66).** Bağımsız denetim **kilitten ÖNCE** koştu (`K127` ✔; çıktı yolu spec `§0`, agentId `a0fe359b259f347d8`). Onur denetçinin **iki açık sorusunu** kapattı: `B-W3b-1` → **kabul kriteri 8**'e terfi (canlı `GET /` + **negatif kontrol**, el Claude Code) · `R8`'in getirisi **İNCE**, beyanla kabul (spec `§8/7`). Commit ve ortam ölçümü → **Claude Code** (DC üç oturumdur yok). Ayrıntı **§4**, gerekçe **hafıza K167**.
+- 🔒 **K149 · K149-b — GITHUB KATKI GRAFİĞİ + COMMIT KİMLİĞİ (Onur, 6 Ağu 2026).** 🔴 **KANONİK METİN `CLAUDE.md`'DE — BURAYA KOPYALANMAZ.** Tek hatırlatma: 6 Ağu 2026 öncesi **tüm** commit hash'leri **ÖLÜDÜR**; ulaşılabilirlik `merge-base --is-ancestor` ile ölçülür, `cat-file` ile **ölçülmez**.
+- 🔒 **K148 · K148-b (Onur, o60):** `W3` ölçümü **BUILD'in önündedir**; ölçümü Onur/Code koşar (`K80`). **Ders: yürürlükteki kilit ŞIKKIN İÇİNDE yeniden yazılır** ve **elle sayılan her sayı yanlıştır**. Gerekçe: hafıza K148.
+- 🔒 **K151 — DÖRT KARAR (Onur, o61):** ① `§9` → **`KIMLIKLER.md`** ② `T0` **başlıklı yerel sunucuyla** ölçülür (bayrak yolu **ÖLÜ**) ③ `T5` → `K158` ile **ERTELENDİ** ④ `G45/d` pinli sayan-raporlayan. `K151-b`/`c`: hafıza.
+- 🔒 **K153 — `spec-kapi-kapsama.py` DÖRT ALANLI §6b'yi OKUR (o61).** Altın küme **23/23**; boş `KAPATMA` ⇒ `S4`. Gerekçe: hafıza K153.
 - 🔒 **K154 — İSKELET ÖNCE (Onur, o62):** `R8` kırmızıyken yeni spec/ADR/araç turu **açılmaz**; önce **koşan en küçük şey** yazılır (`K53/4`+`K53/5`). 🔴 **Yazılmayan ölçüm kaydı, kapatılmayan kapıdır** — o61 deftere hiç yazmadı, `R8` kördü.
 - 🔒 **K155 — KAPI AYAĞI BORÇLANAMAZ (Onur, o62):** `spec-kapi-kapsama.py`'nin *"KAPI borçlanamaz, yalnız KURAL"* kuralı (`S5`) **ayağı da kapsar**; mutantı olmayan ayak spec'ten **çıkarılır** ya da mutantı yazılır. 🔴 Aracın bu yorumu **zorlayan kodu YOK** ⇒ borç `BORCLAR.md`.
 - 🔒 **K156 — K21 EŞİKLERİ KANONİKTİR (Onur, o62):** Momentum içinde **`CLAUDE.md`'deki eşikler** geçerlidir; Onur'un kişisel talimatındaki eşikler **bu depoda uygulanmaz**. Sayı buraya **kopyalanmaz** (K21'in kendi kuralı).
 - 🔒 **K157 — `oturum-sagligi.py` D1 KAPSAMI BİR LİSTEDİR (o62):** altın küme **26 → 30**. **Ders: bir sınırı TAŞIYAN el, o sınırı OKUYAN aracı da taşımak zorundadır.**
-- 🔒 **K158 — `T5` ERTELENDİ ve SINIR BEYAN EDİLDİ (Onur, o62).** `K151/③` (koşullu import + dosya bölmesi) **yazılmayacak**. Ölçülmüş gerekçe: ① başlıklar **temiz kurulumu** zaten `opfsLocks`'a taşıyor ② **mevcut deposu olan** tarayıcı `sharedIndexedDb`'de kalır ve `drift_flutter` **0.3.1 = pub.dev'deki EN SON sürüm** bayrağı geçirmiyor ⇒ sürüm yükseltme yolu **ÖLÜ** ③ bayrağın koruduğu şey **mevcut kullanıcı verisi**, bu depoda kullanıcı **YOK**. **BEYAN ZORUNLU** (spec + README): *"mevcut IndexedDB deposu olan tarayıcı OPFS'e geçmez; göç bilerek kapsam dışıdır."* 🟢 Bedeli: denetimin `B-2`/`B-6`/`B-11` blokerlerinin **üçü de düştü**; `W2`'nin `onResult` dikişine **dokunulmadı**. 🔴 `B-11` **ölçülmedi**, ertelendi — borç. Gerekçe: hafıza K158.
-- 🔒 **K159 — İSTEMCİNİN İZOLASYONU (Onur, o63):** kök dizin **yapılandırmadan** okunur (`Istemci:KokDizin`; boşsa ara katman **hiç kurulmaz** ⇒ kill switch bedava) · **her ortamda** açık · sıra **zorunlu**: izolasyon başlıkları → statik servis → **açık `app.UseRouting()`**. 🔴 **`K159-c`:** `/assets/NOTICES` SPA kabuğu dönüyordu ve **ilk düzeltmem (`ServeUnknownFileTypes`) kâğıtta doğru, koşumda ÖLÜ çıktı** — kök neden `StaticFileMiddleware`'in `ValidateNoEndpoint`'i. **Ders `K53/5`'in kendi gerekçesidir.** Borçlar `B-O63-1`…`6`.
-- 🟢 **K162 — o63 KAPANIŞI:** `K158`+`K159-b` beyanları spec §8'de · **README ilk kez var** · **`dotnet test` 120/120, 0 hata** (bulutta, gerçek PostgreSQL). 🔴 İlk koşum 119/120'ydi; düşen test **fail-loud**'dur (`MOMENTUM_KANIT_DIZIN`) ve **pozitif kontrolle** o63 öncesi kodda da düştü ⇒ **regresyon değil**. 🔴 **`B-O62-2` KAPANMADI** — `verify.ps1` **üçüncü** oturumdur koşulmadı.
-- 🔒 **K161 — VAKA ÖLÇMEK SINIF KAPATMAZ (Onur, o63).** `K159-c` bir vakayı (`/v1/…` → 404) ölçüp sınıfı kapandı sandı; koruma literal `/v1`, rota ailesi `MapGroup("/v{version:apiVersion}")` idi ⇒ **`/v2/YOK` → 200 + `index.html`** CANLI kaldı. 🔒 **K161-b: SPA'dan dışlanan yol, rota ailesinin ŞABLONUNU taşır**, literal örneğini değil. Kapandı; `/v1`–`/v1.0` **404**, `/vault`/`/version` doğru şekilde SPA'ya düşüyor. 🔴 **Kusuru ÜRETEN el bulmadı — `K26` gereği salınan İKİ BAĞIMSIZ DENETÇİ buldu.** Kanıt `KANIT/W3/05-…o63.md`.
-- 🔴 **`izolasyon-olc.py` `B`/`S`/`F` TASLAĞI DENETİMDE DÜŞTÜ (16 bulgu) ⇒ `araclar/`'a KONULMADI** (`B-O63-5`; `KANIT/W3/06-…o63.py`'de saklandı, onarım **ayrı ele** — `K34-f`). Taslak **25/25** altın küme + **dört gerçek mutant** geçmişti. **Ders: kendi kapısını kendi altın kümesiyle kanıtlayan el, hâlâ kör bir kapı teslim edebilir.**
-- 🔒 **K160 — `BORCLAR.md` SIKIŞTIRILDI (Onur, o63):** dosya artık **indekstir** (kimlik + tek cümle; gerekçeler hafıza `K160` arşivinde). **39.086 → 17.669 b**, hiçbir borç **kapanmadı/silinmedi**. 🔴 Aynı turda **ölü beyan** düzeltildi: başlık `K152`'den beri bayat `≤ 32.768 b` tavanını yazıyordu ⇒ artık kapıya atıyor.
+- 🔒 **K158 — `T5` ERTELENDİ ve SINIR BEYAN EDİLDİ (Onur, o62).** `K151/③` **yazılmayacak**; üç ölçülmüş gerekçe **hafızada**. **BEYAN ZORUNLU** (spec + README): *"mevcut IndexedDB deposu olan tarayıcı OPFS'e geçmez; göç bilerek kapsam dışıdır."* 🟢 Bedeli: denetimin üç blokeri düştü, `W2`'nin `onResult` dikişine **dokunulmadı**. 🔴 `B-11` **ölçülmedi** — borç.
+- 🔒 **K159 — İSTEMCİNİN İZOLASYONU (Onur, o63):** kök dizin **yapılandırmadan** okunur (`Istemci:KokDizin`; boşsa ara katman **hiç kurulmaz** ⇒ kill switch bedava) · **her ortamda** açık · sıra **zorunlu**: izolasyon başlıkları → statik servis → **açık `app.UseRouting()`**. 🔴 **`K159-c`:** ilk düzeltme (`ServeUnknownFileTypes`) **kâğıtta doğru, koşumda ÖLÜ** çıktı; kök neden `StaticFileMiddleware`'in `ValidateNoEndpoint`'i. **Ders `K53/5`'in kendi gerekçesidir.** Borçlar `B-O63-1`…`6`.
+- 🟢 **K162 — o63 KAPANIŞI:** beyanlar spec §8'de · **README ilk kez var** · `dotnet test` **120/120** (bulutta, gerçek PostgreSQL). 🔴 **`B-O62-2` KAPANMADI** — `verify.ps1` koşulmadı. Anlatım: hafıza K162.
+- 🔒 **K161 · K161-b — VAKA ÖLÇMEK SINIF KAPATMAZ / SPA'dan dışlanan yol rota ailesinin ŞABLONUNU taşır** (Onur, o63). **Kapandı:** `/v1`–`/v1.0` **404**, `/vault`/`/version` doğru şekilde SPA'ya düşüyor. 🔴 Kusuru **ÜRETEN el bulmadı** — `K26` gereği salınan **iki bağımsız denetçi** buldu. Anlatım: **hafıza K161** · kanıt `KANIT/W3/05`.
+- 🔴 **`izolasyon-olc.py` `B`/`S`/`F` TASLAĞI DENETİMDE DÜŞTÜ (16 bulgu) ⇒ `araclar/`'a KONULMADI** (`B-O63-5`; `KANIT/W3/06-…o63.py`'de donmuş duruyor, onarım **AYRI ELE** — `K34-f`). Ders: **kendi kapısını kendi altın kümesiyle kanıtlayan el, hâlâ kör bir kapı teslim edebilir.** Playwright kapsam sınırı ve ayrıntı: **hafıza + `BORCLAR.md`**.
+- 🔒 **K160 — `BORCLAR.md` SIKIŞTIRILDI (Onur, o63):** dosya artık **indekstir** (kimlik + tek cümle). **39.086 → 17.669 b**, hiçbir borç **kapanmadı/silinmedi**. Aynı turda bir **ölü beyan** (bayat tavan iddiası) düzeltildi. Gerekçeler: **hafıza K160**.
 - **K44-a** — **Önce araç, sonra belge.**
 - **K34-f** — Bir aracı **onaran el**, onu **yazan elden AYRI** olmalı.
 - **K26** — Üretici kendi denetçisini spawn edemez. **Üreten ≠ denetleyen.**
-- **K21** — Oturum sağlığı **ölçülür**; eşikler **MUTLAK** (yüzde YOK). 🔴 **Kanonik eşikler YALNIZ `CLAUDE.md`'de — buraya KOPYALANMAZ.** Ölçülen gerekçe: yüzde kopyalanınca **payda düştü**, iki oturum 200k uydurup yanlış renk ilan etti (K21-DÜZELTME). **Yüzde yazan el paydayı uydurmuştur.**
+- **K21** — Oturum sağlığı **ölçülür**; eşikler **MUTLAK** (yüzde YOK). 🔴 **Kanonik eşikler YALNIZ `CLAUDE.md`'de — buraya KOPYALANMAZ.** Ölçülen gerekçe: yüzde kopyalanınca **payda düştü** ve iki oturum yanlış renk ilan etti (K21-DÜZELTME). **Yüzde yazan el paydayı uydurmuştur.**
 - **K40** — Radar KIRMIZI'da yeni tur YASAK; kilit **Onur'dan** gelir.
 - **§4** — **Ölç ya da `[DOĞRULANMADI]` yaz.** "Beyan edilmiş sınır kabul edilir, gizlenmiş sınır edilmez."
 
@@ -138,11 +158,11 @@ Kanıt **`KANIT/W3/04`–`06`** (o62'ninkiler `01`–`03`; `02`'nin ERRATUM'u `K
 | `pub-lisans-kapisi.py` (`slice-3b/G3`) | `pubspec.lock` ↔ `/metrics` SPDX; *bilinmeyen ≠ temiz*; **metin-kanıtlı eşleşme** (`lisans-eslesme.json`, kanıtsız eşleşme KIRMIZI) | **6/6** |
 | `iddia-kapisi.py` **1.3.0** [A9c] | saf çekirdek (`kanit_topla`/`denetle`); kanıt eşlemesi **yalnız HAM dosya adından** (`I2`/`I3`), dairesel-kanıt filtresi ad-içi arar, envanter reddi (`LISTE_ESIGI=8`, iki yönlü pinli, `D8` ile **gerçekten** yük taşıyor); `I1` **satır-sha keyli, dosya-kapsamlı** muafiyet alabiliyor (`iddia-muafiyet.json`) | **27/27** |
 | `tek-kopya-kapisi.py` **1.1.0** | tek kopya dosyaların **HEAD'e göre regresyonunu** ölçer (`S0`–`S10`); sınıf başına farklı kural: append-only **küçülmez**, kilitli **sapmaz**, canlı **%10 budanabilir**; muafiyet gerekçesiz olamaz, **ölü muafiyeti söyler** | **19/19** |
-| `tek-kopya-mutant.py` | kapının **ölçüm ayağını** gerçek depoda kanıtlar: arşivi 0 bayta düşürür, satır siler, kilitli dosyayı **aynı boyutta** değiştirir, `.tmp` bırakır, UTF-8'i bozar, dosyayı siler — hepsinde kapının **ısırdığını** ölçer | **11/11** |
+| `tek-kopya-mutant.py` | kapının **ölçüm ayağını** gerçek depoda kanıtlar: arşivi 0 bayta düşürür, satır siler, kilitli dosyayı **aynı boyutta** değiştirir, `.tmp` bırakır, UTF-8'i bozar, dosyayı siler — hepsinde kapının **ısırdığını** ölçer. 🔴 `M2b` **ÖLÜ KURGU** (`B-O64-1`) | **10/11** |
 | `hafiza-dizin.py` **1.1.0** | `PROJE_HAFIZA.md`'nin başına **türetilmiş** checkpoint dizini yazar; **fikirli** (koşum 2–3'te sha sabit) ve kendi çıktısını doğrular | **13/13** |
-| `belge-tavan-kapisi.py` (banner **1.0.0**, etiket bayat ⇒ `B-O50-2`) | canlı belge **bayt tavanı + PAY**; `T1` aşım (KIRMIZI) · `T2` dar pay (SARI, eşik %5) · `T0` dosya yok. Tavanı **kendi değiştirmez** (K40) — 🟢 **vaka 10 kapsam tablosundaki HER tavanı PİNLER**: K40'ın *"eşik değiştiren altın kümeye vaka ekler"* şartı **prozadan kapıya** taşındı; **vaka 13 · 14 · 15** sırasıyla `BORCLAR.md` 32 KB, `KIMLIKLER.md` kapsamı ve `BORCLAR.md` **40 KB** gevşetmesinin **gevşek bölgesini** pinler | **15/15** |
+| `belge-tavan-kapisi.py` (banner **1.0.0**, etiket bayat ⇒ `B-O50-2`) | canlı belge **bayt tavanı + PAY**; `T1` aşım (KIRMIZI) · `T2` dar pay (SARI, eşik %5) · `T0` dosya yok. Tavanı **kendi değiştirmez** (K40) — 🟢 kapsam tablosundaki **HER tavanı PİNLER**: vaka **10 · 13 · 14 · 15** (K40'ın *'eşik değiştiren altın kümeye vaka ekler'* şartı prozadan **kapıya** taşındı). Gevşetmelerin ölçülmüş gerekçeleri **hafızada** (K117/K126/K151/K152/K160) | **15/15** |
 | `oturum-sagligi.py` **1.0.0** | K21'in mekanik kapısı: kanonik eşik (`S1`) · yüzde avı (`S2`) · eşik kopyası (`S3`) · token+payda (`S4`/`S5`, `--transcript` ister, yoksa **OLCULMEDI**) · kimlik tazeliği (`D1`, **yazım anıyla**). Çıkış 4 = kanonik temiz ama sağlık ölçülmedi. 🟢 **o62 `K157`:** D1 kimlik tablosunu **`KIMLIKLER.md` + `DURUM.md`** listesinden okur (`K151`'den beri **kördü**) | **30/30** |
-| `izolasyon-olc.py` **1.0.0** [`W3`] | çapraz-köken izolasyon: **H** ayağı (**yalnız stdlib**) `COOP`/`COEP` başlıklarını, **T** ayağı (playwright) **gerçek tarayıcıda** `crossOriginIsolated`'ı ölçer — bayrak yolu **ölü** olduğu için ikisi de gerekir. `credentialless` **bilerek** reddedilir; ulaşılamayan adres **ORTAM HATASI**'dır, *"izole değil"* **değil**. 🔴 Onur'un makinesinde playwright **YOK** ⇒ `T` vakaları **KAPSAM DIŞI** sayılır, `N/M`'ye **girmez** ve araç *"yalnız `H` ayağı için kendini kanıtladı"* diye **beyan eder** (borç `B-O62-3`). Buradaki sayı **cihazda ölçülendir**; bulut konteynerinde iki vaka daha koşar | **9/9** |
+| `izolasyon-olc.py` **1.0.0** [`W3`] | çapraz-köken izolasyon: **H** ayağı (**yalnız stdlib**) `COOP`/`COEP` başlıklarını, **T** ayağı (playwright) **gerçek tarayıcıda** `crossOriginIsolated`'ı ölçer — bayrak yolu **ölü** olduğu için ikisi de gerekir. `credentialless` **bilerek** reddedilir; ulaşılamayan adres **ORTAM HATASI**'dır, *"izole değil"* **değil**. 🔴 Onur'un makinesinde playwright **YOK** ⇒ `T` vakaları **KAPSAM DIŞI**, `N/M`'ye **girmez**, araç bunu **beyan eder** (`B-O62-3`). Buradaki sayı **cihazda ölçülendir** | **9/9** |
 | `kapi-ad-teklik-kapisi.py` **1.0.0** | K108: `N1` kapsam öneksiz **belirsiz** atıf (KIRMIZI) · `N2` spec içi tekrar · `N3` etiketsiz paylaşım (bilgi). Yol/dosya adı (`KANIT/…/02-G2/`) ve `(GENİŞLETME)` etiketli paylaşım **yanlış-pozitif değildir** — ikisi de ayrı vakayla kanıtlı | **18/18** |
 | `ss2-kapisi.py` [`SS2/T0`] | `SS2/G31/a,b` + `G33/c` **statik** ayakları; düz metin tarar, Dart ayrıştırmaz. 🔴 `//` **ve** `/* */` yorumları atar — **blok yolu oturum 56'da ONARILDI, öncesinde KÖR KAPIYDI** (`M-o56-1` ile kanıtlı) | **14/14** |
 | `cors-kapisi.py` [`W1`] | `W1/G35/a`–`d` · `G37/d` · `G38/c` **statik** ayakları; `//` **ve** `/* */` atar, işaretli blok aralığında arar, pozitif kontrol taşır. 🔴 `IsDevelopment()`'ı **HİÇ aramaz** (`B-W1-5`) ⇒ *"CORS yalnız Development"* kararı **kapısız**. 🔴 Envantere **oturum 58'de eklendi** | **18/18** |
@@ -156,7 +176,7 @@ Kanıt **`KANIT/W3/04`–`06`** (o62'ninkiler `01`–`03`; `02`'nin ERRATUM'u `K
 | `adr-kapi-taramasi.py` | ADR 0003 kapısı (**dondurulmuş**, dokunma) | — |
 | `verify.ps1` | backend build+test+CVE zinciri | — |
 
-🔴 **ENVANTER OTURUM 58'DE YENİDEN SAYILDI (ölçüldü, beyan değil): `araclar\` altında **30** dosya; **24** çalıştırılabilir (23 `.py` + `verify.ps1`), tablo **24** satır; kalan 6 veri/yardımcı (3 `.json` · `.md` · `.sha256` · `.gitkeep`) + 2 dizin (`__pycache__`, `fixture`).** Oturum 56'nın *"29 / 23"* sayımı **tek oturumda bayatladı**: `cors-kapisi.py` (oturum 57) tabloya **hiç girmemişti** ⇒ **`envantersiz-kapı` sınıfı ÜÇÜNCÜ kez ısırdı** (`ci-kapisi.py` o53 · `ss2-kapisi.py` o55 · `cors-kapisi.py` o57). *Envanterde olmayan kapı tetiklenemez*; `KAPILAR.md` bunu **beyan eder, zorlamaz** — sınıfın **hâlâ mekanik kapısı yok**.
+🔴 **ENVANTER o64'TE YENİDEN ÖLÇÜLDÜ (8 Ağu 2026): `araclar\` altında **31** dosya; **25** çalıştırılabilir (**24** `.py` + `verify.ps1`), tablo **25** satır; kalan **6** veri/yardımcı (3 `.json` · `.md` · `.sha256` · `.gitkeep`) + 2 dizin.** 🔴 Bu satır o64'e kadar o58'in *30 / 24 / 23 / 24* sayımını taşıyordu — `izolasyon-olc.py` (o62) doğdu, **dördü de bayatladı**; sınıf `bayat-iddia`, hiçbir kapı görmedi. `envantersiz-kapı` sınıfı **üç kez** ısırdı (`ci-kapisi` o53 · `ss2-kapisi` o55 · `cors-kapisi` o57); *envanterde olmayan kapı tetiklenemez* — sınıfın **hâlâ mekanik kapısı yok** (`B-O64-3`). Anlatım: hafıza.
 
 ---
 
@@ -195,4 +215,4 @@ gibi **operasyonel** değil). Kendi tavanı **16 KB**; **dört ölçümün** kap
 
 ## 10. NEREDE NE VAR
 
-`DURUM.md` (canlı, **açılışta okunur**) · `CLAUDE.md` (kalıcı kurallar, **açılışta okunur**) · `ORTAM.md` (**kanla yazılı ortam uyarıları — açılışta OKUNUR**, oturum 49) · `BORCLAR.md` (**açık borçlar — açılışta OKUNMAZ**, K83) · `KIMLIKLER.md` (**donmuş dosya kimlikleri — açılışta OKUNMAZ**, K151) · `PROJE_HAFIZA.md` (**append-only arşiv**, K1…K83) · `DESIGN.md` · `PROJE_RADAR.jsonl` (ölçüm defteri) · `docs/ADR/` · `GOREV_CLAUDE_CODE/` · `araclar/` · `KANIT/` · `src/`.
+`DURUM.md` (canlı, **açılışta okunur**) · `CLAUDE.md` (kalıcı kurallar, **açılışta okunur**) · `ORTAM.md` (**mayın listesi — açılışta OKUNUR**) · `BORCLAR.md` · `KIMLIKLER.md` · `KAPILAR.md` (üçü de **açılışta OKUNMAZ**) · `PROJE_HAFIZA.md` (**append-only arşiv**) · `DESIGN.md` · `PROJE_RADAR.jsonl` (ölçüm defteri) · `docs/ADR/` · `GOREV_CLAUDE_CODE/` · `araclar/` · `KANIT/` · `src/`.

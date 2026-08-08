@@ -12,206 +12,735 @@
 > 🔴 **BU DOSYA ARTIK OTURUM AÇILIŞINDA OKUNMAZ [K53, 26 Tem 2026].** Canlı durum **`DURUM.md`**'dedir (≤12 KB). Burası **APPEND-ONLY KARAR ARŞİVİDİR**: yeni checkpoint üste eklenir, **hiçbir şey silinmez, hiçbir şey yerinde düzeltilmez** (bayat satır varsa **düzeltme notu** yazılır). Buraya yalnız *"bu karar neden alındı?"* diye sorulduğunda bakılır.
 
 <!-- DIZIN:BAS -- MEKANIK URETIM, ELLE DUZENLEME: python araclar/hafiza-dizin.py . -->
-### DIZIN — 193 kayit (mekanik uretim, surum 1.1.0)
+### DIZIN — 200 kayit (mekanik uretim, surum 1.1.0)
 
 | satir | tur | oturum | kilit | konu |
 |---|---|---|---|---|
-| 216 | DEVİR | 63 | - | NOTU — oturum 63 → 64 (7 Ağu 2026, ~23:15 +03; tarih cihazdan TZ='Europe/Istanbul' date ile ölçüldü |
-| 293 | CHECKPOINT | - | K162 K159 K158 | K158 + K159-b BEYANLARI YAZILDI · README İLK KEZ VAR · 120/120 ÖLÇÜLDÜ (7 Ağu 2026, o63 |
-| 330 | CHECKPOINT | - | K161 K159 | K159'UN ÜRÜN KUSURU KAPANDI · KAPI TASLAĞI DENETİMDE DÜŞTÜ (7 Ağu 2026, o63, Onur kilitledi |
-| 381 | CHECKPOINT | 63 | K160 | BORCLAR.md SIKIŞTIRILDI (7 Ağu 2026, oturum 63, Onur kilitledi |
-| 822 | CHECKPOINT | 63 | K159 | İSTEMCİNİN İZOLASYONU: AYNI KÖKENDEN SERVİS (7 Ağu 2026, oturum 63, Onur kilitledi |
-| 888 | DEVİR | 60 | - | NOTU — oturum 60 → 61 (5 Ağu 2026, cihazdan Get-Date ile ölçüldü |
-| 952 | CHECKPOINT | 60 | K147 | ÖNCE ÖLÇ, SONRA v2 (Onur kilitledi, 5 Ağu 2026, oturum 60 |
-| 975 | CHECKPOINT | 60 | K146 | GOREV-W3 v1 YAZILDI ve BAĞIMSIZ DENETİMDE DÜŞTÜ (oturum 60, 5 Ağu 2026 |
-| 1013 | CHECKPOINT | 60 | K145 | ERRATUM: W2 mutant tablosunun hedef sütunu (Onur kilitledi, 5 Ağu 2026 22:46 TSİ, oturum 60 |
-| 1041 | CHECKPOINT | 60 | K144 | W2 KABUL EDİLDİ (Onur kilitledi, 5 Ağu 2026 22:46 TSİ, oturum 60 |
-| 1095 | DEVİR | 59 | - | NOTU — oturum 59 → 60 (5 Ağu 2026, 22:14 TSİ, cihazdan Get-Date ile ölçüldü |
-| 1169 | CHECKPOINT | 59 | K143 | W2 BUILD KOŞTU ve COWORK BAĞIMSIZ KABUL KOŞUMUNU YAPTI (5 Ağu 2026, oturum 59, gece |
-| 1219 | CHECKPOINT | 59 | K141 | OTURUM 59: ONUR'UN YEDİ KİLİDİ · GOREV-W2 v1→v3 · İKİ DENETİM TURU (5 Ağu 2026 |
-| 1288 | CHECKPOINT | 59 | K142 | GOREV-W2 v3 KİLİTLENDİ (Onur kilitledi, 5 Ağu 2026, oturum 59 |
-| 1318 | DEVİR | 58 | - | NOTU — oturum 58 → 59 (5 Ağu 2026 07:21 TSİ, cihazdan Get-Date ile ölçüldü; bulut saati de aynı değeri verdi — |
-| 1370 | CHECKPOINT | 58 | K140 | W1 STATİK MUTANTLARI GERÇEK REPODA KOŞTU; BAĞIMSIZ DENETİM ÜÇ BLOKER BULDU (oturum 58, 5 Ağu 2026 |
-| 1410 | CHECKPOINT | 58 | K139 | BORCLAR.md TAVANI: KİLİT COWORK'E DEVREDİLDİ, TAVAN YÜKSELTİLMEDİ (oturum 58 |
-| 1444 | CHECKPOINT | 57 | K138 | GOREV-W1 KABUL EDİLDİ (Onur kilitledi, 5 Ağu 2026, oturum 57 |
-| 1492 | CHECKPOINT | 57 | K137 | GOREV-W1 v2 KİLİTLENDİ (Onur, 4 Ağu 2026, oturum 57 |
-| 1556 | CHECKPOINT | 55 | K134 | SS2 T0–T8 UYGULANDI (Claude Code) + COWORK KABUL KOŞUMU · R8 SÖNDÜ (oturum 55 |
-| 1602 | CHECKPOINT | 55 | K133 | SS2 v3 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 55 |
-| 1661 | CHECKPOINT | - | K133-EK | DURUM.md §5 BUDANDI (Onur kilitledi, aynı oturum |
-| 1687 | CHECKPOINT | 54 | K132 | K132 · SS2 İKİ TUR DENETİMDEN GEÇTİ, İKİSİNDE DE KİLİTLENEMEDİ · R8 SERT DURAK YANDI (3 Ağu 2026, oturum 54 |
-| 1749 | CHECKPOINT | 54 | K131 K95 | K131 · OTURUM 54 AÇILIŞI: 10/10 ÖLÇÜLDÜ · DEVİR NOTUNUN ÜÇ MADDESİ ÖLÜ ÇIKTI · K95'İN "ÖLÇÜLMEDİ" SORUSU ÖLÇÜL |
-| 1779 | CHECKPOINT | 52 | K128 | K128 · A13 KRİTER 1–6 COWORK'ÇE DOĞRULANDI; 7–8 PUSH BEKLİYOR (oturum 52, 3 Ağu 2026 |
-| 1818 | CHECKPOINT | 52 | K127 | K127 · KİLİT ÖNCESİ BAĞIMSIZ DENETİM ZORUNLU + A13 DÜZELTİLDİ VE YENİDEN KİLİTLENDİ (Onur kilitledi, 3 Ağu 202 |
-| 1865 | CHECKPOINT | - | K127 | KURALIN KENDİSİ (Onur kilitledi |
-| 1881 | CHECKPOINT | 52 | K126 | K126 · GOREV-A13 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 52 |
-| 1933 | CHECKPOINT | 52 | K125 | K125 · GOREV-A13 YAZILDI VE ÖLÇÜLDÜ — KİLİT ADAYI (oturum 52, 3 Ağu 2026 |
-| 1998 | CHECKPOINT | 51 | K124 | K124 · GOREV-A12 KABUL EDİLDİ (Onur kilitledi, 3 Ağu 2026, oturum 51 |
-| 2071 | CHECKPOINT | 51 | K123 | K123 · A12 KRİTER 0 ISIRDI: İKİ KÂĞIT İDDİASI YANLIŞLANDI · ŞIK 2 + ÜÇ ŞART KİLİTLENDİ (3 Ağu 2026, oturum 51  |
-| 2131 | CHECKPOINT | 51 | K122 | K122 · OTURUM 51 AÇILIŞI: 10/10 ÖLÇÜLDÜ · A12 TABANI ALINDI · SPEC'TE BAYAT SAYI BULUNDU (3 Ağu 2026, oturum 5 |
-| 2192 | CHECKPOINT | 50 | K121 | K121 · GOREV-A11 KABUL EDİLDİ (Onur kilitledi, 2 Ağu 2026, oturum 50 |
-| 2243 | CHECKPOINT | 50 | K120 | K120 · A11 KABUL KOŞUMU TAMAMLANDI: 16/17 ISIRDI, M141 KÖR AYAK — KABUL EDİLMEDİ (2 Ağu 2026, oturum 50 |
-| 2313 | CHECKPOINT | 49 | K119 | K119 · A11 BAĞIMSIZ KABUL DENETİMİ: KISMİ GEÇTİ, KABUL EDİLMEDİ (2 Ağu 2026, oturum 49 |
-| 2360 | CHECKPOINT | 49 | K118 K117 | K117 · BORCLAR.md TAVANI 24 KB · K118 · A12 SPEC'İ (2 Ağu 2026, oturum 49 · Onur: *"önerini yap"* |
-| 2415 | CHECKPOINT | 49 | K116 | K116 · D0 DARALTILDI, Y1 KAÇAĞI KİLİTLENDİ, A11 v2 HAZIR (2 Ağu 2026, oturum 49 · Onur DÖRT kilit verdi |
-| 2463 | CHECKPOINT | 49 | K115 | K115 · ÇEVRİMDIŞI ÖLÇÜLDÜ; AĞ-DÖNÜŞ TETİKLEYİCİSİ YOK (2 Ağu 2026, oturum 49 · Onur İKİ kilit verdi |
-| 2522 | CHECKPOINT | 49 | K114 | K114 · ORTAM.md AYRILDI, AÇILIŞTA OKUNUR (2 Ağu 2026, oturum 49 · Onur kilitledi |
-| 2578 | DEVİR | 48 | K113 K112 K111 | NOTU (2 Ağu 2026 — oturum 48 → 49: .NET 10 (K111) · cihaz senkron kanıtı (K112) · bulgu kapatıldı (K113) |
-| 2662 | CHECKPOINT | 48 | K113 K112 | K112 BULGUSU KAPATILDI: YEREL YAZMA ARTIK İTMEYİ TETİKLİYOR (2 Ağu 2026, oturum 48 · Onur kilitledi |
-| 2712 | CHECKPOINT | 48 | K112 | ③ CİHAZDA UÇTAN UCA SENKRON: YÜRÜYEN İSKELET KOŞTU (2 Ağu 2026, oturum 48 |
-| 2753 | CHECKPOINT | 48 | K111 | .NET 10 GEÇİŞİ KAPANDI (2 Ağu 2026, oturum 48 · Onur kilitledi) — *spec yazılmadan, koşan deneyle* |
-| 2830 | DEVİR | 47 | K108 | NOTU (2 Ağu 2026 — oturum 47 → 48: K108 kapısı doğdu, A9c KABUL, D5 kapandı |
-| 2936 | CHECKPOINT | 47 | K110 | GOREV-A9c KABUL EDİLDİ; D5 KÖR KAPISI KAPANDI (2 Ağu 2026 — oturum 47 |
-| 2992 | CHECKPOINT | 47 | K109 | GOREV-A9c v2 KİLİTLENDİ (2 Ağu 2026 — oturum 47 |
-| 3018 | CHECKPOINT | 47 | K108 | KAPI ADI ÇAKIŞMASI ÖLÇÜLDÜ; KİMLİK SPEC-YEREL İLAN EDİLDİ; KAPISI YAZILDI (2 Ağu 2026 — oturum 47 |
-| 3087 | DEVİR | 46 | - | NOTU (2 Ağu 2026 — oturum 46 → 47: A10 KABUL, R8 DÜŞTÜ, push doğrulandı |
-| 3135 | CHECKPOINT | 46 | K107 | 1 Ağu 2026, oturum 46 · .gitignore KAYNAK-KÜMESİ TUZAĞI KAPANDI (Onur kilidi) · PUSH kuralı TEYİT EDİLDİ |
-| 3163 | CHECKPOINT | 46 | K106 | 1 Ağu 2026, oturum 46 · GOREV-A10 KABUL EDİLDİ · R8 DÜŞTÜ (80 satır ürün kodu) |
-| 3217 | CHECKPOINT | 46 | K105 | 1 Ağu 2026, oturum 46 · GOREV-A10 v2 KİLİTLENDİ (Onur) · PUSH kuralının kapsamı |
-| 3250 | CHECKPOINT | 46 | K104 | 1 Ağu 2026, oturum 46 · R8 SERT DURAK ISIRDI · GOREV-A10 v1→v2 (tek tur, iki mercek) · İKİ TASARIM KİLİDİ |
-| 3312 | CHECKPOINT | 45 | K103 | 1 Ağu 2026, oturum 45 · GOREV-A9c İKİ BAĞIMSIZ DENETİM TURU GÖRDÜ (v1→v3) · CLAUDE.md ölü beyanı KAPANDI |
-| 3386 | CHECKPOINT | 45 | K102 | 1 Ağu 2026, oturum 45 · .NET 10 adım 3–5 · A9b altın küme DENETLENDİ · D5 onarımı KİLİTLENDİ (GOREV-A9c) |
-| 3471 | CHECKPOINT | 45 | K101 K73 | 1 Ağu 2026, oturum 45 · Açılış 9 adım ÖLÇÜLDÜ · K73 budaması · .NET 10 adım 1–2 KAPANDI |
-| 3653 | CHECKPOINT | 44 | K100 K26 | 1 Ağu 2026, oturum 44 · A9b KABUL · A9 KAPANDI (Cowork bağımsız ölçtü, K26 |
-| 3725 | CHECKPOINT | 44 | K99 | 1 Ağu 2026, oturum 44 · GOREV-A9b v2 KİLİTLENDİ (Onur) + iki alt kilit |
-| 3767 | CHECKPOINT | 44 | K98 | 1 Ağu 2026, oturum 44 · GOREV-A9b v2 DENETİMDEN GEÇTİ — KİLİT ONUR'DA |
-| 3831 | CHECKPOINT | 44 | K97 K34 | 1 Ağu 2026, oturum 44 · AÇILIŞ ÖLÇÜMÜ · K34-f ATFI KESİNLEŞTİ · İKİ DÜZELTME NOTU |
-| 3960 | CHECKPOINT | 43 | K96 K73 | 1 Ağu 2026, oturum 43 · DURUM.md T2 SARI ISIRDI ⇒ BUDANDI (K73) |
-| 3972 | CHECKPOINT | 43 | K94 | 1 Ağu 2026, oturum 43 · GOREV-A9 ÜRÜN+KAPI KABUL, DİLİM KAPANMADI — kriter 12 AÇIK |
-| 4027 | CHECKPOINT | 43 | K95 | 1 Ağu 2026, oturum 43 · YOL HARİTASI KİLİTLERİ (Onur) |
-| 4052 | CHECKPOINT | 43 | K93 | 1 Ağu 2026, oturum 43 · GOREV-A9 v3 KİLİTLENDİ — bir denetim turu 15 bloker buldu, üçü mimariyi değiştirdi |
-| 4109 | CHECKPOINT | 43 | K92 | 1 Ağu 2026, oturum 43 · AÇILIŞ ÖLÇÜLDÜ · İKİ BAYAT SATIR DÜZELTİLDİ · SIRADAKİ İŞ ⑤ KİLİTLENDİ |
-| 4151 | CHECKPOINT | 42 | K91 K26 | 1 Ağu 2026, oturum 42 · GOREV-A8 BUILD KABUL EDİLDİ — Cowork beyana güvenmeden ÖLÇTÜ (K26) |
-| 4211 | CHECKPOINT | 42 | K90 | 30 Tem 2026, oturum 42 · GOREV-A8 KİLİTLENDİ: metin kaybı BEŞ GERÇEK EKRANDA · iki denetim turu, sekiz bloker |
-| 4284 | CHECKPOINT | 42 | K89-DÜZELTME | 2 — 30 Tem 2026, oturum 42 · KİMLİK BEYANI SON YAZIMDAN ÖNCE ÖLÇÜLMÜŞ — KAPI ÜÇÜNCÜ KEZ ISIRDI |
-| 4308 | CHECKPOINT | 42 | K89-DÜZELTME | 30 Tem 2026, oturum 42 · KAPI KENDİ YAZARINI İKİ KEZ DAHA ISIRDI — ÖLÇÜM GERİLEMESİ KAPATILDI |
-| 4330 | CHECKPOINT | 42 | K89 | 30 Tem 2026, oturum 42 · ① KAPI-TETİK TABLOSU YAZILDI (KAPILAR.md) + DÖRT BAYAT SATIR ÖLÇÜLEREK DÜZELTİLDİ |
-| 4356 | CHECKPOINT | 40 | K88 K34 K26 | 30 Tem 2026, oturum 40 · 4a + 2a ONARILDI (Code, K34-f) ve BAĞIMSIZ DOĞRULANDI (Cowork, K26) |
-| 4370 | CHECKPOINT | 40 | K87 K26 | 30 Tem 2026, oturum 40 · A‑7 BUILD K26 İLE BAĞIMSIZ DOĞRULANDI (COWORK) · üç Onur kararı · BORCLAR budandı |
-| 4384 | CHECKPOINT | 40 | K86 K21 | 30 Tem 2026, oturum 40 · A‑7 BUILD BİTTİ VE CİHAZDA DOĞRULANDI · v4'ün iki kilidi tuttu · kriter 7 şartlı PASS |
-| 4483 | CHECKPOINT | 39 | K85 K26 | 30 Tem 2026, oturum 39 · BAĞIMSIZ DENETİM (K26) BLOKER BULDU · GOREV-A7 v4 · ÇÖZÜM ÖLÇÜLDÜ |
-| 4563 | CHECKPOINT | 39 | K84 | 30 Tem 2026, oturum 39 · GOREV-A7 SPEC'İ YAZILDI · KÖR KAPI KOŞARAK ÖLÇÜLDÜ · KİLİT VE BUILD ONUR'DA |
-| 4646 | CHECKPOINT | 39 | K83-DÜZELTME | 30 Tem 2026, oturum 39 · TARİH KUSURU: BULUT UTC ≠ ONUR'UN TAKVİMİ (kapı yakaladı, el üretti |
-| 4668 | CHECKPOINT | 39 | K83 | 29 Tem 2026, oturum 39 · RADAR DURDUR KİLİDİ · DURUM.md §8 ⇒ BORCLAR.md · İKİ BAYAT SAYI ÖLÇÜLEREK DÜZELTİLDİ  |
-| 4773 | DEVİR | 38 | - | NOTU — oturum 38 → 39 (30 Tem 2026) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 4885 | CHECKPOINT | 38 | K82 | 29 Tem 2026, oturum 38: K82 — oturum-sagligi.py DOĞDU ve İLK KOŞUMDA KENDİ YANLIŞ-POZİTİFİNİ ÜRETTİ |
-| 4912 | DEVİR | 37 | - | NOTU — oturum 37 → 38 (29 Tem 2026 |
-| 5006 | CHECKPOINT | 37 | K81 K79 | G12 KABUL EDİLDİ + K79/3 DARALTILDI (29 Tem 2026, oturum 37 · Onur onayladı |
-| 5087 | CHECKPOINT | 37 | K80 | ORTAMI KİM KALDIRIR: kural CLAUDE.md'ye yazıldı (29 Tem 2026, oturum 37 · Onur kilitledi |
-| 5128 | CHECKPOINT | 37 | K79 | G12 SPEC'İ KİLİTLENDİ (29 Tem 2026, oturum 37 · Onur kilitledi |
-| 5188 | CHECKPOINT | 37 | K78 | slice-3e YÜRÜYEN İSKELET KABUL EDİLDİ (29 Tem 2026, oturum 37 · Onur onayladı |
-| 5267 | CHECKPOINT | 37 | K77 | slice-3e TASARIM KİLİDİ (29 Tem 2026, oturum 37 · Onur kilitledi |
-| 5348 | DEVİR | 36 | - | oturum 36 → 37 [29 Tem 2026] |
-| 5382 | CHECKPOINT | 36 | K76 | R10 KABUL EDİLDİ · G11-A9 KÖR AYAK onarıldı · D2 kural 3 daraltması KİLİTLENDİ [29 Tem 2026, oturum 36] |
-| 5453 | CHECKPOINT | 36 | K75 K46 | R10 TASARIMI KİLİTLENDİ: rozet KUYRUKTAN türetilir + K46 AÇILDI [28 Tem 2026, oturum 36] |
-| 5544 | CHECKPOINT | 35 | K74 K72 | 28 Tem 2026 · oturum 35 KAPANIŞ: K74 — R9 KABUL EDİLDİ (Cowork'ün kendi koşumu); K72 §5'ten ÇEKİLDİ |
-| 5637 | CHECKPOINT | 35 | K73 | 28 Tem 2026 · oturum 35: K73 — KABUL EDİLEN DİLİMİN KİLİTLERİ §5'TEN ÇEKİLİR; belge-tavan-kapisi.py DOĞDU |
-| 5730 | CHECKPOINT | 35 | K72 | 28 Tem 2026 · oturum 35: K72 — R9 KİLİDİ: P6/D4 DARALTILDI; spec yazıldı, DENETLENDİ, KIRILDI, düzeltildi |
-| 5829 | CHECKPOINT | 35 | K71 | 28 Tem 2026 · oturum 35: K71 — KABUL KRİTERİ 9 ÖLÇÜLDÜ (GEÇTİ); R9 KUSURU DOĞDU; DURUM.md §8 ARŞİVLENDİ |
-| 5932 | CHECKPOINT | 34 | K70 | 28 Tem 2026 · oturum 34 KAPANIŞ: K70 — slice-3d (ÇEKME) KABUL EDİLDİ; spec KİLİTLENDİ |
-| 6019 | CHECKPOINT | 34 | K69 | 28 Tem 2026 · oturum 34: K69 — slice-3d spec'i YAZILDI; üç karar kilitlendi |
-| 6313 | CHECKPOINT | 33 | K68 | 28 Tem 2026 · oturum 33: K68 — slice-3d (ÇEKME) TASARIM KİLİDİ + üç ölçüm bulgusu |
-| 6394 | CHECKPOINT | 32 | K67 | 28 Tem 2026 · oturum 32 KAPANIŞ: K67 — iddia-kapisi.py; iki kör sınıf mekanikleşti |
-| 6441 | CHECKPOINT | 32 | K26 | 28 Tem 2026 · oturum 32 — slice-3c BAĞIMSIZ DOĞRULANDI (K26); dört bulgu |
-| 6544 | CHECKPOINT | 32 | K64 | 27 Tem 2026 · oturum 32 KAPANIŞ: K64 — spec v2 KİLİTLENDİ |
-| 6570 | CHECKPOINT | 32 | K63 | 27 Tem 2026 · oturum 32: K63 — spec v2, İKİ BAĞIMSIZ DENETÇİ SPEC'İ KIRDI |
-| 6644 | CHECKPOINT | 32 | K62 | 27 Tem 2026 · oturum 32: K62 — slice-3c spec'i yazıldı, D0–D6 kilitlendi |
-| 6696 | CHECKPOINT | 32 | K61 | 27 Tem 2026 · oturum 32 AÇILIŞ: K61 — dev-kimlik kalkanı KİLİTLENDİ |
-| 6741 | CHECKPOINT | 31 | K60 | 27 Tem 2026 — oturum 31 KAPANIS: K60 kapıya çevrildi + adım 3 engeli ölçüldü |
-| 6779 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: slice-3b KAPANDI — A2 8/8, commit 5df3caf |
-| 6830 | CHECKPOINT | 31 | K59 | 27 Tem 2026 — oturum 31: K59 — SPEC v6; A2'nin SAĞLANAMAZ ŞARTI ÖLÇÜMLE ONARILDI |
-| 6877 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: T8+T9 BAĞIMSIZ DOĞRULANDI — 1 MAJÖR, 4 MİNÖR BULGU |
-| 6936 | CHECKPOINT | 31 | K58 | 27 Tem 2026 — oturum 31: K58 — TAVAN 12→32 KB + ARŞİV DİZİNİ |
-| 6993 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: G3 ADJUDİKASYONU + TAŞIMA/T8 BAĞIMSIZ DOĞRULAMASI |
-| 7068 | CHECKPOINT | 30 | K57 | EK (26 Tem 2026 — oturum 30: K57 KESİNLEŞTİ + sayi-tazeligi.py DOĞDU |
-| 7121 | CHECKPOINT | 30 | K57 | 26 Tem 2026 — oturum 30: K57 — BAYAT ÇAPRAZ-ATIF KESİMİ; ARAÇ SENKRONU |
-| 7236 | CHECKPOINT | 29 | K56 | 26 Tem 2026 — oturum 29: K56 — REPO ASCII KÖKE TAŞINIYOR; KAPI SUSTURULMADI |
-| 7256 | CHECKPOINT | 29 | K54 K53 | 26 Tem 2026 — oturum 29: K53 VERİMLİLİK REFORMU + K54 SPEC v4 (KİLİT GÜNCELLEMESİ) |
-| 7300 | CHECKPOINT | 29 | K52 | 26 Tem 2026 — oturum 29: K52 — SPEC KİLİTLENDİ; esdeger-mutant SINIFI BUILD'E DEVREDİLDİ |
-| 7314 | CHECKPOINT | 29 | K51 | 26 Tem 2026 — oturum 29: K51 — RADAR KIRMIZI'DA MEKANİKLEŞTİR KİLİTLENDİ; ARAÇ YAZILDI VE İLK KOŞUMDA ÜÇ DENET |
-| 7333 | CHECKPOINT | 29 | K50 K49 | 26 Tem 2026 — oturum 29: K50 — RED-TEAM v2'Yİ DE KIRDI; K49'UN ÖNGÖRDÜĞÜ GERİ DÜŞÜŞ TETİKLENDİ |
-| 7356 | CHECKPOINT | 29 | K48 | 26 Tem 2026 — oturum 29: K48 — SPEC v1 ÜÇ BAĞIMSIZ DENETÇİ TARAFINDAN YIKILDI; SONRA DENETÇİLER DE DENETLENDİ  |
-| 7387 | CHECKPOINT | 29 | K47 | 26 Tem 2026 — oturum 29: K47 — SPEC'İN DÖRT ÇATALI KİLİTLENDİ; DEVİR NOTUNUN İKİ VARSAYIMI ÖLÇÜMLE YANLIŞLANDI |
-| 7419 | CHECKPOINT | 29 | K46 | 26 Tem 2026 — oturum 29 açılış: K46 — RADAR KIRMIZI'DA DÖRT ŞIK SUNULDU, ONUR DARALTI KİLİTLEDİ |
-| 7436 | DEVİR | 28 | - | NOTU (26 Tem 2026 — oturum 28 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 7473 | CHECKPOINT | 28 | K45 | 26 Tem 2026 — oturum 28: K45 — MEKANİK KAPI YAZILDI VE KENDİNİ KANITLADI (12/12); DESIGN.md v1 YAZILDI; KONTRA |
-| 7487 | CHECKPOINT | 28 | K44 | 26 Tem 2026 — oturum 28: K44 — RADAR slice-3b'Yİ DE ISIRDI (R3); KİLİT = MEKANİKLEŞTİR, ÖNCE ARAÇ SONRA BELGE. |
-| 7500 | CHECKPOINT | 28 | K43 | 26 Tem 2026 — oturum 28: K43 — dart MCP SUNUCUSU KURULDU VE ARAÇ KÜMESİ ÖLÇÜLDÜ; COWORK'ÜN KENDİ İDDİASI YANLI |
-| 7518 | CHECKPOINT | 28 | K42 | 26 Tem 2026 — oturum 28: K42 — slice-3b DÖRT ÇATAL KİLİTLENDİ; CEPHE ARTIK İSTEMCİDİR |
-| 7550 | CHECKPOINT | 28 | K41 | 26 Tem 2026 — oturum 28 açılış+kilit: K41 — RADAR KIRMIZI'DA DÖRT ŞIKTAN DURDUR KİLİTLENDİ; ADR 0003 v7 OLDUĞU |
-| 7576 | CHECKPOINT | 26 | K40 K38 | 26 Tem 2026 — oturum 26 EK: K40 — PROJE RADARI KURULDU VE KOŞTU; HÜKÜM KIRMIZI; RADAR K38'İ BAĞIMSIZ OLARAK DO |
-| 7590 | CHECKPOINT | 27 | K39 | 26 Tem 2026 — oturum 27: K39 — İKİ KİLİT: BU EL YAZIM ELİDİR (ARACI KOŞAR, ONARMAZ) · ATIF DENETİMİNİN EKSENİ  |
-| 7630 | CHECKPOINT | 26 | K38 | 26 Tem 2026 — oturum 26 EK: K38 — ADR 0003'ÜN UZAMASININ KÖK NEDENİ ÖLÇÜLDÜ; ÜÇ YAPISAL KARAR KİLİTLENDİ |
-| 7646 | CHECKPOINT | 27 | - | 26 Tem 2026 — oturum 27 açılış: PROTOKOL TAM KOŞTU; OTURUM 26'NIN BEYAN ETTİĞİ OKUMA SINIRI KAPANDI |
-| 7661 | CHECKPOINT | 26 | K37 | 26 Tem 2026 — oturum 26 açılış: K37 — ÜÇ ÇATAL KİLİTLENDİ; B6-1'İN ÖLÇÜMÜ TURDAN ÖNCE KOŞTU |
-| 7715 | CHECKPOINT | 25 | K36 | 26 Tem 2026 — oturum 25: K36 — v7 YAZIMI BAŞLADI; BELGE YARIMDIR. 4/9 BLOKER + 3/31 MAJÖR KAPANDI, 1 YENİ MAJÖ |
-| 7759 | CHECKPOINT | 25 | K35 | 26 Tem 2026 — oturum 25: K35 — ADR 0002 ALTI TURDAN SONRA İLK KEZ AÇILDI; DOKUZ ATIFIN SEKİZİ TUTTU, BİRİ UYDU |
-| 7781 | CHECKPOINT | 25 | K34 | 26 Tem 2026 — oturum 25 açılış: K34 — KAPI-6'NIN YEDİ ÇATALININ YEDİSİ DE KİLİTLENDİ |
-| 7802 | DEVİR | 23 | - | NOTU (25 Tem 2026 — oturum 23 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 7837 | DEVİR | 24 | - | NOTU (25 Tem 2026 — oturum 24 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 7884 | CHECKPOINT | 24 | K33 | 25 Tem 2026 — oturum 24 kapanış: K33 — 6. TUR KAPI KOŞTU; HÜKÜM KİLİTLENEMEZ; ARACIN ALTIN KÜMESİ İLK KEZ MUTA |
-| 7896 | CHECKPOINT | 24 | K32 | 25 Tem 2026 — oturum 24 açılış: K32 — 6. TUR BAĞIMSIZ KAPI AÇILDI; DÖRT ÇATAL KİLİTLENDİ |
-| 7910 | DEVİR | 22 | - | NOTU (25 Tem 2026 — oturum 22 GERÇEK kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 7949 | CHECKPOINT | 23 | K31 | 25 Tem 2026 — oturum 23 kapanış: K31 — v6 BİTTİ VE KANONİK YOLA ALINDI; ARAÇ 30 → 7 BULGU |
-| 7962 | CHECKPOINT | 23 | K30 | 25 Tem 2026 — oturum 23 açılış: K30 — v6'NIN KALAN İŞİ İÇİN DÖRT KARAR KİLİTLENDİ |
-| 7977 | DEVİR | 22 | - | NOTU (25 Tem 2026 — oturum 22 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 8019 | DEVİR | 21 | - | NOTU (25 Tem 2026 — oturum 21 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
-| 8080 | CHECKPOINT | 21 | K24 | 25 Tem 2026 — oturum 21 kapanış: K24 — ADR 0003 v5 YAZILDI, KANONİK YOLA ALINDI |
-| 8081 | CHECKPOINT | 22 | K29 K5 K3 | 25 Tem 2026 — oturum 22: K29 — v6 YAZIMI BAŞLADI; K1=0 · K2=0 · K3=0 · K5=0. BELGE YARIMDIR |
-| 8104 | CHECKPOINT | 22 | K28 | 25 Tem 2026 — oturum 22: K28 — KAPI-5'İN DÖRT ADAY BLOKERİ KİLİTLENDİ |
-| 8114 | CHECKPOINT | 22 | K27 | 25 Tem 2026 — oturum 22: K27 — ÖLÇÜM ARACI ONARILDI, ALTIN KÜME 21 KONTROLE ÇIKTI, FARKLI MODELLE SALDIRILDI |
-| 8127 | CHECKPOINT | 22 | K26 | 25 Tem 2026 — oturum 22: K26 — ÜRETEN ≠ DENETLEYEN YENİDEN TANIMLANDI: OTURUM SINIRI DEĞİL, KANAL KURALI |
-| 8140 | CHECKPOINT | 22 | K25 | 25 Tem 2026 — oturum 22: K25 — 5. TUR BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
-| 8167 | CHECKPOINT | 21 | K23 K22 K1 | 25 Tem 2026 — oturum 21: K23 — v5 YAZIMI SÜRÜYOR: 8/9 BLOKER + K22-a KAPANDI, K1=0 |
-| 8178 | CHECKPOINT | 21 | K22 K20 | 25 Tem 2026 — oturum 21: K22 — Y-1 VE K20-a KİLİTLENDİ; v5 YAZIMI DEVAM EDİYOR |
-| 8184 | CHECKPOINT | 21 | K21 | 25 Tem 2026 — oturum 21: K21 — OTURUM DEVRİ ARTIK ÖLÇÜME BAĞLIDIR; HİSSE DEĞİL |
-| 8197 | CHECKPOINT | 21 | K20 | 25 Tem 2026 — oturum 21 kapanış: K20 — v5 YAPISI KURULDU, İÇERİK YARIM; ÖLÇÜM ARACI CANLI |
-| 8209 | CHECKPOINT | 21 | K19 | 25 Tem 2026 — oturum 21: K19 — v5 YAZIM OTURUMU AÇILDI; DÖRT ÇATAL DAHA KİLİTLENDİ |
-| 8227 | CHECKPOINT | 20 | K18 | 25 Tem 2026 — oturum 20 devamı: K18 — KAPI-4'ÜN DÖRT AĞIR ÇATALI KİLİTLENDİ |
-| 8237 | CHECKPOINT | 20 | K17 | 25 Tem 2026 — oturum 20: K17 — v4'E 4. BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
-| 8263 | CHECKPOINT | 19 | K16 | 25 Tem 2026 — oturum 19: K16 — v4 YAZIM OTURUMU; ÜÇ YENİ ÇATAL KİLİTLENDİ |
-| 8282 | CHECKPOINT | 18 | K15 | 25 Tem 2026 — oturum 18: K15 — ADR 0003 v3'E ÜÇÜNCÜ BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
-| 8309 | CHECKPOINT | 17 | K14 | 25 Tem 2026 — oturum 17: K14 — v3'ÜN DOKUZ KARAR ÇATALI KİLİTLENDİ |
-| 8335 | CHECKPOINT | 16 | K13 | 25 Tem 2026 — oturum 16: K13 — ADR 0003 v2'YE İKİNCİ VE SON KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
-| 8357 | CHECKPOINT | 15 | K12 | 25 Tem 2026 — oturum 15: K12 — TAKVİM ÇATALI KİLİTLENDİ; ÖNCELİK = KALİTE > HIZ |
-| 8374 | CHECKPOINT | 14 | K11 | 25 Tem 2026 — oturum 14: K11 — ADR 0003'ÜN BLOKER ÇATALLARI KİLİTLENDİ + ADR BÖLÜNDÜ |
-| 8392 | CHECKPOINT | - | K10 | 25 Tem 2026 — harici Cowork tasarım oturumu → K10: FRONTEND TASARIM YÖNÜ KİLİTLENDİ, ağırlığı Onur DARALTTI |
-| 8415 | CHECKPOINT | 13 | K9 | 25 Tem 2026 — oturum 13: ARGON2ID PAKET KAPISI KOŞULDU → GEÇTİ (Konscious); K9 kilitlendi |
-| 8440 | CHECKPOINT | 12 | K8 | 20 Tem 2026 — oturum 12 devamı: K8 — slice-3a-auth TASARIMI KİLİTLENDİ, build BEKLEMEDE |
-| 8449 | CHECKPOINT | 12 | K7 | 20 Tem 2026 — oturum 12: İKİ AÇIK KARAR KAPANDI + K7 — kod/spec HENÜZ YAZILMADI |
-| 8458 | CHECKPOINT | 11 | - | 20 Tem 2026 — oturum 11 devamı: ÖDEV KAPSAMI YAZIYA GEÇTİ → ÖNCELİK DEĞİŞTİ |
-| 8473 | CHECKPOINT | 11 | - | 20 Tem 2026 — oturum 11: BÖLÜNMÜŞ İKİ SPEC'E BİR TUR BAĞIMSIZ DENETİM — TEMİZ DEĞİL, 2 BLOKER + 4 MAJÖR |
-| 8493 | CHECKPOINT | 10 | - | 20 Tem 2026 — oturum 10: DÜZELTME-1 [v5] ÇAPRAZ-TUTARLILIK TARAMASI — TEMİZ DEĞİL, 5 BLOKER |
-| 8511 | DEVİR | 9 | - | NOTU (19 Tem 2026 — oturum 9: slice-3a BAĞIMSIZ DOĞRULANDI — DÜZELT (dar kapsam: yalnız D5-a) |
-| 8536 | DEVİR | 8 | - | NOTU (19 Tem 2026 — oturum 8 kapanış: slice-3a BUILD GELDİ, DOĞRULAMA TEMİZ OTURUMA DEVREDİLDİ |
-| 8550 | DEVİR | 8 | - | NOTU (19 Tem 2026 — oturum 8: slice-3a SPEC [v5] HAZIR, BEŞ DENETİM TURU GEÇTİ — KİLİT ONUR'DA |
-| 8570 | DEVİR | 7 | - | NOTU (19 Tem 2026 — oturum 7 devamı: slice-2c BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşulsuz) |
-| 8585 | DEVİR | 7 | - | NOTU (19 Tem 2026 — oturum 7: slice-2b2 BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşullu) |
-| 8601 | DEVİR | 6 | - | NOTU (19 Tem 2026 — oturum 6: slice-2b1 BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşullu) |
-| 8620 | DEVİR | 5 | - | NOTU (18 Tem 2026 — oturum 5: slice-2a SPEC HAZIR + spec-QA GEÇTİ |
-| 8628 | DEVİR | 4 | - | NOTU (18 Tem 2026 — oturum 4: ADR 0002 KİLİTLENDİ |
-| 8637 | DEVİR | 3 | - | NOTU (18 Tem 2026 — oturum 3: slice-1 BUILD + BAĞIMSIZ DOĞRULANDI |
-| 8643 | DEVİR | 3 | - | NOTU (18 Tem 2026 — oturum 3: ADR 0001 KİLİTLENDİ |
-| 8648 | DEVİR | 2 | - | NOTU (18 Tem 2026 — oturum 2 kapanış |
-| 8721 | CHECKPOINT | 53 | K129 | GOREV-A13 KABUL EDİLDİ (Onur kilitledi, 3 Ağu 2026, oturum 53 |
-| 8747 | CHECKPOINT | - | K130 K127 | SPEC KİLİDİ AÇILDI VE YENİLENDİ · K127'NİN İLK GERÇEK SINAVI |
-| 8831 | DEVİR | 53 | - | oturum 53 → 54 (3 Ağu 2026, cihazdan ölçüldü |
-| 8869 | CHECKPOINT | 56 | K135 | ss2-kapisi.py'NİN BLOK YORUM KÖR KAPISI ÖLÇÜLDÜ ve ONARILDI (Onur kilitledi, 4 Ağu 2026, oturum 56 |
-| 8972 | CHECKPOINT | 56 | K136 | SS2 KABUL EDİLDİ (Onur kilitledi, 4 Ağu 2026, oturum 56 |
-| 9006 | CHECKPOINT | 60 | K148 K147 | K147'nin YERİ DEĞİŞTİ: ölçüm W3 v2'nin İÇİNE taşındı (Onur kilitledi, 5 Ağu 2026, oturum 60 |
-| 9053 | CHECKPOINT | 60 | K149 | GitHub katkı grafiği + commit kimliği (Onur kilitledi, 6 Ağu 2026, oturum 60 |
-| 9117 | CHECKPOINT | 60 | K150 | W3 v2 DENETİMDE DÜŞTÜ (oturum 60, 6 Ağu 2026) — 11 bloker |
-| 9202 | CHECKPOINT | 61 | K151 | DÖRT KARAR (Onur kilitledi, 6 Ağu 2026, oturum 61 |
-| 9249 | CHECKPOINT | 61 | K151-B | W3 v2'nin kimliği BAYATTI; beyan edilen sayının HİÇBİR KARŞILIĞI YOK (oturum 61, ÖLÇÜLDÜ |
-| 9266 | CHECKPOINT | 61 | K151-C K44 | sayi-tazeligi.py 1.1.0 → 1.2.0: İKİ ÖLÇÜLMÜŞ KUSUR (oturum 61, K44-a |
-| 9288 | CHECKPOINT | 61 | K152 | BORCLAR.md tavanı 40 KB (Onur kilitledi, 6 Ağu 2026, oturum 61) — ÜÇÜNCÜ GEVŞETME |
-| 9307 | CHECKPOINT | 61 | K153 | spec-kapi-kapsama.py dört alanlı §6b'yi okur (Onur kilitledi, 6 Ağu 2026, oturum 61 |
-| 9330 | DEVİR | 61 | - | oturum 61 → 62 (6 Ağu 2026, ~23:30 +03 |
-| 9395 | DEVİR | 61 | - | EKİ — oturum 61 (commit sonrası, ÖLÇÜLDÜ |
-| 9422 | CHECKPOINT | 62 | K157 K156 K155 | K155 · K156 · K157 — OTURUM 62: R8 DÜRÜSTÇE KIRMIZI YANDI, W3 v3 YERİNE YÜRÜYEN İSKELET YAZILDI |
-| 9545 | CHECKPOINT | 62 | K158 | T5 ERTELENDİ ve SINIR BEYAN EDİLDİ (Onur kilitledi, 6 Ağu 2026, oturum 62 |
+| 223 | CHECKPOINT | 66 | K167 K127 | GOREV-W3b v3 KİLİTLENDİ (Onur, 8 Ağu 2026, oturum 66) · K127 şartı KARŞILANDI |
+| 284 | DEVİR | 65 | - | NOTU — oturum 65 → 66 (8 Ağu 2026, 13:35 +03; tarih cihazdan TZ='Europe/Istanbul' date ile ÖLÇÜLDÜ |
+| 353 | CHECKPOINT | - | K166 K127 | o65: GOREV-W3b YAZILDI, K127 DENETİMİNDE DÜŞTÜ, ONARILDI (8 Ağu 2026 |
+| 407 | CHECKPOINT | - | K165 | o65: ADR 0004 GÖVDESİ v2 DE DENETİMDE DÜŞTÜ (8 Ağu 2026, ÜÇ bağımsız denetçi |
+| 510 | DEVİR | 64 | - | NOTU — oturum 64 → 65 (8 Ağu 2026, 08:23 +03; tarih cihazdan TZ='Europe/Istanbul' date ile ÖLÇÜLDÜ |
+| 595 | CHECKPOINT | - | K164 K127 | o64: ADR 0004 GÖVDESİ K127 DENETİMİNDE DÜŞTÜ (8 Ağu 2026 |
+| 669 | CHECKPOINT | - | K163 | o64: İKİ KIRMIZI KAPATILDI · M2b ÖLÜ KURGU · core.autocrlf ÖLÜ BEYAN (8 Ağu 2026, Onur *"önerini uygula"* dedi |
+| 745 | DEVİR | 63 | - | NOTU — oturum 63 → 64 (7 Ağu 2026, ~23:15 +03; tarih cihazdan TZ='Europe/Istanbul' date ile ölçüldü |
+| 822 | CHECKPOINT | - | K162 K159 K158 | K158 + K159-b BEYANLARI YAZILDI · README İLK KEZ VAR · 120/120 ÖLÇÜLDÜ (7 Ağu 2026, o63 |
+| 859 | CHECKPOINT | - | K161 K159 | K159'UN ÜRÜN KUSURU KAPANDI · KAPI TASLAĞI DENETİMDE DÜŞTÜ (7 Ağu 2026, o63, Onur kilitledi |
+| 910 | CHECKPOINT | 63 | K160 | BORCLAR.md SIKIŞTIRILDI (7 Ağu 2026, oturum 63, Onur kilitledi |
+| 1351 | CHECKPOINT | 63 | K159 | İSTEMCİNİN İZOLASYONU: AYNI KÖKENDEN SERVİS (7 Ağu 2026, oturum 63, Onur kilitledi |
+| 1417 | DEVİR | 60 | - | NOTU — oturum 60 → 61 (5 Ağu 2026, cihazdan Get-Date ile ölçüldü |
+| 1481 | CHECKPOINT | 60 | K147 | ÖNCE ÖLÇ, SONRA v2 (Onur kilitledi, 5 Ağu 2026, oturum 60 |
+| 1504 | CHECKPOINT | 60 | K146 | GOREV-W3 v1 YAZILDI ve BAĞIMSIZ DENETİMDE DÜŞTÜ (oturum 60, 5 Ağu 2026 |
+| 1542 | CHECKPOINT | 60 | K145 | ERRATUM: W2 mutant tablosunun hedef sütunu (Onur kilitledi, 5 Ağu 2026 22:46 TSİ, oturum 60 |
+| 1570 | CHECKPOINT | 60 | K144 | W2 KABUL EDİLDİ (Onur kilitledi, 5 Ağu 2026 22:46 TSİ, oturum 60 |
+| 1624 | DEVİR | 59 | - | NOTU — oturum 59 → 60 (5 Ağu 2026, 22:14 TSİ, cihazdan Get-Date ile ölçüldü |
+| 1698 | CHECKPOINT | 59 | K143 | W2 BUILD KOŞTU ve COWORK BAĞIMSIZ KABUL KOŞUMUNU YAPTI (5 Ağu 2026, oturum 59, gece |
+| 1748 | CHECKPOINT | 59 | K141 | OTURUM 59: ONUR'UN YEDİ KİLİDİ · GOREV-W2 v1→v3 · İKİ DENETİM TURU (5 Ağu 2026 |
+| 1817 | CHECKPOINT | 59 | K142 | GOREV-W2 v3 KİLİTLENDİ (Onur kilitledi, 5 Ağu 2026, oturum 59 |
+| 1847 | DEVİR | 58 | - | NOTU — oturum 58 → 59 (5 Ağu 2026 07:21 TSİ, cihazdan Get-Date ile ölçüldü; bulut saati de aynı değeri verdi — |
+| 1899 | CHECKPOINT | 58 | K140 | W1 STATİK MUTANTLARI GERÇEK REPODA KOŞTU; BAĞIMSIZ DENETİM ÜÇ BLOKER BULDU (oturum 58, 5 Ağu 2026 |
+| 1939 | CHECKPOINT | 58 | K139 | BORCLAR.md TAVANI: KİLİT COWORK'E DEVREDİLDİ, TAVAN YÜKSELTİLMEDİ (oturum 58 |
+| 1973 | CHECKPOINT | 57 | K138 | GOREV-W1 KABUL EDİLDİ (Onur kilitledi, 5 Ağu 2026, oturum 57 |
+| 2021 | CHECKPOINT | 57 | K137 | GOREV-W1 v2 KİLİTLENDİ (Onur, 4 Ağu 2026, oturum 57 |
+| 2085 | CHECKPOINT | 55 | K134 | SS2 T0–T8 UYGULANDI (Claude Code) + COWORK KABUL KOŞUMU · R8 SÖNDÜ (oturum 55 |
+| 2131 | CHECKPOINT | 55 | K133 | SS2 v3 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 55 |
+| 2190 | CHECKPOINT | - | K133-EK | DURUM.md §5 BUDANDI (Onur kilitledi, aynı oturum |
+| 2216 | CHECKPOINT | 54 | K132 | K132 · SS2 İKİ TUR DENETİMDEN GEÇTİ, İKİSİNDE DE KİLİTLENEMEDİ · R8 SERT DURAK YANDI (3 Ağu 2026, oturum 54 |
+| 2278 | CHECKPOINT | 54 | K131 K95 | K131 · OTURUM 54 AÇILIŞI: 10/10 ÖLÇÜLDÜ · DEVİR NOTUNUN ÜÇ MADDESİ ÖLÜ ÇIKTI · K95'İN "ÖLÇÜLMEDİ" SORUSU ÖLÇÜL |
+| 2308 | CHECKPOINT | 52 | K128 | K128 · A13 KRİTER 1–6 COWORK'ÇE DOĞRULANDI; 7–8 PUSH BEKLİYOR (oturum 52, 3 Ağu 2026 |
+| 2347 | CHECKPOINT | 52 | K127 | K127 · KİLİT ÖNCESİ BAĞIMSIZ DENETİM ZORUNLU + A13 DÜZELTİLDİ VE YENİDEN KİLİTLENDİ (Onur kilitledi, 3 Ağu 202 |
+| 2394 | CHECKPOINT | - | K127 | KURALIN KENDİSİ (Onur kilitledi |
+| 2410 | CHECKPOINT | 52 | K126 | K126 · GOREV-A13 KİLİTLENDİ (Onur kilitledi, 3 Ağu 2026, oturum 52 |
+| 2462 | CHECKPOINT | 52 | K125 | K125 · GOREV-A13 YAZILDI VE ÖLÇÜLDÜ — KİLİT ADAYI (oturum 52, 3 Ağu 2026 |
+| 2527 | CHECKPOINT | 51 | K124 | K124 · GOREV-A12 KABUL EDİLDİ (Onur kilitledi, 3 Ağu 2026, oturum 51 |
+| 2600 | CHECKPOINT | 51 | K123 | K123 · A12 KRİTER 0 ISIRDI: İKİ KÂĞIT İDDİASI YANLIŞLANDI · ŞIK 2 + ÜÇ ŞART KİLİTLENDİ (3 Ağu 2026, oturum 51  |
+| 2660 | CHECKPOINT | 51 | K122 | K122 · OTURUM 51 AÇILIŞI: 10/10 ÖLÇÜLDÜ · A12 TABANI ALINDI · SPEC'TE BAYAT SAYI BULUNDU (3 Ağu 2026, oturum 5 |
+| 2721 | CHECKPOINT | 50 | K121 | K121 · GOREV-A11 KABUL EDİLDİ (Onur kilitledi, 2 Ağu 2026, oturum 50 |
+| 2772 | CHECKPOINT | 50 | K120 | K120 · A11 KABUL KOŞUMU TAMAMLANDI: 16/17 ISIRDI, M141 KÖR AYAK — KABUL EDİLMEDİ (2 Ağu 2026, oturum 50 |
+| 2842 | CHECKPOINT | 49 | K119 | K119 · A11 BAĞIMSIZ KABUL DENETİMİ: KISMİ GEÇTİ, KABUL EDİLMEDİ (2 Ağu 2026, oturum 49 |
+| 2889 | CHECKPOINT | 49 | K118 K117 | K117 · BORCLAR.md TAVANI 24 KB · K118 · A12 SPEC'İ (2 Ağu 2026, oturum 49 · Onur: *"önerini yap"* |
+| 2944 | CHECKPOINT | 49 | K116 | K116 · D0 DARALTILDI, Y1 KAÇAĞI KİLİTLENDİ, A11 v2 HAZIR (2 Ağu 2026, oturum 49 · Onur DÖRT kilit verdi |
+| 2992 | CHECKPOINT | 49 | K115 | K115 · ÇEVRİMDIŞI ÖLÇÜLDÜ; AĞ-DÖNÜŞ TETİKLEYİCİSİ YOK (2 Ağu 2026, oturum 49 · Onur İKİ kilit verdi |
+| 3051 | CHECKPOINT | 49 | K114 | K114 · ORTAM.md AYRILDI, AÇILIŞTA OKUNUR (2 Ağu 2026, oturum 49 · Onur kilitledi |
+| 3107 | DEVİR | 48 | K113 K112 K111 | NOTU (2 Ağu 2026 — oturum 48 → 49: .NET 10 (K111) · cihaz senkron kanıtı (K112) · bulgu kapatıldı (K113) |
+| 3191 | CHECKPOINT | 48 | K113 K112 | K112 BULGUSU KAPATILDI: YEREL YAZMA ARTIK İTMEYİ TETİKLİYOR (2 Ağu 2026, oturum 48 · Onur kilitledi |
+| 3241 | CHECKPOINT | 48 | K112 | ③ CİHAZDA UÇTAN UCA SENKRON: YÜRÜYEN İSKELET KOŞTU (2 Ağu 2026, oturum 48 |
+| 3282 | CHECKPOINT | 48 | K111 | .NET 10 GEÇİŞİ KAPANDI (2 Ağu 2026, oturum 48 · Onur kilitledi) — *spec yazılmadan, koşan deneyle* |
+| 3359 | DEVİR | 47 | K108 | NOTU (2 Ağu 2026 — oturum 47 → 48: K108 kapısı doğdu, A9c KABUL, D5 kapandı |
+| 3465 | CHECKPOINT | 47 | K110 | GOREV-A9c KABUL EDİLDİ; D5 KÖR KAPISI KAPANDI (2 Ağu 2026 — oturum 47 |
+| 3521 | CHECKPOINT | 47 | K109 | GOREV-A9c v2 KİLİTLENDİ (2 Ağu 2026 — oturum 47 |
+| 3547 | CHECKPOINT | 47 | K108 | KAPI ADI ÇAKIŞMASI ÖLÇÜLDÜ; KİMLİK SPEC-YEREL İLAN EDİLDİ; KAPISI YAZILDI (2 Ağu 2026 — oturum 47 |
+| 3616 | DEVİR | 46 | - | NOTU (2 Ağu 2026 — oturum 46 → 47: A10 KABUL, R8 DÜŞTÜ, push doğrulandı |
+| 3664 | CHECKPOINT | 46 | K107 | 1 Ağu 2026, oturum 46 · .gitignore KAYNAK-KÜMESİ TUZAĞI KAPANDI (Onur kilidi) · PUSH kuralı TEYİT EDİLDİ |
+| 3692 | CHECKPOINT | 46 | K106 | 1 Ağu 2026, oturum 46 · GOREV-A10 KABUL EDİLDİ · R8 DÜŞTÜ (80 satır ürün kodu) |
+| 3746 | CHECKPOINT | 46 | K105 | 1 Ağu 2026, oturum 46 · GOREV-A10 v2 KİLİTLENDİ (Onur) · PUSH kuralının kapsamı |
+| 3779 | CHECKPOINT | 46 | K104 | 1 Ağu 2026, oturum 46 · R8 SERT DURAK ISIRDI · GOREV-A10 v1→v2 (tek tur, iki mercek) · İKİ TASARIM KİLİDİ |
+| 3841 | CHECKPOINT | 45 | K103 | 1 Ağu 2026, oturum 45 · GOREV-A9c İKİ BAĞIMSIZ DENETİM TURU GÖRDÜ (v1→v3) · CLAUDE.md ölü beyanı KAPANDI |
+| 3915 | CHECKPOINT | 45 | K102 | 1 Ağu 2026, oturum 45 · .NET 10 adım 3–5 · A9b altın küme DENETLENDİ · D5 onarımı KİLİTLENDİ (GOREV-A9c) |
+| 4000 | CHECKPOINT | 45 | K101 K73 | 1 Ağu 2026, oturum 45 · Açılış 9 adım ÖLÇÜLDÜ · K73 budaması · .NET 10 adım 1–2 KAPANDI |
+| 4182 | CHECKPOINT | 44 | K100 K26 | 1 Ağu 2026, oturum 44 · A9b KABUL · A9 KAPANDI (Cowork bağımsız ölçtü, K26 |
+| 4254 | CHECKPOINT | 44 | K99 | 1 Ağu 2026, oturum 44 · GOREV-A9b v2 KİLİTLENDİ (Onur) + iki alt kilit |
+| 4296 | CHECKPOINT | 44 | K98 | 1 Ağu 2026, oturum 44 · GOREV-A9b v2 DENETİMDEN GEÇTİ — KİLİT ONUR'DA |
+| 4360 | CHECKPOINT | 44 | K97 K34 | 1 Ağu 2026, oturum 44 · AÇILIŞ ÖLÇÜMÜ · K34-f ATFI KESİNLEŞTİ · İKİ DÜZELTME NOTU |
+| 4489 | CHECKPOINT | 43 | K96 K73 | 1 Ağu 2026, oturum 43 · DURUM.md T2 SARI ISIRDI ⇒ BUDANDI (K73) |
+| 4501 | CHECKPOINT | 43 | K94 | 1 Ağu 2026, oturum 43 · GOREV-A9 ÜRÜN+KAPI KABUL, DİLİM KAPANMADI — kriter 12 AÇIK |
+| 4556 | CHECKPOINT | 43 | K95 | 1 Ağu 2026, oturum 43 · YOL HARİTASI KİLİTLERİ (Onur) |
+| 4581 | CHECKPOINT | 43 | K93 | 1 Ağu 2026, oturum 43 · GOREV-A9 v3 KİLİTLENDİ — bir denetim turu 15 bloker buldu, üçü mimariyi değiştirdi |
+| 4638 | CHECKPOINT | 43 | K92 | 1 Ağu 2026, oturum 43 · AÇILIŞ ÖLÇÜLDÜ · İKİ BAYAT SATIR DÜZELTİLDİ · SIRADAKİ İŞ ⑤ KİLİTLENDİ |
+| 4680 | CHECKPOINT | 42 | K91 K26 | 1 Ağu 2026, oturum 42 · GOREV-A8 BUILD KABUL EDİLDİ — Cowork beyana güvenmeden ÖLÇTÜ (K26) |
+| 4740 | CHECKPOINT | 42 | K90 | 30 Tem 2026, oturum 42 · GOREV-A8 KİLİTLENDİ: metin kaybı BEŞ GERÇEK EKRANDA · iki denetim turu, sekiz bloker |
+| 4813 | CHECKPOINT | 42 | K89-DÜZELTME | 2 — 30 Tem 2026, oturum 42 · KİMLİK BEYANI SON YAZIMDAN ÖNCE ÖLÇÜLMÜŞ — KAPI ÜÇÜNCÜ KEZ ISIRDI |
+| 4837 | CHECKPOINT | 42 | K89-DÜZELTME | 30 Tem 2026, oturum 42 · KAPI KENDİ YAZARINI İKİ KEZ DAHA ISIRDI — ÖLÇÜM GERİLEMESİ KAPATILDI |
+| 4859 | CHECKPOINT | 42 | K89 | 30 Tem 2026, oturum 42 · ① KAPI-TETİK TABLOSU YAZILDI (KAPILAR.md) + DÖRT BAYAT SATIR ÖLÇÜLEREK DÜZELTİLDİ |
+| 4885 | CHECKPOINT | 40 | K88 K34 K26 | 30 Tem 2026, oturum 40 · 4a + 2a ONARILDI (Code, K34-f) ve BAĞIMSIZ DOĞRULANDI (Cowork, K26) |
+| 4899 | CHECKPOINT | 40 | K87 K26 | 30 Tem 2026, oturum 40 · A‑7 BUILD K26 İLE BAĞIMSIZ DOĞRULANDI (COWORK) · üç Onur kararı · BORCLAR budandı |
+| 4913 | CHECKPOINT | 40 | K86 K21 | 30 Tem 2026, oturum 40 · A‑7 BUILD BİTTİ VE CİHAZDA DOĞRULANDI · v4'ün iki kilidi tuttu · kriter 7 şartlı PASS |
+| 5012 | CHECKPOINT | 39 | K85 K26 | 30 Tem 2026, oturum 39 · BAĞIMSIZ DENETİM (K26) BLOKER BULDU · GOREV-A7 v4 · ÇÖZÜM ÖLÇÜLDÜ |
+| 5092 | CHECKPOINT | 39 | K84 | 30 Tem 2026, oturum 39 · GOREV-A7 SPEC'İ YAZILDI · KÖR KAPI KOŞARAK ÖLÇÜLDÜ · KİLİT VE BUILD ONUR'DA |
+| 5175 | CHECKPOINT | 39 | K83-DÜZELTME | 30 Tem 2026, oturum 39 · TARİH KUSURU: BULUT UTC ≠ ONUR'UN TAKVİMİ (kapı yakaladı, el üretti |
+| 5197 | CHECKPOINT | 39 | K83 | 29 Tem 2026, oturum 39 · RADAR DURDUR KİLİDİ · DURUM.md §8 ⇒ BORCLAR.md · İKİ BAYAT SAYI ÖLÇÜLEREK DÜZELTİLDİ  |
+| 5302 | DEVİR | 38 | - | NOTU — oturum 38 → 39 (30 Tem 2026) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 5414 | CHECKPOINT | 38 | K82 | 29 Tem 2026, oturum 38: K82 — oturum-sagligi.py DOĞDU ve İLK KOŞUMDA KENDİ YANLIŞ-POZİTİFİNİ ÜRETTİ |
+| 5441 | DEVİR | 37 | - | NOTU — oturum 37 → 38 (29 Tem 2026 |
+| 5535 | CHECKPOINT | 37 | K81 K79 | G12 KABUL EDİLDİ + K79/3 DARALTILDI (29 Tem 2026, oturum 37 · Onur onayladı |
+| 5616 | CHECKPOINT | 37 | K80 | ORTAMI KİM KALDIRIR: kural CLAUDE.md'ye yazıldı (29 Tem 2026, oturum 37 · Onur kilitledi |
+| 5657 | CHECKPOINT | 37 | K79 | G12 SPEC'İ KİLİTLENDİ (29 Tem 2026, oturum 37 · Onur kilitledi |
+| 5717 | CHECKPOINT | 37 | K78 | slice-3e YÜRÜYEN İSKELET KABUL EDİLDİ (29 Tem 2026, oturum 37 · Onur onayladı |
+| 5796 | CHECKPOINT | 37 | K77 | slice-3e TASARIM KİLİDİ (29 Tem 2026, oturum 37 · Onur kilitledi |
+| 5877 | DEVİR | 36 | - | oturum 36 → 37 [29 Tem 2026] |
+| 5911 | CHECKPOINT | 36 | K76 | R10 KABUL EDİLDİ · G11-A9 KÖR AYAK onarıldı · D2 kural 3 daraltması KİLİTLENDİ [29 Tem 2026, oturum 36] |
+| 5982 | CHECKPOINT | 36 | K75 K46 | R10 TASARIMI KİLİTLENDİ: rozet KUYRUKTAN türetilir + K46 AÇILDI [28 Tem 2026, oturum 36] |
+| 6073 | CHECKPOINT | 35 | K74 K72 | 28 Tem 2026 · oturum 35 KAPANIŞ: K74 — R9 KABUL EDİLDİ (Cowork'ün kendi koşumu); K72 §5'ten ÇEKİLDİ |
+| 6166 | CHECKPOINT | 35 | K73 | 28 Tem 2026 · oturum 35: K73 — KABUL EDİLEN DİLİMİN KİLİTLERİ §5'TEN ÇEKİLİR; belge-tavan-kapisi.py DOĞDU |
+| 6259 | CHECKPOINT | 35 | K72 | 28 Tem 2026 · oturum 35: K72 — R9 KİLİDİ: P6/D4 DARALTILDI; spec yazıldı, DENETLENDİ, KIRILDI, düzeltildi |
+| 6358 | CHECKPOINT | 35 | K71 | 28 Tem 2026 · oturum 35: K71 — KABUL KRİTERİ 9 ÖLÇÜLDÜ (GEÇTİ); R9 KUSURU DOĞDU; DURUM.md §8 ARŞİVLENDİ |
+| 6461 | CHECKPOINT | 34 | K70 | 28 Tem 2026 · oturum 34 KAPANIŞ: K70 — slice-3d (ÇEKME) KABUL EDİLDİ; spec KİLİTLENDİ |
+| 6548 | CHECKPOINT | 34 | K69 | 28 Tem 2026 · oturum 34: K69 — slice-3d spec'i YAZILDI; üç karar kilitlendi |
+| 6842 | CHECKPOINT | 33 | K68 | 28 Tem 2026 · oturum 33: K68 — slice-3d (ÇEKME) TASARIM KİLİDİ + üç ölçüm bulgusu |
+| 6923 | CHECKPOINT | 32 | K67 | 28 Tem 2026 · oturum 32 KAPANIŞ: K67 — iddia-kapisi.py; iki kör sınıf mekanikleşti |
+| 6970 | CHECKPOINT | 32 | K26 | 28 Tem 2026 · oturum 32 — slice-3c BAĞIMSIZ DOĞRULANDI (K26); dört bulgu |
+| 7073 | CHECKPOINT | 32 | K64 | 27 Tem 2026 · oturum 32 KAPANIŞ: K64 — spec v2 KİLİTLENDİ |
+| 7099 | CHECKPOINT | 32 | K63 | 27 Tem 2026 · oturum 32: K63 — spec v2, İKİ BAĞIMSIZ DENETÇİ SPEC'İ KIRDI |
+| 7173 | CHECKPOINT | 32 | K62 | 27 Tem 2026 · oturum 32: K62 — slice-3c spec'i yazıldı, D0–D6 kilitlendi |
+| 7225 | CHECKPOINT | 32 | K61 | 27 Tem 2026 · oturum 32 AÇILIŞ: K61 — dev-kimlik kalkanı KİLİTLENDİ |
+| 7270 | CHECKPOINT | 31 | K60 | 27 Tem 2026 — oturum 31 KAPANIS: K60 kapıya çevrildi + adım 3 engeli ölçüldü |
+| 7308 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: slice-3b KAPANDI — A2 8/8, commit 5df3caf |
+| 7359 | CHECKPOINT | 31 | K59 | 27 Tem 2026 — oturum 31: K59 — SPEC v6; A2'nin SAĞLANAMAZ ŞARTI ÖLÇÜMLE ONARILDI |
+| 7406 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: T8+T9 BAĞIMSIZ DOĞRULANDI — 1 MAJÖR, 4 MİNÖR BULGU |
+| 7465 | CHECKPOINT | 31 | K58 | 27 Tem 2026 — oturum 31: K58 — TAVAN 12→32 KB + ARŞİV DİZİNİ |
+| 7522 | CHECKPOINT | 31 | - | 27 Tem 2026 — oturum 31: G3 ADJUDİKASYONU + TAŞIMA/T8 BAĞIMSIZ DOĞRULAMASI |
+| 7597 | CHECKPOINT | 30 | K57 | EK (26 Tem 2026 — oturum 30: K57 KESİNLEŞTİ + sayi-tazeligi.py DOĞDU |
+| 7650 | CHECKPOINT | 30 | K57 | 26 Tem 2026 — oturum 30: K57 — BAYAT ÇAPRAZ-ATIF KESİMİ; ARAÇ SENKRONU |
+| 7765 | CHECKPOINT | 29 | K56 | 26 Tem 2026 — oturum 29: K56 — REPO ASCII KÖKE TAŞINIYOR; KAPI SUSTURULMADI |
+| 7785 | CHECKPOINT | 29 | K54 K53 | 26 Tem 2026 — oturum 29: K53 VERİMLİLİK REFORMU + K54 SPEC v4 (KİLİT GÜNCELLEMESİ) |
+| 7829 | CHECKPOINT | 29 | K52 | 26 Tem 2026 — oturum 29: K52 — SPEC KİLİTLENDİ; esdeger-mutant SINIFI BUILD'E DEVREDİLDİ |
+| 7843 | CHECKPOINT | 29 | K51 | 26 Tem 2026 — oturum 29: K51 — RADAR KIRMIZI'DA MEKANİKLEŞTİR KİLİTLENDİ; ARAÇ YAZILDI VE İLK KOŞUMDA ÜÇ DENET |
+| 7862 | CHECKPOINT | 29 | K50 K49 | 26 Tem 2026 — oturum 29: K50 — RED-TEAM v2'Yİ DE KIRDI; K49'UN ÖNGÖRDÜĞÜ GERİ DÜŞÜŞ TETİKLENDİ |
+| 7885 | CHECKPOINT | 29 | K48 | 26 Tem 2026 — oturum 29: K48 — SPEC v1 ÜÇ BAĞIMSIZ DENETÇİ TARAFINDAN YIKILDI; SONRA DENETÇİLER DE DENETLENDİ  |
+| 7916 | CHECKPOINT | 29 | K47 | 26 Tem 2026 — oturum 29: K47 — SPEC'İN DÖRT ÇATALI KİLİTLENDİ; DEVİR NOTUNUN İKİ VARSAYIMI ÖLÇÜMLE YANLIŞLANDI |
+| 7948 | CHECKPOINT | 29 | K46 | 26 Tem 2026 — oturum 29 açılış: K46 — RADAR KIRMIZI'DA DÖRT ŞIK SUNULDU, ONUR DARALTI KİLİTLEDİ |
+| 7965 | DEVİR | 28 | - | NOTU (26 Tem 2026 — oturum 28 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 8002 | CHECKPOINT | 28 | K45 | 26 Tem 2026 — oturum 28: K45 — MEKANİK KAPI YAZILDI VE KENDİNİ KANITLADI (12/12); DESIGN.md v1 YAZILDI; KONTRA |
+| 8016 | CHECKPOINT | 28 | K44 | 26 Tem 2026 — oturum 28: K44 — RADAR slice-3b'Yİ DE ISIRDI (R3); KİLİT = MEKANİKLEŞTİR, ÖNCE ARAÇ SONRA BELGE. |
+| 8029 | CHECKPOINT | 28 | K43 | 26 Tem 2026 — oturum 28: K43 — dart MCP SUNUCUSU KURULDU VE ARAÇ KÜMESİ ÖLÇÜLDÜ; COWORK'ÜN KENDİ İDDİASI YANLI |
+| 8047 | CHECKPOINT | 28 | K42 | 26 Tem 2026 — oturum 28: K42 — slice-3b DÖRT ÇATAL KİLİTLENDİ; CEPHE ARTIK İSTEMCİDİR |
+| 8079 | CHECKPOINT | 28 | K41 | 26 Tem 2026 — oturum 28 açılış+kilit: K41 — RADAR KIRMIZI'DA DÖRT ŞIKTAN DURDUR KİLİTLENDİ; ADR 0003 v7 OLDUĞU |
+| 8105 | CHECKPOINT | 26 | K40 K38 | 26 Tem 2026 — oturum 26 EK: K40 — PROJE RADARI KURULDU VE KOŞTU; HÜKÜM KIRMIZI; RADAR K38'İ BAĞIMSIZ OLARAK DO |
+| 8119 | CHECKPOINT | 27 | K39 | 26 Tem 2026 — oturum 27: K39 — İKİ KİLİT: BU EL YAZIM ELİDİR (ARACI KOŞAR, ONARMAZ) · ATIF DENETİMİNİN EKSENİ  |
+| 8159 | CHECKPOINT | 26 | K38 | 26 Tem 2026 — oturum 26 EK: K38 — ADR 0003'ÜN UZAMASININ KÖK NEDENİ ÖLÇÜLDÜ; ÜÇ YAPISAL KARAR KİLİTLENDİ |
+| 8175 | CHECKPOINT | 27 | - | 26 Tem 2026 — oturum 27 açılış: PROTOKOL TAM KOŞTU; OTURUM 26'NIN BEYAN ETTİĞİ OKUMA SINIRI KAPANDI |
+| 8190 | CHECKPOINT | 26 | K37 | 26 Tem 2026 — oturum 26 açılış: K37 — ÜÇ ÇATAL KİLİTLENDİ; B6-1'İN ÖLÇÜMÜ TURDAN ÖNCE KOŞTU |
+| 8244 | CHECKPOINT | 25 | K36 | 26 Tem 2026 — oturum 25: K36 — v7 YAZIMI BAŞLADI; BELGE YARIMDIR. 4/9 BLOKER + 3/31 MAJÖR KAPANDI, 1 YENİ MAJÖ |
+| 8288 | CHECKPOINT | 25 | K35 | 26 Tem 2026 — oturum 25: K35 — ADR 0002 ALTI TURDAN SONRA İLK KEZ AÇILDI; DOKUZ ATIFIN SEKİZİ TUTTU, BİRİ UYDU |
+| 8310 | CHECKPOINT | 25 | K34 | 26 Tem 2026 — oturum 25 açılış: K34 — KAPI-6'NIN YEDİ ÇATALININ YEDİSİ DE KİLİTLENDİ |
+| 8331 | DEVİR | 23 | - | NOTU (25 Tem 2026 — oturum 23 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 8366 | DEVİR | 24 | - | NOTU (25 Tem 2026 — oturum 24 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 8413 | CHECKPOINT | 24 | K33 | 25 Tem 2026 — oturum 24 kapanış: K33 — 6. TUR KAPI KOŞTU; HÜKÜM KİLİTLENEMEZ; ARACIN ALTIN KÜMESİ İLK KEZ MUTA |
+| 8425 | CHECKPOINT | 24 | K32 | 25 Tem 2026 — oturum 24 açılış: K32 — 6. TUR BAĞIMSIZ KAPI AÇILDI; DÖRT ÇATAL KİLİTLENDİ |
+| 8439 | DEVİR | 22 | - | NOTU (25 Tem 2026 — oturum 22 GERÇEK kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 8478 | CHECKPOINT | 23 | K31 | 25 Tem 2026 — oturum 23 kapanış: K31 — v6 BİTTİ VE KANONİK YOLA ALINDI; ARAÇ 30 → 7 BULGU |
+| 8491 | CHECKPOINT | 23 | K30 | 25 Tem 2026 — oturum 23 açılış: K30 — v6'NIN KALAN İŞİ İÇİN DÖRT KARAR KİLİTLENDİ |
+| 8506 | DEVİR | 22 | - | NOTU (25 Tem 2026 — oturum 22 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 8548 | DEVİR | 21 | - | NOTU (25 Tem 2026 — oturum 21 kapanış) — ÖNCEKİ DEVİR NOTLARINI GEÇERSİZ KILAR |
+| 8609 | CHECKPOINT | 21 | K24 | 25 Tem 2026 — oturum 21 kapanış: K24 — ADR 0003 v5 YAZILDI, KANONİK YOLA ALINDI |
+| 8610 | CHECKPOINT | 22 | K29 K5 K3 | 25 Tem 2026 — oturum 22: K29 — v6 YAZIMI BAŞLADI; K1=0 · K2=0 · K3=0 · K5=0. BELGE YARIMDIR |
+| 8633 | CHECKPOINT | 22 | K28 | 25 Tem 2026 — oturum 22: K28 — KAPI-5'İN DÖRT ADAY BLOKERİ KİLİTLENDİ |
+| 8643 | CHECKPOINT | 22 | K27 | 25 Tem 2026 — oturum 22: K27 — ÖLÇÜM ARACI ONARILDI, ALTIN KÜME 21 KONTROLE ÇIKTI, FARKLI MODELLE SALDIRILDI |
+| 8656 | CHECKPOINT | 22 | K26 | 25 Tem 2026 — oturum 22: K26 — ÜRETEN ≠ DENETLEYEN YENİDEN TANIMLANDI: OTURUM SINIRI DEĞİL, KANAL KURALI |
+| 8669 | CHECKPOINT | 22 | K25 | 25 Tem 2026 — oturum 22: K25 — 5. TUR BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
+| 8696 | CHECKPOINT | 21 | K23 K22 K1 | 25 Tem 2026 — oturum 21: K23 — v5 YAZIMI SÜRÜYOR: 8/9 BLOKER + K22-a KAPANDI, K1=0 |
+| 8707 | CHECKPOINT | 21 | K22 K20 | 25 Tem 2026 — oturum 21: K22 — Y-1 VE K20-a KİLİTLENDİ; v5 YAZIMI DEVAM EDİYOR |
+| 8713 | CHECKPOINT | 21 | K21 | 25 Tem 2026 — oturum 21: K21 — OTURUM DEVRİ ARTIK ÖLÇÜME BAĞLIDIR; HİSSE DEĞİL |
+| 8726 | CHECKPOINT | 21 | K20 | 25 Tem 2026 — oturum 21 kapanış: K20 — v5 YAPISI KURULDU, İÇERİK YARIM; ÖLÇÜM ARACI CANLI |
+| 8738 | CHECKPOINT | 21 | K19 | 25 Tem 2026 — oturum 21: K19 — v5 YAZIM OTURUMU AÇILDI; DÖRT ÇATAL DAHA KİLİTLENDİ |
+| 8756 | CHECKPOINT | 20 | K18 | 25 Tem 2026 — oturum 20 devamı: K18 — KAPI-4'ÜN DÖRT AĞIR ÇATALI KİLİTLENDİ |
+| 8766 | CHECKPOINT | 20 | K17 | 25 Tem 2026 — oturum 20: K17 — v4'E 4. BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
+| 8792 | CHECKPOINT | 19 | K16 | 25 Tem 2026 — oturum 19: K16 — v4 YAZIM OTURUMU; ÜÇ YENİ ÇATAL KİLİTLENDİ |
+| 8811 | CHECKPOINT | 18 | K15 | 25 Tem 2026 — oturum 18: K15 — ADR 0003 v3'E ÜÇÜNCÜ BAĞIMSIZ KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
+| 8838 | CHECKPOINT | 17 | K14 | 25 Tem 2026 — oturum 17: K14 — v3'ÜN DOKUZ KARAR ÇATALI KİLİTLENDİ |
+| 8864 | CHECKPOINT | 16 | K13 | 25 Tem 2026 — oturum 16: K13 — ADR 0003 v2'YE İKİNCİ VE SON KAPI KOŞTU → HÜKÜM: KİLİTLENEMEZ |
+| 8886 | CHECKPOINT | 15 | K12 | 25 Tem 2026 — oturum 15: K12 — TAKVİM ÇATALI KİLİTLENDİ; ÖNCELİK = KALİTE > HIZ |
+| 8903 | CHECKPOINT | 14 | K11 | 25 Tem 2026 — oturum 14: K11 — ADR 0003'ÜN BLOKER ÇATALLARI KİLİTLENDİ + ADR BÖLÜNDÜ |
+| 8921 | CHECKPOINT | - | K10 | 25 Tem 2026 — harici Cowork tasarım oturumu → K10: FRONTEND TASARIM YÖNÜ KİLİTLENDİ, ağırlığı Onur DARALTTI |
+| 8944 | CHECKPOINT | 13 | K9 | 25 Tem 2026 — oturum 13: ARGON2ID PAKET KAPISI KOŞULDU → GEÇTİ (Konscious); K9 kilitlendi |
+| 8969 | CHECKPOINT | 12 | K8 | 20 Tem 2026 — oturum 12 devamı: K8 — slice-3a-auth TASARIMI KİLİTLENDİ, build BEKLEMEDE |
+| 8978 | CHECKPOINT | 12 | K7 | 20 Tem 2026 — oturum 12: İKİ AÇIK KARAR KAPANDI + K7 — kod/spec HENÜZ YAZILMADI |
+| 8987 | CHECKPOINT | 11 | - | 20 Tem 2026 — oturum 11 devamı: ÖDEV KAPSAMI YAZIYA GEÇTİ → ÖNCELİK DEĞİŞTİ |
+| 9002 | CHECKPOINT | 11 | - | 20 Tem 2026 — oturum 11: BÖLÜNMÜŞ İKİ SPEC'E BİR TUR BAĞIMSIZ DENETİM — TEMİZ DEĞİL, 2 BLOKER + 4 MAJÖR |
+| 9022 | CHECKPOINT | 10 | - | 20 Tem 2026 — oturum 10: DÜZELTME-1 [v5] ÇAPRAZ-TUTARLILIK TARAMASI — TEMİZ DEĞİL, 5 BLOKER |
+| 9040 | DEVİR | 9 | - | NOTU (19 Tem 2026 — oturum 9: slice-3a BAĞIMSIZ DOĞRULANDI — DÜZELT (dar kapsam: yalnız D5-a) |
+| 9065 | DEVİR | 8 | - | NOTU (19 Tem 2026 — oturum 8 kapanış: slice-3a BUILD GELDİ, DOĞRULAMA TEMİZ OTURUMA DEVREDİLDİ |
+| 9079 | DEVİR | 8 | - | NOTU (19 Tem 2026 — oturum 8: slice-3a SPEC [v5] HAZIR, BEŞ DENETİM TURU GEÇTİ — KİLİT ONUR'DA |
+| 9099 | DEVİR | 7 | - | NOTU (19 Tem 2026 — oturum 7 devamı: slice-2c BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşulsuz) |
+| 9114 | DEVİR | 7 | - | NOTU (19 Tem 2026 — oturum 7: slice-2b2 BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşullu) |
+| 9130 | DEVİR | 6 | - | NOTU (19 Tem 2026 — oturum 6: slice-2b1 BAĞIMSIZ DOĞRULANDI — SÜRÜM UYGUN (koşullu) |
+| 9149 | DEVİR | 5 | - | NOTU (18 Tem 2026 — oturum 5: slice-2a SPEC HAZIR + spec-QA GEÇTİ |
+| 9157 | DEVİR | 4 | - | NOTU (18 Tem 2026 — oturum 4: ADR 0002 KİLİTLENDİ |
+| 9166 | DEVİR | 3 | - | NOTU (18 Tem 2026 — oturum 3: slice-1 BUILD + BAĞIMSIZ DOĞRULANDI |
+| 9172 | DEVİR | 3 | - | NOTU (18 Tem 2026 — oturum 3: ADR 0001 KİLİTLENDİ |
+| 9177 | DEVİR | 2 | - | NOTU (18 Tem 2026 — oturum 2 kapanış |
+| 9250 | CHECKPOINT | 53 | K129 | GOREV-A13 KABUL EDİLDİ (Onur kilitledi, 3 Ağu 2026, oturum 53 |
+| 9276 | CHECKPOINT | - | K130 K127 | SPEC KİLİDİ AÇILDI VE YENİLENDİ · K127'NİN İLK GERÇEK SINAVI |
+| 9360 | DEVİR | 53 | - | oturum 53 → 54 (3 Ağu 2026, cihazdan ölçüldü |
+| 9398 | CHECKPOINT | 56 | K135 | ss2-kapisi.py'NİN BLOK YORUM KÖR KAPISI ÖLÇÜLDÜ ve ONARILDI (Onur kilitledi, 4 Ağu 2026, oturum 56 |
+| 9501 | CHECKPOINT | 56 | K136 | SS2 KABUL EDİLDİ (Onur kilitledi, 4 Ağu 2026, oturum 56 |
+| 9535 | CHECKPOINT | 60 | K148 K147 | K147'nin YERİ DEĞİŞTİ: ölçüm W3 v2'nin İÇİNE taşındı (Onur kilitledi, 5 Ağu 2026, oturum 60 |
+| 9582 | CHECKPOINT | 60 | K149 | GitHub katkı grafiği + commit kimliği (Onur kilitledi, 6 Ağu 2026, oturum 60 |
+| 9646 | CHECKPOINT | 60 | K150 | W3 v2 DENETİMDE DÜŞTÜ (oturum 60, 6 Ağu 2026) — 11 bloker |
+| 9731 | CHECKPOINT | 61 | K151 | DÖRT KARAR (Onur kilitledi, 6 Ağu 2026, oturum 61 |
+| 9778 | CHECKPOINT | 61 | K151-B | W3 v2'nin kimliği BAYATTI; beyan edilen sayının HİÇBİR KARŞILIĞI YOK (oturum 61, ÖLÇÜLDÜ |
+| 9795 | CHECKPOINT | 61 | K151-C K44 | sayi-tazeligi.py 1.1.0 → 1.2.0: İKİ ÖLÇÜLMÜŞ KUSUR (oturum 61, K44-a |
+| 9817 | CHECKPOINT | 61 | K152 | BORCLAR.md tavanı 40 KB (Onur kilitledi, 6 Ağu 2026, oturum 61) — ÜÇÜNCÜ GEVŞETME |
+| 9836 | CHECKPOINT | 61 | K153 | spec-kapi-kapsama.py dört alanlı §6b'yi okur (Onur kilitledi, 6 Ağu 2026, oturum 61 |
+| 9859 | DEVİR | 61 | - | oturum 61 → 62 (6 Ağu 2026, ~23:30 +03 |
+| 9924 | DEVİR | 61 | - | EKİ — oturum 61 (commit sonrası, ÖLÇÜLDÜ |
+| 9951 | CHECKPOINT | 62 | K157 K156 K155 | K155 · K156 · K157 — OTURUM 62: R8 DÜRÜSTÇE KIRMIZI YANDI, W3 v3 YERİNE YÜRÜYEN İSKELET YAZILDI |
+| 10074 | CHECKPOINT | 62 | K158 | T5 ERTELENDİ ve SINIR BEYAN EDİLDİ (Onur kilitledi, 6 Ağu 2026, oturum 62 |
 
 > Bu blok `python araclar/hafiza-dizin.py .` ile URETILIR; elle duzenleme bir sonraki kosumda EZILIR. Yeni checkpoint bu satirin ALTINA eklenir.
 <!-- DIZIN:SON -->
+
+## K167 — `GOREV-W3b` v3 **KİLİTLENDİ** (Onur, 8 Ağu 2026, oturum 66) · `K127` şartı KARŞILANDI
+
+**Tarih cihazdan ÖLÇÜLDÜ:** `TZ='Europe/Istanbul' date` ⇒ **2026-08-08 16:17 +03** (bulut UTC 13:17).
+**Oturum sağlığı (açılış):** **147.826 token** ⇒ 🟢 YEŞİL (`CLAUDE.md` kanonik eşikleri, `K156`).
+
+### KİLİT ÖNCESİ BAĞIMSIZ DENETİM (`K127` — çıktı yolu ZORUNLU)
+Denetim **kilitten ÖNCE** koştu, oturum 65'te: **Cowork projesi → `oturum-65-GOREV-W3b-denetimi.md`**,
+agentId **`a0fe359b259f347d8`** (262.118 token, 42 araç çağrısı). v1 **DÜŞTÜ** (5 bloker + 15 major +
+9 minor), v2 onarıldı. **Tur 2 AÇILMADI** (`K53/1`) — Onur v3'ü kilitledi.
+
+### ONUR'UN ÜÇ KARARI (denetçinin açık bıraktıklarını kapattı)
+1. **`MJ9` — `D-W3b-1` hiç ölçülmemiş bir değeri kilitliyordu** (`Istemci:KokDizin = "wwwroot"`;
+   o63'ü mümkün kılan yapılandırma **repoda yok**). ⇒ **KİLİTLE + ÖLÇÜMÜ GÖREVE AL.**
+   `B-W3b-1`'in *"AYRI TUR"* borcu **kabul kriteri 8**'e **terfi etti**: canlı `GET /` ⇒ 200 +
+   gövdede `flutter_bootstrap.js` + `GET /_BUILD.json` ⇒ 200 + 🔴 **NEGATİF KONTROL** (sunucu başka
+   bir çalışma dizininden kalkarsa `GET /` **200 dönmemeli** — `N4`'ün bedeli **beyan değil ÖLÇÜM**
+   olur). El: **Claude Code** (`K80`).
+2. **`MJ11` — `R8`'in getirisi ince.** `radar.py`:41-42 ürün yolu `src/,lib/,app/`, hariç `araclar/`
+   ⇒ `T1`/`T3`/`T4`/`T5` **sayılmaz**; geriye `appsettings.json`'daki **1–3 satır JSON** kalır ve o
+   `src/` altında olduğu için `R8` **teknik olarak söner**. ⇒ **YETER — BEYAN ET, KOŞ.**
+   Beyan spec `§8/7`'de. *Alternatif (spec'i genişlet) reddedildi: kilitli spec'i açmak `K127`
+   denetimini de yeniden gerektirirdi.*
+3. **Desktop Commander ÜÇÜNCÜ oturumdur YOK** ⇒ commit ve ortam ölçümü (`docker`/`netstat`/`adb`)
+   **Claude Code'a** verildi (spec `§4b`).
+
+### SPEC v2 → v3 (11 cerrahi değişiklik, hepsi doğrulandı)
+`§0b` kilit kararları tablosu · `D-W3b-1` o66 eki · `§4b`'ye iki el satırı · kriter 5'e **yeni mayın** ·
+**kriter 8** (canlı HTTP + negatif kontrol) · `§8/1` **ÖLÜ BEYAN ONARIMI** (*"hiçbir canlı HTTP ölçümü
+yok"* — kilitle birlikte ölü olacaktı) · `§8/7` `R8` beyanı · `§6b`'de `B-W3b-1`/`B-W3b-3` kapatma
+yolları · `§9`'daki **ikinci ölü beyan** (*"hiçbir mekanik kapıdan geçmedi"*) onarıldı.
+**Kilit sonrası ölçüm:** `spec-kapi-kapsama.py` **EXIT 0** (4 kapı · 5 kural · 18 mutant · 5 beyanlı
+borç) · `kapi-ad-teklik-kapisi.py` **YEŞİL** · FFFD 0 · CRLF 0.
+
+### 🔴 BU OTURUMUN KENDİ ÜRETTİĞİ İKİ KUSUR (dürüstçe)
+1. **`D1` ölçümünü `cp` ile bozdum.** Mount'ta `oturum-sagligi.py` **EXIT 124** verdiği için repoyu
+   cihaz-yerel `/tmp`'ye kopyaladım; **düz `cp` bütün mtime'ları bugüne çekti** ⇒ D1'in *"dosya bugün
+   yeniden yazılmış"* ayağı **her dosyada** yandı: **20 bulgu, 9'u SAHTE**. `cp -a` ile yeniden
+   ölçüldü ⇒ **11 gerçek bulgu**. **Ders: ölçüm ortamını kuran el, ölçtüğü özelliği bozmadığını da
+   kanıtlamak zorundadır.**
+2. **23 dar git çağrısını arka arkaya koşturdum ve `.git/index.lock` OLUŞTU** (0 b). Üç kontrollü
+   izolasyon testinde çağrıların **hiçbiri tek başına** kilit bırakmadı ⇒ hangi çağrının bıraktığı
+   **İZOLE EDİLEMEDİ** (`[TAHMİN]`: `timeout` bir git sürecini index yenileme ortasında öldürdü).
+   Kilit `_SILINECEKLER/o66/`'ya alındı. `ORTAM.md`'ye **yeni madde** yazıldı: *dar komut listesi
+   TEK ÇAĞRI için doğrudur; her git turunun sonunda kilit YOKLANIR.*
+
+### KAPANAN / DARALAN
+- 🟢 **`B-O65-1` KAPANDI** — `DURUM.md` 31.581 → **31.025 b** (pay 1.187 → **1.743**), `belge-tavan`
+  **YEŞİL**. Budanan metinler `_SILINECEKLER/o66/BUDANAN-DURUM-metinleri-o66.txt`.
+- 🟢 **`ORTAM.md`'deki `os.replace` maddesinin KAPSAMI DARALTILDI** — ölçüldü: `WinError 5` yalnız
+  **Windows/PowerShell** yolunda; **`device_bash`'in Linux VM'inden `os.replace` ÇALIŞIYOR**
+  (`os.remove` yine **yasak**) ⇒ o elde K60 takası **tek adımlıdır**.
+- 🟢 İki **ölü beyan** spec içinde kapatıldı (yukarıda).
+- 🔴 **AÇIK KALDI:** `R8` (ürün kodu **git'ten ölçüldü: 0**) · `B-O62-2` (dördüncü oturum) ·
+  `B-O63-2`/`B-O63-5` · `B-W3b-1`…`5` · ortam ölçümü **ÖLÇÜLEMEDİ** (DC yok; `device_bash` izole bir
+  Linux VM — `/mnt/c` yok, docker yok, adb yok; `computer_*` **'click' kipinde**).
+
+### SIRADAKİ
+**Claude Code:** `T1`+`T2`+`T3`+`T4` (`GOREV-W3b` v3) — **ürün kodu** · commit · ortam ölçümü.
+**Cowork sonra:** dört kapı + 20 mutant (16 Cowork · 4 Claude Code) → kabul hükmü → `ADR 0004` gövdesi.
+
+
+## DEVİR NOTU — oturum 65 → 66 (8 Ağu 2026, 13:35 +03; tarih cihazdan `TZ='Europe/Istanbul' date` ile ÖLÇÜLDÜ)
+
+**Proje:** `C:\dev\Momentum` · dal `main`.
+🔴 **HEAD ve PUSH DURUMU BURAYA YAZILMAZ, AÇILIŞTA ÖLÇÜLÜR (`K82-b`, `DURUM.md` §2 adım 7).**
+Anlık kayıt (**canlı DEĞİL**): kapanışta `8f5d643` — **o63'ten beri değişmedi**; o64 ve o65 **hiç commit
+atmadı** (Desktop Commander iki oturumdur YOK, mount'tan commit `ORTAM.md` ile yasak).
+**Commit'siz: SEKİZ izlenen dosya + ÜÇ yeni dosya** (`GOREV-W3b-web-yayina-alma.md` ·
+`KANIT/W3/07-…o64.md` · `KANIT/W3/08-…o65.md`).
+**Kapanış sağlığı: 517.864 token 🟢 YEŞİL** (bulutta `--transcript`; `K21` SARI eşiğine **32k**).
+Devir **Onur'un açık kararıyla** yazıldı.
+
+### o65 ne yaptı
+`K165` — **`ADR 0004` gövdesi v2 de denetimde DÜŞTÜ** (ÜÇ bağımsız denetçi: A/B **GEÇMEZ**, C **ONARIM
+YETERSİZ**). Onarım **şikâyet edilmeyen doğru bir satırı bozdu** (`IstemciServisi.cs` kimliği) ve
+*"ÖLÇÜLEMEDİ"* beyan edilen gstatic CORP'unu denetçi **fiilen ölçtü** (8 Ağu 09:50 UTC,
+`CORP: cross-origin` **ayakta**). 🔒 **Onur ADR'yi PARK ETTİ.**
+`K166` — **`GOREV-W3b` yazıldı, `K127` denetiminde DÜŞTÜ (5 bloker + 15 major), v2 ONARILDI**;
+`spec-kapi-kapsama.py` **EXIT 0**. Ayrıca `hafiza-dizin.py` mount'ta koşturuldu (dizin **K163–K166**
+içeriyor) ve `ORTAM.md`'ye **üç yeni mayın** yazıldı.
+
+### 🔴 SONRAKİ İŞ (adım adım)
+1. **Açılış protokolünü koş** (`DURUM.md` §2). 🔴 `belge-tavan` **T2 SARI** verecek: `DURUM.md`
+   31.581 b, pay **1.187 b** < eşik 1.638 b ⇒ **checkpoint yazmadan ÖNCE buda** (`B-O65-1`).
+2. **`GOREV-W3b`'yi Onur'a KİLİTLET.** `K127` şartı **karşılandı** (denetçi çıktı yolu §0'da:
+   Cowork projesi `oturum-65-GOREV-W3b-denetimi.md`, agentId `a0fe359b259f347d8`). Kilit checkpoint'i
+   `K167` olur.
+3. 🔴 **KİLİTTEN ÖNCE ONUR'A SOR — denetçinin kapanmayan iki sorusu:**
+   ① `D-W3b-1` **hiç ölçülmemiş** bir değeri kilitliyor: o63 istemciyi sunabilmişti (`KANIT/W3/04` §2:
+   `/` → 200, 1.546 b) ⇒ `Istemci:KokDizin` o gün **bir yerden** geliyordu, ama `launchSettings.json`
+   **yok**, `.csproj`'ta yok, CI'da yok, `docker-compose`'da yok. **o63'ü mümkün kılan yapılandırma
+   repoda YOK.** ② `radar.py`:41-42 ürün yolları `src/`,`lib/`,`app/`; hariç `araclar/` ⇒ `T1`
+   (`.gitignore`) sayılmaz · `T3`/`T4` (`araclar/*.py`) hariç · `T5` (`KANIT/**`) sayılmaz ⇒ geriye
+   `appsettings.json`'daki **1–3 satır JSON** kalır ⇒ **bu görev `R8`'i söndürmeyebilir.**
+4. **Claude Code'a `GOREV-W3b`'yi ver** (`T1`–`T5`). 🔴 **o64 ve o65 `urun_kodu_satiri` = 0** ⇒ `R8`
+   **SERT DURAK**: o66 **ürün koduyla başlar**, yeni belge/ADR/spec/araç turu **açılmaz** (`K53/4`).
+5. Sonra: kapı koşumu + 20 mutant (16'sı Cowork, 4'ü Claude Code — mount `unlink` yasağı) → kabul
+   hükmü → **`ADR 0004` gövdesi ölçülmüş gerçeklerle** → backend CI (`D-A13-4`).
+
+### AÇIK KARARLAR / BLOKERLER
+· 🔴 `B-O62-2` **dördüncü oturum açık** — `verify.ps1` Onur'un makinesinde **koşulmadı**.
+· 🔴 `B-O65-1` **YENİ** — `DURUM.md` payı 1.187 b (T2 SARI); bir sonraki checkpoint budama ister.
+· 🔴 `B-O63-2` (bayrak CI'da zorlanmıyor) — kapanış yolu artık **var**: `W3b/G51` yazıldı, henüz koşmadı.
+· 🔴 `B-O63-5` · `B-O64-1…5` · `B-O62-7`/`8` · `B-W3b-1…5` (yeni, spec §6b'de).
+· Radar **KIRMIZI** — yapısal, `K83`/DURDUR kilitli, dört-şık **tekrarlanmaz**.
+
+### UYARILAR (o65'te ÖLÇÜLDÜ)
+· 🔴 **`hafiza-dizin.py` mount'ta `EXIT 1` verir AMA İŞİNİ YAPAR** (`os.remove` yasak). `.yedek` artığı
+  `mv` ile `_SILINECEKLER/o65/`'e alınır. **EXIT 1 ≠ iş yapılmadı.**
+· 🔴 **Ortam-duyarlı aracı BULUT KOPYASINDA koşma:** `sayi-tazeligi` bulutta KIRMIZI, **cihazda TEMİZ**
+  (playwright farkı). **Kapı hükmü cihazda koşulur.**
+· 🔴 **`computer_*` terminalde 'click' kipinde** — görebilir, tıklayabilir, **YAZAMAZ** ⇒ DC ikamesi değil.
+· 🔴 `git fetch` Cowork'ten **403 proxy** ⇒ ileri/geri **ÖLÇÜLEMEZ**.
+· 🔴 Mount'ta **tüm-ağaç `git status`/`git diff` YASAK** (EXIT 124 + `index.lock`); dar komutlar çalışır.
+· Commit mesajına **çift tırnak** yazma. **PUSH DAİMA ONUR'DA.** Author `onurkesimbjk@gmail.com`.
+· `_SILINECEKLER/o65/`: `k165-checkpoint.md` · `BUDANAN-DURUM-metinleri-o65.txt` · `HEAD-8f5d643.tar.gz`
+  · üç `PROJE_HAFIZA` yedeği. **SANDBOX SİLEMEZ.**
+
+### DOSYA KİMLİKLERİ (son yazımdan SONRA ölçüldü · FFFD 0 · CRLF 0)
+`DURUM.md` **31.581 b · 3301BAF4** · `ORTAM.md` **15.043 b · EFCDBBFF** ·
+`PROJE_RADAR.jsonl` **351.361 b · 4049D665** · `GOREV-W3b-web-yayina-alma.md` **28.091 b · E27B125B** ·
+`KANIT/W3/08-…o65.md` **49.900 b · 875D13DB**. *(`PROJE_HAFIZA.md` kendi kimliğini YAZMAZ — `K82`.)*
+
+### KAPI DURUMU (kapanışta, CİHAZDA ölçüldü)
+`tek-kopya` 🟢 · `sayi-tazeligi` 🟢 TEMİZ · `kapi-ad-teklik` 🟢 · `spec-kapi-kapsama` **EXIT 0** ·
+`belge-tavan` 🟡 **T2 SARI** · `oturum-sagligi` **YEŞİL** / `D1` 🟡 · `radar` 🔴 (yapısal) ·
+`index.lock` **YOK** · 🔴 ortam ölçümü (`docker`/`netstat`/`adb`) **ÖLÇÜLEMEDİ** (DC yok).
+
+---
+
+## K166 — o65: `GOREV-W3b` YAZILDI, `K127` DENETİMİNDE DÜŞTÜ, ONARILDI (8 Ağu 2026)
+
+🔴 **DENETÇİ ÇIKTI YOLU (`K127`'nin ZORUNLU ŞARTI):** Cowork projesi →
+**`oturum-65-GOREV-W3b-denetimi.md`** · agentId **`a0fe359b259f347d8`** — 262.118 token, 42 araç çağrısı.
+**HÜKÜM: KİLİTLENEMEZ — 5 bloker + 15 major + 9 minor.** ⇒ v1 kilitlenmedi; **v2 onarıldı**.
+
+**Artefakt:** `GOREV_CLAUDE_CODE/GOREV-W3b-web-yayina-alma.md` — v1 18.877 b / `5A6B7F4E` →
+**v2 28.091 b / `E27B125B`** (FFFD 0 · CRLF 0). `spec-kapi-kapsama.py` **EXIT 0**
+(4 kapı `G48`–`G51` · 5 kural · 18 mutant + 2 susmalı · 5 beyanlı borç) · `kapi-ad-teklik` **YEŞİL**.
+
+**Kapsam (Onur park kararının uygulaması):** `ADR 0004` PARK; bu görev yalnız `W3`'ün `T1`/`T2`'si +
+yapılandırma. 🔒 **Onur kilitledi:** `Istemci:KokDizin` = `appsettings.json`'da **göreli `"wwwroot"`**
+(ürün kodu değişmez; alternatif `ContentRootPath` reddedildi — denetimden geçmiş 128 satırın kimliği
+ve `M-W3-2` yeniden ölçülmeliydi).
+
+### Beş bloker — hepsi bu elin ürettiği kusurlardı
+1. **`K81` biçim ihlali:** kapı başlıkları `### W3b/G48` yazılmıştı ⇒ araç `[S0]` + **EXIT 3**;
+   `CLAUDE.md` K81 bu vakayı kelimesi kelimesine tarif ediyor. 🔴 Üretici ve denetçi **bağımsız olarak
+   aynı anda** ölçtü. Ayrıca `§6b`'nin ikinci alanı Türkçe ek taşıyordu (`D-W3b-1'in`) ⇒ `K153`
+   ayrıştırıcısı eşleştiremiyordu (4×`S2` + 4×`S6`).
+2. **`W3b/G51/b` HER TEMİZ BUILD'İ KIRMIZI YAKARDI:** `canvasKitBaseUrl` **yokluğu** ölçülüyordu ama
+   dizge bootstrap'ın üçlü işlecinde **zaten geçiyor**. 🔴 **Düşen kapı taslağı (`KANIT/W3/06-…o63.py`
+   :28-34) bu tuzağı ADIYLA yazmıştı ve o dosya 34 KB olduğu için AÇILMAMIŞTI** — üretici bunu kendi
+   *"ne ölçülemedi"*sinde yazmıştı. **Ders: kendi beyan ettiğin ölçülmemişlik, bir sonraki turun
+   blokeridir.** ⇒ ölçüt **ATAMAYA** çevrildi + taban pini (`b2`) + mutant `M263`.
+3. **`§4c` kendi kriter 6'sına kördü:** *"docker gerekmez"* deniyordu; `verify.ps1` →
+   `Testcontainers.PostgreSql 4.13.0` → **gerçek konteyner**. `K80` üç adımı yazıldı.
+4. **`W3b/G50/d` *"alan dolu mu"* ölçüyordu** — `GOREV-W3`'ün `G43/f`'i **karşılaştırma** yapıyordu;
+   W3b zayıflatmış ve **kaybı beyan etmemişti** (gizlenmiş sınır). ⇒ karşılaştırmaya çevrildi,
+   `kaynakSha` üretim kuralı tanımlandı (*"bir dizinin sha256'sı yoktur"*).
+5. **Kriter 5 tüm-ağaç `git status` istiyordu** — `ORTAM.md`'nin **iki kez ısırmış** mayını, üstelik
+   çalışan dar komut aynı satırda yazılı. ⇒ dar komuta çevrildi, el atandı.
+
+### 🔴 DENETÇİNİN AÇTIĞI, KAPANMAYAN İKİ SORU (Onur'a)
+- **`D-W3b-1` hiç ölçülmemiş bir değeri kilitliyor:** o63 istemciyi sunabilmişti (`04` §2: `/` → 200)
+  ⇒ `Istemci:KokDizin` o gün **bir yerden** geliyordu; ama `launchSettings.json` **yok**, `.csproj`'ta
+  yok, CI'da yok, `docker-compose`'da yok ve `04`:161 *"koşucular Onur'un diskine YAZILMADI"* diyor.
+  **o63'ü mümkün kılan yapılandırma repoda YOK.**
+- **`R8`'in ölçülen getirisi:** `radar.py`:41-42 ürün yolları `src/`, `lib/`, `app/`; hariç `araclar/`
+  ⇒ `T1` (`.gitignore`) sayılmaz · `T3`/`T4` (`araclar/*.py`) hariç · `T5` (`KANIT/**`) sayılmaz ⇒
+  geriye `appsettings.json`'daki **1–3 satır JSON** kalır. `K53/4` + `K154` ile birlikte:
+  **bu görev `R8`'i söndürmeyebilir.**
+
+### o65 KAPANIŞ ÖLÇÜMLERİ (cihazda, kanonik ortam)
+`tek-kopya` 🟢 · `sayi-tazeligi` 🟢 TEMİZ · `kapi-ad-teklik` 🟢 · `spec-kapi-kapsama` **EXIT 0** ·
+`belge-tavan` 🟡 **T2 SARI** (`DURUM.md` 31.581 b, pay **1.187 b** < eşik 1.638 b) ⇒ **borç `B-O65-1`:
+bir sonraki checkpoint DURUM.md'yi budamadan yazılamaz.** `hafiza-dizin.py` mount'ta **EXIT 1** verir
+ama **işini yapar** (`ORTAM.md`'ye yazıldı). Kimlikler: `DURUM.md` **31.581 b / `3301BAF4`** ·
+`ORTAM.md` **15.043 b / `EFCDBBFF`** · `PROJE_RADAR.jsonl` **350.298 b** · `GOREV-W3b` **28.091 b /
+`E27B125B`**. 🔴 **Ortam ölçümü (`docker`/`netstat`/`adb`) ÖLÇÜLEMEDİ** — DC yok, `computer_*`
+terminalde **'click' kipinde** (yazamaz).
+
+---
+
+## K165 — o65: `ADR 0004` GÖVDESİ **v2 DE DENETİMDE DÜŞTÜ** (8 Ağu 2026, ÜÇ bağımsız denetçi)
+
+🔴 **DENETÇİ ÇIKTI YOLLARI (`K127`'nin ZORUNLU ŞARTI):**
+· Cowork projesi → **`oturum-65-ADR0004-v2-DENETIMDE-DUSTU-uc-denetci.md`** (bulguların TAM metni)
+· Düşen taslak → **`KANIT/W3/08-ADR0004-GOVDE-v2-o65.md`** (49.900 b · `875D13DB` · FFFD 0 · CRLF 0)
+· Denetçi **A** (çürütme/kör-nokta) `aee64360b1bcea455` — 253.352 token, 57 araç çağrısı → **GEÇMEZ**
+· Denetçi **B** (iç-çelişki/kilit-çatışması/aşırı-iddia) `a3561ffabfb74fb2a` — 257.555 token, 55 çağrı → **GEÇMEZ**
+· Denetçi **C** (onarım doğrulama) `ae242e3d46eeea13e` — 244.768 token, 51 çağrı → **ONARIM YETERSİZ**
+🔴 **o64'ten FARKI:** denetçilere **TAM REPO** verildi (ürün kaynak dosyaları, `araclar/izolasyon-olc.py`,
+denetim raporları, `BORCLAR.md`, CI iş akışı). o64 denetçilerinin *"NE ÖLÇÜLEMEDİ"* listesi tam buydu —
+ve açılınca **ADR'nin ürün hakkındaki dört cümlesi kaynağıyla çeliştiği** ölçüldü.
+
+⇒ **Gövde v2 KİLİTLENMEDİ ve `docs/ADR/0004-*.md`'ye YAZILMADI.** İskelet (**3.656 b**) yerinde.
+
+### 🔴 ONARIM, ŞİKÂYET EDİLMEYEN DOĞRU BİR SATIRI BOZDU (üç denetçi de buldu)
+§2.B'ye `IstemciServisi.cs` = **113 satır · 5.753 b · `1bf90719eb4a83ce`** yazıldı. **Diskten ölçüm:
+128 satır · 6.671 b · `eeddf193542b53b7`.** `04` §1'in değerleri `/v{version}` onarımından **ÖNCEKİ**
+sürümdür; `05` §2 ve `DURUM.md`:66 **128** der; `PROJE_RADAR.jsonl` o63 kaydı `urun_kodu_satiri: 143`
+(=128+15). 🔴 **v1 gövdesi BURAYI DOĞRU YAZMIŞTI**; o64 bulgusu `A-7` yalnız §3 tablosundan şikâyetçiydi.
+**Ders: bir bulguyu onaran el, şikâyet EDİLMEYEN komşu satırı da bozabilir — onarım turu da bir
+kusur üreticisidir ve kendi diff'ini ölçmelidir.**
+
+### 🔴 "ÖLÇÜLEMEDİ" BEYAN EDİLDİ AMA ÖLÇÜM ELDE VARDI
+Gövde §2.E④/§7/4: *"`gstatic`'in bugünkü CORP başlığı ÖLÇÜLEMEDİ — bu ortamdan yanıt başlığı ölçme
+yolu yok."* **Denetçi C aynı bulut konteynerinden 8 Ağu 2026 09:50 UTC'de ölçtü:**
+`fonts.gstatic.com/s/roboto/*.woff2` ⇒ **HTTP/2 200 · `cross-origin-resource-policy: cross-origin` ·
+`ACAO: *`** · `www.gstatic.com/flutter-canvaskit/` ⇒ **404 · `CORP: cross-origin`**.
+⇒ **`O3`'ün (5 Ağu) ölçümü TAZE ve ayakta.** Beyan edilmiş sınır (denetçi C): gerçek
+`flutter-canvaskit/<engineRevision>/canvaskit.wasm` yolu ölçülemedi (depoda `engineRevision` yok).
+🔴 Denetçi A ayrıca gösterdi: **daha taze bir kayıt zaten vardı** — `KANIT/W3/05` §4 (**7 Ağu**):
+*"`fonts.gstatic.com` bugün `CORP: cross-origin` + `ACAO: *` taşıyor"* ⇒ *"elde tek kayıt `O3`"* da yanlıştı.
+**Ders (`K21`-DÜZELTME'nin kardeşi): ölçemediğini SANMAK, ölçmemekten daha pahalıdır — çünkü
+uydurulmuş belirsizlik ARGÜMAN olarak kullanıldı** (*"bu belirsizliğin kendisi kanıttır"*).
+
+### 🔴 YAPISAL TEŞHİS — belge VAR OLMAYAN artefaktlar hakkında hüküm veriyor
+Ölçüldü (denetçi A + C): `wwwroot` **YOK** (`find` → 0) · `flutter_bootstrap.js` **YOK** ·
+`W3/G43`–`G47` kapılarının **implementasyonu YOK** (`grep -rln "G4[3-7]" araclar/` → boş;
+`izolasyon-olc.py` yalnız `H`+`T` taşır) · `Istemci:KokDizin` **hiçbir `appsettings*.json`'da tanımlı
+değil** · ADR'nin CI zinciri `wwwroot` **üretmiyor**. ⇒ `W3`'ün `T1`–`T4` adımları **fiilen yapılmamış**;
+ADR onların üzerine karar yazıyor. Bu, `K53`'ün ölçülmüş kök nedeninin ta kendisidir.
+🔴 Ayrıca `Program.cs`'te `UseStaticFiles`/`UseDefaultFiles`/`MapFallbackToFile` = **0** ⇒ `W3/G43`'ün
+**yedi ayağının yedisi de** bugünkü ürüne karşı kırık; gövde `G43`'ü **hiç anmıyor**.
+
+### DİĞER ÖLÇÜLMÜŞ BULGULAR (tam liste Cowork projesinde)
+· `izolasyon-olc.py` **`ÖLÇÜLEMEDİ` durumunda EXIT 0** veriyor (denetçi A koşturdu: *"TAM YEŞİL DEĞİL"*
+yazıp çıkış **0**) ⇒ CI'da yeşil; `B-O63-5` bu kusuru düşen taslak için **engel** ilan etmişti.
+· `ServeUnknownFileTypes = true` **üründe CANLI** (`IstemciServisi.cs:107`, kendi ölçülmüş gerekçesiyle) —
+gövde onu *"REDDEDİLDİ, koşumda ÖLÜ"* yazdı; `04` §6/K2 ile bu **karıştırılmış (confounded) bir ölçümdür**.
+· *"`Program.cs`'te üçüncü `IsDevelopment()` doğmasın"* gerekçesi **yanlış**: bugün **zaten üç var**
+(`:50`, `:103`, `:137`); karar **dördüncüyü** engelliyor. Atfedilen *"o60 `BLOKER-3`"* bulgusu
+`00-DENETIM-o60.md`'de **YOK**.
+· `00-DENETIM-o60.md`'nin **§5'i yok** — `H`/`T` tanımı `00-ISKELET-OLCUMU-o62.md` §5'te. Gövde `A-17`
+numara çakışmasını **ilan edip kendisi o çakışmaya düştü**.
+· §0'ın *"hepsi §7'de adıyla yazılıdır"* kefaleti **yanlış**: `B-W3-6/7/8` gövdede **hiç yok**; ayrıca
+`BORCLAR.md`'de `B-W3` dizgesi **0 kez** — o sekiz borç kanonik defterde **yok**.
+· **Checkpoint ihlali (denetçi B+C):** gövdede üç tarihli *"Onur kararı/kilidi"* vardı ve
+`PROJE_HAFIZA.md`'de `o65` **0 kez** geçiyordu. `CLAUDE.md`: *"Checkpoint **anında** yazılır."*
+**Bu checkpoint o ihlalin kapatılmasıdır.**
+· `K40`/`K83` ihlali (denetçi B): gövde `MEKANİKLEŞTİR` şıkkını **kendisi seçip** gerekçesini kendisi
+yazdı; kilit **Onur'dan gelir**. · `K154`/`K53/4` hiç anılmadı: yeni **araç ayağı** kararı `R8` kırmızı
+riskini artırır ve *"araç/betik/belge SAYILMAZ"*.
+· Büyüme ölçüldü: v1 **26.553 b / 393 satır** → v2 **49.900 b / 611 satır** (**+%88**); tekrar **yok**
+(≥2 kez geçen 8-gram 15), **ama** blokerlerin/major'ların **altısı** §0 haritası ↔ gövde arasındaki
+**çapraz-atıf** kusurudur ⇒ `R4`'ün asıl yarısı (*"her büyüme yeni çapraz-atıf kusuru doğurur"*) **doğrulandı**.
+
+### 🟢 DENETÇİLERİN KIRAMADIKLARI (kapsamı gösterir)
+İskelet **3.656 b** + `[ÖLÇÜLMEDİ]` damgası **tam 3 kez**, sorular **1/2/4** (üç denetçi bağımsız) ·
+`B-4` onarımı (`01` `F/5`: ayrı köken **kendi başlıklarıyla** `crossOriginIsolated=true`) · `B-12`
+(`K108`): **27 kapı atfının 27'si önekli, çıplak atıf 0** · `B-13`, `A-9`, `A-13`, `A-14`, `A-16`, `B-8`
+onarımları · §1.2 iki koşullu tablo + `02`→`03` daraltma zinciri · ürün kodu iddialarının kodla
+doğrulanan kısmı (`OnStarting` · `Istemci:KokDizin` · ara katman sırası `:117→:124→:132→:139`) ·
+§2.H'nin `H`/`T` teşhisinin **özü** (araç **kodu** okundu, teşhis **ayakta**) · `adr-kapi-taramasi.py`
+EXIT 1 / `'karar': 0` (iki denetçi yeniden koştu) · `§7/17` `W2` §8 devri.
+
+### o65 AÇILIŞ ÖLÇÜMLERİ (§2, dokuz adım)
+`tek-kopya` 🟢 · `belge-tavan` 🟢 (`DURUM.md` payı **+1.793 b**) · `sayi-tazeligi` 🟢 TEMİZ ·
+`kapi-ad-teklik` 🟢 · `oturum-sagligi` altın küme **30/30** EXIT 0 · `radar` altın küme geçti →
+**KIRMIZI, EXIT 2** (yapısal; `K83`/DURDUR kilitli, dört-şık **tekrarlanmadı**) ·
+git: `HEAD 8f5d643` (= o64 kapanışı ⇒ **Onur commit atmamış**), `user.email` ✓, `index.lock` **YOK**,
+`fetch` **403 proxy ⇒ ileri/geri ÖLÇÜLEMEDİ**, 8 değişik + 1 yeni dosya ·
+sağlık **170.612 → 353.464 token 🟢 YEŞİL** · 🔴 **ortam ölçümü (`docker`/`netstat`/`adb`) ÖLÇÜLEMEDİ —
+Desktop Commander bu oturumda da YOK** (`RefreshMcpTools`: beş sunucu, DC listede değil; `ToolSearch
+"+commander"` sıfır eşleşme; ama `desktop-commander:*` **skill'leri yüklü** ⇒ plugin kurulu, MCP
+sunucusu bağlanmıyor. `.claude-server-commander-logs` klasörü makinede **var** ⇒ daha önce çalışmış;
+log okunamadı: *"Claude desktop window isn't available on the device"*).
+
+### 🔴 o65'İN ÖLÇTÜĞÜ İKİ YENİ DEFTER KUSURU
+1. **`radar D1`:** defter `docs/ADR/0004-…md` için **26.553 b** diyor, **diskte 3.656 b**. o64, gövdenin
+   kimliğini **ADR dosyasının adıyla** deftere yazdı ama gövde oraya **hiç girmedi** ⇒ kayıt yanlış
+   hedefe demirlenmiş. Bu checkpoint ile birlikte deftere `asama: olcum-duzeltme` satırı eklendi.
+2. **Mount I/O ölçüldü:** `os.walk` yapan araçlar (`oturum-sagligi.py`) `device_bash`'in **45 sn
+   tavanını AŞIYOR** (EXIT 124); dosya **okuma** hızlı (1,1 MB → 0,007 s), yavaş olan **dizin yürüme**.
+   Çözüm: `git archive HEAD` (**4,9 sn**, 6,6 MB) ile buluta salt-okunur çalışma kopyası + sha
+   doğrulaması + 9 commit'siz dosyanın üzerine yazılması. **Onur'un diskine tek bayt yazılmadı**
+   (tek istisna `_SILINECEKLER/o65/`, `.gitignore`:97 ile ölçüldü).
+
+### AÇIK — ONUR'UN KARARI BEKLENİYOR
+Üçüncü bir kâğıt onarım turu mu, yoksa `T1`–`T4` ürün kodu (Claude Code) önce mi? **Radar KIRMIZI ve
+`K83`/DURDUR kilitli; iki oturum üst üste ADR gövdesi denetimde düştü** — üçüncü kâğıt turu, radarın
+ölçtüğü kısır döngünün kendisidir. Karar Onur'dan gelir (`K40`).
+
+---
+
+## DEVİR NOTU — oturum 64 → 65 (8 Ağu 2026, 08:23 +03; tarih cihazdan `TZ='Europe/Istanbul' date` ile ÖLÇÜLDÜ)
+
+**Proje:** `C:\dev\Momentum` · dal `main`.
+🔴 **HEAD ve PUSH DURUMU BURAYA YAZILMAZ, AÇILIŞTA ÖLÇÜLÜR (`K82-b`, `DURUM.md` §2 adım 7).**
+Anlık kayıt (**canlı DEĞİL**): kapanışta `8f5d643`. 🔴 **SEKİZ İZLENEN DOSYA + BİR YENİ DOSYA COMMIT'SİZ**
+(o64 hiç commit atmadı — Desktop Commander yoktu, `ORTAM.md` mount'tan commit'i yasaklıyor).
+**Kapanış sağlığı:** **432.642 token 🟢 YEŞİL** (bulutta `--transcript` ile; `K21` SARI eşiğine 117k kaldı).
+Devir **Onur'un açık kararıyla** yazıldı (*"DEVİR — temiz oturum onarsın"*), eşik nedeniyle değil.
+
+### o64 ne yaptı
+`K163` — açılışta iki KIRMIZI kapatıldı (`sayi-tazeligi` 🔴→🟢 TEMİZ · `oturum-sagligi` `D1` 🔴→🟡);
+`M2b` **ölü kurgu** ilan edildi (`B-O64-1`); `ORTAM.md`:31 `core.autocrlf` **ölü beyanı** düzeltildi;
+envanter sayıları yeniden ölçüldü (`B-O64-3`); `DURUM.md` **K73 ile budandı**.
+`K164` — **`ADR 0004` gövdesi yazıldı ve `K127` denetiminde DÜŞTÜ** (6 bloker + 13 major).
+
+### 🔴 SONRAKİ İŞ — `ADR 0004` ONARIMI (adım adım)
+1. **`GOREV_CLAUDE_CODE/GOREV-W3-capraz-koken-izolasyonu.md`'yi TAM OKU — özellikle §1.**
+   🔴 o64 yalnız **§8**'i okudu ve BLOKER-1 tam bundan doğdu. **§1'i okumadan onarıma başlama.**
+2. `KANIT/W3/07-ADR0004-GOVDE-TASLAGI-DENETIMDE-DUSTU-o64.md` (26.553 b · `0C46C8F9`) = düşen gövde.
+   Bulguların **TAM METNİ** Cowork projesinde: **`oturum-64-ADR0004-govdesi-DENETIMDE-DUSTU.md`**.
+3. **BLOKER-1'i kapat:** `GOREV-W3` §1 `O3` (gstatic **`CORP: cross-origin` GÖNDERİYOR**, dokuz istek,
+   5 Ağu 2026) ve `D-W3-3` (*"COEP bloklamasını önlemek için **gerekli değildir**"*) ADR'de **adıyla
+   anılmalı**. `K159-b` **Onur'un kilidi** — ADR onu **değiştiremez**, **çelişkiyi İLAN EDER**.
+4. **BLOKER-2 Onur'a geri sorulur:** CI kararı (`izolasyon-olc.py` `H` ayağı) bayrağı **ölçemez**;
+   `H` yanıt başlıklarını ölçer, başlıkları **ara katman** yazar. `B-O63-2` bu kararla **kapanmaz**.
+   Seçenek üretmeden **Onur'a götür** — bu onun 8 Ağu kilidiydi.
+5. Kalan dört bloker: ③ başlıktaki *"OPFS **Kalıcılığı**"* iddiası daraltılmalı (ölçülen **seçim**,
+   kalıcılık değil) ④ §7'nin dayandığı spec'in **`K150` ile REDDEDİLDİĞİ** yazılmalı ⑤ `M230`
+   çatışması (teslim edilen tasarım spec'in **kendi mutantı**) ⑥ `B-O63-6` gövdede **açılmalı**.
+6. Major'lar: **`K108` ihlali** (kapsam öneksiz `G45/d`/`G43/g`/`G44/b`/`G44/g` ⇒ `W3/G…` yaz) ·
+   §3'ün HTTP hükmü **`05` §3'e** demirlenmeli (`04` §2'yi `05` çürüttü) · §7/7 **ölü beyan**
+   (`<script>` o63'te ölçüldü) · *"HER ORTAMDA"* **Production'da ölçülmedi** beyanı eklenmeli ·
+   *"ayrı köken reddedildi"* gerekçesi **yanlış** (`01` `F/5`: ayrı köken **kendi başlıklarıyla izole
+   oldu**) · *"ÖLÇÜLEREK ÖLÜ"* → **ulaşılamaz** · §3'teki **128 satır** yanlış adımda (`04`: **113**;
+   128 = toplam, `05`'in ölçümü) · üst bloktaki *"beşi de damgalıydı"* **yanlış** (damga **3** kez).
+7. Onarımdan sonra **YENİ bağımsız denetim ZORUNLU** (`K127`). `K53/1` ikinci tura izin verir çünkü
+   BLOKER-2 **mimariyi değiştiren** bir blokerdir.
+8. Sonra: **backend CI (`D-A13-4`) + release.**
+
+### AÇIK KARARLAR / BLOKERLER
+· 🔴 `B-O62-2` **DÖRDÜNCÜ oturum açık** — ürün kodu **Onur'un makinesinde derlenmedi**, `verify.ps1`
+  koşulmadı. Buluttaki 120/120 **Linux** ölçümüdür.
+· 🔴 `B-O64-1` `M2b` ölü kurgu · `B-O64-2` `_olu_hash_avi.py` kökü sabit Windows yolu ·
+  `B-O64-3` envanter sayısını ölçen kapı yok · `B-O64-4` `DURUM.md` §2 adım 7 mount sınırını bilmiyor ·
+  `B-O64-5` `KANIT/W3/` numara çakışması
+· 🔴 `B-O63-1`…`6` (özellikle `B-O63-2` **bu ADR'nin konusu**) · `B-O62-7` (`K61`↔WebSocket) ·
+  `B-O62-8` (`B-11` atomik olmayan göç)
+· Radar **KIRMIZI** — yapısal, `K83`/DURDUR kilitli, dört-şık **TEKRARLANMAZ**
+
+### UYARILAR (o64'te ÖLÇÜLDÜ)
+· 🔴 **Mount'ta TÜM-AĞAÇ `git status`/`git diff` EXIT 124 verir ve `.git/index.lock` BIRAKIR.**
+  o64 devir notunun uyarısına rağmen koştu ve **kilidi fiilen üretti** (`_SILINECEKLER/o64/`'e `mv`
+  edildi). **ÇALIŞAN DAR KOMUTLAR:** `git … diff --name-only -- <tek dosya>` ·
+  `git … ls-files --others --exclude-standard -- <dizin>` · `log --oneline -1` ·
+  `rev-list --left-right --count origin/main...HEAD`. Tam liste `ORTAM.md`'de.
+· 🔴 **`git fetch` Cowork'ten KOŞULAMIYOR** (`403 from proxy`) ⇒ ileri/geri yalnız Onur fetch ettiyse anlamlı.
+· 🔴 **Desktop Commander o64'te YOKTU** (iki kez ölçüldü) ⇒ ortam ölçümü (`docker`/`netstat`/`adb`),
+  `hafiza-dizin.py` ve **commit** yapılamadı. 🔴 **`hafiza-dizin.py` KOŞULMADI ⇒ dizin bloğu `K163`
+  ve `K164`'ü İÇERMİYOR** — DC gelince **ilk iş** o.
+· 🔴 **`core.autocrlf` bu depoda TANIMSIZ**; satır sonu çevrimini `.gitattributes` (`* text=auto eol=lf`)
+  yapar. Kanonik belgeler diskte **CRLF 0**. *(`ORTAM.md`:31 o64'te düzeltildi; koruma DÜŞMEDİ.)*
+· Commit mesajına **çift tırnak ve boşluk yazma**. **Push DAİMA Onur'da.**
+  Author **DAİMA** `onurkesimbjk@gmail.com`.
+· `_SILINECEKLER/o64/` altında: `index.lock.bayat-o64` · `BUDANAN-DURUM-metinleri.txt` (K73 budaması,
+  **aynen** saklandı) · `PROJE_HAFIZA.yedek-o64.md` · `PROJE_HAFIZA.yedek2-o64.md`. **Sandbox silemez.**
+
+### DOSYA KİMLİKLERİ (son yazımdan SONRA ölçüldü)
+```
+DURUM.md                                            30975  937A8E92
+KIMLIKLER.md                                         9429  1B0B9623
+ORTAM.md                                            13133  ECEDB852
+KAPILAR.md                                           5574  272DD1EA
+BORCLAR.md                                          21790  615F9BC5
+PROJE_RADAR.jsonl                                  348205  9ECE5098
+araclar/tazelik-muafiyet.json                        2641  1E3EF29E
+KANIT/W3/07-ADR0004-…-DUSTU-o64.md                  26553  0C46C8F9
+```
+*(`PROJE_HAFIZA.md` kendi kimliğini YAZMAZ — `K82`.)* U+FFFD **0** · CRLF **0**, hepsinde.
+
+### KAPI DURUMU (kapanışta ölçüldü)
+`tek-kopya-kapisi` 🟢 · `belge-tavan-kapisi` 🟢 (`DURUM.md` payı **1.793 b**) · `sayi-tazeligi` 🟢 **TEMİZ** ·
+`kapi-ad-teklik-kapisi` 🟢 · `oturum-sagligi` **YEŞİL** / `D1` 🟡 · `radar` 🔴 (yapısal).
+
+
+
+## K164 — o64: `ADR 0004` GÖVDESİ `K127` DENETİMİNDE DÜŞTÜ (8 Ağu 2026)
+
+🔴 **DENETÇİ ÇIKTI YOLLARI (`K127`'nin ZORUNLU ŞARTI):**
+· Cowork projesi → **`oturum-64-ADR0004-govdesi-DENETIMDE-DUSTU.md`** (bulguların TAM metni)
+· Düşen taslak → **`KANIT/W3/07-ADR0004-GOVDE-TASLAGI-DENETIMDE-DUSTU-o64.md`** (26.553 b)
+· Denetçi **A** (kör-nokta/çürütme merceği) `aecafd5ecb646f518` — 224.384 token, 28 araç çağrısı
+· Denetçi **B** (aşırı-iddia/iç-çelişki/kilit-çatışması merceği) `a825b59210dbebfc6` — 217.332 token, 23 çağrı
+🔴 **Onur'un kilitlediği kurgu (8 Ağu 2026):** iki bağımsız ajan, **farklı mercek**. `K26` gereği
+**Cowork hiçbir bulguyu adjudike etmedi**; Onur'a **ham** getirildi.
+
+**HÜKÜM (denetçi A):** *"altı bloker ve on üç major ile bu gövde `K127` turunu GEÇMEZ."*
+⇒ **Gövde KİLİTLENMEDİ ve `docs/ADR/0004-*.md` DOSYASINA YAZILMADI.** İskelet **yerinde duruyor**.
+
+### 🔴 İKİ DENETÇİNİN BAĞIMSIZ OLARAK AYNI ANDA BULDUĞU İKİ BLOKER
+**BLOKER-1 — `--no-web-resources-cdn` gerekçesi ADR'nin KENDİ kaynağıyla çürütülmüş.**
+Gövde §2.E *"onsuz izolasyon iddiası ÇÜRÜR"* diyor; `GOREV-W3` §1 `O3` (canlı ölçüm, 5 Ağu 2026,
+dokuz istek, hepsi 200) `www.gstatic.com/flutter-canvaskit/*` **ve** `fonts.gstatic.com/s/*.woff2`
+için **`cross-origin-resource-policy: cross-origin`** ölçmüş; `D-W3-3` bunu *"COEP bloklamasını
+önlemek için **gerekli değildir**, değeri çevrimdışı + tedarik-zinciri"* diye kaydetmiş; aynı ölçüm
+hafızada `W3` v1'i düşüren **`B2` blokeridir**. Gövde bu ölçümü **ne alıntılıyor ne çürütüyor**.
+🔴 **KÖK NEDEN YAZAN ELDE:** `GOREV-W3`'ün yalnız **§8**'i okundu, **§1** (ölçümler) okunmadı.
+`K159-b` yürürlükteki bir **kilittir**; ADR onu değiştiremez ama **çelişkiyi İLAN ETMEK ZORUNDADIR**.
+
+**BLOKER-2 — §2.H'nin CI kararı adlandırdığı riski YAPISAL OLARAK ÖLÇEMEZ (kör kapı).**
+Karar CI'da `izolasyon-olc.py` **`H` ayağını** koşturuyor; `H` **yanıt başlıklarını** ölçer ve o
+başlıkları **ara katman** yazar ⇒ `--no-web-resources-cdn` unutulmuş bir build'de **H YEŞİL verir**.
+Bayrağı görebilecek tek ayak (`B`) **denetimde düşüp `araclar/`'a konulmamıştır** (`B-O63-5`).
+⇒ Karar `B-O63-2`'yi **kapatamaz**; `KÖR KAPI YOK` doktrininin ihlali.
+🔴 **Onur'un BUGÜN kilitlediği kararı doğrudan etkiler** ⇒ karar **yeniden ele alınmalıdır**.
+
+### Diğer blokerler (A)
+③ Başlıktaki *"OPFS Kalıcılığı"* ölçülmedi — ölçülen `chosenImplementation=opfsLocks` **dizgesidir**
+(seçim beyanı), *"bir sonraki açılışta OPFS'ten okundu mu"* **ölçülmedi** ⇒ **`K161`'in birebir deseni**.
+④ §7, `K150` ile **REDDEDİLMİŞ** ve kilitlenmemiş bir spec'e dayandırılmış; statü yazılmamış.
+⑤ Teslim edilen tasarım spec'in **kendi mutantıdır** (`M230`: *"başlıklar ayrı dosyaya taşınır"* =
+`Web/IzolasyonBasliklari.cs`), ama gövde aynı kapıyı **canlı koruma** diye gösteriyor.
+⑥ `B-O63-6` §8'de listelenip gövdede **hiç açılmamış** — üstelik gövdenin ana dersi tam onun konusu.
+
+### En ağır major'lar
+`K108` **İHLALİ** (kapsam öneksiz `G45/d`/`G43/g`/`G44/b`/`G44/g`; **mekanik kapısı olan** bir sınıf) ·
+§3'ün HTTP hükmü `05`'in **çürüttüğü** `04` §2'ye demirlenmiş (yine `K161`) · §7/7 **ÖLÜ BEYAN**
+(`<script>` o63'te ölçüldü) · *"HER ORTAMDA"* kararı **Production'da hiç ölçülmedi** (`B5`) ·
+§5'in *"ayrı köken reddedildi"* gerekçesi `01`/`F5` ile **olgusal olarak yanlış** · `credentialless`
+reddinin öncülü yanlış (`fonts.gstatic.com` **kalıyor**) · *"ÖLÇÜLEREK ÖLÜ"* etiketi yanlış (ölçülen
+**ulaşılamazlık**) · §3'te **128 satır** yanlış adıma çivilenmiş (`04`: **113**; 128 = **toplam**) ·
+üst bloktaki *"beşi de `[ÖLÇÜLMEDİ]` damgalıydı"* **ölçülerek yanlışlandı** (damga **3** kez geçiyor).
+
+### 🔴 ARŞİV BÜTÜNLÜĞÜ BULGUSU (A-17) — yeni sınıf
+`KANIT/W3/` içinde **`00` ve `03` indeksleri İKİ AYRI belgeye** işaret ediyor (ölçüm vs denetim raporu):
+`01` *"`03-DENETIM-v2-o60.md`"* der, `02` *"`00-DENETIM-o60.md`"* der, diskteki `00`/`03` ise **ölçüm**
+dosyalarıdır. ⇒ `B1`/`B-2`/`B-6`/`B-11`/`BLOKER-3`/`MAJOR-*` etiketlerini **tanımlayan belgeler
+izlenemiyor**. Borç `B-O64-5`.
+
+### Denetçilerin KIRAMADIKLARI (kapsamı gösterir, boş bırakılmaz)
+§1.2'nin iki koşullu tablosu · `02`→`03` **daraltma zinciri** (gövde ERRATUM'u dürüstçe taşıyor) ·
+bütün sayısal çekirdek · iskeletin 3.656 b'ı (diskten ölçüldü) · Flutter yama farkı beyanı ·
+§2.A/1 ve §2.F'nin **dürüstlük beyanları** · §2.G'nin üç gerekçesi ve `T5` ertelemesi ·
+`M-W3-1`/`M-W3-2` *"ısırdı"* iddiaları · §7'nin diğer **15** maddesi.
+
+### 🔴 DERS
+**`K127` bu turda İŞE YARADI.** o63'te *"kendi kapısını kendi altın kümesiyle kanıtlayan el hâlâ kör bir
+kapı teslim edebilir"* ölçülmüştü; o64 aynısını **belge tarafında** ölçtü: **kendi kaynak kümesini
+eksik okuyan el, kaynağının çürüttüğü bir kararı yazabilir.** İki blokerin ikisi de **yeni ölçüm
+gerektirmiyordu** — bir okuma turuyla bulunabilirdi ve **bulundu**.
+
+### NE ÖLÇÜLEMEDİ
+Denetçilere **ürün kaynak dosyaları** (`Program.cs`, `IzolasyonBasliklari.cs`, `IstemciServisi.cs`),
+`araclar/izolasyon-olc.py`, iki `K127` denetim raporu, `06-…o63.py`, `BORCLAR.md`, `ADR 0001`/`0002`
+ve CI iş akışı **verilmedi** ⇒ BLOKER-2 aracın **tarifine** dayanıyor (koduna değil), ev formatı
+hakkında **hüküm YOK**, borç kimlikleri **dolaylı** doğrulandı. Hiçbir çalışma-zamanı iddiası
+**yeniden koşulmadı** — bu bir **belge** denetimidir.
+
+
+
+## K163 — o64: İKİ KIRMIZI KAPATILDI · `M2b` ÖLÜ KURGU · `core.autocrlf` ÖLÜ BEYAN (8 Ağu 2026, Onur *"önerini uygula"* dedi)
+
+**Açılış (§2, sırayla):** `tek-kopya-kapisi` 🟢 · `belge-tavan-kapisi` 🟢 · **`sayi-tazeligi` 🔴 EXIT 1** ·
+`kapi-ad-teklik` 🟢 · `oturum-sagligi --altin-kume` **30/30** · `radar --altin-kume` 0 → `radar .` **🔴
+(yapısal, K83/DURDUR)**, **`R8` bulgusu YOK** · git `HEAD 8f5d643` (devir notu `691d168` diyordu ⇒ **Onur
+sonradan commit'lemiş**; `K82-b` ile ölçüldü) · `user.email` doğru · **`fetch` ÖLÇÜLDÜ ve DÜŞTÜ**
+(`403 from proxy`), `FETCH_HEAD` 19:24 ⇒ *"0 geri"* **bayat yerel referanstır** · **`oturum-sagligi` `D1` 🔴** ·
+**ortam (adım 9) ÖLÇÜLEMEDİ — Desktop Commander bu oturumda YOK** (iki kez ölçüldü: `ToolSearch` +
+`RefreshMcpTools`; `remote-devices` 38 araçta kaldı, eklenen 0) ⇒ **commit de atılamadı.**
+
+### 🔴 BU OTURUMUN KENDİ ÜRETTİĞİ KUSUR — sınıf `olculmus-uyariyi-yok-sayma`
+Devir notu **açıkça** *"mount'ta tüm-ağaç `git status`/`git diff` 45 sn tavanını AŞIYOR (EXIT 124)"* diyordu.
+Cowork yine de koştu: 1.085 satır CRLF uyarısı, **EXIT 124**, ve **`.git/index.lock` OLUŞTU** (0 b, 20:32:55Z).
+Onarım — `CLAUDE.md`'nin sandbox'a tanıdığı **tek** yol: `mv` ile `_SILINECEKLER/o64/index.lock.bayat-o64`;
+yokluk **ölçüldü**. Kalıcı silme Onur'da. **Ders: uyarı işe yaradı, uymayan el yaramadı.**
+
+### 🔒 K163-a — `tek-kopya-mutant.py` `M2b` **ORTAM AYRIMI DEĞİL, ÖLÜ KURGUDUR**
+Üç belge (`DURUM.md`:141 · `KIMLIKLER.md`:49 · `KAPILAR.md`:32) *"sandbox 10/11, Windows 11/11"* diyordu.
+**Ölçüm zinciri:** ① `M2b` = `f.write(ham[:-1])` — **son bir baytı** siler; örtük şartı dosyanın `CRLF` ile
+bitmesi (geriye `CR` kalsın, kapının `_lf()`'i normalize etsin, içerik özdeş görünsün). ② `PROJE_HAFIZA.md`
+diskte **CRLF 0**, son 4 bayt `di.\n`; `DURUM.md` ve `PROJE_RADAR.jsonl` de öyle. ③ Kök neden:
+`.gitattributes` **`* text=auto eol=lf`**, repo-yerel `core.autocrlf` **TANIMSIZ**; `.gitattributes`
+`autocrlf`'i **ezer**. ④ Mount bayt **çevirmiyor**: Windows metadata `DURUM.md` 31.084 b = mount'ta okunan
+31.084 b. ⇒ `ham[:-1]` **gerçek bir `LF` siliyor**, içerik gerçekten küçülüyor, append-only sınıfında her
+küçülme `S2` ⇒ **kapı DOĞRU ısırıyor; ölü olan MUTANTTIR ve Windows'ta da düşer.**
+Sınıf: `olu-tuzak` + `olcum-aracinin-varsayimi`. Borç **`B-O64-1`** (onarım: son baytı silmek yerine tüm
+`LF`→`CRLF`; `K34-f` gereği **ayrı el**). 🔴 **Ders: "ortam ayrımı" bir AÇIKLAMA değil, ÖLÇÜLMESİ GEREKEN
+BİR İDDİADIR** — üç belge onu üç oturum taşıdı, hiçbiri ölçmedi.
+
+### 🔒 K163-b — `ORTAM.md`:31 ÖLÜ BEYAN, düzeltildi (**koruma DÜŞMEDİ**)
+*"`git`'te `core.autocrlf` AKTİF"* — ölçüldü: repo-yerel **TANIMSIZ**. Çeviriyi `.gitattributes` yapıyor;
+etki gerçek (`git diff` hâlâ *"CRLF will be replaced by LF"* uyarısı veren dosyalar sayıyor), **ATIF yanlıştı**.
+*"Ham bayt karşılaştırması KÖRDÜR; kimlik ölçen her araç LF'e normalize etmelidir"* kuralı **AYNEN duruyor**
+(ADDITIVE — koruma kanıtsız sökülmez). **BEYAN EDİLMİŞ SINIR:** Windows'un **global** `autocrlf` değeri
+ÖLÇÜLEMEDİ (`device_bash` Linux VM'i, farklı `HOME`); `.gitattributes` her hâlükârda ezdiği için sonucu
+değiştirmez.
+
+### 🔒 K163-c — envanter sayıları o58'den beri BAYATTI (`bayat-iddia`; hiçbir kapı görmedi)
+`DURUM.md`:159 *"30 dosya / 24 çalıştırılabilir / 23 `.py` / tablo 24 satır"* diyordu.
+**o64 ölçümü: 31 dosya · 25 çalıştırılabilir (24 `.py` + `verify.ps1`) · tablo 25 satır · 6 veri + 2 dizin.**
+Sebep: `izolasyon-olc.py` (o62) doğdu ve **dört sayının dördü birden** bayatladı. Borç **`B-O64-3`**.
+
+### Kapatılanlar (ölçümle doğrulandı)
+`sayi-tazeligi` **🔴 → 🟢 TEMİZ (EXIT 0)**: `T1` (`DURUM.md`:109 `21/21 →` geçiş anlatımı silindi) ·
+`T2` (`DURUM.md`:118 elipsli araç adı → **tam yol**; sayı **fiilen koşularak 23/23** ölçüldü — araç yalnız
+`araclar/` altını çözdüğü için **gerekçeli muafiyet** açıldı, `B-O63-5`) · `T1b` (`11/11` → **10/11**;
+`KIMLIKLER.md`'deki iki `N/M` jetonu **kaldırıldı** — tek kanonik sayı `DURUM.md` §6'da, `kanonik-kopya`) ·
+`T5` (`CLAUDE.md`:116 → gerekçeli muafiyet + **`B-O64-2`**: `KANIT/o60/_olu_hash_avi.py` kökü **sabit
+`C:\dev\Momentum`** yazıyor, sandbox'ta `FileNotFoundError`; satırları birleştirmek aracı **koşturur** ve
+**yeni bir KIRMIZI üretirdi** ⇒ `CLAUDE.md`'ye **tek bayt yazılmadı**).
+`oturum-sagligi` `D1` **🔴 → 🟡**: `GOREV-W3-capraz-koken-izolasyonu.md` **34.029/`6DD115D4` →
+36.238/`C6F2CAD1`** (o63 `K162` spec'i yazdı, kimlik tablosunu güncellemedi). Kalan SARI: defterin
+**gün çözünürlüklü** zaman ayağı.
+
+### `DURUM.md` K73 BUDAMASI
+31.317 → **30.303** b (blok yazımından sonra **31.032**), pay 1.451 → **1.736** b ⇒ `belge-tavan` `T2` SARI'sı
+kapandı. HEAD'e göre küçülme **%0,2** (S2 eşiği %10). Budanan **sekiz** blok **AYNEN**
+`_SILINECEKLER/o64/BUDANAN-DURUM-metinleri.txt`'te; hiçbiri silinmedi. Budananlar **saf anlatımdır**:
+§3 istemci satırı · §5'te K117/K126/K152, K158 ve K161 gerekçeleri · §6'da `belge-tavan` ve `izolasyon-olc`
+hücreleri · §6 envanter paragrafı · §10 harita. 🔴 **Hiçbir KURAL, BEYAN ya da SINIR budanmadı** —
+K158'in zorunlu beyanı, `izolasyon-olc`'un playwright sınırı ve `K161-b` şablon kuralı **yerinde**.
+
+### NE ÖLÇÜLEMEDİ (boş olamaz)
+① Ortam (`docker ps` · `netstat :5298` · `adb`) — DC yok. ② `origin/main` tazeliği — `fetch` 403.
+③ `verify.ps1` (**`B-O62-2` DÖRDÜNCÜ oturum açık**) — DC yok; buluttaki 120/120 **Linux** ölçümüdür.
+④ Windows **global** `core.autocrlf`. ⑤ `hafiza-dizin.py` **KOŞULAMADI** (`KAPILAR.md`:30 — mount `.yedek`
+unlink FAIL) ⇒ 🔴 **dizin bloğu bu checkpoint'i İÇERMİYOR; DC gelince koşulmalıdır.**
+⑥ `M2b`'nin hangi turda ölüleştiği (dosyalar ne zaman LF'e döndü) — `git log` ile aranmadı.
+
+### 🔴 K127 — BAĞIMSIZ DENETİM BU TURDA **KOŞULMADI**
+Bu tur bir spec/ADR **kilitlemedi**; kilitlenenler Onur'un doğrudan onayıyla alınan belge düzeltmeleridir.
+Yine de açıkça yazılıyor: **denetçi ÇIKTI YOLU YOK — DENETİM KOŞULMADI.** `ADR 0004` kilitlenirken
+`K127` **zorunludur**.
+
+
 
 ## DEVİR NOTU — oturum 63 → 64 (7 Ağu 2026, ~23:15 +03; tarih cihazdan `TZ='Europe/Istanbul' date` ile ölçüldü)
 

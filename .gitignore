@@ -26,6 +26,9 @@ bin/
 obj/
 x64/
 x86/
+# GOREV-W3b T1 (D-W3b-2): web build ciktisi, repoya girmez. TAM YOL -- cıplak
+# "wwwroot" deseni depodaki BASKA bir wwwroot'u da sessizce yutardı (KABUL EDİLMEZ).
+src/backend/Momentum.Api/wwwroot/
 *.user
 *.suo
 *.userosscache

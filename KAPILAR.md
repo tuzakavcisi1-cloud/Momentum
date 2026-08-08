@@ -29,7 +29,7 @@
 | `design-token-kapisi.py` | Build-verify/dilim-kapanışı [İş akışı]; açılış-nöbetçi [handoff hüküm, §2'de numaralı DEĞİL] | her ikisi | ✓✓ EXIT0 / EXIT0 |
 | `hafiza-dizin.py` | Checkpoint: PROJE_HAFIZA'ya yeni kayıt SONRASI | **Windows/DC** | §7 ölçüldü: sandbox mount `.yedek` unlink FAIL ⇒ exit 1 |
 | `dosya-kimlik.py` | Checkpoint / HER tek-kopya yazımından SONRA | her ikisi | ✓✓ bayt/sha özdeş (DURUM 25092/3873FBA1) |
-| `tek-kopya-mutant.py` | Dilim-kapanışı: `tek-kopya-kapisi` değişince [§9] | **Windows/DC** | ✓✓ sandbox 10/11 (M2b), Windows 11/11 |
+| `tek-kopya-mutant.py` | Dilim-kapanışı: `tek-kopya-kapisi` değişince [§9] | **Windows/DC** | 🔴 **10/11** — `M2b` ÖLÜ KURGU; *"Windows 11/11"* varsayımı o64'te ÇÜRÜTÜLDÜ (`B-O64-1`) |
 | `verify.ps1` | Build-verify [İş akışı: backend build+test+CVE] | **Windows/DC** | .ps1 + flutter/dotnet zinciri; doğası gereği |
 | `spec-kapi-kapsama.py` | Dilim-kapanışı: GOREV spec kilidi [K81] | her ikisi [çıkarım] | bu tur KOŞULMADI |
 | G-serisi build-verify: `iddia-kapisi` · `yoklama-yasagi-kapisi` · `pub-cve-kapisi` · `pub-lisans-kapisi` | Build-verify/dilim-kapanışı [İş akışı + Denetçi kapıları] | çoğu her ikisi; `pub-*` **ağ ister** | bu tur KOŞULMADI (ana koşum Claude Code build'inde) |
