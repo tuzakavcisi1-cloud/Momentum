@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan: **≤ 32 KB** [K58; eski tavan 12 KB]. Aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Gerekçe okuma kapasitesi değil **R4 freni + dikkat**; tavanı artık `belge-tavan-kapisi.py` zorluyor (§2 adım 3) — beyan edilmiş zayıf kontrol **KAPANDI**. 🔴 Aracın **banner sürümü bayat** — borç `B-O50-2` (ayrıntı orada).
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 8 Ağu 2026, **oturum 66** — 🔴 `K165` **`ADR 0004` gövdesi v2 DE denetimde düştü** (ÜÇ bağımsız denetçi) ⇒ **Onur ADR'yi PARK ETTİ, sıra `T1`/`T2` ürün koduna geçti**. *(o64 `K163`/`K164`, o63'ün dört kilidi ve o39–62 arşivde: `PROJE_HAFIZA.md` K129–K165.)*
+> **Son güncelleme:** 8 Ağu 2026, **oturum 66** — 🟢 `K167`/`K168`: `W3b` **KABUL EDİLDİ**, `R8` **söndü**, `B-O62-2` **kapandı**. 🔴 `K169`: `ADR 0004` gövdesi **ÜÇÜNCÜ KEZ düştü** (iki denetçi, ikisi de GEÇMEZ) ⇒ 🔒 `K170` **MEKANİKLEŞTİR**. *(o39–o65 arşivde: `PROJE_HAFIZA.md` K129–K170.)*
 
 ---
 
@@ -60,43 +60,39 @@ kriter-4 sapması **hafızada** (`K145` ERRATUM), sapma **beyanlı**.
 `M199`) **yeniden KOŞULMADI** · **cihazda NAT** ⇒ SignalR yeniden bağlanma **hiç egzersiz edilmedi**.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` çakışması: kanonik metin `ORTAM.md`'de.**
 
-🔒 **⑫ `W3b` — SPEC **v3 KİLİTLENDİ** (Onur, 8 Ağu 2026, o66).** `W3`'ün yalnız `T1`/`T2` ayakları +
-yapılandırma. `GOREV_CLAUDE_CODE/GOREV-W3b-web-yayina-alma.md` · `spec-kapi-kapsama.py` **EXIT 0**
-(4 kapı · 5 kural · 18 mutant · 5 beyanlı borç) · `kapi-ad-teklik-kapisi.py` **YEŞİL**.
-🟢 **`K127` şartı KARŞILANDI — denetim kilitten ÖNCE koştu**, çıktı yolu spec `§0`'da (agentId
-`a0fe359b259f347d8`; v1 düştü: 5 bloker + 15 major).
-🔒 **Onur kilitte denetçinin İKİ AÇIK SORUSUNU da kapattı (spec `§0b`):** **MJ9** ⇒ `B-W3b-1`
-**kabul kriteri 8**'e **terfi etti** (canlı `GET /` ⇒ 200 + `flutter_bootstrap.js` + **negatif
-kontrol**; el **Claude Code**, `K80`) · **MJ11** ⇒ `R8`'in getirisi **İNCEDİR**, beyanla kabul
-edildi (spec `§8/7`).
-🔴 **`W3` (ana spec) v1/v2 denetimde düştü (`K146`/`K150`) ve AÇILMADI.** `W3/G43`+`W3/G44` kapsamı
-(*"YALNIZ `Program.cs`"*) **ürüne kör**, implementasyonu da **yok**; düzeltme `W3`'ün sonraki
-sürümüne ait. o62/o63 kazanımları (COOP/COEP · aynı köken · `crossOriginIsolated=true` · 21/21) ve
-`K159-b`'nin **ölçülmüş** gerekçesi **hafızada** (`K159`–`K162`); kanıt `KANIT/W3/01`–`08`.
-🔴 `B-O63-2` **AÇIK** — `izolasyon-olc.py`'nin `H` ayağı bayrağı **ölçemez**; kapanış yolu `W3b/G51`.
-🔴 Kapı taslağı denetimde düştü, `araclar/`'a **girmedi** (`B-O63-5`).
+🟢 **⑫ `W3b` KABUL EDİLDİ — `K167`/`K168` (Onur, o66).** Kilit **§5'te tek satır**; kurallar
+**`W3b/G48`–`G51` + 20 mutantta** koşuyor (`K73`). Hüküm `KANIT/W3b/06-KABUL-HUKMU-COWORK.md`.
+🟢 **`R8` SÖNDÜ** · 🟢 **`B-O62-2` KAPANDI** · 🟢 `B-W3b-1`…`5` **KAPANDI**. Sınırlar: `B-W3b-6`…`10`.
+🔴 **DERSİ:** ilk mutant turunda **9/16 mutant ÖLÜ** çıktı ve kapı yine yeşildi — **ölü mutant, kör
+kapının aynadaki hâlidir.** Anlatım **hafızada** (`K168`).
+🔴 **`W3` (ana spec) AÇILMADI;** `W3/G43`–`G47` implementasyonu **yok**. Kanıt `KANIT/W3/01`–`08` +
+`KANIT/W3b/00`–`07`. 🔴 `B-O63-1`…`B-O63-5` **AÇIK**.
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026):** ① cihaz senkron kanıtı ② hedef yığın MSSQL —
 **birlikte** sağlanınca açılır. Maliyet ve `Rule3` **arşivde**.
 🟢 **README VAR (o63, `K162`)** — mimari · **ölçülmüş** çalıştırma sırası · **iki zorunlu şart** · ölçüm disiplini · beyan edilmiş sınırlar. 🔴 Depo görünürlüğü
 **yazılmaz, ÖLÇÜLÜR**: *"public"* iddiası oturum 47'de çürüdü, oturum 53'te yine **PRIVATE** ölçüldü.
 
-🟢 **o64 (`K163`) ve o65 (`K165`/`K166`) anlatımı HAFIZADA;** budanan metinler
+🟢 **o64 (`K163`) · o65 (`K165`/`K166`) · o66 (`K167`/`K168`) anlatımı HAFIZADA;** budanan metinler
 `_SILINECEKLER/o64|o65|o66/`'da.
-🔴 **o64 VE o65 `urun_kodu_satiri` = 0** ⇒ **`R8` SERT DURAK: o66 ÜRÜN KODUYLA BAŞLAR** (`K53/4`),
-yeni belge/ADR/spec/araç turu **AÇILMAZ**. Cowork ürün kodu **yazamaz** (rol bölümü) ⇒ `T1`/`T2`
-**Claude Code'un** işidir. 🔴 **Beyan (o66, Onur kabul etti):** `radar.py`:41-42 ürün yolu
-`src/,lib/,app/` · hariç `araclar/` ⇒ bu görevde `R8`'i söndüren şey **yalnız `appsettings.json`'daki
-1–3 satır JSON**'dur; sönme **gerçek ama İNCE** (spec `§8/7`).
-🔒 **`ADR 0004` GÖVDESİ PARK EDİLDİ (Onur, o65).** İki kez denetimde düştü (`K164` iki denetçi ·
-`K165` ÜÇ denetçi: A/B **GEÇMEZ**, C **ONARIM YETERSİZ**). Kâğıt onarım turu **AÇILMAZ**; gövde
-`T1`/`T2` **koştuktan sonra** ölçülmüş gerçeklerle yazılır. Gövde `docs/ADR/`'ye **GİRMEDİ**, iskelet
-(**3.656 b**) yerinde; taslaklar `KANIT/W3/07`, `08`. Ders: *ölçemediğini SANMAK, ölçmemekten pahalıdır.*
-🔴 **ÖLÇÜLDÜ (o65): `T3` ✅ `T4` ✅ VAR** (`IzolasyonBasliklari.cs` · `IstemciServisi.cs`:111/112/122)
-**ama `T1` ❌ `T2` ❌ YOK:** `wwwroot` dizini yok · `.gitignore`'da girdi yok · `araclar/web-yayina-al.py`
-yok · `Istemci:KokDizin` **hiçbir `appsettings*.json`'da tanımlı değil**.
-→ **SIRADAKİ: Claude Code `T1`+`T2`+`T3`+`T4` (`GOREV-W3b` v3, ÜRÜN KODU) → Cowork kapı + 20 mutant
-koşumu (16 Cowork · 4 Claude Code) → kabul → `ADR 0004` gövdesi → backend CI (`D-A13-4`).**
+🔒 **`ADR 0004` GÖVDESİ ARTIK YAZILABİLİR (Onur, o66).** o65'te park şartı *"gövde `T1`/`T2` **koştuktan
+sonra** ölçülmüş gerçeklerle yazılır"*tı — **koştu**. İki kez düşen gövde (`K164` iki denetçi · `K165` ÜÇ
+denetçi) artık **var olan** artefaktlar üzerine yazılır: `wwwroot` · `_BUILD.json` · `araclar/yayin-kapisi.py`
+· canlı HTTP ölçümü + negatif kontrol. Üç denetçinin ortak teşhisi (**belge var olmayan artefaktlar üzerine
+karar yazıyordu**) **geçersiz** kılındı — **ama gövde YİNE DÜŞTÜ (`K169`, o66).**
+🔴 **`K169` — ÜÇÜNCÜ DÜŞÜŞ.** Gövde `docs/ADR/0004`'te **duruyor ama KİLİTLİ DEĞİL ve GEÇMEDİ**
+(13.274 b · `66473C7C`); iki bağımsız denetçi **GEÇMEZ** (A 6 bloker · B 5 bloker, **beşi ortak**).
+🟢 Sayılar bu kez **temizdi**; düşen **hükümlerdi**. Anlatım **hafızada** (`K169`).
+🔴 **Radar `docs/ADR/0004` için KIRMIZI** (`R1`, *3. tur YASAK*) — ve bu hüküm **tur açılmadan ÖNCE de**
+kırmızıydı, **ölçülmedi** (`K40` ihlali, o66 elinin kusuru).
+🔒 **`K170` — MEKANİKLEŞTİR (Onur, 8 Ağu 2026, o66).** **DÖRDÜNCÜ KÂĞIT TURU AÇILMAZ.** Önce düşen üç
+turun **ORTAK** kusur sınıflarını ölçen bir kapı yazılır; **o kapı yeşil vermeden gövde yazılmaz.**
+Üç ayak: ① belgedeki her **`ÖLÇÜLEMEDİ`** iddiasını **fiilen ölçmeyi dener** (ölçülebiliyorsa KIRMIZI)
+② belgenin andığı her ürün dosyasının **TÜM yapılandırma anahtarlarını** çıkarır ve belgede geçip
+geçmediğine bakar (`Izolasyon:Etkin` bu ayakla yakalanırdı) ③ **kaynak altı çizilen her atıfı** birebir
+karşılaştırır (`credentialless` ters-alıntısı bu ayakla yakalanırdı).
+🔴 **`K26`: kapıyı GÖVDEYİ YAZAN EL YAZAMAZ** ⇒ kapı **Claude Code'un**, koşum ve hüküm **Cowork'ün**.
+→ **SIRADAKİ: kapı (Claude Code) → altın küme + mutant (Cowork) → sonra gövde.**
 
 ---
 
@@ -122,7 +118,8 @@ koşumu (16 Cowork · 4 Claude Code) → kabul → `ADR 0004` gövdesi → backe
 - 🔒 **K129 · K130 — `A13` KABUL + spec yeniden kilitlendi (Onur, o53).** Kurallar `A13/G27`–`G30` + `M162`–`M170`'te koşuyor. 🔴 Yaşayan beş sınır **`B-O53-1`…`5`**'te. Ders: **okunan onarım, ölçülmüş onarım değildir.**
 - 🔒 **K133 · K136 — `SS2` KİLİTLENDİ ve KABUL EDİLDİ** (Onur, o55/o56); kurallar `SS2/G31`–`G34` + `M171`–`M188`'de **koşuyor**. 🔴 Yaşayan üç sınır: `B-SS2-4` · başlık düzenleme UI'ı **yok** (kriter 8 tamamlanma anahtarıyla) · `B-SS2-5`.
 - 🔒 **K137/K138 · K142/K144 — `W1`+`W2` KİLİTLENDİ *ve* KABUL EDİLDİ ⇒ K73 gereği ÇEKİLDİ.** Kurallar prozada değil **`W1/G35`–`G38` + `W2/G39`–`G42` kapılarında** koşuyor. Yaşayan sınırlar: `BORCLAR.md` (`B-W1-1`…`B-W1-7`) + `KANIT/W2/05-…` §4. 🔴 Bu satırın o60'a kadar taşıdığı **ÖLÜ BEYAN** ve `K145` ERRATUM: **hafızada**.
-- 🔒 **K167 — `GOREV-W3b` v3 KİLİTLENDİ (Onur, 8 Ağu 2026, o66).** Bağımsız denetim **kilitten ÖNCE** koştu (`K127` ✔; çıktı yolu spec `§0`, agentId `a0fe359b259f347d8`). Onur denetçinin **iki açık sorusunu** kapattı: `B-W3b-1` → **kabul kriteri 8**'e terfi (canlı `GET /` + **negatif kontrol**, el Claude Code) · `R8`'in getirisi **İNCE**, beyanla kabul (spec `§8/7`). Commit ve ortam ölçümü → **Claude Code** (DC üç oturumdur yok). Ayrıntı **§4**, gerekçe **hafıza K167**.
+- 🔒 **K170 — `ADR 0004`: MEKANİKLEŞTİR (Onur, 8 Ağu 2026, o66).** Gövde **üç kez** düştü (`K164`·`K165`·`K169`); radar `R1` dördüncü turu **YASAKLIYOR**. **Kapı yeşil vermeden gövde yazılmaz** — üç ayağı ve `K26` el kısıtı **§4'te**, gerekçesi **hafıza K170**. 🔴 **Ders:** artefakt bazlı radar, o artefakta **tur açılmadan ÖNCE** koşulur (o66 yapmadı ⇒ `K40` ihlali).
+- 🟢 **K167 + K168 — `W3b` KİLİTLENDİ *ve* KABUL EDİLDİ (Onur, o66) ⇒ `K73` gereği ÇEKİLDİ.** `K127` denetimi kilitten **ÖNCE** koştu (çıktı yolu spec `§0`). Kurallar **`W3b/G48`–`G51` + 20 mutantta** koşuyor; hüküm `KANIT/W3b/06-KABUL-HUKMU-COWORK.md`. Sınırlar `BORCLAR.md` (`B-W3b-6`…`10`). Gerekçe: **hafıza K167/K168**.
 - 🔒 **K149 · K149-b — GITHUB KATKI GRAFİĞİ + COMMIT KİMLİĞİ (Onur, 6 Ağu 2026).** 🔴 **KANONİK METİN `CLAUDE.md`'DE — BURAYA KOPYALANMAZ.** Tek hatırlatma: 6 Ağu 2026 öncesi **tüm** commit hash'leri **ÖLÜDÜR**; ulaşılabilirlik `merge-base --is-ancestor` ile ölçülür, `cat-file` ile **ölçülmez**.
 - 🔒 **K148 · K148-b (Onur, o60):** `W3` ölçümü **BUILD'in önündedir**; ölçümü Onur/Code koşar (`K80`). **Ders: yürürlükteki kilit ŞIKKIN İÇİNDE yeniden yazılır** ve **elle sayılan her sayı yanlıştır**. Gerekçe: hafıza K148.
 - 🔒 **K151 — DÖRT KARAR (Onur, o61):** ① `§9` → **`KIMLIKLER.md`** ② `T0` **başlıklı yerel sunucuyla** ölçülür (bayrak yolu **ÖLÜ**) ③ `T5` → `K158` ile **ERTELENDİ** ④ `G45/d` pinli sayan-raporlayan. `K151-b`/`c`: hafıza.
