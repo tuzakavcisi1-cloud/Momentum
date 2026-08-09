@@ -32,6 +32,7 @@
 | `tek-kopya-mutant.py` | Dilim-kapanışı: `tek-kopya-kapisi` değişince [§9] | **Windows/DC** | 🔴 **10/11** — `M2b` ÖLÜ KURGU; *"Windows 11/11"* varsayımı o64'te ÇÜRÜTÜLDÜ (`B-O64-1`) |
 | `verify.ps1` | Build-verify [İş akışı: backend build+test+CVE] | **Windows/DC** | .ps1 + flutter/dotnet zinciri; doğası gereği |
 | `spec-kapi-kapsama.py` | Dilim-kapanışı: GOREV spec kilidi [K81] | her ikisi [çıkarım] | bu tur KOŞULMADI |
+| `adr-hukum-kapisi.py` | ADR gövde turu ÖNCESİ [K170]: hedef belge üzerinde G52-G56 (22 ayak) | her ikisi [çıkarım — saf metin/JSON, ağ yalnız yerel `http.server`] | ✓ altın küme **36/36 EXIT 0** (o67); gerçek `docs/ADR/0004` denetiminde V1·V2·V3·V6 + `Cors:AllowedOrigins` ek bulgusu ile **KIRMIZI** verdi — bu Claude Code'un KENDİ koşumudur, hüküm Cowork'ün (K26) |
 | G-serisi build-verify: `iddia-kapisi` · `yoklama-yasagi-kapisi` · `pub-cve-kapisi` · `pub-lisans-kapisi` | Build-verify/dilim-kapanışı [İş akışı + Denetçi kapıları] | çoğu her ikisi; `pub-*` **ağ ister** | bu tur KOŞULMADI (ana koşum Claude Code build'inde) |
 | Uzman ajanlar + red-team EN SON | Kilit / dilim-kapanışı [Denetçi kapıları] | Cowork orkestrasyon | — |
 

@@ -1,0 +1,526 @@
+{
+  "uretim_kaynagi": "PROJE_RADAR.jsonl (betikle turetildi, elle sayilmadi -- K148-b)",
+  "uretim_araci": "araclar/sinif-sozlugu-uret.py",
+  "toplam_kayit_taranan": 268,
+  "toplam_distinct_sinif": 115,
+  "girdiler": [
+    {
+      "ad": "alinti-beyan-ayrimi",
+      "tanim": "Bir metnin ALINTI mı yoksa BEYAN mı olduğu ayrıştırılmamış; ikisi karıştırılınca kaynak-atıf ölçümü yanlış sonuç verir."
+    },
+    {
+      "ad": "arac-bicim-uyusmazligi",
+      "tanim": "Bir aracın beklediği girdi biçimi (dizin/dosya, bayrak) ile çağıranın verdiği biçim uyuşmuyor."
+    },
+    {
+      "ad": "arac-yanlis-pozitifi",
+      "tanim": "Ölçüm aracının KENDİSİ, ürün kusuru olmadığı hâlde bir bulguyu yanlışlıkla KIRMIZI/pozitif işaretliyor.",
+      "ayri_tutuldu": {
+        "yanlis-pozitif": {
+          "benzerlik": 0.824,
+          "gerekce": "D-K170-6'nın kendi ölçülmüş örneği: 'yanlis-pozitif' GENEL sınıftır (kapı/kural/insan hangi kaynaktan gelirse gelsin); 'arac-yanlis-pozitifi' ÖZEL olarak ölçüm ARACININ KENDİSİNİN ürettiği yanlış-pozitiftir -- nitelikli alt-küme, genel sınıfla birleştirilmez (ADR0004 kapı spec'i §0a)."
+        }
+      }
+    },
+    {
+      "ad": "artefakt-buyumesi",
+      "tanim": "Bir belge/spec turdan tura büyüyor ve büyüme kendi başına yeni çapraz-atıf/çelişki kusuru doğuruyor (R4 freninin konusu)."
+    },
+    {
+      "ad": "atif-edilen-dosya-depoda-yok",
+      "tanim": "Bir metin var-olmayan bir dosyaya `dosya:satır` biçiminde atıf yapıyor."
+    },
+    {
+      "ad": "baglanamayan-iddia",
+      "tanim": "Bir iddianın dayandığı ağ kaynağına/servise bağlanılamıyor (ORTAM HATASI sınıfının konusu)."
+    },
+    {
+      "ad": "bayat-atif",
+      "tanim": "Bir atıf (kimlik, sayı, konum) yazıldığı andan sonra kaynağı değişmiş ve güncellenmemiş."
+    },
+    {
+      "ad": "bayat-capraz-atif",
+      "tanim": "İki belge birbirine atıf yapıyor ama biri güncellenince öteki BAYATLADI."
+    },
+    {
+      "ad": "bayat-defter-beyani",
+      "tanim": "Bir defter/kayıt satırı, kendi güncel durumunu yansıtmayan eski bir beyan taşıyor."
+    },
+    {
+      "ad": "bayat-iddia",
+      "tanim": "Bir zamanlar doğru olan ama artık gerçeği yansıtmayan, güncellenmemiş bir iddia."
+    },
+    {
+      "ad": "bayat-sayi-kopyasi",
+      "tanim": "Bir sayı (bayt/satır/adet) başka bir yere kopyalanmış ve kaynağı değişince kopya BAYATLAMIŞ."
+    },
+    {
+      "ad": "belge-tavani",
+      "tanim": "Bir belgenin bayt tavanını aşması/aşma riski taşıması (belge-tavan-kapisi.py'nin konusu)."
+    },
+    {
+      "ad": "beyan-olcum-ayrismasi",
+      "tanim": "Bir belgenin BEYAN ettiği değer ile gerçek ÖLÇÜMÜN birbirinden AYRIŞMASI (henüz çelişki denecek kadar keskin değil)."
+    },
+    {
+      "ad": "beyan-olcum-celiskisi",
+      "tanim": "Bir belgenin BEYAN ettiği değer ile gerçek ÖLÇÜM doğrudan ÇELİŞİYOR."
+    },
+    {
+      "ad": "beyanli-sinir-kapandi",
+      "tanim": "Daha önce açıkça beyan edilmiş bir sınır, bu turda ölçülerek KAPATILDI (olumlu kapanış kaydı)."
+    },
+    {
+      "ad": "beyansiz-sinir",
+      "tanim": "Bir ölçülmemiş/eksik alan spec'te BEYAN EDİLMEDEN bırakılmış."
+    },
+    {
+      "ad": "beyansiz-tercih",
+      "tanim": "Birden çok seçenek arasında bir tercih yapılmış ama gerekçesi/beyanı yazılmamış."
+    },
+    {
+      "ad": "bicim-K81",
+      "tanim": "K81'in zorunlu kıldığı spec başlık biçimine (## 5. KAPILAR / ## 6. MUTANTLAR) uyulmaması."
+    },
+    {
+      "ad": "bicim-ihlali",
+      "tanim": "Bir aracın/belgenin beklenen biçim sözleşmesini (genel) ihlal etmesi."
+    },
+    {
+      "ad": "bozuk-ikili-kanit",
+      "tanim": "İkili (binary) bir kanıt dosyası bozuk/okunamaz durumda."
+    },
+    {
+      "ad": "cagrilmayan-kapi",
+      "tanim": "Var olan bir kapı, açılış/checkpoint protokolünde HİÇ çağrılmıyor (kör kapı kadar kör)."
+    },
+    {
+      "ad": "capraz-atif",
+      "tanim": "İki belge/dosya birbirine atıf yapıyor; atfın güncelliği ayrıca izlenmesi gereken bir yüktür."
+    },
+    {
+      "ad": "checkpoint-gecikmesi",
+      "tanim": "Bir karar/kilit anında yazılması gereken checkpoint GECİKEREK yazıldı."
+    },
+    {
+      "ad": "cift-olcen-vaka",
+      "tanim": "Aynı vakayı iki farklı ayak/mutant AYNI ANDA ölçüyor -- kapsama iddiası şişirilmiş olabilir."
+    },
+    {
+      "ad": "cozulemeyen-ad",
+      "tanim": "Bir sembolik ad (sabit/değişken) statik olarak koda çözülemiyor."
+    },
+    {
+      "ad": "cozum-yeterliligi-olculmedi",
+      "tanim": "Önerilen bir çözümün asıl sorunu YETERİNCE çözüp çözmediği hiç ölçülmemiş."
+    },
+    {
+      "ad": "crlf-sizmasi",
+      "tanim": "LF bekleyen bir dosyaya CRLF (satır sonu) sızması (K60/append-only yazım kusuru)."
+    },
+    {
+      "ad": "dairesel-kanit",
+      "tanim": "Bir kanıt, kendi ürettiği aracın çıktısına dayanıyor -- döngüsel doğrulama."
+    },
+    {
+      "ad": "defter-durustlugu",
+      "tanim": "Bir defter (PROJE_RADAR.jsonl vb.) kaydının kendi ölçtüğü şeyi dürüstçe yansıtıp yansıtmadığı (D1-D5)."
+    },
+    {
+      "ad": "defter-yazilmadi",
+      "tanim": "Bir kilit/karar anında defter kaydı YAZILMASI gerekirken yazılmamış."
+    },
+    {
+      "ad": "desen-taklidi",
+      "tanim": "Bir metin, gerçek bir ölçüm deseninin YÜZEYSEL taklidini taşıyor ama gerçek koşulu sağlamıyor."
+    },
+    {
+      "ad": "devralinmis-kirmizi",
+      "tanim": "Bir önceki turdan devralınan KIRMIZI bulgu bu turda da düzeltilmeden duruyor."
+    },
+    {
+      "ad": "doktrin-celiskisi",
+      "tanim": "Projenin iki kuralı/doktrini birbiriyle ÇELİŞİYOR."
+    },
+    {
+      "ad": "eksik-envanter",
+      "tanim": "Bir envanter tablosu (KAPILAR.md, DURUM.md §6) gerçek dosya kümesinin GERİSİNDE kalmış."
+    },
+    {
+      "ad": "el-dagilimi-yok",
+      "tanim": "Bir spec, işi HANGİ ELİN (Claude Code/Cowork/Onur) yapacağını YAZMAMIŞ."
+    },
+    {
+      "ad": "envantersiz-kapi",
+      "tanim": "Yazılmış bir kapı, hiçbir envanter tablosunda GÖRÜNMÜYOR (üç kez ısırmış sınıf)."
+    },
+    {
+      "ad": "esdeger-mutant",
+      "tanim": "Bir mutant, hedeflediği kuralın ÇEKİRDEK iddiasını aslında hiç ölçmüyor (eşdeğer/etkisiz mutasyon)."
+    },
+    {
+      "ad": "fikirsiz-uretec",
+      "tanim": "Deterministik olması gereken bir üreteç (ID/sha) koşumdan koşuma FARKLI sonuç veriyor."
+    },
+    {
+      "ad": "gizlenmis-sinir",
+      "tanim": "Bir sınır/eksiklik AÇIKÇA BEYAN EDİLMEDEN gizli tutulmuş (beyansiz-sinir'in kasıtlı hâli)."
+    },
+    {
+      "ad": "ic-celiski",
+      "tanim": "Bir belgenin/spec'in İÇİNDE iki cümlesi birbiriyle çelişiyor."
+    },
+    {
+      "ad": "k60-ihlali",
+      "tanim": "K60'ın atomik-yazım kuralı (tmp->takas) ihlal edilmiş, yarım/bozuk dosya riski doğmuş."
+    },
+    {
+      "ad": "kagit-test-celiskisi",
+      "tanim": "Kâğıt üzerinde (paper review) doğru görünen bir iddia, gerçek koşumda ÇELİŞİYOR."
+    },
+    {
+      "ad": "kanit-eksik",
+      "tanim": "Bir iddianın arkasında KANIT dosyası/ölçümü eksik.",
+      "ayri_tutuldu": {
+        "kanit-eksikligi": {
+          "benzerlik": 0.846,
+          "gerekce": "Yüzeysel benzer ama odak farklı: 'kanit-eksik' bir İDDİANIN arkasında kanıt dosyasının hiç OLMAMASI; 'kanit-eksikligi' VAR OLAN kanıtın NİTELİK olarak yetersiz kalmasıdır. D-K170-5 geçmişi onarmaz: iki ad da PROJE_RADAR.jsonl'da farklı turlarda gerçek bulgulara yazılmış, birleştirilmez."
+        }
+      }
+    },
+    {
+      "ad": "kanit-eksikligi",
+      "tanim": "Sunulan kanıtın kendisi YETERSİZ/eksik kalmış (kanit-eksik'in kanıtın niteliğine odaklı hâli).",
+      "ayri_tutuldu": {
+        "kanit-eksik": {
+          "benzerlik": 0.846,
+          "gerekce": "Yüzeysel benzer ama odak farklı: 'kanit-eksik' bir İDDİANIN arkasında kanıt dosyasının hiç OLMAMASI; 'kanit-eksikligi' VAR OLAN kanıtın NİTELİK olarak yetersiz kalmasıdır. D-K170-5 geçmişi onarmaz: iki ad da PROJE_RADAR.jsonl'da farklı turlarda gerçek bulgulara yazılmış, birleştirilmez."
+        }
+      }
+    },
+    {
+      "ad": "kanit-kisaltmasi",
+      "tanim": "Bir kanıt, tam ham çıktı yerine KISALTILMIŞ/özetlenmiş biçimde sunulmuş."
+    },
+    {
+      "ad": "kanit-yolu-uyusmazligi",
+      "tanim": "Bir belgenin belirttiği kanıt DOSYA YOLU ile gerçek konum UYUŞMUYOR."
+    },
+    {
+      "ad": "kanit-zehirlenmesi",
+      "tanim": "Bir kanıt, kendi ölçtüğü şeyi bozacak biçimde başka bir süreçten KİRLENMİŞ."
+    },
+    {
+      "ad": "kanonik-kopya",
+      "tanim": "Bir metin, kanonik kaynağından KOPYALANIP değiştirilmiş (kaynak değişince kopya sessizce BAYATLAR)."
+    },
+    {
+      "ad": "kapi-celiskisi",
+      "tanim": "İki kapı/ayak AYNI konuda birbiriyle ÇELİŞEN hüküm veriyor."
+    },
+    {
+      "ad": "kapisiz-kilit",
+      "tanim": "Bir kilit/karar alınmış ama onu ZORLAYAN mekanik bir kapı YOK."
+    },
+    {
+      "ad": "kapisiz-teslimat",
+      "tanim": "Bir iş teslim edilmiş ama onu doğrulayan kapı hiç KOŞULMAMIŞ."
+    },
+    {
+      "ad": "kapsam-boslugu",
+      "tanim": "Bir spec'in KAPSAM bölümü, gerçekte etkilenen bir alanı BOŞ bırakmış."
+    },
+    {
+      "ad": "kapsam-disi-ayni-sinif",
+      "tanim": "Kapsam dışı bırakılmış bir alanda AYNI kusur sınıfı yine de görülüyor."
+    },
+    {
+      "ad": "kapsam-yazilmamis",
+      "tanim": "Bir aracın/kapının KAPSAMI (neyi ölçüp neyi ölçmediği) yazılı değil."
+    },
+    {
+      "ad": "kaynagini-eksik-okuma",
+      "tanim": "Bir el, atıf yaptığı kaynağı TAM OKUMADAN üzerine hüküm kurmuş."
+    },
+    {
+      "ad": "kendi-beyanini-okumama",
+      "tanim": "Bir el, kendi ÖNCEDEN yazdığı beyanı/sınırı unutup yeniden aynı kusuru yapmış."
+    },
+    {
+      "ad": "kendi-kusurunu-uretme",
+      "tanim": "Bir ölçüm aracı, ÖLÇTÜĞÜ ürün değil KENDİ kusurunu bulguya yazmış."
+    },
+    {
+      "ad": "kilit",
+      "tanim": "FAZ İŞARETİDİR -- checkpoint'in 'karar KİLİTLENDİ' anını imler; gerçek bir kusur SINIFI DEĞİLDİR (kriter 9)."
+    },
+    {
+      "ad": "kilit-kapsam-tasmasi",
+      "tanim": "Bir kilit kararı, üzerinde anlaşılan KAPSAMIN dışına taşıp başka bir alanı da bağlamış."
+    },
+    {
+      "ad": "kilit-sonek-normalize",
+      "tanim": "Kilit kimliklerinin (K21 vb.) sonek/varyant biçimleri NORMALİZE edilmeden karşılaştırılmış."
+    },
+    {
+      "ad": "kodlama-bozulmasi",
+      "tanim": "Bir dosyanın karakter kodlaması (UTF-8/cp1254 vb.) BOZULMUŞ, karakterler hatalı çıkmış."
+    },
+    {
+      "ad": "kor-harness",
+      "tanim": "Bir test/ölçüm harness'i, ölçmesi gereken sınıfı GÖRMEDEN yeşil veriyor."
+    },
+    {
+      "ad": "kor-kapi",
+      "tanim": "Bir kapı BULGUSUZ (yeşil) dönüyor ama gerçekte hiç ISIRMIYOR -- mutantla kanıtlanmamış."
+    },
+    {
+      "ad": "kor-kriter",
+      "tanim": "Bir kabul kriteri, gerçekte hiçbir kusuru YAKALAYAMAYACAK biçimde yazılmış."
+    },
+    {
+      "ad": "kor-mutant",
+      "tanim": "Bir mutant, hiçbir ayağı KIRMIZIYA düşürmeden sessizce geçiyor (ölü mutantın bir türü)."
+    },
+    {
+      "ad": "kosulamaz-kabul-sarti",
+      "tanim": "Bir kabul kriteri, bu ortamda FİİLEN koşulamayacak bir önkoşula bağlanmış."
+    },
+    {
+      "ad": "kriter-ici-celiski",
+      "tanim": "Tek bir kabul kriterinin İÇİNDE birbirini yalanlayan iki şart var."
+    },
+    {
+      "ad": "mekaniklestirme",
+      "tanim": "FAZ İŞARETİDİR -- checkpoint'in 'K53/2 gereği mekanik kapıya geçildi' anını imler; kusur SINIFI DEĞİLDİR (kriter 9)."
+    },
+    {
+      "ad": "olcemedigini-sanmak",
+      "tanim": "Bir el, aslında ölçülebilecek bir şeyi 'ölçülemez' SANIP hiç denememiş.",
+      "ayri_tutuldu": {
+        "olculemedi-sanmak": {
+          "benzerlik": 0.833,
+          "gerekce": "Aynı köke yakın iki yazım -- biri EYLEME odaklı ('sanıp denememek'), diğeri BELGENİN ETİKETİNE odaklı ('[ÖLÇÜLEMEDİ] diye işaretlemek'). D-K170-5 gereği geçmiş kayıtlar (append-only) birleştirilmez; ADR 0004'ün kendi R1'i tam bu iki adın AYRI sayılmasından doğdu (spec §1)."
+        }
+      }
+    },
+    {
+      "ad": "olculemedi-sanmak",
+      "tanim": "Bir belge bir şeyi '[ÖLÇÜLEMEDİ]' diye İŞARETLEMİŞ ama fiilen ölçüm mümkünmüş (olcemedigini-sanmak ile aynı köke yakın, farklı yazım/turda doğdu -- D-K170-5 geçmişi onarmaz).",
+      "ayri_tutuldu": {
+        "olcemedigini-sanmak": {
+          "benzerlik": 0.833,
+          "gerekce": "Aynı köke yakın iki yazım -- biri EYLEME odaklı ('sanıp denememek'), diğeri BELGENİN ETİKETİNE odaklı ('[ÖLÇÜLEMEDİ] diye işaretlemek'). D-K170-5 gereği geçmiş kayıtlar (append-only) birleştirilmez; ADR 0004'ün kendi R1'i tam bu iki adın AYRI sayılmasından doğdu (spec §1)."
+        }
+      }
+    },
+    {
+      "ad": "olculemez-assert",
+      "tanim": "Bir test/kapı, hiçbir girdiyle asla tetiklenemeyecek bir `assert` taşıyor."
+    },
+    {
+      "ad": "olculemez-kapi",
+      "tanim": "Bir kapı, tasarımı gereği HİÇBİR mutantla ısırtılamıyor."
+    },
+    {
+      "ad": "olculemez-kriter",
+      "tanim": "Bir kabul kriteri, ölçülebilir bir sonuca BAĞLANAMAMIŞ (soyut/öznel)."
+    },
+    {
+      "ad": "olculmemis-etiket",
+      "tanim": "Bir metne 'ölçüldü' etiketi konmuş ama arkasında gerçek bir ölçüm YOK."
+    },
+    {
+      "ad": "olculmemis-iddia",
+      "tanim": "Bir iddia hiçbir ölçümle DESTEKLENMEMİŞ."
+    },
+    {
+      "ad": "olculmemis-tahmin",
+      "tanim": "Bir sayı/sonuç TAHMİN edilmiş ama `[TAHMİN]` diye işaretlenmemiş."
+    },
+    {
+      "ad": "olculmemis-varsayim",
+      "tanim": "Bir varsayım (ör. ortam/araç davranışı) hiç TEST EDİLMEDEN doğru kabul edilmiş."
+    },
+    {
+      "ad": "olculmeyen-kapsam",
+      "tanim": "Bir kapının/kapının kapsamının bir KISMI hiçbir ayakla ölçülmüyor."
+    },
+    {
+      "ad": "olculmus-mayini-recete-etme",
+      "tanim": "Daha önce ISIRDIĞI ölçülmüş bir ortam mayını, aynı reçeteyle tekrar ÖNERİLMİŞ."
+    },
+    {
+      "ad": "olculmus-uyariyi-yok-sayma",
+      "tanim": "ORTAM.md/CLAUDE.md'de ÖLÇÜLMÜŞ bir uyarı bilerek ya da bilmeyerek YOK SAYILMIŞ."
+    },
+    {
+      "ad": "olcum-araci-boslugu",
+      "tanim": "Belirli bir sınıfı ölçecek HİÇBİR araç yok (envanterde boşluk)."
+    },
+    {
+      "ad": "olcum-aracinin-varsayimi",
+      "tanim": "Ölçüm ARACININ KENDİSİ, doğrulanmamış bir varsayımı davranışına GÖMMÜŞ.",
+      "ayri_tutuldu": {
+        "olcum-sanilan-varsayim": {
+          "benzerlik": 0.826,
+          "gerekce": "Farklı kavramlar: 'olcum-aracinin-varsayimi' ARACIN TASARIMINA gömülü doğrulanmamış bir varsayımdır (örn. izolasyon-olc.py'nin playwright varsayımı); 'olcum-sanilan-varsayim' bir İNSAN/EL'in düz bir varsayımı fiilen yapılmış bir ölçüm SANMASIDIR -- hata birinde ARACIN davranışında, ötekinde YORUMLAMADADIR."
+        }
+      }
+    },
+    {
+      "ad": "olcum-ayagi-yanlis",
+      "tanim": "Bir ayağın ölçüm MANTIĞI yanlış kurulmuş (yanlış değişkeni/dosyayı okuyor)."
+    },
+    {
+      "ad": "olcum-belirsizligi",
+      "tanim": "Bir ölçümün SONUCU birden çok şekilde yorumlanabilir, tek bir hükme varmıyor."
+    },
+    {
+      "ad": "olcum-noktasi-yok",
+      "tanim": "Bir iddia için ÖLÇÜLECEK somut bir nokta/koordinat hiç tanımlanmamış."
+    },
+    {
+      "ad": "olcum-ortami-kusuru",
+      "tanim": "Bulgu ürün kusuru DEĞİL, ölçümün koştuğu ORTAMIN kendi kusuru."
+    },
+    {
+      "ad": "olcum-sanilan-varsayim",
+      "tanim": "Bir VARSAYIM, fiilen yapılmış bir ÖLÇÜM sanılıp öyle sunulmuş (olcum-aracinin-varsayimi'ndan farklı: burada hata YORUMLAMADA, orada ARACIN kendi tasarımında).",
+      "ayri_tutuldu": {
+        "olcum-aracinin-varsayimi": {
+          "benzerlik": 0.826,
+          "gerekce": "Farklı kavramlar: 'olcum-aracinin-varsayimi' ARACIN TASARIMINA gömülü doğrulanmamış bir varsayımdır (örn. izolasyon-olc.py'nin playwright varsayımı); 'olcum-sanilan-varsayim' bir İNSAN/EL'in düz bir varsayımı fiilen yapılmış bir ölçüm SANMASIDIR -- hata birinde ARACIN davranışında, ötekinde YORUMLAMADADIR."
+        }
+      }
+    },
+    {
+      "ad": "olgusal-yanlis-iddia",
+      "tanim": "Bir iddia, doğrulanabilir bir OLGUYLA doğrudan ÇELİŞİYOR."
+    },
+    {
+      "ad": "olu-ayak",
+      "tanim": "Bir kapı ayağı artık hiçbir vakayı ÖLÇMÜYOR ama hâlâ tabloda duruyor."
+    },
+    {
+      "ad": "olu-beyan",
+      "tanim": "Artık geçerli olmayan bir beyan, güncellenmeden belgede KALMIŞ."
+    },
+    {
+      "ad": "olu-dosya",
+      "tanim": "Kullanılmayan/atıfsız bir dosya depoda GEREKSİZ yer kaplıyor."
+    },
+    {
+      "ad": "olu-mutant",
+      "tanim": "Bir mutant uygulandığında HİÇBİR ayağı kırmızıya düşürmüyor (kapıyı ısırmıyor)."
+    },
+    {
+      "ad": "olu-mutant-onarimi",
+      "tanim": "Ölü çıkan bir mutant, hedefini ısıracak biçimde ONARILMIŞ."
+    },
+    {
+      "ad": "olu-tuzak",
+      "tanim": "Bir kapıya konan tuzak/pozitif kontrol artık hiçbir girdiyle TETİKLENEMİYOR."
+    },
+    {
+      "ad": "onarim-komsu-satiri-bozdu",
+      "tanim": "Bir satırı düzeltirken KOMŞU satır yanlışlıkla bozulmuş."
+    },
+    {
+      "ad": "radar-kirmizisini-olcmeden-tur-acmak",
+      "tanim": "Radar KIRMIZI iken, o kırmızıyı ÖLÇMEDEN yeni bir kâğıt/spec turu açılmış (K40 ihlali)."
+    },
+    {
+      "ad": "saat-sapmasi-olculmemis",
+      "tanim": "Cowork'ün UTC saat sapması (ORTAM.md) bir checkpoint'te ÖLÇÜLMEDEN tarihe yansımış."
+    },
+    {
+      "ad": "sabit-windows-yolu",
+      "tanim": "Bir betikte Windows'a ÖZGÜ sabit bir yol, taşınabilirlik gözetilmeden gömülü."
+    },
+    {
+      "ad": "sahte-yesil",
+      "tanim": "Bir adım yapılmamışken/okunmamışken 'yapıldı/okundu' diye İŞARETLENMİŞ."
+    },
+    {
+      "ad": "sarkan-atif",
+      "tanim": "Bir atıf (dosya:satır) artık VAR OLMAYAN bir konuma işaret ediyor."
+    },
+    {
+      "ad": "sayi-tutarsizligi",
+      "tanim": "Aynı şeyi sayan iki yer FARKLI sayı veriyor."
+    },
+    {
+      "ad": "sessiz-veri-kaybi",
+      "tanim": "Bir işlem veri kaybediyor ama hiçbir HATA/uyarı vermiyor."
+    },
+    {
+      "ad": "sessiz-yutma",
+      "tanim": "Bir hata/istisna GÖRÜNMEDEN yutuluyor, çağıran yeşil sanıyor."
+    },
+    {
+      "ad": "tablo-hucre",
+      "tanim": "Bir tablo hücresi (KAPILAR.md/DURUM.md) yanlış/eksik değer taşıyor."
+    },
+    {
+      "ad": "tatmin-edilemez-ayak",
+      "tanim": "Bir kapı ayağı, tasarımı gereği HİÇBİR gerçek girdiyle tatmin edilemiyor."
+    },
+    {
+      "ad": "ters-yon",
+      "tanim": "Bir karşılaştırma/atıf BEKLENENİN TERSİ yönde kurulmuş (A→B yerine B→A)."
+    },
+    {
+      "ad": "uygulanamaz-mutant",
+      "tanim": "Tanımlanan bir mutant, bu ortamda/kodda FİİLEN uygulanamıyor."
+    },
+    {
+      "ad": "vaka-degil-sinif",
+      "tanim": "Bir denetim bulgusu TEK BİR VAKAYI kapatmış ama altındaki genel SINIFI kapatmamış (K161)."
+    },
+    {
+      "ad": "var-olmayan-artefakta-hukum",
+      "tanim": "Bir belge, henüz VAR OLMAYAN bir artefakt üzerine hüküm kuruyor."
+    },
+    {
+      "ad": "yanlis-hedef-fonksiyon",
+      "tanim": "Bir mutant/kapı, hedeflediğini SANDIĞI fonksiyondan FARKLI bir fonksiyonu değiştiriyor/ölçüyor."
+    },
+    {
+      "ad": "yanlis-kapsam",
+      "tanim": "Bir kural/araç, belirtilenden FARKLI bir kapsamı ölçüyor."
+    },
+    {
+      "ad": "yanlis-pozitif",
+      "tanim": "Bir kapı, gerçekte sorun olmayan bir durumu HATALI biçimde KIRMIZI gösteriyor.",
+      "ayri_tutuldu": {
+        "arac-yanlis-pozitifi": {
+          "benzerlik": 0.824,
+          "gerekce": "D-K170-6'nın kendi ölçülmüş örneği: 'yanlis-pozitif' GENEL sınıftır (kapı/kural/insan hangi kaynaktan gelirse gelsin); 'arac-yanlis-pozitifi' ÖZEL olarak ölçüm ARACININ KENDİSİNİN ürettiği yanlış-pozitiftir -- nitelikli alt-küme, genel sınıfla birleştirilmez (ADR0004 kapı spec'i §0a)."
+        },
+        "yanlis-pozitif-taban": {
+          "benzerlik": 0.824,
+          "gerekce": "D-K170-6'nın kendi ölçülmüş örneği: 'yanlis-pozitif' bir kapının SONUÇTA hatalı KIRMIZI vermesi; 'yanlis-pozitif-taban' o kapının dayandığı REFERANS/PİN DEĞERİNİN kendisinin en başından hatalı olmasıdır -- kavramlar FARKLIDIR (denetçi A, ADR0004 kapı spec'i §0a)."
+        }
+      }
+    },
+    {
+      "ad": "yanlis-pozitif-taban",
+      "tanim": "Yanlış-pozitifin dayandığı TABAN/pin değeri kendisi hatalı (yanlis-pozitif'ten farklı: burada hata sonuçta değil referans değerde).",
+      "ayri_tutuldu": {
+        "yanlis-pozitif": {
+          "benzerlik": 0.824,
+          "gerekce": "D-K170-6'nın kendi ölçülmüş örneği: 'yanlis-pozitif' bir kapının SONUÇTA hatalı KIRMIZI vermesi; 'yanlis-pozitif-taban' o kapının dayandığı REFERANS/PİN DEĞERİNİN kendisinin en başından hatalı olmasıdır -- kavramlar FARKLIDIR (denetçi A, ADR0004 kapı spec'i §0a)."
+        }
+      }
+    },
+    {
+      "ad": "yanlis-sinif-beyani",
+      "tanim": "Bir bulgu, gerçek kök nedeninden FARKLI bir kusur sınıfına YAZILMIŞ."
+    },
+    {
+      "ad": "yeni-mayin",
+      "tanim": "Bu turda YENİ keşfedilmiş, ORTAM.md'ye henüz eklenmemiş bir ortam mayını."
+    }
+  ]
+}
