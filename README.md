@@ -12,6 +12,27 @@ backend · **PostgreSQL**.
 
 ---
 
+## Depo haritası — nereden başlamalı
+
+🔴 **Bu depo alışılmadık bir bileşim taşır ve bu bilinçlidir.** Dosyaların **%74'ü** ürün kodu
+değil, **ölçüm kanıtıdır**. Ne aradığınıza göre:
+
+| ne arıyorsanız | nereye bakın |
+|---|---|
+| **Ürün kodu** | `src/backend/` (.NET, 4 katman) · `src/client/lib/` (Flutter) |
+| **Testler** | `tests/` (backend, 120 test) · `src/client/test/` (istemci, 549 test) |
+| **Mimari kararlar** | `docs/ADR/` |
+| **Ölçüm araçları (kapılar)** | `araclar/` — her biri `--altin-kume` ile **kendini kanıtlar** |
+| **Ham ölçüm kanıtları** | `KANIT/` — **1.228 dosya, 15,7 MB** |
+| **Süreç ve karar arşivi** | `PROJE_HAFIZA.md` (append-only) · `BORCLAR.md` · `DURUM.md` |
+
+**`KANIT/` nedir:** her kabul hükmünün, her düşmüş denetimin ve her mutant koşumunun **ham
+çıktısı**. Dosya adları arasında `…-DENETIMDE-DUSTU…`, `…-KILITLENEMEDI…` gibi kayıtlar görürsünüz —
+bunlar **temizlenmemiştir ve bilerek durmaktadır**: bir spec'in üç kez düşmesi, bu deponun
+gizlediği değil **belgelediği** bir olgudur.
+
+---
+
 ## Bir bakışta
 
 | katman | ne yapar |
@@ -20,7 +41,7 @@ backend · **PostgreSQL**.
 | `src/backend/Momentum.Application` | CQRS (Mediator), doğrulama, işlem davranışı |
 | `src/backend/Momentum.Infrastructure` | PostgreSQL kalıcılığı, outbox dağıtıcısı |
 | `src/backend/Momentum.Api` | kompozisyon kökü: uç noktalar, SignalR hub'ı, sağlık, OpenAPI/Scalar |
-| `src/client` | Flutter: Drift ile çevrimdışı CRUD, itme kuyruğu, çekme, çakışma rozeti |
+| `src/client` | Flutter: Drift ile çevrimdışı CRUD (ekle · **başlık düzenle** · tamamla · sil), itme kuyruğu, çekme, çakışma rozeti |
 
 **Senkron:** çift yönlü — yerel yazma → itme kuyruğu → `POST /v1/sync`; sunucu tarafında outbox +
 imleç tabanlı çekme (snapshot/artımlı, `hasMore`). Çakışma çözümü yerel LWW + kullanıcıya görünür
@@ -88,6 +109,13 @@ Bu anahtar **boşsa** statik servis ara katmanı **hiç kurulmaz** (kill switch 
 `dotnet test Momentum.sln` ⇒ **120/120 geçti, 0 hata** · derleme **0 uyarı / 0 hata**
 (`TreatWarningsAsErrors=true`). 🔴 Bu ölçüm **Windows'ta tekrarlanmadı**; `verify.ps1` PowerShell
 zinciridir ve bu sürümle **koşulmamıştır**.
+
+**İstemci, son ölçüm (10 Ağu 2026, Linux, Flutter 3.44.6 / Dart 3.12.2):**
+`flutter test` ⇒ **549/549 geçti** · `flutter analyze --fatal-infos` ⇒ **0 sorun**.
+Ölçümü **üreten el değil** bağımsız bir el koştu ve aynı turda **beş mutant** koşuldu
+(erişilebilirlik etiketi ×2, düzen aritmetiği ×3) — **beşi de ısırdı**, ölü mutant yok.
+Kanıt: `KANIT/SS2/05-KABUL-HUKMU-COWORK-o68-baslik-duzenleme-UI.md`.
+🔴 Widget testi **uçtan uca değildir**: gerçek Android cihazda/emülatörde **koşulmadı**.
 
 ---
 

@@ -23,3 +23,10 @@
 *.otf   binary
 *.woff  binary
 *.woff2 binary
+
+# GitHub dil istatistigi: olcum kaniti ve surec belgeleri BELGE sayilir,
+# boylece dil cubugu urun kodunu (Dart/C#) gosterir -- kanit arsivini degil.
+KANIT/**              linguist-documentation
+GOREV_CLAUDE_CODE/**  linguist-documentation
+arsiv/**              linguist-documentation
+docs/**               linguist-documentation
