@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../design/metinler.dart';
 import '../design/tokens.dart';
 import '../veri/gorev_deposu.dart';
 import 'cakisma_rozeti.dart';
+import 'gorev_baslik_dogrulama.dart';
 import 'senkron_rozeti.dart';
 
 /// SS3.1 -- gorev: onay kutusu + baslik + senkron rozeti.
 ///
 /// PAZARLIKSIZ DOKUNMA SINIRI (T6): bu widget'in kendisi onTap TASIMAZ --
-/// dokunulabilir tek alanlar Checkbox ve (varsa) CakismaRozeti'nin kendi
-/// GestureDetector'idir. Gerekce: dokunulabilir alan satir olsaydi metin
-/// semantics dugumune girer ve M7 isirmazdi.
+/// dokunulabilir alanlar Checkbox, (varsa) CakismaRozeti'nin kendi
+/// GestureDetector'i ve (varsa) baslik duzenleme IconButton'idir; ucu de
+/// KENDI dokunma hedefini tasir. Gerekce: dokunulabilir alan satir olsaydi
+/// metin semantics dugumune girer ve M7 isirmazdi (IS-EMRI-o68: kilit
+/// lafzi ucuncu alana genisledi, gerekce KORUNDU -- baslik metni hala
+/// dokunulamaz).
 class GorevSatiri extends StatelessWidget {
   final Gorev gorev;
   final ValueChanged<bool> onTamamlaDegisti;
@@ -21,6 +26,10 @@ class GorevSatiri extends StatelessWidget {
   // çağrı yerleri (testler dâhil) bunu HİÇ bilmez -- `null` varsayılanı
   // güvenlidir çünkü o durumda `CakismaRozeti` zaten inşa edilmez.
   final GorevDeposu? depo;
+  // IS-EMRI-o68 SS2 kriter 8: baslik duzenleme. `null` ise ikon HIC CIZILMEZ
+  // -- mevcut cagri yerleri ve testler bunu hic bilmez (D-SS2-8'in `depo`
+  // alanindaki emsalin AYNISI, ayni turda ayni desen tekrar kullanildi).
+  final ValueChanged<String>? onBaslikDuzenlendi;
 
   const GorevSatiri({
     super.key,
@@ -29,6 +38,7 @@ class GorevSatiri extends StatelessWidget {
     this.senkronDurumu = SenkronDurumTuru.yerel,
     this.cakismaVarMi = false,
     this.depo,
+    this.onBaslikDuzenlendi,
   });
 
   /// GOREV-A7 D-A7-3: baslik icin ayrilan ASGARI genislik. 96dp'dir ve
@@ -80,10 +90,16 @@ class GorevSatiri extends StatelessWidget {
         boyaci.maxIntrinsicWidth + MOlcu.ikon + MBosluk.xs;
     boyaci.dispose();
 
+    // IS-EMRI-o68: baslik duzenleme ikonu `_rozetler()`in SONUNA eklenir
+    // (asagida) -- kendi 48dp dokunma hedefini CAKISMA ikonuyla AYNI
+    // desende rezerve eder. Buraya eklenmezse OLCULEN duzen (bu formul)
+    // ile CIZILEN duzen sessizce ayrisir -- M77b'nin uyardigi kusurun
+    // aynisi (IS-EMRI-o68 §1.5).
     final sabitler = MOlcu.dokunmaHedefi +
         MBosluk.s +
         MBosluk.s +
-        (cakismaVarMi ? MOlcu.dokunmaHedefi + MBosluk.xs : 0);
+        (cakismaVarMi ? MOlcu.dokunmaHedefi + MBosluk.xs : 0) +
+        (onBaslikDuzenlendi != null ? MOlcu.dokunmaHedefi + MBosluk.xs : 0);
 
     return sabitler + baslikAsgari + rozetIstedigi > maxGenislik;
   }
@@ -95,16 +111,25 @@ class GorevSatiri extends StatelessWidget {
         SizedBox(width: MBosluk.s),
         Expanded(child: _baslik(context)),
         SizedBox(width: MBosluk.s),
-        ..._rozetler(),
+        ..._rozetler(context),
       ],
     );
   }
 
   /// Baslik ustte (onay kutusuyla ayni satirda), rozet satiri altta.
-  /// Rozet satiri onay kutusunun genisligi kadar GIRINTILIDIR -- boylece
-  /// rozete ayrilan gercek genislik `maxWidth - 48 - 8` olur ve D-A7-3'un
-  /// formulundeki `sabitler` ile TUTARLI kalir.
-  /// `Checkbox` ve `CakismaRozeti` kendi 48dp dokunma hedeflerini KORUR.
+  /// Rozet satiri onay kutusunun genisligi kadar GIRINTILIDIR (`maxWidth -
+  /// 48 - 8`) -- bu satir SABIT kalir (checkbox genisligi degismedi), ama
+  /// IS-EMRI-o68 ile bu girintili satirin ICERIGI degisti: `_rozetler()`
+  /// artik (varsa) baslik duzenleme ikonunu da tasir, CAKISMA ikonuyla
+  /// AYNI konumda. D-A7-3'un formulundeki `sabitler` bu ikisini de (cakisma
+  /// + duzenleme) AYRI AYRI, kosullu terimlerle sayar -- girinti SABITI
+  /// ile `sabitler` arasindaki iliski YAKLASIKTIR (girinti tek bosluk
+  /// `MBosluk.s` sayar, `sabitler` yatay tek-satirda IKI sayar: baslikla
+  /// arada ve rozetlerle arada), TAM ESITLIK DEGILDIR -- bu satir eski
+  /// haliyle de boyleydi (56 ≠ 64), IS-EMRI-o68 bu ONCEDEN VAR OLAN
+  /// yaklasikligi DEGISTIRMEDI.
+  /// `Checkbox`, `CakismaRozeti` ve (varsa) duzenleme ikonu kendi 48dp
+  /// dokunma hedeflerini KORUR.
   Widget _dikeyDuzen(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -121,7 +146,7 @@ class GorevSatiri extends StatelessWidget {
           padding: EdgeInsets.only(
             left: MOlcu.dokunmaHedefi + MBosluk.s,
           ),
-          child: Row(children: _rozetler()),
+          child: Row(children: _rozetler(context)),
         ),
       ],
     );
@@ -165,13 +190,151 @@ class GorevSatiri extends StatelessWidget {
   /// Once cakisma ikonu, sonra taban.
   /// 🔴 TEK GOVDE: yatay ve dikey duzen AYNI listeyi kullanir; kopyalanmis
   /// olsaydi M79 (dikeyde CakismaRozeti dusurulur) sessizce mumkun olurdu.
-  List<Widget> _rozetler() {
+  /// IS-EMRI-o68: (varsa) baslik duzenleme ikonu SONA eklenir -- durum
+  /// rozetleri (cakisma/senkron) ONCE, eylem ikonu EN SON.
+  List<Widget> _rozetler(BuildContext context) {
     return [
       if (cakismaVarMi) ...[
         CakismaRozeti(entityId: gorev.id, depo: depo),
         SizedBox(width: MBosluk.xs),
       ],
       Flexible(child: SenkronRozeti(durum: senkronDurumu)),
+      if (onBaslikDuzenlendi != null) ...[
+        SizedBox(width: MBosluk.xs),
+        _duzenleIkonu(context),
+      ],
     ];
+  }
+
+  /// IS-EMRI-o68 SS2 kriter 8: `onBaslikDuzenlendi` VARSA kendi 48dp dokunma
+  /// hedefini tasiyan AYRI bir IconButton (Onur kilidi ①: satirin kendisi
+  /// onTap TASIMAZ, T6 PAZARLIKSIZ).
+  /// 🔴 `tooltip` ZORUNLUDUR -- bu, etiketi IconButton'in KENDI ic
+  /// Semantics dugumune yazan yoldur. OLCULDU: disardan saran bir
+  /// `Semantics(label:, button:true, child: IconButton(...))` BURADA
+  /// ISE YARAMADI -- IconButton kendi `container:true` semantics dugumunu
+  /// tasiyor, disaridaki sarmalayici AYRI bir dugume duser ve
+  /// `labeledTapTargetGuideline` "tap eylemi olan dugumde etiket yok"
+  /// diye FAIL eder (ilk kosumda gorulup duzeltildi -- CakismaRozeti'nin
+  /// deseni GestureDetector+Semantics+Container'dir, IconButton'un KENDI
+  /// ic semantics'i VARDIR, ikisi AYNI DESEN DEGILDIR).
+  /// Etiketsiz birakilirsa `labeledTapTargetGuideline` KENDISI FAIL eder ve
+  /// M7 (CakismaRozeti'nin etiketini silme mutanti) o zaman etiketsiz-
+  /// ikondan AYIRT EDILEMEZ hale gelir, yani M7 OLUR (IS-EMRI-o68 §1.4).
+  Widget _duzenleIkonu(BuildContext context) {
+    final geriCagirim = onBaslikDuzenlendi!;
+    return IconButton(
+      icon: Icon(Icons.edit_outlined, size: MOlcu.ikon),
+      tooltip: Metinler.baslikDuzenle,
+      constraints: BoxConstraints.tightFor(
+        width: MOlcu.dokunmaHedefi,
+        height: MOlcu.dokunmaHedefi,
+      ),
+      padding: EdgeInsets.zero,
+      onPressed: () => _baslikDuzenleDiyaloguAc(context, geriCagirim),
+    );
+  }
+
+  /// IS-EMRI-o68 §3.2/§3.3: bir MODAL diyalog acar -- "yerinde" (satirin
+  /// kendi govdesinde) `TextField` Onur tarafindan REDDEDILDI, bu ONDAN
+  /// FARKLIDIR ve T6'yi ihlal etmez (satirin KENDISINE `onTap` eklenmez).
+  /// Govde `_BaslikDuzenleDiyalogu`'a tasindi (asagida) -- OLCULDU: bu
+  /// metodun ONCEKI govdesi `TextEditingController`i burada YARATIP
+  /// `await showDialog(...)` SONRASI hemen `dispose()` ediyordu; iptal/
+  /// kaydet'in Navigator.pop() COGRAFI FRAME'de kapanir ama diyalogun KAPANMA
+  /// GECISI (route transition) bir sonraki frame'lerde surer -- controller
+  /// o gecis SURERKEN hala TextField'a bagliyken dispose ediliyordu
+  /// ("TextEditingController was used after being disposed", ilk kosumda
+  /// yakalandi). Controller'i kendi State.dispose()'unda yok eden bir
+  /// StatefulWidget bu yarisi ORTADAN KALDIRIR -- framework onu SADECE
+  /// widget agactan GERCEKTEN kalktiginda cagirir.
+  Future<void> _baslikDuzenleDiyaloguAc(
+    BuildContext context,
+    ValueChanged<String> onKaydet,
+  ) async {
+    final yeniBaslik = await showDialog<String>(
+      context: context,
+      builder: (_) => _BaslikDuzenleDiyalogu(baslangicBasligi: gorev.baslik),
+    );
+    if (yeniBaslik != null) onKaydet(yeniBaslik);
+  }
+}
+
+/// IS-EMRI-o68: `GorevSatiri._baslikDuzenleDiyaloguAc`'in diyalog govdesi --
+/// ayri bir StatefulWidget, cunku `TextEditingController`in yasam dongusu
+/// State'e baglanmali (yukaridaki metodun dokumantasyonu OLCULMUS gerekceyi
+/// tasir).
+class _BaslikDuzenleDiyalogu extends StatefulWidget {
+  final String baslangicBasligi;
+
+  const _BaslikDuzenleDiyalogu({required this.baslangicBasligi});
+
+  @override
+  State<_BaslikDuzenleDiyalogu> createState() =>
+      _BaslikDuzenleDiyaloguState();
+}
+
+class _BaslikDuzenleDiyaloguState extends State<_BaslikDuzenleDiyalogu> {
+  late final TextEditingController _denetleyici;
+
+  @override
+  void initState() {
+    super.initState();
+    _denetleyici = TextEditingController(text: widget.baslangicBasligi);
+  }
+
+  @override
+  void dispose() {
+    _denetleyici.dispose();
+    super.dispose();
+  }
+
+  // OLCULDU (bagimsiz denetimde bulundu): `Navigator.pop(gorevBasligiDogrula
+  // (...))` KOSULSUZ cagrilirsa, bos baslikta `pop(null)` diyalogu YINE
+  // KAPATIR -- kullanicinin gozunde IPTAL'den AYIRT EDILEMEZ olur (sessiz
+  // veri kaybi degil ama sessiz DUZENLEME kaybi). `GorevEkleAlani._gonder()`
+  // AYNI durumda hicbir sey yapmadan geri doner (alan ACIK kalir) -- burada
+  // da AYNI desen: gecersizse diyalog ACIK KALIR, kullanici duzeltebilir.
+  void _kaydet() {
+    final gecerliBaslik = gorevBasligiDogrula(_denetleyici.text);
+    if (gecerliBaslik == null) return;
+    Navigator.of(context).pop(gecerliBaslik);
+  }
+
+  // A11Y-4 STATIK (a11y_statik_tasma_test.dart R1/R2): HER Text( cagrisi
+  // `overflow: TextOverflow.ellipsis` + `maxLines` tasir -- maxLines TEK
+  // BASINA yetmez (M16: Flutter varsayilani sessiz TextOverflow.clip'tir).
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        Metinler.baslikDuzenle,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+      ),
+      content: TextField(
+        controller: _denetleyici,
+        autofocus: true,
+        onSubmitted: (_) => _kaydet(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            Metinler.iptalDugmesi,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+        TextButton(
+          onPressed: _kaydet,
+          child: Text(
+            Metinler.kaydetDugmesi,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+      ],
+    );
   }
 }

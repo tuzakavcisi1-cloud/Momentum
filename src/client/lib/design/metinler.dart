@@ -77,4 +77,12 @@ class Metinler {
   static const String depolamaKaliciDegil =
       'Veriler kalıcı DEĞİL: sekme kapanınca silinir.';
   static const String duyuruDepolamaGeriDususu = 'Depolama geri düşüşü';
+
+  // IS-EMRI-o68 -- SS2 kriter 8: baslik duzenleme ikonu + diyaloğu. F6'nin
+  // 13 dizgesine DAHIL DEGIL (ayni EK deseni). Ayni dize hem ikonun
+  // Semantics(label:)'i hem diyalog basligi olarak kullanilir -- ikisi de
+  // ayni eylemi adlandirir, ayri dize UYDURULMAZ.
+  static const String baslikDuzenle = 'Başlığı düzenle';
+  static const String iptalDugmesi = 'İptal';
+  static const String kaydetDugmesi = 'Kaydet';
 }

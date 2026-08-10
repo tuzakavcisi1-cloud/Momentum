@@ -172,11 +172,15 @@ void main() {
       // KENDINI kanitlar" doktrininin bu kapidaki karsiligi.
       // 🔴 GOREV-W2 [T8] TABAN BILEREK GUNCELLENDI 12 -> 13: depolama_seridi.dart
       // TEK BIR Text( dugumu ekledi (spec T3: "TEK BIR Text( dugumu" pini).
+      // 🔴 IS-EMRI-o68 TABAN BILEREK GUNCELLENDI 13 -> 16: gorev_satiri.dart'a
+      // baslik duzenleme diyaloğu (`_BaslikDuzenleDiyaloguState.build()`) UC
+      // YENI Text( cagrisi ekledi (diyalog basligi + Iptal dugmesi + Kaydet
+      // dugmesi, ucu de overflow/maxLines korumali) ⇒ 13 + 3 = 16.
       expect(
         adaylar.length,
-        13,
+        16,
         reason:
-            'Text( aday sayisi 13 DEGIL -- ya tarayici bozuldu (regex hic '
+            'Text( aday sayisi 16 DEGIL -- ya tarayici bozuldu (regex hic '
             'eslesmiyor ⇒ R1/R2 kor) ya taban degisti (yeni bir Text( eklendi/'
             'silindi). Bulunanlar:\n${adaylar.join('\n')}',
       );

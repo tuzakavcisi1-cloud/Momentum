@@ -140,6 +140,18 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
                         senkronDurumu: gorunum.senkronDurumu,
                         cakismaVarMi: gorunum.cakismaVarMi,
                         depo: widget.depo,
+                        // IS-EMRI-o68 kriter 3: `duzenle()` boylece URUN
+                        // YOLUNDAN cagrilir -- `onTamamlaDegisti`'nin
+                        // BIREBIR AYNI deseni (K112: once YEREL YAZMA,
+                        // sonra itme -- `_yerelYaz` sarmalayicisi ATLANMAZ).
+                        onBaslikDuzenlendi: (yeniBaslik) => unawaited(
+                          _yerelYaz(
+                            () => widget.depo.duzenle(
+                              gorunum.gorev.id,
+                              yeniBaslik,
+                            ),
+                          ),
+                        ),
                       );
                     },
                   );

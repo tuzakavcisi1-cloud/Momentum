@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../design/metinler.dart';
 import '../design/tokens.dart';
+import 'gorev_baslik_dogrulama.dart';
 
 /// SS3.1 -- alt sabit giris + ekle dugmesi.
 ///
@@ -21,8 +22,10 @@ class _GorevEkleAlaniState extends State<GorevEkleAlani> {
   final _denetleyici = TextEditingController();
 
   void _gonder() {
-    final metin = _denetleyici.text.trim();
-    if (metin.isEmpty) return;
+    // IS-EMRI-o68 §3.3: dogrulama (kirpma + bos reddi) `GorevSatiri`'nin
+    // baslik duzenleme diyaloğuyla PAYLASILIR -- kopyalanmaz.
+    final metin = gorevBasligiDogrula(_denetleyici.text);
+    if (metin == null) return;
     widget.onEkle(metin);
     _denetleyici.clear();
   }

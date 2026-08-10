@@ -35,6 +35,7 @@ Widget _sarmalayici({
   required double olcek,
   required SenkronDurumTuru durum,
   bool cakismaVarMi = false,
+  ValueChanged<String>? onBaslikDuzenlendi,
 }) {
   return MaterialApp(
     home: Builder(
@@ -55,6 +56,7 @@ Widget _sarmalayici({
                   onTamamlaDegisti: (_) {},
                   senkronDurumu: durum,
                   cakismaVarMi: cakismaVarMi,
+                  onBaslikDuzenlendi: onBaslikDuzenlendi,
                 ),
               ),
             ),
@@ -107,6 +109,125 @@ void main() {
       });
     }
   });
+
+  group(
+    'IS-EMRI-o68 -- baslik duzenleme ikonu `sabitler` KALDIRACI (M77b-sinifi)',
+    () {
+      // OLCULDU (bu is emrinde, ayni yontemle M75/M77 icin yapildigi gibi):
+      // 370dp/1.0x/gonderilmemis -- SABIT terimler DISINDA HERSEY (durum,
+      // olcek, rozetIstedigi≈185,5) M75 vakasiyla AYNI. onBaslikDuzenlendi
+      // NULL iken 64+96+185,5=345,5 < 370 ⇒ YATAY. onBaslikDuzenlendi VARKEN
+      // 116+96+185,5=397,5 > 370 ⇒ DIKEY. 345,5..397,5 araliginin ORTASI
+      // (370) secildi -- her iki uca da ~25dp pay birakir (font metrigi
+      // kaymasina karsi TAVANLI guvenlik payi).
+      //
+      // Gerekce (is emri §1.5): `_dikeyMi`nin `sabitler` toplami YENI
+      // dokunma hedefini SAYMAZSA, OLCULEN duzen (bu formul) ile CIZILEN
+      // duzen sessizce ayrisir -- bu kaldirac O terimi kaldiran/unutan bir
+      // mutanti YAKALAR; ne mevcut M75/M77 (onBaslikDuzenlendi HER ZAMAN
+      // null oldugu icin) ne de widget/kabul testleri (yalniz CAGRILDIGINI
+      // dogrular, GENISLIK ESIGINI degil) bunu yakalayamazdi.
+      testWidgets(
+        '370dp + 1.0x + gonderilmemis + onBaslikDuzenlendi NULL ⇒ YATAY (taban)',
+        (tester) async {
+          await tester.pumpWidget(
+            _sarmalayici(
+              genislik: 370,
+              olcek: 1.0,
+              durum: SenkronDurumTuru.gonderilmemis,
+            ),
+          );
+          await tester.pump();
+          expect(
+            _duzenColumn(),
+            findsNothing,
+            reason:
+                'onBaslikDuzenlendi NULL iken 370dp YATAY kalmali -- '
+                'kaldiracin TABANI budur (ikon CIZILMEDIGI icin sabitler '
+                'buyumez)',
+          );
+        },
+      );
+
+      testWidgets(
+        '370dp + 1.0x + gonderilmemis + onBaslikDuzenlendi VAR ⇒ DIKEY (kaldirac)',
+        (tester) async {
+          await tester.pumpWidget(
+            _sarmalayici(
+              genislik: 370,
+              olcek: 1.0,
+              durum: SenkronDurumTuru.gonderilmemis,
+              onBaslikDuzenlendi: (_) {},
+            ),
+          );
+          await tester.pump();
+          expect(
+            _duzenColumn(),
+            findsOneWidget,
+            reason:
+                'AYNI genislikte (370dp) onBaslikDuzenlendi VARKEN DIKEY '
+                'bekleniyordu -- `_dikeyMi`nin `sabitler` toplami duzenleme '
+                'ikonunun 48dp+4dp genisligini SAYMAZSA (ya da ikon '
+                'CIZILDIGI HALDE formul bunu gormezse) bu test SESSIZCE '
+                'DUSER -- M77b-sinifi kusurun tam kendisi (is emri §1.5).',
+          );
+        },
+      );
+
+      // OLCULDU (bagimsiz denetimde istendi): cakismaVarMi VE
+      // onBaslikDuzenlendi AYNI ANDA -- iki KOSULLU terim TOPLANMALI, biri
+      // digerini EZMEMELI. 420dp: yalniz biri VARKEN 116+96+185,5=397,5<420
+      // ⇒ YATAY (367 ve 370'teki kaldiraclarla AYNI mantik); IKISI BIRDEN
+      // VARKEN 168+96+185,5=449,5>420 ⇒ DIKEY. Bu, terimlerden birinin
+      // digerini SESSIZCE EZDIGI bir formul hatasini (ör. `?:` yerine
+      // yanlislikla ikinci `if` ilk `if`i EZERSE) yakalar.
+      testWidgets(
+        '420dp + 1.0x + gonderilmemis + cakismaVarMi VE onBaslikDuzenlendi ⇒ DIKEY (toplam)',
+        (tester) async {
+          await tester.pumpWidget(
+            _sarmalayici(
+              genislik: 420,
+              olcek: 1.0,
+              durum: SenkronDurumTuru.gonderilmemis,
+              cakismaVarMi: true,
+              onBaslikDuzenlendi: (_) {},
+            ),
+          );
+          await tester.pump();
+          expect(
+            _duzenColumn(),
+            findsOneWidget,
+            reason:
+                'cakismaVarMi VE onBaslikDuzenlendi AYNI ANDA VARKEN 420dp '
+                'DIKEY bekleniyordu -- iki kosullu terim TOPLANMALI (168), '
+                'biri digerini EZMEMELI.',
+          );
+        },
+      );
+
+      testWidgets(
+        '420dp + 1.0x + gonderilmemis + YALNIZ cakismaVarMi ⇒ YATAY (kontrol)',
+        (tester) async {
+          await tester.pumpWidget(
+            _sarmalayici(
+              genislik: 420,
+              olcek: 1.0,
+              durum: SenkronDurumTuru.gonderilmemis,
+              cakismaVarMi: true,
+            ),
+          );
+          await tester.pump();
+          expect(
+            _duzenColumn(),
+            findsNothing,
+            reason:
+                'YALNIZ cakismaVarMi (onBaslikDuzenlendi NULL) VARKEN 420dp '
+                'YATAY kalmali -- 420dp testinin TABAN karsilastirmasi.',
+          );
+        },
+      );
+    },
+  );
 
   group('G14/A5 -- GENIS ekran + 1.0x ⇒ YATAY (yanlis-pozitif kontrolu)', () {
     testWidgets('800dp + 1.0x + yerel ⇒ Column YOK', (tester) async {
