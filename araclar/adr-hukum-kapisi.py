@@ -154,7 +154,12 @@ def _g52_hedef_ayikla(satir, kok):
     if YERTUTUCU_DESENI.search(satir):
         fb_yol = os.path.join(kok, "src", "backend", "Momentum.Api", "wwwroot", "flutter_bootstrap.js")
         if not os.path.isfile(fb_yol):
-            return ("a2-ortam-hatasi", "flutter_bootstrap.js bulunamadi (git-izsiz build ciktisi, G52/a2)")
+            # BLOKER-1 (Cowork hukmu, o67): bu dal DAIMA 3'lu demet doner --
+            # tetiklenmis bir satirda <engineRevision> VARKEN wwwroot/flutter_bootstrap.js
+            # YOKSA (git-izsiz build ciktisi, .gitignore:31) bu NORMAL durumdur;
+            # cagiran (g52) sinif="a2-ortam-hatasi" oldugunda ucuncu ogeyi OKUMAZ,
+            # ama ucuncu oge EKSIK olunca `sinif, a, b = ...` ValueError ile COKUYORDU.
+            return ("a2-ortam-hatasi", "flutter_bootstrap.js bulunamadi (git-izsiz build ciktisi, G52/a2)", None)
         fb_icerik = oku_metin(fb_yol)
         rev_m = ENGINE_REVISION_DESENI.search(fb_icerik)
         host_m = GSTATIC_HOST_DESENI.search(fb_icerik)
@@ -412,7 +417,14 @@ ALINTI_DESENLERI = [
     re.compile(r"«([^»]{12,})»"),
     re.compile(r"^>\s+(.{12,})$", re.MULTILINE),
 ]
-ATIF_DESENI = re.compile(r"`?([\w./\\-]+\.(?:cs|py|md|js|json))(?::(\d+)(?:-(\d+))?)?`?")
+# BLOKER-2 (Cowork hukmu, o67): eski desen satir numarasini YALNIZ backtick'in
+# ICINDE kabul ediyordu (`` `yol:satir` ``). ADR 0004'un KULLANDIGI bicim ise
+# backtick'i YALNIZ dosya adinin cevresine kapatir, satir numarasi backtick'in
+# DISINDA kalir (`` `yol`:satir ``) -- o bicim eski desenle SESSIZ (hic
+# eslesmiyordu, satir_no=None). Dosya adindan hemen SONRA -- ama :satir'dan
+# ONCE -- ikinci bir opsiyonel backtick eklenir; boylece HEM ic-backtick'li
+# HEM dis-backtick'li HEM ciplak bicim ayni desenle cozulur.
+ATIF_DESENI = re.compile(r"`?([\w./\\-]+\.(?:cs|py|md|js|json))`?(?::(\d+)(?:-(\d+))?)?`?")
 
 KILIT_KAYNAGI = {
     # D-K170-9 icin K21 emsali: DURUM.md'nin CANLI K21 satiri KANONIK kaynaktir.
@@ -878,6 +890,22 @@ def altin_kume_kos():
             finally:
                 _yerel_sunucu_durdur(httpd, port)
 
+    def g52_a2_bootstrap_yok_ortam_hatasi():
+        # BLOKER-1 (Cowork hukmu, o67): tetiklenmis bir satirda <engineRevision>
+        # VARKEN wwwroot/flutter_bootstrap.js YOKSA (git-izsiz build ciktisi,
+        # .gitignore:31 -- temiz klon/CI/hic `flutter build web` kosmamis makine
+        # icin NORMAL durum) arac COKMEMELI, ORTAM HATASI vermelidir.
+        with tempfile.TemporaryDirectory() as td:
+            sahte_kok = os.path.join(td, "_kok")
+            os.makedirs(os.path.join(sahte_kok, "src", "backend", "Momentum.Api"), exist_ok=True)
+            # flutter_bootstrap.js BILEREK YOK.
+            belge = os.path.join(td, "b.md")
+            with open(belge, "w", encoding="utf-8") as f:
+                f.write("canvaskit/<engineRevision>/x.wasm ÖLÇÜLMEDİ\n")
+            b, h = g52(oku_metin(belge), sahte_kok, fixture_kok=FIXTURE_KOK)
+            ortam_hatali = any("flutter_bootstrap.js" in x for x in h)
+            return ortam_hatali, (b, h)
+
     def g52_b_kirli():
         belge_metin = "araclar/radar.py icindeki 'mekanik' deseni ÖLÇÜLEMEDİ.\n"  # M269
         b, h = g52(belge_metin, KOK_VARSAYILAN, fixture_kok=FIXTURE_KOK)
@@ -897,6 +925,7 @@ def altin_kume_kos():
     vaka(2, "G52/a: canli URL (M265 acik + M266 kapali) -> KIRMIZI + ORTAM HATASI", g52_a_kirli_ve_ortam_hatasi)
     vaka(3, "G52/a: Turkce buyuk/kucuk I normalizasyonu iki yazim (M267) -> 2 KIRMIZI", g52_a_turkce_normalize)
     vaka(4, "G52/a2: <engineRevision> yertutucu doldurma (M268) -> KIRMIZI", g52_a2_kirli)
+    vaka("4b", "G52/a2: BLOKER-1 -- bootstrap YOK, tetiklenmis <engineRevision> -> ORTAM HATASI (COKMEZ)", g52_a2_bootstrap_yok_ortam_hatasi)
     vaka(5, "G52/b: repo-ici yol + tirnakli desen bulunur (M269) -> KIRMIZI", g52_b_kirli)
     vaka(6, "G52/c: hedef cikarilamaz (M270) -> SARI hedef-cikarilamadi", g52_c_sari)
     vaka(7, "G52/d: pozitif kontrol fixture'i yok (M271 benzeri) -> ORTAM HATASI", g52_d_ortam_hatasi)
@@ -1048,6 +1077,17 @@ def altin_kume_kos():
             b, h = g54(belge, td)
             return any(a == "G54/a" and e == "KIRMIZI" for a, e, _s, _m in b), (b, h)
 
+    def g54_a_disbacktick_kirli():
+        # BLOKER-2 (Cowork hukmu, o67): ADR 0004'un KULLANDIGI bicim -- backtick
+        # YALNIZ dosya adini kapsar, satir numarasi backtick DISINDA (`` `yol`:satir ``).
+        # Eski desen bu bicimde satir_no'yu HIC cikaramiyordu (SESSIZ, EXIT 0).
+        with tempfile.TemporaryDirectory() as td:
+            with open(os.path.join(td, "kaynak.cs"), "w", encoding="utf-8") as f:
+                f.write("// satir 1\n// izolasyon VERIR\n// satir 3\n")
+            belge = '`kaynak.cs`:2 satirinda *"izolasyon vermez ama alt kaynak"* yaziyor.\n'
+            b, h = g54(belge, td)
+            return any(a == "G54/a" and e == "KIRMIZI" for a, e, _s, _m in b), (b, h)
+
     def nk4_nk5_backtick_alinti_degil():
         with tempfile.TemporaryDirectory() as td:
             with open(os.path.join(td, "kaynak.cs"), "w", encoding="utf-8") as f:
@@ -1096,6 +1136,7 @@ def altin_kume_kos():
 
     vaka(17, "G54 temiz (alinti kaynakla ayni) -> bulgu yok", g54_temiz)
     vaka(18, "G54/a: ters-alinti (M280) -> KIRMIZI", g54_a_kirli)
+    vaka("18b", "G54/a: BLOKER-2 -- `yol`:satir bicimi (dis-backtick) + ters-alinti -> KIRMIZI", g54_a_disbacktick_kirli)
     vaka("18n", "NK4/NK5: tek-backtick tanimlayici ALINTI DEGIL -> SUSMALI", nk4_nk5_backtick_alinti_degil)
     vaka(19, "G54/b: ciplak dosya adi -- iki eslesme (M281) -> SARI yol-belirsiz", g54_b_sari)
     vaka(20, "G54/c: sarkan atif -- satir yok (M282) -> KIRMIZI", g54_c_kirli)
