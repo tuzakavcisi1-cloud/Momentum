@@ -23,7 +23,7 @@ function Get-Prop {
 
 # --- locate a .NET SDK (prefer the 64-bit install; the machine may have an SDK-less x86 first on PATH) ---
 $dotnet = 'dotnet'
-$preferred = Join-Path $env:ProgramFiles 'dotnet\dotnet.exe'
+$preferred = Join-Path -Path $(if ($env:ProgramFiles) { $env:ProgramFiles } else { $PSScriptRoot }) -ChildPath 'dotnet\dotnet.exe'
 if (Test-Path $preferred) {
     $hasSdk = & $preferred --list-sdks 2>$null
     if ($hasSdk) { $dotnet = $preferred }
@@ -54,7 +54,7 @@ Invoke-Step 'build -warnaserror' { & $dotnet build $solution -warnaserror --nolo
 # ayarlanmamissa makul bir varsayilan verir; elle `dotnet test` cagiran biri icin
 # degisken hala zorunlu kalir (test kendi basina firlatir).
 if (-not $env:MOMENTUM_KANIT_DIZIN) {
-    $env:MOMENTUM_KANIT_DIZIN = Join-Path $repoRoot 'KANIT\slice-3d\07-G7-backend-zorlama'
+    $env:MOMENTUM_KANIT_DIZIN = Join-Path (Join-Path (Join-Path $repoRoot 'KANIT') 'slice-3d') '07-G7-backend-zorlama'
 }
 New-Item -ItemType Directory -Force -Path $env:MOMENTUM_KANIT_DIZIN | Out-Null
 

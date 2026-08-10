@@ -84,13 +84,19 @@ taşıyıcılığı hiçbir mutantla gösterilemez ve gösterilemezdi** (§9/11)
 🔴 `pull_request` tetiği **YOK** (Onur kilitledi, oturum 52):
 private repo kotası ölçülemedi ⇒ kendiliğinden koşan iş sayısı **asgaride** tutulur.
 
-### `D-A13-4` — BACKEND `verify` ZİNCİRİ BU DİLİMDE CI'YA **GİRMEZ**
+### `D-A13-4` — BACKEND `verify` ZİNCİRİ CI'YA GİRDİ 🟢 **(o69'da KAPANDI)**
 
-Gerekçe **ölçülmüştür, tembellik değildir**: backend ayağı Postgres service container +
-.NET 10 SDK + `verify.ps1`'in bash eşleniği demektir; bu, tek dilimde **ikinci bir ürün**
-açar. Radar `R4` şu an **14 artefaktta SARI** ve `R1` *"tekrar eden kusur sınıfı"* KIRMIZI.
-⇒ ⑨'a bırakılır. **Mutantı yoktur ve olamaz** (bir *yapmama* kararının mutantı yoktur) ⇒
-**§6b'de gerekçesiyle borç olarak yazılır.**
+Gerekçe (o zaman) **ölçülmüştü, tembellik değildi**: backend ayağı Postgres service
+container + .NET 10 SDK + `verify.ps1`'in bash eşleniği demekti; bu, tek dilimde
+**ikinci bir ürün** açardı. Radar `R4` o an **14 artefaktta SARI** ve `R1` *"tekrar eden
+kusur sınıfı"* KIRMIZI'ydı. ⇒ ⑨'a bırakılmıştı.
+🟢 **Kapanış (oturum 69, `IS-EMRI-o69-backend-CI-v3.md` / `K176`):** tasarım
+`services:` container'ı DEĞİL, testlerin zaten kullandığı Testcontainers'ı esas aldı ⇒
+ikinci bir ürün açmadı. `.github/workflows/ci.yml`'e `backend` işi eklendi (`ubuntu-latest`,
+`services:` YOK, `./araclar/verify.ps1` `shell: pwsh` ile çağrılıyor) ve gerçek bir kapı +
+mutant yazıldı: `araclar/ci-kapisi.py` `A13/G31/a`–`g` (7 statik ayak) + `S1`–`S4` (4
+statik mutant, tavansız) + `M-o69-1`…`4` (4 koşan mutant, `verify.ps1` yerel koşumuyla).
+Eski §6b satırı (borç beyanı) **silindi** — kapanış yolu kendi yazdığı yordamdı.
 
 ### `D-A13-5` — iOS DERLEMESİ **İMZASIZ** (`--no-codesign`)
 
@@ -293,7 +299,11 @@ işidir** (kırmızı çizgi 4).
 
 ## 6b. MUTANT BORCU
 
-- KURAL: D-A13-4 | GEREKCE: bu bir YAPMAMA kararidir (backend verify zinciri bu dilimde CI'ya girmez) ve bir yapmama kararinin mutanti yoktur: "olmayan is" bozulamaz. Kapanis yolu: backend CI'ya girdigi dilimde (planlanan: 9) bu satir silinir ve gercek bir kapi+mutant yazilir. Borc BEYAN EDILMISTIR, gizlenmemistir.
+🟢 **`D-A13-4` borcu o69'da KAPANDI** (yukarıdaki karar başlığına bakınız) — bu satır
+kendi yazdığı kapanış yordamı gereği **silindi**; yerine gerçek kapı + mutant geldi
+(`ci-kapisi.py` `A13/G31/a`–`g` + `S1`–`S4` + `M-o69-1`…`4`). `K58`: sınırı kapatan el,
+onu beyan eden kopyaları da kapatır.
+
 🔴 **BURADAN BİR BORÇ ÇIKARILDI VE SEBEBİ YAZIYA GEÇİYOR:** ilk yazımda `D-A13-1` de borç
 olarak beyan edilmişti; araç **`[S6] GEREKSIZ BORC: D-A13-1 — mutanti VAR, borc beyani
 yaniltici`** ile ısırdı ve **haklıydı** — `M166` bu kuralı gerçekten hedefliyor. Beyan
@@ -364,8 +374,12 @@ değil. *(Kapı susturulmadı, beyan doğru sınıfa taşındı.)*
 
 ## 9. BEYAN EDİLMİŞ SINIRLAR (gizlenmiş sınır kabul edilmez — §4 doktrini)
 
-1. **Backend CI'da DEĞİL** (`D-A13-4`) ⇒ CI yeşili *"uygulama derleniyor ve testleri geçiyor"*
-   demektir, *"sistem çalışıyor"* **demez**. ⑨'a borç (§6b).
+1. 🟢 **Backend CI'ya GİRDİ (`D-A13-4` o69'da KAPANDI)** — `.github/workflows/ci.yml`'e
+   `backend` işi eklendi (`ubuntu-latest`, `services:` YOK, `./araclar/verify.ps1`); CI
+   yeşili artık backend `verify.ps1` zincirinin (build+test+CVE) de geçtiği anlamına gelir.
+   Sınır yine de kalır: bu *"uygulama derleniyor ve testleri geçiyor"* demektir,
+   *"cihazda/production'da çalışıyor"* **demez** — çevrimdışı senkron/SignalR/gerçek cihaz
+   ayağı bu turun kapsamı DIŞINDADIR, `B-O63-2` ve `B-W3b-6`–`10` **AÇIK** kalır.
 2. **iOS yalnız DERLENİR, ÇALIŞTIRILMAZ.** Simülatörde açılış, ekran görüntüsü, davranış
    kanıtı **YOKTUR** — `flutter build ios --no-codesign` bir **derleme** kanıtıdır.
    *"iOS destekleniyor"* iddiası bu dilimle **kanıtlanmaz**, yalnız *"iOS hedefi derleniyor"*.

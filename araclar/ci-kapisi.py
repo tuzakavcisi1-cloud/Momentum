@@ -8,7 +8,13 @@ statik mutantlar (M162-M166) sha256 ozdesligiyle sinanabilir.
 
 NE OLCER (ve NE OLCMEZ):
   OLCER  : A13/G28/a,b (istemci isi) * A13/G29/a (ios isi) * A13/G30/a,b,c
-           (pbxproj bundle id + deployment target + .gitignore artefakt yollari).
+           (pbxproj bundle id + deployment target + .gitignore artefakt yollari)
+           * A13/G31/a-h (IS-EMRI-o69, backend CI isi -- D-A13-4 kapanisi:
+           backend isi+runner * verify.ps1 cagrisi+shell * services YOK *
+           is-duzeyi defaults ezmesi * kuresel defaults'ta shell YOK *
+           istemci/ios'ta if: YOK * ASPNETCORE_ENVIRONMENT YOK * akis-stili
+           (flow-style) YAML YASAK -- bagimsiz denetimde bulunan kor kapi
+           kapatildi, oturum 69).
   OLCMEZ : A13/G27, A13/G28/c-d, A13/G29/b-d -- bunlar KOSAN CI logundan `gh` ile
            olculur (push sonrasi, Cowork/Onur isi). A13/G30/d (git diff --stat)
            de BURADA DEGIL -- kriter 3 onu ayri bir CIKTI-BOS olcumu olarak ister
@@ -23,7 +29,8 @@ baglantisini ID uzerinden takip eder ki `RunnerTests`'in kendi bundle id'si
 Runner'inkiyle KARISMASIN.
 
 Cikis: 0 temiz * 1 bulgu * 3 bicim/ortam hatasi
-Kodlar: G28a * G28b * G29a * G30a * G30b * G30c * S0 (bicim/ortam)
+Kodlar: G28a * G28b * G29a * G30a * G30b * G30c * G31a * G31b * G31c * G31d *
+        G31e * G31f * G31g * G31h * S0 (bicim/ortam)
 """
 import re
 import sys
@@ -150,6 +157,189 @@ def g30c_gitignore(gitignore_metin):
     return True, ""
 
 
+# ============================ IS-EMRI-o69 -- A13/G31/a-g (backend CI) =========
+# 🔴 GENISLETME (D-A13-4 kapanisi, oturum 69): backend isini tarayan yedi yeni
+# ayak. AYNI beyan edilmis sinir gecerlidir -- duz metin/girinti tabanli tarama,
+# gercek bir YAML ayristirici DEGIL. Blok cikarma yontemi: bir anahtarin
+# GIRINTI SEVIYESINI bulur, AYNI ya da DAHA SIG girintili bir sonraki satira
+# kadar govdeyi toplar (basit, deterministik, YAML'in KENDI blok kuralinin
+# yaklasik bir taklidi).
+
+
+def _blok_ayikla(metin, anahtar, girinti=0):
+    """`anahtar` (ör. 'defaults' ya da 'istemci') GIRINTI seviyesinde bir
+    anahtar SATIRI olarak baslar (girinti=0 ⇒ 'defaults:', girinti=2 ⇒
+    '  istemci:') ve AYNI ya da DAHA SIG girintili bir sonraki DOLU satira
+    kadar govdeyi dondurur. Bulunamazsa None doner."""
+    satirlar = metin.split("\n")
+    on = " " * girinti
+    bas = None
+    for i, s in enumerate(satirlar):
+        if s == on + anahtar + ":" or s.startswith(on + anahtar + ": "):
+            bas = i
+            break
+    if bas is None:
+        return None
+    govde = [satirlar[bas]]
+    for s in satirlar[bas + 1:]:
+        if s.strip() == "":
+            govde.append(s)
+            continue
+        mevcut = len(s) - len(s.lstrip(" "))
+        if mevcut <= girinti:
+            break
+        govde.append(s)
+    return "\n".join(govde)
+
+
+def _is_bloklarini_ayikla(ci_metin):
+    """`jobs:` altindaki HER isin (2 girinti) govdesini {ad: govde} olarak
+    dondurur. Yorumlar ONCE atilir (_yorumsuz_satirlar) -- ayni desen G28/G29/
+    G30'un kullandigi desendir."""
+    metin = "\n".join(_yorumsuz_satirlar(ci_metin))
+    jobs_govde = _blok_ayikla(metin, "jobs", girinti=0)
+    if jobs_govde is None:
+        return {}
+    isler = {}
+    satirlar = jobs_govde.split("\n")[1:]  # 'jobs:' satirini atla
+    i = 0
+    while i < len(satirlar):
+        s = satirlar[i]
+        m = re.match(r"^  ([\w-]+):\s*$", s)
+        if not m:
+            i += 1
+            continue
+        ad = m.group(1)
+        govde = [s]
+        j = i + 1
+        while j < len(satirlar):
+            s2 = satirlar[j]
+            if s2.strip() == "":
+                govde.append(s2)
+                j += 1
+                continue
+            girinti2 = len(s2) - len(s2.lstrip(" "))
+            if girinti2 <= 2:
+                break
+            govde.append(s2)
+            j += 1
+        isler[ad] = "\n".join(govde)
+        i = j
+    return isler
+
+
+def g31a_backend_isi(ci_metin):
+    """A13/G31/a: `backend` isi VAR ve `runs-on: ubuntu-latest`."""
+    isler = _is_bloklarini_ayikla(ci_metin)
+    govde = isler.get("backend")
+    if govde is None:
+        return False, "'backend' isi YOK"
+    if not re.search(r"runs-on:\s*ubuntu-latest", govde):
+        return False, "'backend' isi var ama runs-on: ubuntu-latest degil"
+    return True, ""
+
+
+def g31b_verify_cagrisi(ci_metin):
+    """A13/G31/b: `./araclar/verify.ps1` cagrilan ADIMIN AYNI adiminda
+    `shell: pwsh` de var mi (adimlar '- ' ile ayrilir, G28/G29'un 'ayni
+    satirda' kuralinin adim-genisletilmis hali)."""
+    isler = _is_bloklarini_ayikla(ci_metin)
+    govde = isler.get("backend")
+    if govde is None:
+        return False, "'backend' isi YOK -- verify.ps1 cagrisi olculemedi"
+    adimlar = re.split(r"\n(?=\s*-\s)", govde)
+    for adim in adimlar:
+        if "verify.ps1" in adim:
+            if re.search(r"shell:\s*pwsh", adim):
+                return True, ""
+            return False, "verify.ps1 cagrisi var ama AYNI adimda 'shell: pwsh' yok"
+    return False, "'backend' isinde './araclar/verify.ps1' cagrisi YOK"
+
+
+def g31c_services_yok(ci_metin):
+    """A13/G31/c: `services:` blogu HIC YOK (tasarim karari: testler kendi
+    Testcontainers konteynerini acar)."""
+    metin = "\n".join(_yorumsuz_satirlar(ci_metin))
+    if re.search(r"(?m)^\s*services:\s*$", metin):
+        return False, "'services:' blogu VAR (Testcontainers tasarimi ihlal edildi)"
+    return True, ""
+
+
+def g31d_is_duzeyi_defaults(ci_metin):
+    """A13/G31/d: `backend` isi KENDI `defaults: / run: / working-directory:`
+    ezmesini tasir (kuresel `defaults:` src/client'i ezer)."""
+    isler = _is_bloklarini_ayikla(ci_metin)
+    govde = isler.get("backend")
+    if govde is None:
+        return False, "'backend' isi YOK -- is-duzeyi defaults olculemedi"
+    is_defaults = _blok_ayikla(govde, "defaults", girinti=4)
+    if is_defaults is None:
+        return False, "'backend' isinde is-duzeyi 'defaults:' YOK"
+    if "working-directory:" not in is_defaults:
+        return False, "'backend' isinde 'defaults:' var ama 'working-directory:' yok"
+    return True, ""
+
+
+def g31e_global_defaults_shell_yok(ci_metin):
+    """A13/G31/e: KURESEL `defaults: / run:` altinda `shell:` YOK (tur 2'nin
+    karsi ornegi: `shell: pwsh` kuresel bloga eklenirse istemci/ios'un TUM
+    adimlarinin kabugu SESSIZCE degisir)."""
+    metin = "\n".join(_yorumsuz_satirlar(ci_metin))
+    govde = _blok_ayikla(metin, "defaults", girinti=0)
+    if govde is None:
+        return True, ""  # kuresel defaults hic yoksa shell de yoktur -- SUSAR
+    if re.search(r"(?m)^\s*shell:\s*", govde):
+        return False, "KURESEL 'defaults:' altinda 'shell:' VAR (istemci/ios'u sessizce etkiler)"
+    return True, ""
+
+
+def g31f_istemci_ios_if_yok(ci_metin):
+    """A13/G31/f: `istemci` VE `ios` islerinin GOVDESINDE `if:` YOK (tur 2'nin
+    ikinci karsi ornegi: `if: false` ile bir is sessizce devre disi kalabilir,
+    'yalniz ekleme' testi bunu goremez)."""
+    isler = _is_bloklarini_ayikla(ci_metin)
+    for ad in ("istemci", "ios"):
+        govde = isler.get(ad)
+        if govde is None:
+            continue
+        if re.search(r"(?m)^\s*if:\s*", govde):
+            return False, "'%s' isinin govdesinde 'if:' VAR (sessizce devre disi birakilabilir)" % ad
+    return True, ""
+
+
+def g31g_aspnetcore_environment_yok(ci_metin):
+    """A13/G31/g: `ASPNETCORE_ENVIRONMENT` ci.yml'de HIC GECMEZ -- verify.ps1
+    API'yi ayaga kaldirmaz, testler ortami kendileri `UseEnvironment` ile
+    pinler; disaridan set etmek PINLEMEYEN bir testin davranisini sessizce
+    degistirir (is emri §3b)."""
+    if "ASPNETCORE_ENVIRONMENT" in ci_metin:
+        return False, "'ASPNETCORE_ENVIRONMENT' ci.yml'de GECIYOR"
+    return True, ""
+
+
+def g31h_akis_stili_yasak(ci_metin):
+    """A13/G31/h: ci.yml AKIS-STILI (flow-style, '{...}') YAML eslemesi
+    TASIMAZ -- yalniz BOS akis-stili ('workflow_dispatch: {}') istisna.
+
+    🔴 OLCULDU (bagimsiz denetimde bulundu, oturum 69): `_blok_ayikla`/
+    `_is_bloklarini_ayikla` yalniz BLOK-STILI (girintili) YAML anahtarlarini
+    tanir -- duz metin taramasinin BEYAN EDILMIS SINIRIDIR (gercek bir YAML
+    ayristirici degildir). Ama `defaults: {run: {shell: pwsh}}` ya da
+    `ios: {runs-on: macos-latest, if: false, ...}` gibi AKIS-STILI (JSON
+    benzeri) yazim GERCEKTEN GECERLI YAML'dir ve GitHub Actions onu AYNI
+    sekilde calistirir -- G31/c, G31/e, G31/f'nin BLOK-STILI regex'leri bunu
+    GORMEZ ⇒ tur-2'nin 'Y2' saldirisi (kuresel shell/if: false ile is
+    sessizce degistirilir) AKIS-STILIYLE YENIDEN acilabilirdi. Bu ayak o
+    SINIFI TEK NOKTADAN kapatir: akis-stili HIC KULLANILAMAZ (bos harici).
+    """
+    metin = "\n".join(_yorumsuz_satirlar(ci_metin))
+    for m in re.finditer(r":\s*\{([^}]*)\}", metin):
+        if m.group(1).strip() == "":
+            continue  # bos akis-stili (workflow_dispatch: {}) -- ISTISNA
+        return False, "akis-stili (flow-style) YAML eslemesi bulundu: '%s' (yalniz block-stil taranir, gizli anahtar tasiyabilir)" % m.group(0)[:80].replace("\n", " ")
+    return True, ""
+
+
 def denetle(ci_metin, pbxproj_metin, gitignore_metin):
     """(bulgular) dondurur. bulgular: [(kod, mesaj)]"""
     bulgular = []
@@ -168,6 +358,19 @@ def denetle(ci_metin, pbxproj_metin, gitignore_metin):
     ok, mesaj = g30c_gitignore(gitignore_metin)
     if not ok:
         bulgular.append(("G30c", "A13/G30/c: " + mesaj))
+    for kod, fn in (
+        ("G31a", g31a_backend_isi),
+        ("G31b", g31b_verify_cagrisi),
+        ("G31c", g31c_services_yok),
+        ("G31d", g31d_is_duzeyi_defaults),
+        ("G31e", g31e_global_defaults_shell_yok),
+        ("G31f", g31f_istemci_ios_if_yok),
+        ("G31g", g31g_aspnetcore_environment_yok),
+        ("G31h", g31h_akis_stili_yasak),
+    ):
+        ok, mesaj = fn(ci_metin)
+        if not ok:
+            bulgular.append((kod, "A13/G31/%s: %s" % (kod[-1], mesaj)))
     return bulgular
 
 
@@ -176,6 +379,9 @@ on:
   workflow_dispatch: {}
   push:
     branches: [main]
+defaults:
+  run:
+    working-directory: src/client
 jobs:
   istemci:
     runs-on: ubuntu-latest
@@ -185,9 +391,7 @@ jobs:
         with:
           flutter-version: 3.44.6
       - run: flutter analyze --fatal-infos
-        working-directory: src/client
       - run: flutter test
-        working-directory: src/client
   ios:
     runs-on: macos-latest
     steps:
@@ -196,8 +400,27 @@ jobs:
         with:
           flutter-version: 3.44.6
       - run: flutter build ios --no-codesign
-        working-directory: src/client
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+      - run: pwsh --version
+        shell: pwsh
+      - run: docker info
+        shell: pwsh
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: ./araclar/verify.ps1
+        shell: pwsh
 """
+# 🔴 OLCULDU (is emri v3 Y5 -- oturum 69): eski fikstur KURESEL 'defaults:'
+# TASIMIYORDU ama gercek ci.yml TASIYORDU (adim-duzeyi working-directory
+# yerine). Fikstur burada gercege HIZALANDI -- yoksa yeni G31/d,e ayaklari
+# KOR DOGARDI (vaka 1 'TEMIZ' zaten KIRMIZI verirdi).
 
 _PBXPROJ_TEMIZ = """// !$*UTF8*$!
 {
@@ -377,6 +600,54 @@ def altin_kume():
                        _CI_TEMIZ.replace(" --fatal-infos", ""),
                        _PBXPROJ_TEMIZ, _GITIGNORE_TEMIZ.replace("ios/Pods/\n", ""),
                        ["G28a", "G30c"]))
+    # ---- IS-EMRI-o69: A13/G31/a-g (backend CI) ----
+    sonuc.append(_vaka("14) G31/a: backend isi runs-on macos-latest'e degistirilmis -- KIRMIZI",
+                       _CI_TEMIZ.replace(
+                           "  backend:\n    runs-on: ubuntu-latest\n",
+                           "  backend:\n    runs-on: macos-latest\n"),
+                       _PBXPROJ_TEMIZ, _GITIGNORE_TEMIZ, ["G31a"]))
+    sonuc.append(_vaka("15) G31/b: verify.ps1 adiminda shell: pwsh silinmis -- KIRMIZI",
+                       _CI_TEMIZ.replace(
+                           "      - run: ./araclar/verify.ps1\n        shell: pwsh\n",
+                           "      - run: ./araclar/verify.ps1\n"),
+                       _PBXPROJ_TEMIZ, _GITIGNORE_TEMIZ, ["G31b"]))
+    sonuc.append(_vaka("16) G31/c: backend isine services: eklenmis -- KIRMIZI",
+                       _CI_TEMIZ.replace(
+                           "  backend:\n    runs-on: ubuntu-latest\n",
+                           "  backend:\n    runs-on: ubuntu-latest\n    services:\n      postgres:\n        image: postgres:17-alpine\n"),
+                       _PBXPROJ_TEMIZ, _GITIGNORE_TEMIZ, ["G31c"]))
+    sonuc.append(_vaka("17) G31/d: backend isinin is-duzeyi defaults'u silinmis -- KIRMIZI",
+                       _CI_TEMIZ.replace(
+                           "    defaults:\n      run:\n        working-directory: .\n", ""),
+                       _PBXPROJ_TEMIZ, _GITIGNORE_TEMIZ, ["G31d"]))
+    sonuc.append(_vaka("18) G31/e: kuresel defaults'a shell: bash eklenmis -- KIRMIZI (tur 2 karsi ornegi)",
+                       _CI_TEMIZ.replace(
+                           "defaults:\n  run:\n    working-directory: src/client\n",
+                           "defaults:\n  run:\n    working-directory: src/client\n    shell: bash\n"),
+                       _PBXPROJ_TEMIZ, _GITIGNORE_TEMIZ, ["G31e"]))
+    sonuc.append(_vaka("19) G31/f: ios isine if: false eklenmis -- KIRMIZI (tur 2 karsi ornegi)",
+                       _CI_TEMIZ.replace(
+                           "  ios:\n    runs-on: macos-latest\n",
+                           "  ios:\n    runs-on: macos-latest\n    if: false\n"),
+                       _PBXPROJ_TEMIZ, _GITIGNORE_TEMIZ, ["G31f"]))
+    sonuc.append(_vaka("20) G31/g: ASPNETCORE_ENVIRONMENT verify.ps1 adimina eklenmis -- KIRMIZI",
+                       _CI_TEMIZ.replace(
+                           "      - run: ./araclar/verify.ps1\n        shell: pwsh\n",
+                           "      - run: ./araclar/verify.ps1\n        shell: pwsh\n        env:\n          ASPNETCORE_ENVIRONMENT: Development\n"),
+                       _PBXPROJ_TEMIZ, _GITIGNORE_TEMIZ, ["G31g"]))
+    sonuc.append(_vaka("22) G31/h: kuresel defaults AKIS-STILINE (flow-style) cevrilmis -- KIRMIZI",
+                       _CI_TEMIZ.replace(
+                           "defaults:\n  run:\n    working-directory: src/client\n",
+                           "defaults: {run: {working-directory: src/client}}\n"),
+                       _PBXPROJ_TEMIZ, _GITIGNORE_TEMIZ, ["G31h"]))
+    sonuc.append(_vaka("21) G31/c + G31/g BIRLIKTE kirmizi -- karisik gecmez (K40)",
+                       _CI_TEMIZ.replace(
+                           "  backend:\n    runs-on: ubuntu-latest\n",
+                           "  backend:\n    runs-on: ubuntu-latest\n    services:\n      postgres:\n        image: postgres:17-alpine\n"
+                       ).replace(
+                           "      - run: ./araclar/verify.ps1\n        shell: pwsh\n",
+                           "      - run: ./araclar/verify.ps1\n        shell: pwsh\n        env:\n          ASPNETCORE_ENVIRONMENT: Development\n"),
+                       _PBXPROJ_TEMIZ, _GITIGNORE_TEMIZ, ["G31c", "G31g"]))
     _yaz("=" * 74)
     gecti = sum(1 for x in sonuc if x)
     _yaz("HUKUM: %d/%d GECTI -- %s" % (gecti, len(sonuc),
@@ -406,7 +677,7 @@ def main(argv):
     for k, m in bulgular:
         _yaz("[" + k + "] " + m)
     if not bulgular:
-        _yaz("BULGU YOK: G28/a,b * G29/a * G30/a,b,c hepsi gecti.")
+        _yaz("BULGU YOK: G28/a,b * G29/a * G30/a,b,c * G31/a-h hepsi gecti.")
     _yaz("-" * 74)
     _yaz("BEYAN EDILMIS SINIR: duz metin taranir, YAML/plist ayristirilmaz.")
     _yaz("A13/G27, G28/c-d, G29/b-d, G30/d BURADA OLCULMEZ (kosan CI / git diff isi).")

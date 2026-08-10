@@ -86,7 +86,10 @@ sınıfta** sıfır dönmez (`W3b/G51/e` + §5 çıkış kodu sözleşmesi).
 - **`W3/G43`–`G47` kapılarının implementasyonu** — o kapıların kapsamı (*"YALNIZ `Program.cs`"*) bugünkü
   ürüne **kör** (statik servis ayrı dosyada). Kapsam düzeltmesi `W3` spec'inin bir sonraki sürümüne aittir.
 - **Canlı HTTP ve tarayıcı ölçümü** — `K80`: ortamı Cowork kaldırmaz. Bu görev **statik** kapılarla sınırlıdır.
-- **CI'ya bağlama** — `D-A13-4` turunda; bu görev kapıyı **yazar**, CI'ya **koymaz**.
+- **CI'ya bağlama** — 🟢 `D-A13-4` **o69'da KAPANDI** (backend `verify.ps1` zinciri CI'ya
+  girdi) ama bu görevin kapıları (`W3b/G48`–`G51`, `--no-web-resources-cdn` dâhil) CI'ya
+  BAĞLANMADI — bu ayrı ayak `B-O63-2` olarak **AÇIK kalır** (`D-A13-4`'ün kapsamı hiç
+  değildi; bu görev kapıyı **yazar**, CI'ya **koymaz**).
 
 ---
 
@@ -369,11 +372,14 @@ B-W3b-5 | D-W3b-5 | sira ve temizleme semantigi BETIGIN ICINDEDIR; statik kapi y
    ürüne **kör**; düzeltme `W3` spec'inin sonraki sürümüne aittir. Bu görev **ayrı kimlikli** (`W3b/G48`–`G51`)
    kapılar yazar — `K108` gereği atıflar **daima kapsam öneklidir**.
 3. 🔴 **`--no-web-resources-cdn`'in CI'da zorlanması bu turda YAPILMAZ** (`B-O63-2` açık kalır).
-   `W3b/G51` kapıyı **yazar**; CI'ya bağlanması `D-A13-4` turundadır.
+   `W3b/G51` kapıyı **yazar**; 🟢 `D-A13-4` **o69'da KAPANDI** ama CI'ya bağlanması onun
+   kapsamında hiç değildi — bu ayak `B-O63-2` olarak **AÇIK kalır**.
 4. 🔴 **`gstatic`'in CORP politikası ölçülmez ve ölçülemez** — üçüncü taraftır. `D-W3b-3`'ün gerekçesi
    zaten *"o politikaya bağımlı kalmamak"*tır; kapı **bayrağın izini** ölçer, uzak sunucuyu değil.
 5. 🔴 **Windows/NTFS dışında hiçbir ortamda ölçülmedi** ve `wwwroot` **CI'da yoktur** ⇒ `W3b/G50/f`
-   orada **ORTAM HATASI** verir. CI'nın bu kapıyı build **sonrasında** koşup koşmayacağı `D-A13-4`'e aittir.
+   orada **ORTAM HATASI** verir. 🟢 `D-A13-4` **o69'da KAPANDI** (backend `verify.ps1`
+   zinciri) ama CI'nın bu kapıyı build **sonrasında** koşup koşmayacağı onun kapsamında
+   hiç değildi — `B-O63-2` olarak **AÇIK kalır**.
 6. 🔴 **Kullanıcı verisi / OPFS seçimi bu görevin konusu DEĞİLDİR.** `ADR 0004` park edilmiştir.
 7. 🔴 **`R8`'İN GETİRİSİ İNCEDİR — ölçüldü, Onur beyanla kabul etti (o66; `MJ11`'in kapanışı).**
    `radar.py`:41-42 ürün yolu `["src/","lib/","app/"]`, hariç `araclar/` ⇒ `T1` (`.gitignore`)
