@@ -94,7 +94,7 @@ kusur sınıfı"* KIRMIZI'ydı. ⇒ ⑨'a bırakılmıştı.
 `services:` container'ı DEĞİL, testlerin zaten kullandığı Testcontainers'ı esas aldı ⇒
 ikinci bir ürün açmadı. `.github/workflows/ci.yml`'e `backend` işi eklendi (`ubuntu-latest`,
 `services:` YOK, `./araclar/verify.ps1` `shell: pwsh` ile çağrılıyor) ve gerçek bir kapı +
-mutant yazıldı: `araclar/ci-kapisi.py` `A13/G31/a`–`g` (7 statik ayak) + `S1`–`S4` (4
+mutant yazıldı: `araclar/ci-kapisi.py` `A13/G31/a`–`h` (8 statik ayak) + `S1`–`S4` (4
 statik mutant, tavansız) + `M-o69-1`…`4` (4 koşan mutant, `verify.ps1` yerel koşumuyla).
 Eski §6b satırı (borç beyanı) **silindi** — kapanış yolu kendi yazdığı yordamdı.
 
@@ -301,7 +301,7 @@ işidir** (kırmızı çizgi 4).
 
 🟢 **`D-A13-4` borcu o69'da KAPANDI** (yukarıdaki karar başlığına bakınız) — bu satır
 kendi yazdığı kapanış yordamı gereği **silindi**; yerine gerçek kapı + mutant geldi
-(`ci-kapisi.py` `A13/G31/a`–`g` + `S1`–`S4` + `M-o69-1`…`4`). `K58`: sınırı kapatan el,
+(`ci-kapisi.py` `A13/G31/a`–`h` + `S1`–`S4` + `M-o69-1`…`4`). `K58`: sınırı kapatan el,
 onu beyan eden kopyaları da kapatır.
 
 🔴 **BURADAN BİR BORÇ ÇIKARILDI VE SEBEBİ YAZIYA GEÇİYOR:** ilk yazımda `D-A13-1` de borç
