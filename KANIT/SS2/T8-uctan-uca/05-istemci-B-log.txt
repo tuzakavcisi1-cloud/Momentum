@@ -1,0 +1,64 @@
+Launching lib\main.dart on sdk gphone64 x86 64 in debug mode...
+Running Gradle task 'assembleDebug'...                             86,2s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...          55,6s
+I/FlutterActivityAndFragmentDelegate( 4953): If you are attempting to set --enable-dart-profiling via Intent extras to launch a Flutter component outside of using the Flutter CLI, note that support for setting engine flags on Android via Intent will soon be dropped; see https://github.com/flutter/flutter/issues/180686 for more information on this breaking change. To migrate, set --enable-dart-profiling or any other flags specified via Intent extras on the command line instead or see https://github.com/flutter/flutter/blob/main/docs/engine/Flutter-Android-Engine-Flags.md for alternative methods.
+D/FlutterJNI( 4953): Beginning load of flutter...
+D/FlutterJNI( 4953): flutter (null) was loaded normally!
+I/flutter ( 4953): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+D/FlutterRenderer( 4953): Width is zero. 0,0
+Syncing files to device sdk gphone64 x86 64...                  
+I/Choreographer( 4953): Skipped 721 frames!  The application may be doing too much work on its main thread.
+D/FlutterRenderer( 4953): Width is zero. 0,0
+D/FlutterJNI( 4953): Sending viewport metrics to the engine.
+W/OpenGLRenderer( 4953): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+I/Gralloc4( 4953): mapper 4.x is not supported
+Syncing files to device sdk gphone64 x86 64...                   1.720ms
+
+Flutter run key commands.
+r Hot reload. 
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+A Dart VM Service on sdk gphone64 x86 64 is available at: http://127.0.0.1:64655/UjC4UqLPd_Q=/
+The Flutter DevTools debugger and profiler on sdk gphone64 x86 64 is available at: http://127.0.0.1:64655/UjC4UqLPd_Q=/devtools/?uri=ws://127.0.0.1:64655/UjC4UqLPd_Q=/ws
+I/Choreographer( 4953): Skipped 194 frames!  The application may be doing too much work on its main thread.
+D/FlutterJNI( 4953): Sending viewport metrics to the engine.
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 35830, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/Choreographer( 4953): Skipped 321 frames!  The application may be doing too much work on its main thread.
+D/ProfileInstaller( 4953): Installing profile for com.momentum.client
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection failed (OS Error: Network is unreachable, errno = 101), address = 10.0.2.2, port = 5298, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/Choreographer( 4953): Skipped 196 frames!  The application may be doing too much work on its main thread.
+D/FlutterJNI( 4953): Sending viewport metrics to the engine.
+I/OpenGLRenderer( 4953): Davey! duration=3816ms; Flags=1, FrameTimelineVsyncId=8858, IntendedVsync=331053953612, Vsync=334320620148, InputEventId=0, HandleInputStart=334326527400, AnimationStart=334326599000, PerformTraversalsStart=334326683000, DrawStart=334386276900, FrameDeadline=331070620278, FrameInterval=334322628100, FrameStartTime=16666666, SyncQueued=334389320300, SyncStart=334390214200, IssueDrawCommandsStart=334402026000, SwapBuffers=334607088400, FrameCompleted=334871479100, DequeueBufferDuration=1652900, QueueBufferDuration=3527100, GpuCompleted=334869469700, SwapBuffersCompleted=334871479100, DisplayPresentTime=0, CommandSubmissionCompleted=334607088400, 
+I/Choreographer( 4953): Skipped 35 frames!  The application may be doing too much work on its main thread.
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection failed (OS Error: Network is unreachable, errno = 101), address = 10.0.2.2, port = 5298, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+D/FlutterJNI( 4953): Sending viewport metrics to the engine.
+D/EGL_emulation( 4953): app_time_stats: avg=1606.26ms min=149.21ms max=4613.38ms count=5
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 58788, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 47982, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 37394, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 33506, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 34330, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 59374, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 47926, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 60372, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 40158, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 46626, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 53146, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] baglanti koptu: baglanma denemesi basarisiz: ClientException with SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = 10.0.2.2, port = 40958, uri=http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1
+I/flutter ( 4953): [sinyal] el sikisma basarili -- SinyalBaglandi yayinlaniyor
+D/EGL_emulation( 4953): app_time_stats: avg=340822.38ms min=340822.38ms max=340822.38ms count=1
+I/Choreographer( 4953): Skipped 93 frames!  The application may be doing too much work on its main thread.
+D/EGL_emulation( 4953): app_time_stats: avg=3458.67ms min=3458.67ms max=3458.67ms count=1
+D/EGL_emulation( 4953): app_time_stats: avg=181.10ms min=16.59ms max=575.24ms count=7
+D/EGL_emulation( 4953): app_time_stats: avg=106.27ms min=74.69ms max=188.91ms count=9
+D/EGL_emulation( 4953): app_time_stats: avg=97.10ms min=56.89ms max=123.43ms count=9
+I/flutter ( 4953): [sinyal] baglanti koptu: kanal kapandi (onDone)
+I/flutter ( 4953): [sinyal] el sikisma basarili -- SinyalBaglandi yayinlaniyor
+I/flutter ( 4953): [sinyal] baglanti koptu: kanal kapandi (onDone)
+I/flutter ( 4953): [sinyal] el sikisma basarili -- SinyalBaglandi yayinlaniyor
+Lost connection to device.
