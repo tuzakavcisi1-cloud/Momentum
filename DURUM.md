@@ -74,9 +74,10 @@ koşuyor; hüküm `KANIT/W3b/06-KABUL-HUKMU-COWORK.md`, anlatım **hafızada**. 
 o66'nın `K170` kilidi ve o68'in ADR 0004 onarım kilitleri **HÜKÜMSÜZ**; üç düşüşün (`K164`·`K165`·`K169`)
 anlatımı ve `K170`'in üç ayağı **hafızada** (o69'da budandı ⇒ `_SILINECEKLER/o69/`).
 
-🟡 **BACKEND CI (`D-A13-4`) — KOŞULLU KABUL (`K177`); kriter 9 AÇIK.** Hüküm
-`KANIT/CI/10-KABUL-HUKMU-COWORK.md`: dokuz kriter **Cowork'ün kendi koşumuyla** yeşil, **gerçek CI
-koşumu push bekliyor**. 🔴 `B-O63-2` **AÇIK**.
+🟢 **BACKEND CI KABUL EDİLDİ (`K178`) — `D-A13-4` KAPANDI.** On kriterin **onu da** geçti;
+kriter 9 `ci #25` (`e80cb19`, `main`) **Success**, dört çapa logda **birebir**, **120/120** test
+(`Persistence.Tests` 56/56 gerçek Postgres). Hükümler `KANIT/CI/10` + `KANIT/CI/11`.
+🔴 `B-O63-2` **AÇIK**.
 
 ---
 
