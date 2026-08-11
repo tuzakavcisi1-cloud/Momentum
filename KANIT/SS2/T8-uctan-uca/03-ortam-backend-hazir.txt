@@ -1,0 +1,15 @@
+[14:20:49] ③ backend hazir olma yoklamasi -- PORTLA DEGIL, /health/live+ready+v1/sync ile
+[14:20:49] YOKLAMA basladi: port :5298 dinlemeye basladi (0.0.0.0 BEKLENIR) (aralik=2s, tavan=30 deneme)
+[14:20:49]   [deneme 1/30, 0.1sn] '0.0.0.0'
+[14:20:49] YOKLAMA GECTI: port :5298 dinlemeye basladi (0.0.0.0 BEKLENIR) (0.1 sn'de)
+[14:20:49]   0.0.0.0:5298 dinliyor -- devam
+[14:20:50]   pozitif kontrol (baska bilinen port :5432 LISTENING mi):
+  TCP    0.0.0.0:5432           0.0.0.0:0              LISTENING       12752
+  TCP    [::]:5432              [::]:0                 LISTENING       12752
+  TCP    [::1]:5432             [::]:0                 LISTENING       26408
+  TCP    [::1]:5432             [::1]:54287            ESTABLISHED     26408
+  TCP    [::1]:54287            [::1]:5432             ESTABLISHED     3084
+
+[14:20:50] YOKLAMA basladi: backend hazir (_backend_dogrula.py -> HUKUM: BACKEND HAZIR) (aralik=2s, tavan=30 deneme)
+[14:21:00]   [deneme 1/30, 10.5sn] '== netstat :5298 LISTENING satiri: 1\n   TCP    0.0.0.0:5298           0.0.0.0:0              LISTENING       3084\n== GET /health/live   -> 200   Healthy\n== GET /health/ready  -> 200   Healthy\n== POST /v1/sync  BASLIKSIZ  -> 401   (K61: 401 BEKLENIR)  \n== POST /v1/sync  DEV BASLIK -> 200   (200 BEKLENIR)       {"serverHlc":null,"nextCursor":{"xid":1316,"seq":0},"hasMore\n\nHUKUM: BACKEND HAZIR (DB dahil)\n'
+[14:21:00] YOKLAMA GECTI: backend hazir (_backend_dogrula.py -> HUKUM: BACKEND HAZIR) (10.5 sn'de)
