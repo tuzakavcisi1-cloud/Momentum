@@ -94,11 +94,23 @@ def backend_hazir_mi_yokla():
     # AŞAMA 1: bind adresi ORTAYA CIKANA kadar YOKLANIR (dotnet run derleme +
     # baslatma icin birkac saniye ister -- ILK OLCUMDE gormemek BASARISIZLIK
     # DEGIL, henuz baslamamis olmaktir; bu yuzden TEK CEKIMLIK degil YOKLAMALI).
+    #
+    # 🔴 BULUNUP DUZELTILEN UCUNCU CANLI HATA (bu turda): substring arama
+    # LISTENING/ESTABLISHED ayrimi YAPMIYORDU -- bir istemci (tuzak_api34,
+    # onceki turdan hala acik) 10.0.2.2:5298'e baglaninca netstat'ta
+    # "127.0.0.1:5298 ... ESTABLISHED" satiri olusuyor; substring testi bunu
+    # "127.0.0.1'e bagli, DUR" sanip GERCEKTEN 0.0.0.0'da LISTENING olan
+    # backend'i SAHTE KIRMIZI ile durduruyordu (canli olcumde yakalandi:
+    # 09-backend-log.txt "Now listening on: http://0.0.0.0:5298" derken
+    # netstat ayni anda 0.0.0.0 LISTENING + uc ayri 127.0.0.1 ESTABLISHED
+    # satiri gosteriyordu). Duzeltme: sokme()'nin listening_yok_mu() ile
+    # AYNI disiplin -- yalniz LISTENING satirlari sayilir.
     def bind_durumu():
         out = _bind_adresi_olc()
-        if "0.0.0.0:5298" in out:
+        listening = [s for s in out.splitlines() if "LISTENING" in s]
+        if any("0.0.0.0:5298" in s for s in listening):
             return "0.0.0.0"
-        if "127.0.0.1:5298" in out:
+        if any("127.0.0.1:5298" in s for s in listening):
             return "127.0.0.1"
         return None  # henuz dinlemiyor -- yokla devam eder
 
