@@ -1,9 +1,12 @@
-[14:19:32] ① docker start momentum-postgres
-[14:19:33]   exit=0 out='momentum-postgres' err=''
-[14:19:33]   docker ps -a:
-CONTAINER ID   IMAGE                COMMAND                  CREATED       STATUS                    PORTS                                         NAMES
-e76618f6546c   postgres:17-alpine   "docker-entrypoint.s…"   2 weeks ago   Up 13 minutes (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   momentum-postgres
+[17:16:41] ① docker start momentum-postgres
+[17:16:41]   exit=0 out='momentum-postgres' err=''
+[17:16:42]   docker ps -a:
+CONTAINER ID   IMAGE                COMMAND                  CREATED       STATUS                                     PORTS                                         NAMES
+e76618f6546c   postgres:17-alpine   "docker-entrypoint.s…"   2 weeks ago   Up Less than a second (health: starting)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   momentum-postgres
 
-[14:19:33] YOKLAMA basladi: momentum-postgres healthy (aralik=2s, tavan=30 deneme)
-[14:19:33]   [deneme 1/30, 0.2sn] 'healthy'
-[14:19:33] YOKLAMA GECTI: momentum-postgres healthy (0.2 sn'de)
+[17:16:42] YOKLAMA basladi: momentum-postgres healthy (aralik=2s, tavan=30 deneme)
+[17:16:42]   [deneme 1/30, 0.3sn] 'starting'
+[17:16:44]   [deneme 2/30, 2.4sn] 'starting'
+[17:16:46]   [deneme 3/30, 4.6sn] 'starting'
+[17:16:49]   [deneme 4/30, 6.8sn] 'healthy'
+[17:16:49] YOKLAMA GECTI: momentum-postgres healthy (6.8 sn'de)

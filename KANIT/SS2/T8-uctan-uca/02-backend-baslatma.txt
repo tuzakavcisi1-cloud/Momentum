@@ -1,4 +1,4 @@
-[16:37:35] ② backend baslatiliyor -- AYRI surecte, env Python subprocess.Popen(env=) ile
-[16:37:35]   baglanti dizesi (docker inspect ile TEYIT EDILDI): Host=localhost;Port=5432;Database=momentum;Username=momentum;Password=momentum_dev
-[16:37:35]   cwd=C:\dev\Momentum\src\backend\Momentum.Api
-[16:37:35]   baslatildi -- PID=18704, log=C:\dev\Momentum\KANIT\SS2\T8-uctan-uca\09-backend-log.txt, pid dosyasi=C:\dev\Momentum\KANIT\SS2\T8-uctan-uca\_backend.pid
+[17:16:53] ② backend baslatiliyor -- AYRI surecte, env Python subprocess.Popen(env=) ile
+[17:16:53]   baglanti dizesi (docker inspect ile TEYIT EDILDI): Host=localhost;Port=5432;Database=momentum;Username=momentum;Password=momentum_dev
+[17:16:53]   cwd=C:\dev\Momentum\src\backend\Momentum.Api
+[17:16:53]   baslatildi -- PID=21376, log=C:\dev\Momentum\KANIT\SS2\T8-uctan-uca\09-backend-log.txt, pid dosyasi=C:\dev\Momentum\KANIT\SS2\T8-uctan-uca\_backend.pid

@@ -1,20 +1,27 @@
-[16:38:50] ③ backend hazir olma yoklamasi -- PORTLA DEGIL, /health/live+ready+v1/sync ile
-[16:38:50] YOKLAMA basladi: port :5298 dinlemeye basladi (0.0.0.0 BEKLENIR) (aralik=2s, tavan=30 deneme)
-[16:38:50]   [deneme 1/30, 0.1sn] '0.0.0.0'
-[16:38:50] YOKLAMA GECTI: port :5298 dinlemeye basladi (0.0.0.0 BEKLENIR) (0.1 sn'de)
-[16:38:50]   0.0.0.0:5298 dinliyor -- devam
-[16:38:50]   pozitif kontrol (baska bilinen port :5432 LISTENING mi):
-  TCP    0.0.0.0:5432           0.0.0.0:0              LISTENING       12752
-  TCP    10.236.104.171:54321   34.149.66.165:443      ESTABLISHED     21308
-  TCP    [::]:5432              [::]:0                 LISTENING       12752
-  TCP    [::1]:5432             [::]:0                 LISTENING       26408
-  TCP    [::1]:5432             [::1]:58170            ESTABLISHED     26408
-  TCP    [::1]:5432             [::1]:58174            ESTABLISHED     26408
-  TCP    [::1]:5432             [::1]:58175            ESTABLISHED     26408
-  TCP    [::1]:58170            [::1]:5432             ESTABLISHED     19768
-  TCP    [::1]:58174            [::1]:5432             ESTABLISHED     19768
-  TCP    [::1]:58175            [::1]:5432             ESTABLISHED     19768
+[17:16:53] ③ backend hazir olma yoklamasi -- PORTLA DEGIL, /health/live+ready+v1/sync ile
+[17:16:53] YOKLAMA basladi: port :5298 dinlemeye basladi (0.0.0.0 BEKLENIR) (aralik=2s, tavan=30 deneme)
+[17:16:54]   [deneme 1/30, 0.2sn] None
+[17:16:56]   [deneme 2/30, 2.2sn] None
+[17:16:58]   [deneme 3/30, 4.4sn] None
+[17:17:00]   [deneme 4/30, 6.4sn] None
+[17:17:02]   [deneme 5/30, 8.5sn] None
+[17:17:04]   [deneme 6/30, 10.6sn] None
+[17:17:06]   [deneme 7/30, 12.8sn] None
+[17:17:08]   [deneme 8/30, 14.9sn] None
+[17:17:10]   [deneme 9/30, 16.9sn] None
+[17:17:12]   [deneme 10/30, 19.0sn] None
+[17:17:14]   [deneme 11/30, 21.1sn] None
+[17:17:17]   [deneme 12/30, 23.3sn] None
+[17:17:19]   [deneme 13/30, 25.5sn] None
+[17:17:21]   [deneme 14/30, 27.7sn] None
+[17:17:24]   [deneme 15/30, 30.2sn] '0.0.0.0'
+[17:17:24] YOKLAMA GECTI: port :5298 dinlemeye basladi (0.0.0.0 BEKLENIR) (30.2 sn'de)
+[17:17:24]   0.0.0.0:5298 dinliyor -- devam
+[17:17:24]   pozitif kontrol (baska bilinen port :5432 LISTENING mi):
+  TCP    0.0.0.0:5432           0.0.0.0:0              LISTENING       12284
+  TCP    [::]:5432              [::]:0                 LISTENING       12284
+  TCP    [::1]:5432             [::]:0                 LISTENING       15776
 
-[16:38:50] YOKLAMA basladi: backend hazir (_backend_dogrula.py -> HUKUM: BACKEND HAZIR) (aralik=2s, tavan=30 deneme)
-[16:39:00]   [deneme 1/30, 9.8sn] '== netstat :5298 LISTENING satiri: 1\n   TCP    0.0.0.0:5298           0.0.0.0:0              LISTENING       19768\n== GET /health/live   -> 200   Healthy\n== GET /health/ready  -> 200   Healthy\n== POST /v1/sync  BASLIKSIZ  -> 401   (K61: 401 BEKLENIR)  \n== POST /v1/sync  DEV BASLIK -> 200   (200 BEKLENIR)       {"serverHlc":null,"nextCursor":{"xid":1316,"seq":0},"hasMore\n\nHUKUM: BACKEND HAZIR (DB dahil)\n'
-[16:39:00] YOKLAMA GECTI: backend hazir (_backend_dogrula.py -> HUKUM: BACKEND HAZIR) (9.8 sn'de)
+[17:17:24] YOKLAMA basladi: backend hazir (_backend_dogrula.py -> HUKUM: BACKEND HAZIR) (aralik=2s, tavan=30 deneme)
+[17:17:39]   [deneme 1/30, 14.9sn] '== netstat :5298 LISTENING satiri: 1\n   TCP    0.0.0.0:5298           0.0.0.0:0              LISTENING       19408\n== GET /health/live   -> 200   Healthy\n== GET /health/ready  -> 200   Healthy\n== POST /v1/sync  BASLIKSIZ  -> 401   (K61: 401 BEKLENIR)  \n== POST /v1/sync  DEV BASLIK -> 200   (200 BEKLENIR)       {"serverHlc":null,"nextCursor":{"xid":1316,"seq":0},"hasMore\n\nHUKUM: BACKEND HAZIR (DB dahil)\n'
+[17:17:39] YOKLAMA GECTI: backend hazir (_backend_dogrula.py -> HUKUM: BACKEND HAZIR) (14.9 sn'de)
