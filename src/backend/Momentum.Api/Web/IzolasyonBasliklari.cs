@@ -12,10 +12,13 @@ namespace Momentum.Api.Web;
 /// (<c>false | function</c>), izolasyon VERMEZ. Bu yüzden mekanizma ürün kodunda yaşar, bayrakta değil.
 /// </para>
 /// <para>
-/// BEYAN EDİLMİŞ SINIR — <c>Cross-Origin-Resource-Policy</c> (CORP) bu iskelette YOKTUR.
-/// CORP'un hangi yollara (<c>/v1/**</c>, <c>/health/**</c>, <c>/hubs/sync</c>, <c>/scalar/v1</c>)
-/// hangi değerle konacağı ÖLÇÜLMEMİŞ bir karardır ve ürün davranışını çapraz-köken istemcide
-/// değiştirir. Ölçülmeden yazılmaz.
+/// 🔴 ÖLÜ BEYAN DÜZELTMESİ (o71) — bu paragraf önceden <i>"CORP bu iskelette YOKTUR … Ölçülmeden
+/// yazılmaz"</i> diyordu; <c>D-W3-4</c> kilidiyle (<c>GOREV-W3</c> §3) artık YANLIŞ. <c>Cross-Origin-
+/// Resource-Policy</c> (CORP) ARTIK VAR ama BU ARA KATMANDA DEĞİL: yalnız statik yanıtlara —
+/// <see cref="IstemciServisi"/>'nin <c>StaticFileOptions.OnPrepareResponse</c>'unda — eklenir.
+/// <c>/v1/**</c>, <c>/health/**</c>, <c>/hubs/**</c>, <c>/scalar/**</c> CORP YAZMAZ; bu sınıf
+/// yalnız <see cref="CorpAdi"/>/<see cref="CorpDegeri"/> sabitlerini barındırır, başlığı KENDİSİ
+/// yazmaz — <see cref="UseIzolasyonBasliklari"/> hâlâ yalnız COOP+COEP ekler.
 /// </para>
 /// <para>
 /// BEYAN EDİLMİŞ SINIR — bu ara katman kendi köken(ler)inde SUNULAN belgeleri izole eder.
@@ -34,6 +37,16 @@ public static class IzolasyonBasliklari
 
     public const string CoopDegeri = "same-origin";
     public const string CoepDegeri = "require-corp";
+
+    /// <summary>
+    /// <c>D-W3-4</c> (<c>GOREV-W3</c> §3, kilitli karar, o71) — bu başlık BURADA YAZILMAZ; yalnız
+    /// <see cref="IstemciServisi"/>'nin statik yanıtlarında kullanılır (<c>/v1/**</c>, <c>/health/**</c>,
+    /// <c>/hubs/**</c>, <c>/scalar/**</c> CORP GÖRMEZ).
+    /// </summary>
+    public const string CorpAdi = "Cross-Origin-Resource-Policy";
+
+    /// <summary>Bkz. <see cref="CorpAdi"/>.</summary>
+    public const string CorpDegeri = "same-origin";
 
     /// <summary>
     /// COOP/COEP başlıklarını HER yanıta ekler. <paramref name="etkin"/> false ise ara katman

@@ -106,6 +106,12 @@ public static class IstemciServisi
             // API'nin geri kalani bu saglayiciyi hic gormez.
             ServeUnknownFileTypes = true,
             DefaultContentType = "application/octet-stream",
+            // D-W3-4 (GOREV-W3 SS3, kilitli karar, o71): CORP YALNIZ statik yanitlara -- bu
+            // secenekler hem UseStaticFiles hem MapFallbackToFile'da kullanildigi icin SPA
+            // geri-dusus belgesi de statiktir ve CORP alir; bu BILINCLIDIR. /v1/**, /health/**,
+            // /hubs/**, /scalar/** bu secenekleri hic gormez, CORP yazilmaz.
+            OnPrepareResponse = baglam =>
+                baglam.Context.Response.Headers[IzolasyonBasliklari.CorpAdi] = IzolasyonBasliklari.CorpDegeri,
         };
 
         app.UseDefaultFiles(new DefaultFilesOptions { FileProvider = saglayici });

@@ -1,5 +1,5 @@
-SELECT owner_id, actor_id FROM outbox_messages WHERE operation_id = @op (op=019fa91b-7f32-784b-a227-c7e937615fd5)
-actorX (kimlik dogrulama basligi) = d8443a58-007b-4d5a-9e4c-1159414c8f61
-actorY (govdenin actorId iddiasi) = d8da3ae6-66fe-48dd-835e-8479e0635aa9
-owner_id  = d8443a58-007b-4d5a-9e4c-1159414c8f61  (beklenen: actorX)
-actor_id  = d8da3ae6-66fe-48dd-835e-8479e0635aa9  (beklenen: actorY -- D9 BEYAN, degismez)
+SELECT owner_id, actor_id FROM outbox_messages WHERE operation_id = @op (op=019ff2cf-0c57-7a7c-b1aa-47e5bd5dc0ad)
+actorX (kimlik dogrulama basligi) = a34cf665-68b3-4103-b05d-1108887e2f4f
+actorY (govdenin actorId iddiasi) = 1b7a33bf-893d-4ae6-acdf-8233dd7907cb
+owner_id  = a34cf665-68b3-4103-b05d-1108887e2f4f  (beklenen: actorX)
+actor_id  = 1b7a33bf-893d-4ae6-acdf-8233dd7907cb  (beklenen: actorY -- D9 BEYAN, degismez)
