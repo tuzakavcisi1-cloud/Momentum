@@ -13,6 +13,16 @@ KULLANIM:
                                         boot_completed yokla
     python ortam_kur.py sokme       -- backend'i PID ile kapat + netstat
                                         :5298 bos oldugunu yokla
+    python ortam_kur.py istemci <hedef> <etiket> [ek bayraklar...]
+                                        -- flutter run -d <hedef> AYRI surecte
+                                        (BU AGACTAN, taze kurulum) + "Flutter
+                                        run key commands" yokla. Ikisi de
+                                        AYNI DEV_USER_ID ile baslar (KANIT/
+                                        SS2/11 §4 sart1: taban URL BAGIMSIZ
+                                        cozulur -- chrome icin ek bayrak
+                                        olarak --web-port=5000 ve
+                                        --dart-define=SENKRON_SUNUCU_URL=
+                                        http://localhost:5298 verilir)
 
 Hicbiri --altin-kume TASIMAZ: bu modul saf ORKESTRASYONDUR (I/O), on_kosullar.py
 gibi ayrilabilir saf mantik tasimiyor -- kendini kanitlama YOKLAMA
@@ -173,6 +183,60 @@ def emulator_baslat(avd_id):
     return 0, sonuc
 
 
+DEV_USER_ID = "11111111-1111-1111-1111-111111111111"
+
+
+def istemci_baslat(hedef, etiket, ek_bayraklar=None):
+    """flutter run -d <hedef> AYRI surecte baslatir (GOREV-SS2 08 §2④ satir 111:
+    'Uygulama BU TURDA, BU AGACTAN kurulur' -- stale APK olcumu YASAK).
+    hedef 'chrome' ya da bir cihaz serisi (orn emulator-5554) olabilir.
+    Her iki cihaz da AYNI DEV_USER_ID ile baslatilir (adim 0 madde 5: UserId
+    AYNI, clientId FARKLI -- clientId cihaz kurulumunda kendiliginden ayrisir)."""
+    gunluk = [mesaj("istemci baslatiliyor: hedef=%s etiket=%s" % (hedef, etiket))]
+    bayraklar = ["-d", hedef, "--dart-define=DEV_USER_ID=%s" % DEV_USER_ID]
+    if ek_bayraklar:
+        bayraklar += ek_bayraklar
+    gunluk.append(mesaj("  komut: %s run %s" % (FLUTTER, " ".join(bayraklar))))
+    log_yolu = os.path.join(BURASI, "05-istemci-%s-log.txt" % etiket)
+    log_dosyasi = open(log_yolu, "wb")
+    istemci_dizini = os.path.join(KOK, "src", "client")
+    p = subprocess.Popen(
+        [FLUTTER, "run"] + bayraklar,
+        cwd=istemci_dizini, stdin=subprocess.DEVNULL,
+        stdout=log_dosyasi, stderr=subprocess.STDOUT,
+        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+    )
+    pid_dosyasi = os.path.join(BURASI, "_istemci_%s.pid" % etiket)
+    with open(pid_dosyasi, "w", encoding="utf-8") as f:
+        f.write(str(p.pid))
+    gunluk.append(mesaj("  baslatildi -- PID=%d, log=%s, pid dosyasi=%s" % (p.pid, log_yolu, pid_dosyasi)))
+
+    def hazir_mi():
+        if not os.path.isfile(log_yolu):
+            return None
+        with open(log_yolu, "rb") as f:
+            icerik = f.read().decode("utf-8", "replace")
+        if "Flutter run key commands" in icerik:
+            return True
+        if "Exception" in icerik or "FAILURE" in icerik:
+            return "HATA -- log'a bak: " + log_yolu
+        return None
+
+    # 🔴 OLCULDU (bu turda, canli, cihaz B): SOGUK Gradle assembleDebug 210 sn
+    # surdu -- ilk tavan (3sn*60=180sn) BUNU KACIRIYORDU (yanlis DUR verirdi).
+    # aralik=5sn/tavan=90 -> 450 sn ust sinir, olculen degerin ~2 kati.
+    yokla_kod, sonuc, yokla_gunluk = yokla(
+        "istemci %s hazir (Flutter run key commands satiri)" % etiket, hazir_mi,
+        aralik_sn=5, tavan_deneme=90, gecme_fn=lambda s: s is True)
+    gunluk += yokla_gunluk
+    kanit_yaz(os.path.join(BURASI, "01-istemci-%s-baslatma.txt" % etiket), gunluk)
+    if yokla_kod != 0:
+        print("DUR -- istemci %s hazir olmadi, %s dosyasina bak" % (etiket, log_yolu))
+        return 3, p.pid
+    print("HAZIR -- istemci %s (PID=%d)" % (etiket, p.pid))
+    return 0, p.pid
+
+
 def sokme():
     gunluk = [mesaj("§6 SOKME basliyor")]
     if os.path.isfile(PID_DOSYASI):
@@ -219,6 +283,12 @@ if __name__ == "__main__":
         sys.exit(kod)
     elif komut == "sokme":
         sys.exit(sokme())
+    elif komut == "istemci":
+        hedef = sys.argv[2]
+        etiket = sys.argv[3]
+        ek = sys.argv[4:] if len(sys.argv) > 4 else None
+        kod, pid = istemci_baslat(hedef, etiket, ek)
+        sys.exit(kod)
     else:
         print("BILINMEYEN KOMUT: %s" % komut)
         sys.exit(2)

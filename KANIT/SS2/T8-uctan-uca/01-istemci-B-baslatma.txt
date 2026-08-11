@@ -1,0 +1,6 @@
+[16:51:24] istemci B (emulator-5554, tuzak_api34) -- flutter run BU AGACTAN, DEV_USER_ID=11111111-1111-1111-1111-111111111111
+[16:51:24]   PID=18152, log=05-istemci-B-log.txt
+[16:51:24]   Ilk yokla (3sn*60=180sn tavan) TAVANA CARPTI -- soguk Gradle assembleDebug 180sn icinde bitmedi
+[16:51:24]   Surec canli oldugu OLCULDU (Get-Process -Id 18152), yeniden baslatilmadi -- devam yoklamasi (5sn*60) 210.2 sn de GECTI
+[16:51:24]   SONUC: Flutter run key commands satiri goruldu -- istemci B HAZIR
+[16:51:24]   DERS: istemci_baslat() varsayilan tavani 5sn*90=450sn olarak DUZELTILDI (ortam_kur.py, bu turda)
