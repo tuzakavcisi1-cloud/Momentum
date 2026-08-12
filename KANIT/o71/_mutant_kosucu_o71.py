@@ -88,6 +88,7 @@ TUM_TESTLER = [
     "Statik_yanitta_COOP_ve_COEP_degismez",
     "Health_yanitinda_COOP_ve_COEP_degismez",
     "Sync_yanitinda_COOP_ve_COEP_degismez",
+    "SPA_geri_dusus_belgesi_CORP_tasir",
 ]
 
 # ============================ MUTANT TANIMLARI ================================
@@ -136,8 +137,10 @@ M231b_YENI = (
 )
 
 MUTANTLAR = [
+    # o71 EK IS (BULGU 1): OnPrepareResponse SILININCE artik IKI test dusmeli --
+    # statik VE MapFallbackToFile'in AYNI secenekler'i kullandigi geri-dusus.
     ("M231", "o71/G-CORP-a", IS, M231_ESKI, M231_YENI,
-     {"Statik_dosya_CORP_same_origin_tasir"}),
+     {"Statik_dosya_CORP_same_origin_tasir", "SPA_geri_dusus_belgesi_CORP_tasir"}),
     ("M231b", "o71/G-CORP-b,c", IB, M231b_ESKI, M231b_YENI,
      {"Health_live_CORP_tasimaz", "Sync_ucnoktasi_CORP_tasimaz"}),
 ]

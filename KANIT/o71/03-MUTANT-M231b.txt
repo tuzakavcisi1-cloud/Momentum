@@ -3,7 +3,7 @@ dosya: C:\dev\Momentum\src\backend\Momentum.Api\Web\IzolasyonBasliklari.cs
 eslesme sayisi: 1
 geri alma bayt-ozdes: True (sha8=E5E85F17)
 beklenen basarisiz kume: ['Health_live_CORP_tasimaz', 'Sync_ucnoktasi_CORP_tasimaz']
-gercek TRX sonuclari: {'Sync_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Health_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Statik_yanitta_COOP_ve_COEP_degismez': 'Passed', 'Statik_dosya_CORP_same_origin_tasir': 'Passed', 'Sync_ucnoktasi_CORP_tasimaz': 'Failed', 'Health_live_CORP_tasimaz': 'Failed'}
+gercek TRX sonuclari: {'SPA_geri_dusus_belgesi_CORP_tasir': 'Passed', 'Sync_ucnoktasi_CORP_tasimaz': 'Failed', 'Statik_dosya_CORP_same_origin_tasir': 'Passed', 'Health_live_CORP_tasimaz': 'Failed', 'Statik_yanitta_COOP_ve_COEP_degismez': 'Passed', 'Sync_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Health_yanitinda_COOP_ve_COEP_degismez': 'Passed'}
 HUKUM: ISIRDI (beklenen kume birebir: ['Health_live_CORP_tasimaz', 'Sync_ucnoktasi_CORP_tasimaz'])
 
 === dotnet test EXIT=1 ===
@@ -16,26 +16,26 @@ HUKUM: ISIRDI (beklenen kume birebir: ['Health_live_CORP_tasimaz', 'Sync_ucnokta
   Momentum.Api.Tests -> C:\dev\Momentum\tests\Momentum.Api.Tests\bin\Debug\net10.0\Momentum.Api.Tests.dll
 C:\dev\Momentum\tests\Momentum.Api.Tests\bin\Debug\net10.0\Momentum.Api.Tests.dll (.NETCoreApp,Version=v10.0) için test çalıştırması
 Toplam 1 test dosyası belirtilen desenle eşleşti.
-  Başarısız Momentum.Api.Tests.CorpBasligiTestleri.Sync_ucnoktasi_CORP_tasimaz [1 s]
+  Başarısız Momentum.Api.Tests.CorpBasligiTestleri.Sync_ucnoktasi_CORP_tasimaz [5 s]
   Hata İletisi:
    Assert.False() Failure
 Expected: False
 Actual:   True
   Yığın İzleme:
-     at Momentum.Api.Tests.CorpBasligiTestleri.Sync_ucnoktasi_CORP_tasimaz() in C:\dev\Momentum\tests\Momentum.Api.Tests\CorpBasligiTestleri.cs:line 81
-   at Momentum.Api.Tests.CorpBasligiTestleri.Sync_ucnoktasi_CORP_tasimaz() in C:\dev\Momentum\tests\Momentum.Api.Tests\CorpBasligiTestleri.cs:line 81
+     at Momentum.Api.Tests.CorpBasligiTestleri.Sync_ucnoktasi_CORP_tasimaz() in C:\dev\Momentum\tests\Momentum.Api.Tests\CorpBasligiTestleri.cs:line 83
+   at Momentum.Api.Tests.CorpBasligiTestleri.Sync_ucnoktasi_CORP_tasimaz() in C:\dev\Momentum\tests\Momentum.Api.Tests\CorpBasligiTestleri.cs:line 83
 --- End of stack trace from previous location ---
-  Başarısız Momentum.Api.Tests.CorpBasligiTestleri.Health_live_CORP_tasimaz [51 ms]
+  Başarısız Momentum.Api.Tests.CorpBasligiTestleri.Health_live_CORP_tasimaz [121 ms]
   Hata İletisi:
    Assert.False() Failure
 Expected: False
 Actual:   True
   Yığın İzleme:
-     at Momentum.Api.Tests.CorpBasligiTestleri.Health_live_CORP_tasimaz() in C:\dev\Momentum\tests\Momentum.Api.Tests\CorpBasligiTestleri.cs:line 68
-   at Momentum.Api.Tests.CorpBasligiTestleri.Health_live_CORP_tasimaz() in C:\dev\Momentum\tests\Momentum.Api.Tests\CorpBasligiTestleri.cs:line 68
+     at Momentum.Api.Tests.CorpBasligiTestleri.Health_live_CORP_tasimaz() in C:\dev\Momentum\tests\Momentum.Api.Tests\CorpBasligiTestleri.cs:line 70
+   at Momentum.Api.Tests.CorpBasligiTestleri.Health_live_CORP_tasimaz() in C:\dev\Momentum\tests\Momentum.Api.Tests\CorpBasligiTestleri.cs:line 70
 --- End of stack trace from previous location ---
 Sonuç Dosyası: C:\dev\Momentum\KANIT\o71\trx\M231b.trx
 
-Başarısız! - Başarısız:     2, Başarılı:     4, Atlanan:     0, Toplam:     6, Süre: 1 s - Momentum.Api.Tests.dll (net10.0)
-[xUnit.net 00:00:01.64]     Momentum.Api.Tests.CorpBasligiTestleri.Sync_ucnoktasi_CORP_tasimaz [FAIL]
-[xUnit.net 00:00:02.00]     Momentum.Api.Tests.CorpBasligiTestleri.Health_live_CORP_tasimaz [FAIL]
+Başarısız! - Başarısız:     2, Başarılı:     5, Atlanan:     0, Toplam:     7, Süre: 10 s - Momentum.Api.Tests.dll (net10.0)
+[xUnit.net 00:00:05.82]     Momentum.Api.Tests.CorpBasligiTestleri.Sync_ucnoktasi_CORP_tasimaz [FAIL]
+[xUnit.net 00:00:10.75]     Momentum.Api.Tests.CorpBasligiTestleri.Health_live_CORP_tasimaz [FAIL]

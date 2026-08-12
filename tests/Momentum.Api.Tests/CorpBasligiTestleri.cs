@@ -17,12 +17,14 @@ namespace Momentum.Api.Tests;
 public sealed class CorpBasligiTestleri : IDisposable
 {
     private const string StatikDosyaAdi = "favicon.png";
+    private const string IndexHtmlIcerigi = "<html><body>momentum-corp-test index.html</body></html>";
     private readonly string _kokDizin;
 
     public CorpBasligiTestleri()
     {
         _kokDizin = Directory.CreateTempSubdirectory("momentum-corp-test-").FullName;
         File.WriteAllBytes(Path.Combine(_kokDizin, StatikDosyaAdi), [1, 2, 3, 4]);
+        File.WriteAllText(Path.Combine(_kokDizin, IstemciServisi.VarsayilanBelge), IndexHtmlIcerigi);
     }
 
     public void Dispose() => Directory.Delete(_kokDizin, recursive: true);
@@ -114,6 +116,30 @@ public sealed class CorpBasligiTestleri : IDisposable
         var yanit = await istemci.PostAsync("/v1/sync", SenkronGovdesi(Guid.NewGuid()));
 
         DogrulaCoopCoep(yanit);
+    }
+
+    /// <summary>
+    /// BULGU 1 (o71 ek is) -- IstemciServisi.cs'teki yorum "SPA geri-dususu de statiktir ve CORP
+    /// alir; bu BILINCLIDIR" diye IDDIA ediyordu ama hicbir test bunu OLCMUYORDU (beyan != olcum).
+    /// /bilinmeyen-rota SpaDisiOnEkler'in HICBIRINE uymaz ve uzantisiz oldugu icin
+    /// MapFallbackToFile'in /{*path:nonfile} desenine duser. Bu test MapFallbackToFile'in AYNI
+    /// secenekler nesnesindeki OnPrepareResponse'u gercekten CAGIRDIGINI dogrudan olcer --
+    /// varsayim degil.
+    /// </summary>
+    [Fact]
+    public async Task SPA_geri_dusus_belgesi_CORP_tasir()
+    {
+        await using var uygulama = UygulamaOlustur();
+        using var istemci = uygulama.CreateClient();
+
+        var yanit = await istemci.GetAsync("/bilinmeyen-rota");
+
+        Assert.Equal(HttpStatusCode.OK, yanit.StatusCode);
+        var govde = await yanit.Content.ReadAsStringAsync();
+        Assert.Equal(IndexHtmlIcerigi, govde);
+        var degerler = Assert.IsAssignableFrom<IEnumerable<string>>(
+            yanit.Headers.GetValues(IzolasyonBasliklari.CorpAdi));
+        Assert.Equal(IzolasyonBasliklari.CorpDegeri, Assert.Single(degerler));
     }
 
     private static void DogrulaCoopCoep(HttpResponseMessage yanit)

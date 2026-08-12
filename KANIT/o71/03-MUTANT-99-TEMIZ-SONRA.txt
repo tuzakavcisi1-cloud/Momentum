@@ -1,6 +1,6 @@
 EXIT=0
 TRX=C:\dev\Momentum\KANIT\o71\trx\99-TEMIZ-SONRA.trx
-SONUCLAR={'Sync_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Sync_ucnoktasi_CORP_tasimaz': 'Passed', 'Health_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Statik_dosya_CORP_same_origin_tasir': 'Passed', 'Health_live_CORP_tasimaz': 'Passed', 'Statik_yanitta_COOP_ve_COEP_degismez': 'Passed'}
+SONUCLAR={'Sync_ucnoktasi_CORP_tasimaz': 'Passed', 'Health_live_CORP_tasimaz': 'Passed', 'Sync_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Statik_dosya_CORP_same_origin_tasir': 'Passed', 'Health_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Statik_yanitta_COOP_ve_COEP_degismez': 'Passed', 'SPA_geri_dusus_belgesi_CORP_tasir': 'Passed'}
 
   Geri yüklenecek projeler belirleniyor...
   Geri yükleme için tüm projeler güncel.
@@ -13,4 +13,4 @@ C:\dev\Momentum\tests\Momentum.Api.Tests\bin\Debug\net10.0\Momentum.Api.Tests.dl
 Toplam 1 test dosyası belirtilen desenle eşleşti.
 Sonuç Dosyası: C:\dev\Momentum\KANIT\o71\trx\99-TEMIZ-SONRA.trx
 
-Başarılı!  - Başarısız:     0, Başarılı:     6, Atlanan:     0, Toplam:     6, Süre: 2 s - Momentum.Api.Tests.dll (net10.0)
+Başarılı!  - Başarısız:     0, Başarılı:     7, Atlanan:     0, Toplam:     7, Süre: 10 s - Momentum.Api.Tests.dll (net10.0)

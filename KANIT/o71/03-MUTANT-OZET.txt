@@ -1,10 +1,10 @@
 o71 IS-EMRI SS3 -- M231/M231b mutant kosumu (Claude Code)
   TABAN sha8=8AACC4B1   7184 b  IstemciServisi.cs
   TABAN sha8=E5E85F17   3951 b  IzolasyonBasliklari.cs
-  TEMIZ-ONCE EXIT=0 sonuclar={'Sync_ucnoktasi_CORP_tasimaz': 'Passed', 'Health_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Sync_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Statik_yanitta_COOP_ve_COEP_degismez': 'Passed', 'Health_live_CORP_tasimaz': 'Passed', 'Statik_dosya_CORP_same_origin_tasir': 'Passed'}
-  M231   o71/G-CORP-a     eslesme=1 ozdes=True -> ISIRDI (beklenen kume birebir: ['Statik_dosya_CORP_same_origin_tasir'])
+  TEMIZ-ONCE EXIT=0 sonuclar={'Statik_yanitta_COOP_ve_COEP_degismez': 'Passed', 'SPA_geri_dusus_belgesi_CORP_tasir': 'Passed', 'Sync_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Sync_ucnoktasi_CORP_tasimaz': 'Passed', 'Health_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Statik_dosya_CORP_same_origin_tasir': 'Passed', 'Health_live_CORP_tasimaz': 'Passed'}
+  M231   o71/G-CORP-a     eslesme=1 ozdes=True -> ISIRDI (beklenen kume birebir: ['SPA_geri_dusus_belgesi_CORP_tasir', 'Statik_dosya_CORP_same_origin_tasir'])
   M231b  o71/G-CORP-b,c   eslesme=1 ozdes=True -> ISIRDI (beklenen kume birebir: ['Health_live_CORP_tasimaz', 'Sync_ucnoktasi_CORP_tasimaz'])
   SON sha8=8AACC4B1   7184 b  IstemciServisi.cs  ozdes=True
   SON sha8=E5E85F17   3951 b  IzolasyonBasliklari.cs  ozdes=True
-  TEMIZ-SONRA EXIT=0 sonuclar={'Sync_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Sync_ucnoktasi_CORP_tasimaz': 'Passed', 'Health_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Statik_dosya_CORP_same_origin_tasir': 'Passed', 'Health_live_CORP_tasimaz': 'Passed', 'Statik_yanitta_COOP_ve_COEP_degismez': 'Passed'}
+  TEMIZ-SONRA EXIT=0 sonuclar={'Sync_ucnoktasi_CORP_tasimaz': 'Passed', 'Health_live_CORP_tasimaz': 'Passed', 'Sync_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Statik_dosya_CORP_same_origin_tasir': 'Passed', 'Health_yanitinda_COOP_ve_COEP_degismez': 'Passed', 'Statik_yanitta_COOP_ve_COEP_degismez': 'Passed', 'SPA_geri_dusus_belgesi_CORP_tasir': 'Passed'}
   ISIRAN MUTANT: 2/2
