@@ -118,3 +118,138 @@ SELECT 1
 [23:59:25 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
 [23:59:25 INF] HTTP POST /v1/sync responded 200 in 27.4085 ms
 [23:59:25 INF] Request finished HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - 200 null application/json; charset=utf-8 29.4784ms
+[00:12:26 INF] Connection id "0HNNOM76A8I6P", Request id "0HNNOM76A8I6P:00000001": the application aborted the connection.
+[00:12:26 INF] Executed endpoint '/hubs/sync'
+[00:12:26 INF] HTTP GET /hubs/sync responded 101 in 1566236.5379 ms
+[00:12:26 INF] Request finished HTTP/1.1 GET http://10.0.2.2:5298/hubs/sync?id=_JSF_9v9UOw5Xn9QFR7-Rg - 101 null null 1566251.9086ms
+[00:19:59 INF] Request starting HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - null null
+[00:19:59 INF] CORS policy execution successful.
+[00:19:59 INF] Request finished HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - 204 null null 55.9526ms
+[00:19:59 INF] Request starting HTTP/1.1 POST http://localhost:5298/v1/sync - application/json 559
+[00:19:59 INF] CORS policy execution successful.
+[00:19:59 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:19:59 INF] Setting HTTP status code 200.
+[00:19:59 INF] Writing value of type 'SyncResponse' as Json.
+[00:19:59 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:19:59 INF] HTTP POST /v1/sync responded 200 in 451.8404 ms
+[00:19:59 INF] Request finished HTTP/1.1 POST http://localhost:5298/v1/sync - 200 null application/json; charset=utf-8 464.9648ms
+[00:20:06 INF] Request starting HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - null null
+[00:20:06 INF] CORS policy execution successful.
+[00:20:06 INF] Request finished HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - 204 null null 0.8789ms
+[00:20:06 INF] Request starting HTTP/1.1 POST http://localhost:5298/v1/sync - application/json 114
+[00:20:06 INF] CORS policy execution successful.
+[00:20:06 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:20:06 INF] Setting HTTP status code 200.
+[00:20:06 INF] Writing value of type 'SyncResponse' as Json.
+[00:20:06 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:20:06 INF] HTTP POST /v1/sync responded 200 in 10.7250 ms
+[00:20:06 INF] Request finished HTTP/1.1 POST http://localhost:5298/v1/sync - 200 null application/json; charset=utf-8 11.9938ms
+[00:20:27 INF] Request starting HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - null null
+[00:20:27 INF] CORS policy execution successful.
+[00:20:27 INF] Request finished HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - 204 null null 5.0843ms
+[00:20:27 INF] Request starting HTTP/1.1 POST http://localhost:5298/v1/sync - application/json 114
+[00:20:27 INF] CORS policy execution successful.
+[00:20:27 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:20:27 INF] Setting HTTP status code 200.
+[00:20:27 INF] Writing value of type 'SyncResponse' as Json.
+[00:20:27 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:20:27 INF] HTTP POST /v1/sync responded 200 in 10.9670 ms
+[00:20:27 INF] Request finished HTTP/1.1 POST http://localhost:5298/v1/sync - 200 null application/json; charset=utf-8 11.5768ms
+[00:20:28 INF] Request starting HTTP/1.1 POST http://localhost:5298/v1/sync - application/json 114
+[00:20:28 INF] CORS policy execution successful.
+[00:20:28 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:20:28 INF] Setting HTTP status code 200.
+[00:20:28 INF] Writing value of type 'SyncResponse' as Json.
+[00:20:28 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:20:28 INF] HTTP POST /v1/sync responded 200 in 7.7561 ms
+[00:20:28 INF] Request finished HTTP/1.1 POST http://localhost:5298/v1/sync - 200 null application/json; charset=utf-8 8.2712ms
+[00:20:45 INF] Request starting HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - null null
+[00:20:45 INF] CORS policy execution successful.
+[00:20:45 INF] Request finished HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - 204 null null 3.1744ms
+[00:20:45 INF] Request starting HTTP/1.1 POST http://localhost:5298/v1/sync - application/json 114
+[00:20:45 INF] CORS policy execution successful.
+[00:20:45 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:20:45 INF] Setting HTTP status code 200.
+[00:20:45 INF] Writing value of type 'SyncResponse' as Json.
+[00:20:45 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:20:45 INF] HTTP POST /v1/sync responded 200 in 11.5121 ms
+[00:20:45 INF] Request finished HTTP/1.1 POST http://localhost:5298/v1/sync - 200 null application/json; charset=utf-8 12.4246ms
+[00:21:42 INF] Request starting HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - null null
+[00:21:42 INF] CORS policy execution successful.
+[00:21:42 INF] Request finished HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - 204 null null 1.7731ms
+[00:21:42 INF] Request starting HTTP/1.1 POST http://localhost:5298/v1/sync - application/json 114
+[00:21:42 INF] CORS policy execution successful.
+[00:21:42 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:21:42 INF] Setting HTTP status code 200.
+[00:21:42 INF] Writing value of type 'SyncResponse' as Json.
+[00:21:42 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:21:42 INF] HTTP POST /v1/sync responded 200 in 13.5296 ms
+[00:21:42 INF] Request finished HTTP/1.1 POST http://localhost:5298/v1/sync - 200 null application/json; charset=utf-8 14.1483ms
+[00:21:44 INF] Request starting HTTP/1.1 POST http://localhost:5298/v1/sync - application/json 114
+[00:21:44 INF] CORS policy execution successful.
+[00:21:44 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:21:44 INF] Setting HTTP status code 200.
+[00:21:44 INF] Writing value of type 'SyncResponse' as Json.
+[00:21:44 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:21:44 INF] HTTP POST /v1/sync responded 200 in 8.0744 ms
+[00:21:44 INF] Request finished HTTP/1.1 POST http://localhost:5298/v1/sync - 200 null application/json; charset=utf-8 13.2344ms
+[00:23:57 INF] Request starting HTTP/1.1 POST http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1 - null 0
+[00:23:57 INF] Executing endpoint '/hubs/sync/negotiate'
+[00:23:57 INF] Executed endpoint '/hubs/sync/negotiate'
+[00:23:57 INF] HTTP POST /hubs/sync/negotiate responded 200 in 13.7046 ms
+[00:23:57 INF] Request finished HTTP/1.1 POST http://10.0.2.2:5298/hubs/sync/negotiate?negotiateVersion=1 - 200 316 application/json 16.8521ms
+[00:23:58 INF] Request starting HTTP/1.1 GET http://10.0.2.2:5298/hubs/sync?id=8YbQXqcLf2RSe69qPMzehQ - null null
+[00:23:58 INF] Executing endpoint '/hubs/sync'
+[00:23:59 INF] Request starting HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - application/json 114
+[00:23:59 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:23:59 INF] Setting HTTP status code 200.
+[00:23:59 INF] Writing value of type 'SyncResponse' as Json.
+[00:23:59 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:23:59 INF] HTTP POST /v1/sync responded 200 in 9.1477 ms
+[00:23:59 INF] Request finished HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - 200 null application/json; charset=utf-8 9.6785ms
+[00:24:06 INF] Request starting HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - application/json 559
+[00:24:06 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:24:06 INF] Setting HTTP status code 200.
+[00:24:06 INF] Writing value of type 'SyncResponse' as Json.
+[00:24:06 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:24:06 INF] HTTP POST /v1/sync responded 200 in 47.2072 ms
+[00:24:06 INF] Request finished HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - 200 null application/json; charset=utf-8 47.7138ms
+[00:24:06 INF] Request starting HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - application/json 114
+[00:24:06 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:24:06 INF] Setting HTTP status code 200.
+[00:24:06 INF] Writing value of type 'SyncResponse' as Json.
+[00:24:06 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:24:06 INF] HTTP POST /v1/sync responded 200 in 6.5992 ms
+[00:24:06 INF] Request finished HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - 200 null application/json; charset=utf-8 7.502ms
+[00:34:18 INF] Request starting HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - application/json 559
+[00:34:18 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:34:18 INF] Setting HTTP status code 200.
+[00:34:18 INF] Writing value of type 'SyncResponse' as Json.
+[00:34:18 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:34:18 INF] HTTP POST /v1/sync responded 200 in 326.8437 ms
+[00:34:18 INF] Request finished HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - 200 null application/json; charset=utf-8 366.3106ms
+[00:34:18 INF] Request starting HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - application/json 114
+[00:34:18 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:34:18 INF] Setting HTTP status code 200.
+[00:34:18 INF] Writing value of type 'SyncResponse' as Json.
+[00:34:18 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:34:18 INF] HTTP POST /v1/sync responded 200 in 8.2920 ms
+[00:34:18 INF] Request finished HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - 200 null application/json; charset=utf-8 13.108ms
+[00:34:19 INF] Request starting HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - application/json 114
+[00:34:19 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:34:19 INF] Setting HTTP status code 200.
+[00:34:19 INF] Writing value of type 'SyncResponse' as Json.
+[00:34:19 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:34:19 INF] HTTP POST /v1/sync responded 200 in 7.6728 ms
+[00:34:19 INF] Request finished HTTP/1.1 POST http://10.0.2.2:5298/v1/sync - 200 null application/json; charset=utf-8 13.9163ms
+[00:34:40 INF] Request starting HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - null null
+[00:34:40 INF] CORS policy execution successful.
+[00:34:40 INF] Request finished HTTP/1.1 OPTIONS http://localhost:5298/v1/sync - 204 null null 7.5375ms
+[00:34:40 INF] Request starting HTTP/1.1 POST http://localhost:5298/v1/sync - application/json 114
+[00:34:40 INF] CORS policy execution successful.
+[00:34:40 INF] Executing endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:34:40 INF] Setting HTTP status code 200.
+[00:34:40 INF] Writing value of type 'SyncResponse' as Json.
+[00:34:40 INF] Executed endpoint 'HTTP: POST /v{version:apiVersion}/sync => HandleAsync'
+[00:34:40 INF] HTTP POST /v1/sync responded 200 in 8.4215 ms
+[00:34:40 INF] Request finished HTTP/1.1 POST http://localhost:5298/v1/sync - 200 null application/json; charset=utf-8 9.626ms

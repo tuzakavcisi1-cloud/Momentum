@@ -16,3 +16,6 @@ The Flutter DevTools debugger and profiler on Chrome is available at: http://127
 Starting application from main method in: org-dartlang-app:/web_entrypoint.dart.
 MOMENTUM-G6-KANIT chosenImplementation=WasmStorageImplementation.sharedIndexedDb missingFeatures={MissingBrowserFeature.dedicatedWorkersInSharedWorkers, MissingBrowserFeature.sharedArrayBuffers}
 [sinyal] web: gercek zamanli sinyal KAPALI (K79/2) -- elle yenileme tek yol
+Starting application from main method in: org-dartlang-app:/web_entrypoint.dart.
+MOMENTUM-G6-KANIT chosenImplementation=WasmStorageImplementation.sharedIndexedDb missingFeatures={MissingBrowserFeature.dedicatedWorkersInSharedWorkers, MissingBrowserFeature.sharedArrayBuffers}
+[sinyal] web: gercek zamanli sinyal KAPALI (K79/2) -- elle yenileme tek yol
