@@ -216,9 +216,16 @@ def istemci_baslat(hedef, etiket, ek_bayraklar=None):
             return None
         with open(log_yolu, "rb") as f:
             icerik = f.read().decode("utf-8", "replace")
-        if "Flutter run key commands" in icerik:
+        # 🔴 BULUNUP DUZELTILEN DORDUNCU CANLI HATA (o71-SS2 turu): "Flutter run
+        # key commands" chrome icin YETERSIZ isaretti -- bu satir DWDS debug
+        # baglantisi kurulmadan ONCE basar; canli yakalandi -- baglanti SONRADAN
+        # "Failed to establish connection ... TimeoutException" ile cokup surec
+        # OLDU, ama yokla() zaten erken "True" gorup CIKMISTI (sahte HAZIR).
+        # Guvenilir isaret "Dart VM Service on" -- Android'de VE Chrome'da AYNI,
+        # yalniz debug baglantisi GERCEKTEN kurulunca yazilir.
+        if "Dart VM Service on" in icerik:
             return True
-        if "Exception" in icerik or "FAILURE" in icerik:
+        if "Failed to establish connection" in icerik or "FAILURE" in icerik or "Exception" in icerik:
             return "HATA -- log'a bak: " + log_yolu
         return None
 

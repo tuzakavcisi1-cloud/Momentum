@@ -7,6 +7,36 @@
 
 ---
 
+## ⛔ ERRATUM (o71, K34-f: yazan el onarır) — **AŞAĞIDAKİ İKİ CÜMLE ÖLÜDÜR**
+
+Bu rapor **silinmiyor** (ölçüldüğü anda doğruydu) — yalnız iki iddiası **düzeltme kaydıyla** işaretleniyor.
+
+1. **§ SONUÇ ÖZETİ satır 12 ve § Ö4 başlığı** (*"Ö4 GERÇEK bir engel"*, *"tek AVD ile iki cihazlı bir
+   senaryo ne yazılabilir ne sınanabilir"*) **ÖLÜ**. `KANIT/SS2/11-ERRATUM-S6-YANLIS-OKUNDU-O4-ENGEL-DEGIL.md`
+   ölçtü: `S6`'nın konusu `flutter test --platform chrome` **TEST AYAĞIYDI**, cihaz topolojisi değil;
+   kilitli kriter 8'in kendi ⑤. adımı chrome'u cihaz A olarak **zaten açıkça** sunuyordu
+   (`GOREV-SS2-cakisma-cozumu.md` §7, satır 477-478). `Ö4` hiç engel **olmadı** — topoloji
+   `tuzak_api34` (cihaz B) + `flutter run -d chrome` (cihaz A) ile **zaten yürüyordü**.
+2. **§ NE ÖLÇÜLEMEDİ satır *"İki-cihazlı senaryo (adım ⓪-⑦) hiç yazılmadı/koşulmadı"*** **KISMEN
+   ÖLÜ**: **adım ⓪ (TOHUMLAMA) o70'te koşuldu ve BEŞİ DE GEÇTİ** — entityId aynı · iki kuyruk boş
+   (B ölçüldü, A dolaylı kanıtla) · iki clientId farklı · UserId aynı · saat farkı 2 sn. Kanıt:
+   `KANIT/SS2/T8-uctan-uca/02-adim0-taban-durum-OLCUM.txt`. **Adım ④-⑦ (çevrimdışı/çakışma/çözüm)
+   hâlâ GERÇEKTEN koşulmadı** — bu kısmı cümle hâlâ doğru; yalnız *"adım ⓪-⑦"* aralığının **⓪ ucu
+   ölü**.
+
+**Düzeltilmiş durum tablosu (o71):**
+
+| iddia | o70'teki hüküm | o71'de ölçülen gerçek |
+|---|---|---|
+| Ö4 (≥2 AVD) | 🔴 GERÇEK ENGEL | 🟢 **Engel değil** — chrome kilitli kriterin kendi ⑤'i, `KANIT/SS2/11` |
+| Adım ⓪ | (yazılmadı, Ö4 engeliyle) | 🟢 **KOŞULDU, 5/5 GEÇTİ** — `02-adim0-taban-durum-OLCUM.txt` |
+| Adım ④-⑦ | (yazılmadı) | 🔴 **hâlâ koşulmadı** — bu oturumun (o71) konusu |
+
+Bu erratumdan sonraki tüm satırlar (§ Ö4 detayı dahil) **tarihsel ölçüm kaydı** olarak aynen durur;
+`Ö4`'ün o70'teki "gerçek engel" hükmü yalnız **o zamanki** (yanlış okunmuş `S6`) bilgiyle **tutarlıydı**.
+
+---
+
 ## 🔴 SONUÇ ÖZETİ
 
 **On altı madde ölçüldü/kapandı, BİR madde (Ö4) GERÇEK bir engel olarak

@@ -1,4 +1,3 @@
-[17:08:47] YOKLAMA basladi: emulator boot_completed=1 (devam, soguk boot) (aralik=5s, tavan=48 deneme)
-[17:08:48]   [deneme 1/48, 0.8sn] None
-[17:08:54]   [deneme 2/48, 6.8sn] ('emulator-5554', 'tuzak_api34')
-[17:08:54] YOKLAMA GECTI: emulator boot_completed=1 (devam, soguk boot) (6.8 sn'de)
+[23:41:04] YOKLAMA basladi: emulator boot_completed=1 (devam, flutter.bat zaman asimina ragmen surec canli) (aralik=5s, tavan=48 deneme)
+[23:41:07]   [deneme 1/48, 3.0sn] ('emulator-5554', 'tuzak_api34')
+[23:41:07] YOKLAMA GECTI: emulator boot_completed=1 (devam, flutter.bat zaman asimina ragmen surec canli) (3.0 sn'de)
