@@ -29,6 +29,36 @@ sunucuya ulaştı (`tasks.title` ⇒ `B1`, PostgreSQL'den ölçüldü).
 görüntüsü yakalanmadı (iki değerin aynı anda gösterildiği `G34/b` widget testiyle, mutantla ölçülü).
 Ayrıntı: `KANIT/SS2/13-KABUL-HUKMU-COWORK-kriter8-UCTAN-UCA.md` §3.
 
+### Canlı demo (yalnız istemci)
+
+**https://tuzakavcisi1-cloud.github.io/Momentum/** — GitHub Pages; `.github/workflows/pages.yml`
+ile dağıtılır (elle tetiklenir, `workflow_dispatch`).
+
+Ekleyin · başlığı düzenleyin · tamamlayın · sayfayı yenileyin: **veri durur.**
+
+🔴 **İki sınır ölçülmüştür ve gizlenmemiştir** (14 Ağu 2026, gerçek tarayıcı; ham ölçüm
+`KANIT/o71/16-pages-demo/07-canli-olcum-COWORK.md`):
+
+1. **Çapraz-köken izolasyon YOK.** GitHub Pages COOP/COEP başlığı gönderemez ⇒ ölçüm birebir:
+   `crossOriginIsolated === false`, `SharedArrayBuffer` tanımsız ve drift OPFS yerine
+   `sharedIndexedDb` seçiyor — konsolda
+   `chosenImplementation=WasmStorageImplementation.sharedIndexedDb missingFeatures={dedicatedWorkersInSharedWorkers, sharedArrayBuffers}`.
+   Bu, [Zorunlu şartlar](#zorunlu-şartlar) bölümünün 1. maddesindeki
+   `crossOriginIsolated === true` ölçümünü **çürütmez**: o ölçüm §Çalıştırma 4'ün kurulumuna
+   (istemciyi API ile **aynı kökenden** sunmak) aittir. Bayrak **gereklidir, yeterli değildir**.
+2. **Backend YOK ⇒ senkron düşer.** Yazılan her satır kuyrukta bekler ve satırda
+   *"↑ Gönderiliyor"* rozeti kalır; uygulama **kilitlenmez**, hata ekranı çıkmaz
+   (ölçüldü: 21 konsol kaydı, **0 hata**). Gerçek zamanlı sinyal web'de zaten kapalıdır:
+   `[sinyal] web: gercek zamanli sinyal KAPALI (K79/2) -- elle yenileme tek yol`.
+
+Demo, vitrinin **çevrimdışı yarısını** gösterir; senkron ve çakışma çözümü yukarıdaki ölçülmüş
+görselle ve `KANIT/SS2/` altındaki ham kayıtlarla temsil edilir.
+
+🔴 **Demo, `--no-web-resources-cdn` şartını mekanik olarak zorlar:** iş akışı, build çıktısında
+`"useLocalCanvasKit":true` **varlığını** ve derlenmiş uygulama kodunda CDN adresinin
+**yokluğunu** ölçer; ikisinden biri düşerse yayın **yapılmaz**. Kapının kör olmadığı **beş
+mutantla** kanıtlandı (`KANIT/o71/16-pages-demo/01-mutant-kosumlari.txt`).
+
 ---
 
 ## Depo haritası — nereden başlamalı
@@ -60,7 +90,7 @@ gizlediği değil **belgelediği** bir olgudur.
 | `src/backend/Momentum.Application` | CQRS (Mediator), doğrulama, işlem davranışı |
 | `src/backend/Momentum.Infrastructure` | PostgreSQL kalıcılığı, outbox dağıtıcısı |
 | `src/backend/Momentum.Api` | kompozisyon kökü: uç noktalar, SignalR hub'ı, sağlık, OpenAPI/Scalar |
-| `src/client` | Flutter: Drift ile çevrimdışı CRUD (ekle · **başlık düzenle** · tamamla · sil), itme kuyruğu, çekme, çakışma rozeti |
+| `src/client` | Flutter: Drift ile çevrimdışı CRUD (ekle · **başlık düzenle** · tamamla), itme kuyruğu, çekme, çakışma rozeti. 🔴 **Silme veri katmanında vardır** (`GorevDeposu.sil`, `silindi` tombstone, senkron protokolüne bağlı) **ama arayüzde tetikleyicisi yoktur** — beyan edilmiş sınır, canlı demoda ölçüldü (14 Ağu 2026). |
 
 **Senkron:** çift yönlü — yerel yazma → itme kuyruğu → `POST /v1/sync`; sunucu tarafında outbox +
 imleç tabanlı çekme (snapshot/artımlı, `hasMore`). Çakışma çözümü yerel LWW + kullanıcıya görünür
@@ -160,7 +190,12 @@ Flutter'ın **varsayılan** `flutter build web` çıktısı ise CanvasKit'i
 `https://www.gstatic.com/flutter-canvaskit/…` adresinden çeker. `--no-web-resources-cdn` bayrağı
 CanvasKit'i **aynı kökene** taşır. **Bayraksız derlenen bir sürümde izolasyon iddiası çürür.**
 
-🔴 Bu şart bugün **CI'da zorlanmıyor** — bilinen ve yazılı bir borçtur.
+🔴 **Tersi doğru değildir:** bayrak **gereklidir, yeterli değildir** — sunucu COOP/COEP
+göndermiyorsa bayrak varken de izolasyon yoktur. Ölçülmüş karşı-örnek: yukarıdaki **Canlı demo** bölümü (`crossOriginIsolated === false`).
+
+🟢 **o71'de kapandı (kısmen):** şart artık **Pages iş akışında mekanik olarak zorlanıyor**
+(`pages.yml` → `kapi-cdn-ve-base-href`, beş mutantla kanıtlı). 🔴 `ci.yml`'de **hâlâ
+zorlanmıyor** — kalan borç yazılıdır.
 
 ### 2. Veri göçü **bilerek** kapsam dışıdır
 
@@ -196,18 +231,60 @@ ortam mayınları `ORTAM.md`, ölçüm kanıtları `KANIT/`.
 
 ---
 
+## Kapsam dışı — teslim beyanı
+
+Bu üç madde **eksik değil, karardır**; gerekçeleriyle birlikte burada durur.
+
+### 1. Kimlik doğrulama KAPSAM DIŞIDIR
+
+Bu depoda gerçek kimlik doğrulama (JWT/OIDC, kullanıcı modeli, giriş ekranı) **yoktur ve bilerek
+yazılmamıştır.** Ödevin odağı senkron mimarisi ve ölçüm disiplinidir.
+
+Yerine duran şey bir **ölçüm iskelesidir** (`K61`): `Development` profilinde `X-Momentum-Dev-User`
+başlığı `UserId`'yi taşır; başlık yok ya da bozuksa uç **401** döner, **sessiz varsayılan yoktur**.
+🔴 **Üretim profilinde `NullCurrentUser` çalışır — deny-by-default.** Yani uygulama
+`ASPNETCORE_ENVIRONMENT=Production` ile ayağa kalkar, port dinler, ama **hiçbir istek yetkilenmez**:
+üretimde **kullanılamaz**, bu **tasarım gereğidir** ve bir **mutant** bunu kanıtlar.
+
+Korunan ayrım: **`UserId` ⟂ `ClientId`** — kimlik kullanıcıya, senkron kimliği cihaza aittir; ikisi
+hiçbir yerde birbirinin yerine geçmez. Gerçek kimlik eklendiğinde değişmesi gereken tek yer
+`ICurrentUser` uygulamasıdır.
+
+### 2. `GET /v1/task-lists` istemcide tüketilmiyor
+
+Uç vardır ve çalışır; **istemcide karşılığı yoktur.** Bu, `slice-3a/D4`'ün ölçülmüş kararıdır:
+bu dilimde **`Task` ↔ `TaskList` bağı UYDURULMADI** (`F6`). Bağ olmayınca listelerin arayüzde
+yapacağı bir iş de yoktur. `by-id` karşılığının olmaması da aynı kararın parçasıdır —
+**asimetri bilinçlidir**, yarım kalmış bir uç değildir.
+
+### 3. Açık borçlar — sayı gizlenmiyor
+
+`BORCLAR.md` teslim anında **97 işaretli satır** taşıyor; bunların **53'ü `B-…` kimlikli kalem**:
+**23 🔴 · 27 🟡 · 3 🟢 (kapanmış)**. En kalabalık aileler `B-O62` (8) · `B-O63` (6) · `B-O53` (5) ·
+`B-O64` (5) · `B-W3b` (5).
+
+Bu liste **kısaltılmadı, yumuşatılmadı ve teslimden önce temizlenmedi.** Bu deponun sözleşmesi
+şudur: *beyan edilmiş sınır kabul edilir, gizlenmiş sınır edilmez.* Bir borcun yazılı olması onun
+**bilindiği** anlamına gelir; yazılı olmaması onu yok etmez, yalnız görünmez yapar.
+
+---
+
 ## Beyan edilmiş sınırlar
 
 - **iOS yalnız CI'da derlenir** — geliştirme makinesinde macOS yok.
 - **Windows masaüstü hedefi yok.**
 - **Gerçek zamanlı sinyal web'de kapalı.** Dev-kimlik kalkanı bir HTTP başlığı istiyor, tarayıcı ise
-  WebSocket el sıkışmasına başlık ekleyemiyor (ölçüldü; `negotiate` 200, WebSocket düşüyor —
-  COOP/COEP **suçsuz**, pozitif kontrolle doğrulandı).
+  WebSocket el sıkışmasına başlık ekleyemiyor (**yerel kurulumda** ölçüldü; `negotiate` 200,
+  WebSocket düşüyor — COOP/COEP **suçsuz**, pozitif kontrolle doğrulandı). Pages demosunda sinyal
+  **hiç başlatılmaz**; konsol birebir: `[sinyal] web: gercek zamanli sinyal KAPALI (K79/2)`.
 - **SignalR yeniden bağlanma yolu** bu depoda **hiç egzersiz edilmedi** (emülatör NAT'ı kurulu
   soketi koruyor).
 - **`flutter test --platform chrome`** bu ortamda sonuç üretmiyor ⇒ web test ayağı `[DOĞRULANMADI]`.
-- **Üretim dağıtım topolojisi** (CDN, ters vekil, ayrı statik host) kapsam dışı; ters vekil
-  COOP/COEP'i ezebilir ve bu **ölçülmez**.
+- **Üretim dağıtım topolojisi** (CDN, ters vekil) kapsam dışı; ters vekil COOP/COEP'i ezebilir ve
+  bu **ölçülmez**. 🟢 **Ayrı statik host artık kapsam dışı değil:** Pages demosu tam olarak odur ve
+  sonuçları **ölçülmüştür** (§Canlı demo).
+- **Silme arayüzde yok.** `GorevDeposu.sil` ve `silindi` tombstone'u veri katmanında vardır ve
+  senkron protokolüne bağlıdır; ekranda onu çağıran bir tetikleyici **yoktur** (ölçüldü, 14 Ağu 2026).
 
 ---
 
