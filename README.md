@@ -12,18 +12,37 @@ backend · **PostgreSQL**.
 
 ---
 
+## Nasıl görünüyor
+
+**Çevrimdışı yazım → çakışma → kullanıcının kararı.** Vitrin bu: bağlantı yokken yazılan bir
+değişiklik kuyrukta bekler, bağlantı gelince sunucudaki değerle **çakışır**, çakışma kullanıcıya
+**görünür** ve kararı kullanıcı verir.
+
+![Çevrimdışı senkron ve çakışma çözümü — üç adım](docs/gorseller/cevrimdisi-senkron-cakisma-akisi.png)
+
+Üç kare de **gerçek Android emülatöründe** koşan uygulamanın ekran görüntüsünden **kırpılmıştır**;
+montaj, yeniden çizim ya da düzeltme yoktur. Kazananı **HLC** belirledi: A, B'den **225.739 ms
+sonra** yazdı ve alan-seviyesi LWW A'yı korudu; *Benimkini tut* yeni ve daha geç bir HLC ile yazıp
+sunucuya ulaştı (`tasks.title` ⇒ `B1`, PostgreSQL'den ölçüldü).
+
+🔴 **Bu akışın ölçülmeyen tek ayağı var ve yazılıdır:** çakışma çözüm ekranının *canlı cihazdaki*
+görüntüsü yakalanmadı (iki değerin aynı anda gösterildiği `G34/b` widget testiyle, mutantla ölçülü).
+Ayrıntı: `KANIT/SS2/13-KABUL-HUKMU-COWORK-kriter8-UCTAN-UCA.md` §3.
+
+---
+
 ## Depo haritası — nereden başlamalı
 
-🔴 **Bu depo alışılmadık bir bileşim taşır ve bu bilinçlidir.** Dosyaların **%74'ü** ürün kodu
+🔴 **Bu depo alışılmadık bir bileşim taşır ve bu bilinçlidir.** Dosyaların **%75'i** ürün kodu
 değil, **ölçüm kanıtıdır**. Ne aradığınıza göre:
 
 | ne arıyorsanız | nereye bakın |
 |---|---|
 | **Ürün kodu** | `src/backend/` (.NET, 4 katman) · `src/client/lib/` (Flutter) |
-| **Testler** | `tests/` (backend, 120 test) · `src/client/test/` (istemci, 549 test) |
+| **Testler** | `tests/` (backend, **127** test) · `src/client/test/` (istemci, 549 test) |
 | **Mimari kararlar** | `docs/ADR/` |
 | **Ölçüm araçları (kapılar)** | `araclar/` — her biri `--altin-kume` ile **kendini kanıtlar** |
-| **Ham ölçüm kanıtları** | `KANIT/` — **1.228 dosya, 15,7 MB** |
+| **Ham ölçüm kanıtları** | `KANIT/` — **1.316 izlenen dosya, 23 MB** |
 | **Süreç ve karar arşivi** | `PROJE_HAFIZA.md` (append-only) · `BORCLAR.md` · `DURUM.md` |
 
 **`KANIT/` nedir:** her kabul hükmünün, her düşmüş denetimin ve her mutant koşumunun **ham
@@ -105,10 +124,11 @@ Bu anahtar **boşsa** statik servis ara katmanı **hiç kurulmaz** (kill switch 
 > dll'leri kilitler ve derleme `MSB3026`/`MSB3027` ile düşer. Sıra: **cihaz/canlı kanıt → backend
 > KAPAT (`netstat -ano | findstr :5298` boş dönmeli) → `verify.ps1`.**
 
-**Son ölçüm (7 Ağu 2026, Linux konteyner, .NET SDK 10.0.302, gerçek PostgreSQL):**
-`dotnet test Momentum.sln` ⇒ **120/120 geçti, 0 hata** · derleme **0 uyarı / 0 hata**
-(`TreatWarningsAsErrors=true`). 🔴 Bu ölçüm **Windows'ta tekrarlanmadı**; `verify.ps1` PowerShell
-zinciridir ve bu sürümle **koşulmamıştır**.
+**Son ölçüm (13 Ağu 2026, Windows, `araclar\verify.ps1`, gerçek PostgreSQL):**
+`verify.ps1` ⇒ **EXIT 0** · derleme **0 uyarı / 0 hata** (`TreatWarningsAsErrors=true`) ·
+**127/127 test geçti** (5 mimari · 44 SyncCore · 22 API · 56 kalıcılık) · **CVE kapısı: 0 zafiyetli
+paket**. 🟢 Zincir bu kez **Windows'ta koştu** — önceki sürümlerde yalnız Linux konteynerde
+ölçülmüştü. Ham çıktı: `KANIT/o71/15-verify-CVE-pin-sonrasi.txt`.
 
 **İstemci, son ölçüm (10 Ağu 2026, Linux, Flutter 3.44.6 / Dart 3.12.2):**
 `flutter test` ⇒ **549/549 geçti** · `flutter analyze --fatal-infos` ⇒ **0 sorun**.
@@ -128,6 +148,10 @@ Bu iki madde ürünün davranışını belirler ve **ölçülerek** yazılmışt
 API her yanıta `Cross-Origin-Opener-Policy: same-origin` + `Cross-Origin-Embedder-Policy:
 require-corp` yazar; belge bu sayede **çapraz-köken izole** olur (ölçüldü: gerçek tarayıcıda
 `crossOriginIsolated === true`, `SharedArrayBuffer` kullanılabilir).
+
+🟢 **o71'de eklendi:** `Cross-Origin-Resource-Policy: same-origin` **yalnız statik yanıtlara**
+yazılır; `/v1/**`, `/health/**`, `/hubs/**`, `/scalar/**` bu başlığı **almaz**. Ayrım bilinçlidir
+(`D-W3-4`) ve **yedi test + iki mutantla** ölçülür — biri başlığı silen, biri onu genele taşıyan.
 
 `require-corp` altında, **CORP taşımayan çapraz-köken bir alt kaynak yüklenemez.** Bu, pozitif ve
 negatif kontrolle ölçüldü: CORP'suz betik **bloklandı**, CORP'lu betik **yüklendi**.
