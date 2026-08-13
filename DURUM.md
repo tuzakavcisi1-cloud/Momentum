@@ -66,7 +66,7 @@ koşuyor; hüküm `KANIT/W3b/06-KABUL-HUKMU-COWORK.md`, anlatım **hafızada**. 
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026):** ① cihaz senkron kanıtı ② hedef yığın MSSQL —
 **birlikte** sağlanınca açılır. Maliyet ve `Rule3` **arşivde**.
-🟢 **README VAR (o63, `K162`)** — mimari · **ölçülmüş** çalıştırma sırası · **iki zorunlu şart** · ölçüm disiplini · beyan edilmiş sınırlar. 🔴 Depo görünürlüğü
+🟢 **README VAR (o63, `K162`)** — mimari · **ölçülmüş** çalıştırma sırası · **iki zorunlu şart** · ölçüm disiplini · beyan edilmiş sınırlar; **vitrin görseli o71'de eklendi** (`K190`). 🔴 Depo görünürlüğü **yazılmaz, ÖLÇÜLÜR**: *"public"* iddiası o47'de çürüdü, o53'te **PRIVATE** ölçüldü; 🟢 **13 Ağu 2026'da (o71) anonim erişimle PUBLIC ölçüldü** (`K191`) — kural değişmedi, ölçüm tarihlidir.
 **yazılmaz, ÖLÇÜLÜR**: *"public"* iddiası oturum 47'de çürüdü, oturum 53'te yine **PRIVATE** ölçüldü.
 
 🟢 **o64–o66 anlatımı HAFIZADA;** budanan metinler `_SILINECEKLER/o64|o65|o66/`'da.
