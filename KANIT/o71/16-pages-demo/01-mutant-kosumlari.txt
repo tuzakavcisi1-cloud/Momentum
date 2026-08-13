@@ -1,0 +1,108 @@
+Yerel olcum grep'i degil semantik esdegeri bir Python taramasini olctu.
+CI'daki grep ayagi yerelde OLCULEMEDI; tek kaniti ilk CI kosumunun logudur.
+
+HUKUM YOK -- ham cikti (K26/K34-f). Alti kosum: POZITIF, M-P3, M-P4, M-P5, M-P1, M-P2.
+(TEMIZ-SON-RESTORE yedinci kayittir -- mutant DEGIL, geri alma dogrulamasidir.)
+
+==============================================================================
+KOSUM: POZITIF
+KOMUT: python kapi-esdeger.py "C:\dev\Momentum\src\client\build\web" /Momentum/
+CIKIS KODU: 0
+STDOUT+STDERR:
+YESIL: build/web VAR
+YESIL: pozitif kontrol -- en az bir dosyada 'flutter' dizgesi goruldu
+YESIL: AYAK 1 -- useLocalCanvasKit:true VAR
+YESIL: AYAK 2 -- CDN dizgesi izi yok (flutter.js/flutter_bootstrap.js haric)
+YESIL: AYAK 3 -- base href ciktiya inmis (<base href="/Momentum/">)
+YESIL: useLocalCanvasKit=true - CDN URL izi yok - base href /Momentum/
+
+
+==============================================================================
+KOSUM: M-P3
+KOMUT: [build/web -> build/web_MP3_yedek yeniden adlandirildi] python kapi-esdeger.py "C:\dev\Momentum\src\client\build\web" /Momentum/
+CIKIS KODU: 1
+STDOUT+STDERR:
+KIRMIZI: build/web YOK (C:\dev\Momentum\src\client\build\web)
+
+
+==============================================================================
+KOSUM: M-P4
+KOMUT: [build/web -> BOS dizin] python kapi-esdeger.py "C:\dev\Momentum\src\client\build\web" /Momentum/
+CIKIS KODU: 1
+STDOUT+STDERR:
+YESIL: build/web VAR
+KIRMIZI: pozitif kontrol dustu -- tarama kor
+
+
+==============================================================================
+KOSUM: M-P5
+KOMUT: [build/web/_MP5_enjekte.bin -- NUL baytli, CDN dizgesi enjekte edildi] python kapi-esdeger.py "C:\dev\Momentum\src\client\build\web" /Momentum/
+CIKIS KODU: 1
+STDOUT+STDERR:
+YESIL: build/web VAR
+YESIL: pozitif kontrol -- en az bir dosyada 'flutter' dizgesi goruldu
+YESIL: AYAK 1 -- useLocalCanvasKit:true VAR
+KIRMIZI: AYAK 2 -- CDN dizgesi izi VAR: ['C:\\dev\\Momentum\\src\\client\\build\\web\\_MP5_enjekte.bin']
+YESIL: AYAK 3 -- base href ciktiya inmis (<base href="/Momentum/">)
+
+
+==============================================================================
+KOSUM: M-P1
+KOMUT: C:\src\flutter\bin\flutter.bat build web --release --no-wasm-dry-run --base-href /Momentum/  ---sonra---  python kapi-esdeger.py "C:\dev\Momentum\src\client\build\web" /Momentum/
+CIKIS KODU: 1
+STDOUT+STDERR:
+BUILD exit=0:
+Compiling lib\main.dart for the Web...                          
+Expected to find fonts for (MaterialIcons, packages/cupertino_icons/CupertinoIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 8400 bytes (99.5% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Compiling lib\main.dart for the Web...                             35,6s
+√ Built build\web
+
+
+GATE exit=1:
+YESIL: build/web VAR
+YESIL: pozitif kontrol -- en az bir dosyada 'flutter' dizgesi goruldu
+KIRMIZI: AYAK 1 -- useLocalCanvasKit yok (None)
+KIRMIZI: AYAK 2 -- CDN dizgesi izi VAR: ['C:\\dev\\Momentum\\src\\client\\build\\web\\main.dart.js']
+YESIL: AYAK 3 -- base href ciktiya inmis (<base href="/Momentum/">)
+
+
+==============================================================================
+KOSUM: M-P2
+KOMUT: C:\src\flutter\bin\flutter.bat build web --release --no-web-resources-cdn --no-wasm-dry-run  ---sonra---  python kapi-esdeger.py "C:\dev\Momentum\src\client\build\web" /Momentum/
+CIKIS KODU: 1
+STDOUT+STDERR:
+BUILD exit=0:
+Compiling lib\main.dart for the Web...                          
+Expected to find fonts for (MaterialIcons, packages/cupertino_icons/CupertinoIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 8400 bytes (99.5% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Compiling lib\main.dart for the Web...                             34,0s
+√ Built build\web
+
+
+GATE exit=1:
+YESIL: build/web VAR
+YESIL: pozitif kontrol -- en az bir dosyada 'flutter' dizgesi goruldu
+YESIL: AYAK 1 -- useLocalCanvasKit:true VAR
+YESIL: AYAK 2 -- CDN dizgesi izi yok (flutter.js/flutter_bootstrap.js haric)
+KIRMIZI: AYAK 3 -- base href yok (beklenen: <base href="/Momentum/">)
+
+
+==============================================================================
+KOSUM: TEMIZ-SON-RESTORE
+KOMUT: C:\src\flutter\bin\flutter.bat build web --release --no-web-resources-cdn --no-wasm-dry-run --base-href /Momentum/  ---sonra---  python kapi-esdeger.py "C:\dev\Momentum\src\client\build\web" /Momentum/
+CIKIS KODU: 0
+STDOUT+STDERR:
+BUILD exit=0:
+Compiling lib\main.dart for the Web...                           1.543ms
+√ Built build\web
+
+
+GATE exit=0:
+YESIL: build/web VAR
+YESIL: pozitif kontrol -- en az bir dosyada 'flutter' dizgesi goruldu
+YESIL: AYAK 1 -- useLocalCanvasKit:true VAR
+YESIL: AYAK 2 -- CDN dizgesi izi yok (flutter.js/flutter_bootstrap.js haric)
+YESIL: AYAK 3 -- base href ciktiya inmis (<base href="/Momentum/">)
+YESIL: useLocalCanvasKit=true - CDN URL izi yok - base href /Momentum/
+

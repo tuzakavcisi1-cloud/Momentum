@@ -1,11 +1,11 @@
 {
-    "name": "client",
-    "short_name": "client",
+    "name": "Momentum",
+    "short_name": "Momentum",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Çevrimdışı öncelikli görev yönetimi — mimari vitrin",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

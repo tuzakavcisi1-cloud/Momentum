@@ -1,0 +1,66 @@
+name: pages
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.6
+
+      - name: build
+        working-directory: src/client
+        run: flutter build web --release --no-web-resources-cdn --no-wasm-dry-run --base-href /Momentum/
+
+      - name: kapi-cdn-ve-base-href
+        working-directory: src/client
+        shell: bash
+        run: |
+          set +e
+          test -d build/web || { echo "KIRMIZI: build/web YOK"; exit 1; }
+          # POZITIF KONTROL (kor kapi yasagi -- ORTAM.md): tarama gercekten dosya goruyor mu?
+          grep -rlI -e 'flutter' build/web >/dev/null || { echo "KIRMIZI: pozitif kontrol dustu -- tarama kor"; exit 1; }
+          # AYAK 1 (VARLIK) -- bayrak ciktiya indi mi?
+          grep -q '"useLocalCanvasKit":true' build/web/flutter_bootstrap.js \
+            || { echo "KIRMIZI: useLocalCanvasKit yok -- --no-web-resources-cdn dusmus"; exit 1; }
+          # AYAK 2 (YOKLUK) -- derlenmis UYGULAMA kodunda CDN URL'si kaldi mi?
+          #   flutter.js / flutter_bootstrap.js HARIC: yukleyici, KULLANILMAYAN CDN dalini
+          #   her build'de dizge olarak tasir (olculdu: flutter 3.44.6, web_ui/flutter_js/src/utils.js:52)
+          #   -a: ikili dosyalar da taranir (--binary-files=without-match KOR KAPI uretiyordu)
+          grep -ra --exclude=flutter.js --exclude=flutter_bootstrap.js -e 'gstatic\.com/flutter-canvaskit' build/web
+          rc=$?
+          case "$rc" in
+            0) echo "KIRMIZI: derlenmis ciktida CDN URL izi var"; exit 1 ;;
+            1) : ;;
+            *) echo "KIRMIZI: tarama hatasi (cikis $rc) -- OLCULEMEDI, YESIL DEGIL"; exit 1 ;;
+          esac
+          # AYAK 3 (VARLIK) -- base href ciktiya indi mi?
+          grep -q '<base href="/Momentum/">' build/web/index.html \
+            || { echo "KIRMIZI: --base-href ciktiya inmedi -- beyaz sayfa riski"; exit 1; }
+          echo "YESIL: useLocalCanvasKit=true - CDN URL izi yok - base href /Momentum/"
+          exit 0
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: src/client/build/web
+
+      - id: deployment
+        uses: actions/deploy-pages@v5
