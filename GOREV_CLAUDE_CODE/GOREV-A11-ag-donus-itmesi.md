@@ -115,7 +115,7 @@ DEĞİŞMEZ** (v1 var olmayan bir gözlem noktası varsayıyordu).
 ② Backend **detached**: `ASPNETCORE_ENVIRONMENT=Development` **açıkça** (K61 — aksi hâlde her istek
 401), `ASPNETCORE_URLS=http://0.0.0.0:5298`; `netstat -ano | findstr :5298` **LISTENING görünene
 kadar YOKLA**. ③ Emülatör detached; `adb devices` + `getprop sys.boot_completed` ile **YOKLA**.
-`adb` PATH'te **YOK**: `C:\Users\gulci\AppData\Local\Android\Sdk\platform-tools\adb.exe`.
+`adb` PATH'te **YOK**: `C:\Users\<kullanici>\AppData\Local\Android\Sdk\platform-tools\adb.exe`.
 
 🔴 **Sabit `sleep` bir ölçüm değildir.** 🔴 **PID hiçbir belgeye yazılmaz, ölçülür.**
 🔴 **Çevrimdışı kapısı `airplane_mode_on` DEĞİLDİR** — oturum 49'da **iki yönde de yalan söylediği**

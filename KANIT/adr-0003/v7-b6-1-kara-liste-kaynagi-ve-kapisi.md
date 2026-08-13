@@ -2,6 +2,15 @@
 
 **[oturum 26, 26 Tem 2026 — K37-b · K37-c · bloker B6-1]**
 
+> 🔴 **REDAKSİYON (13 Ağu 2026, o71 — depo public'e açılmadan önce, Onur kilitledi):** aşağıdaki ham
+> `METADATA` dökümünde `Author-email` satırındaki **üçüncü şahsa ait** e-posta adresi
+> **maskelendi** (`<paket-yazari@REDAKTE>`). Maskeleme **ölçümün kendisini değiştirmez**: bu dosyanın
+> lisans iddiası `Name` / `Version` / `License` / `Classifier` alanlarından türer, `Author-email`'den
+> **değil**; `bayt` ve `sha256` satırları da dokunulmadan duruyor. Özgün değer paketin PyPI
+> metadata'sında **zaten kamuya açıktır** — maskelemenin amacı gizlemek değil, bu deponun
+> **tarayıcı hedefi** hâline gelmesini engellemektir. Başka hiçbir ham ölçüm satırı değiştirilmedi.
+
+
 **Neden bu dosya var:** kapı-6'nın **B6-1** blokeri, M56'nın (*sızmış-parola kara listesi kontrolü
 kaldırılır*) **kör kapı** olduğunu ölçtü: v6'nın probu `123456`'ydı ve bu parola `[KS-17]`=15
 uzunluk kuralı yüzünden **mutasyondan bağımsız olarak** `400` alıyordu ⇒ mutant öldürülmüş
@@ -62,7 +71,7 @@ pip-audit -r req.txt --progress-spinner off ; echo "EXIT=$?"
     METADATA   | Version: 4.5.0
     METADATA   | Home-page: https://github.com/dwolfhub/zxcvbn-python
     METADATA   | Author: Daniel Wolf
-    METADATA   | Author-email: danielrwolf5@gmail.com
+    METADATA   | Author-email: <paket-yazari@REDAKTE>
     METADATA   | License: MIT
     METADATA   | Classifier: License :: OSI Approved :: MIT License
     METADATA   | License-File: LICENSE.txt

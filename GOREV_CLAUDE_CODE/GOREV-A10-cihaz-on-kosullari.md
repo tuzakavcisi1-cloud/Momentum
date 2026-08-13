@@ -211,7 +211,7 @@ Her mutant **uygulanır → kapı koşulur → geri alınır**. `KANIT/A10/06-MU
 | araç | çağrı |
 |---|---|
 | Flutter | `C:\src\flutter\bin\flutter.bat` — `.bat` uzantısı **zorunlu** (Python `subprocess` PATHEXT çözmez) |
-| `aapt2` | `C:\Users\gulci\AppData\Local\Android\Sdk\build-tools\<sürüm>\aapt2.exe` — `<sürüm>` **ÖLÇÜLÜR** (`dir /b …\build-tools`), **varsayılmaz**. 🔴 `aapt2`'nin `list` alt komutu **YOKTUR** (yalnız v1'de vardı) ⇒ APK içi girdi araması PowerShell `System.IO.Compression.ZipFile` ile yapılır; `unzip` bu makinede **yoktur** |
+| `aapt2` | `C:\Users\<kullanici>\AppData\Local\Android\Sdk\build-tools\<sürüm>\aapt2.exe` — `<sürüm>` **ÖLÇÜLÜR** (`dir /b …\build-tools`), **varsayılmaz**. 🔴 `aapt2`'nin `list` alt komutu **YOKTUR** (yalnız v1'de vardı) ⇒ APK içi girdi araması PowerShell `System.IO.Compression.ZipFile` ile yapılır; `unzip` bu makinede **yoktur** |
 | `flutter test` | alt sürece `PROGRAMFILES(X86)=C:\Program Files (x86)` **enjekte edilir** (ölçülmüş ortam kusuru; kalkansız çöker) |
 | EXIT kodu | `cmd /v:on /c "... & echo !ERRORLEVEL!"` — `%ERRORLEVEL%` **KÖRDÜR** |
 
