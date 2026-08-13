@@ -80,6 +80,7 @@ class MomentumUygulamasi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Momentum',
       debugShowCheckedModeBanner: false,
       theme: MomentumTema.olustur(Brightness.light),
       darkTheme: MomentumTema.olustur(Brightness.dark),
