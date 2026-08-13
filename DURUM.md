@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan **≤ 32 KB** [K58]; aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Kapısı `belge-tavan-kapisi.py` (§2 adım 3). 🔴 Aracın banner sürümü bayat — `B-O50-2`.
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 12 Ağu 2026, **oturum 71** — 🟢 açılış protokolü tam koştu; `T2` budandı (31.418→30.554). 🟢 **`R8` KIRILDI:** `D-W3-4` CORP ürün kodu **23 satır** (`d6c87c7`+`2495fc3`), 7 test + `M231`/`M231b` ısırıyor; kabul `KANIT/o71/08-KABUL-HUKMU-COWORK.md`. 🔴 **İKİ COMMIT İTİLMEDİ** (`rev-list` **0 2**). 🔴 `SS2` kriter 8 **AÇIK** — `adb` **cihaz YOK**. *(o39–o68 arşivde.)*
+> **Son güncelleme:** 13 Ağu 2026, **o71** — 🟢 **`SS2` KRİTER 8 KABUL** (`K187`) · 🟢 `R8` kırıldı (CORP, 23 satır, `K186`) · 🟢 **`verify.ps1` EXIT 0, test 127/127** (SSH.NET CVE pini, `K188`) · `T2` budandı. 🔴 **ÜÇ COMMIT İTİLMEDİ**. *(o39–o68 arşivde.)*
 
 ---
 
@@ -36,7 +36,7 @@
 
 | alan | durum |
 |---|---|
-| **Backend** | ✅ slice-1 → 3e (3e'de **tek bayt yazılmadı**, ayak 2b2'de bitmişti). `araclar\verify.ps1` ⇒ build **0 uyarı/0 hata** · **test 126/126** · CVE 0 · EXIT 0 [o71, `d6c87c7`]. 🔴 `2495fc3`'ün 7. testi verify'a **GİRMEDİ** (yalnız `Api.Tests` **22/22** koştu) ⇒ toplam **127**, ama `verify.ps1` ile **ÖLÇÜLMEDİ**. |
+| **Backend** | ✅ slice-1 → 3e (3e'de **tek bayt yazılmadı**). `araclar\verify.ps1` ⇒ build **0 uyarı/0 hata** · **test 127/127** · **CVE 0** · **EXIT 0** [13 Ağu, `581be7e`, `KANIT/o71/15-`]. 🔴 CVE kapısı 12 Ağu'da `SSH.NET <=2025.1.0` ile yanmıştı (`GHSA-q939-rpr3-3284`); test projesine **geçici** açık pin (`2026.0.0`) kondu — Testcontainers bump'ında **kaldırılacak** (`B-O71-6`). |
 | **Veritabanı** | PostgreSQL / Docker; konteyner adı **`momentum-postgres`**. 🔴 **ÇALIŞMA DURUMU BURAYA YAZILMAZ — §2 adım 9'da ÖLÇÜLÜR (K80).** *(Oturum 42: bu hücre `✅ … Up (healthy)` diyordu; ölçüm `docker ps -a` ⇒ **`Exited (255)`** çıktı. K80'i doğuran bayat-PID vakasının ikinci kopyasıydı.)* |
 | **İstemci (Flutter)** | 🟢 slice-3b→3e + R9/R10 + A7/A8/A9 + `ios/` (CI'da derleniyor — `A13`, K129) **BİTTİ**: senkron çift yönlü + gerçek zamanlı sinyal; ayrıntı kabul hükümlerinde. Mutantlar `M1`–`M170`. Son koşum (K26): `flutter test` **549/549** · `analyze --fatal-infos` **0** — 🔴 **bulut/Linux** koşumu (o68, `K174`); **Windows ÖLÇÜLEMEDİ**. 🔴 A-7 `DESIGN.md`'de kapanmadı (K46). |
 | **Tasarım sistemi** | ✅ `DESIGN.md` **v2** — 32 token, 8 görsel bileşen, 8 durum, A11Y‑1…7. Kimlik **§9'da** (v1 `534DFF68` **GEÇERSİZ**) |
@@ -79,9 +79,9 @@ kriter 9 `ci #25` (`e80cb19`, `main`) **Success**, dört çapa logda **birebir**
 (`Persistence.Tests` 56/56 gerçek Postgres). Hükümler `KANIT/CI/10` + `KANIT/CI/11`.
 🔴 `B-O63-2` **AÇIK**.
 
-🟢 **`SS2` kriter 8'in UI'ı KABUL EDİLDİ (`K174`, o68):** `2710db0` · `lib/` **+216** · `KANIT/SS2/05-…`
+🟢 **`SS2` TAMAMI KABUL EDİLDİ.** UI o68'de (`K174`), **kriter 8 uçtan uca o71'de** (`K187`, `babdee8`+`0b73d59`): B çevrimdışı `B1` ⇒ A **225,7 sn sonra** `A1` ⇒ B çevrimiçi, **bekleyen op'u varken** çakışma doğdu, rozet göründü ⇒ *Benimkini tut* projeksiyonu da yazdı, sunucuya ulaştı. Hüküm `KANIT/SS2/13-KABUL-HUKMU-COWORK-kriter8-UCTAN-UCA.md`. 🔴 Beyanlı sınır: çakışma **ekranının canlı görseli** yok (`B-O71-5`) · A'nın ekranı `[DOĞRULANMADI]`.
 (7/7 · **5/5 mutant** · `M7` ölmedi). 🔴 **KRİTER 8 AÇIK** — uçtan uca cihaz koşumu (`D-SS2-11`).
-o70: iş emri **iki kâğıt turunda DÜŞTÜ** ⇒ `K53`/1 **tur 3 açılmadı**, iş **Code'a devredildi**; `K181`
+o70'in iki düşen kâğıt turu (`K180`), `K181` ve `K182` erratumu: **hafızada**.
 *“backend logundan oku”* kilidini **ölçümle düşürdü** ⇒ **sunucunun PostgreSQL'i**. `KANIT/SS2/06`–`10`.
 
 ---
@@ -89,7 +89,7 @@ o70: iş emri **iki kâğıt turunda DÜŞTÜ** ⇒ `K53`/1 **tur 3 açılmadı*
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
 - 🔒 **K175 — KAPSAM KESİMİ (Onur, 10 Ağu 2026, o68).** ① **`ADR 0004` KAPSAM DIŞI** — gövde, `adr-hukum-kapisi.py` onarımı ve kapı zinciri **PARK**; gerekçe `README`'ye tek paragraf. ② **YENİ ARTEFAKT YASAĞI** — `GOREV_CLAUDE_CODE`/`docs/ADR`/`araclar` altında yeni dosya **AÇILMAZ**; taban **32·6·41**. 🔴 Sayım `ls-files --cached --others --exclude-standard` ile yapılır — çıplak `ls-files` izlenmeyeni **GÖREMEZ** ve yasağın koruduğu sınıfa **KÖRDÜR**. Büyürse **DUR**. ③ **MUHASEBE OTURUM BAŞINA TEK YAZIM**; 90 açık borç **kapatılmaz, TESLİMDE BEYAN EDİLİR**. 🔴 o68'in `ADR 0004` onarım kilitleri ve `K170` **HÜKÜMSÜZ**. Sıra: depo görünürlüğü → `SS2` kriter 8 → backend CI → `README`. Taban düzeltmesi (33→32) ve ölçülmüş gerekçe: **hafıza K175 + o71**.
-- 🟢 **K174 — `SS2` kriter 8'in UI'ı KABUL EDİLDİ (o68) ⇒ `K73` gereği ÇEKİLDİ** (`2710db0` · `KANIT/SS2/05-…`). 🔴 **o70'e kadar bitmiş işi BEKLEYEN KİLİT gibi sunuyordu — ölü beyan.** Kriter 8 **§4'te**.
+- 🟢 **K174 — `SS2` kriter 8'in UI'ı KABUL (o68) ⇒ `K73` gereği ÇEKİLDİ**; **kriter 8'in KENDİSİ o71'de kapandı** (`K187`).
 - 🔒 **K71–K81 · K116–K120 — slice-3e · `R9`/`R10` · `A11` KABUL EDİLDİ; anlatım o56'da arşive taşındı (`K135-EK2`).** 🔴 **BAŞKA HİÇBİR CANLI BELGEDE İZİ OLMAYAN ALTI BEYAN BURADA KALIR** (`KANIT/o56/25-beyan-izi.txt`): ① `CursorHint` **yoksayılır** (`D6`) ② `Y3`'ün mutantı **YOK** ③ `G12` kriter 8 **UYGULANMAZ** ④ `D2` kural 3'ün `K != 'yerel'` istisnası ⑤ `R9` öncesi inmiş satırlar **`'yerel'` KALIR** (migration yasak) ⑥ `GOREV-slice-3d-cekme.md`'deki `D0` metni **bilerek bayat** (K70; kanonik metin `GOREV-A11` §3). 🟢 Kalan yedi beyan `BORCLAR.md`'de.
 - 🔒 **K111 — .NET 10 (Onur, 2 Ağu 2026):** çatı `net10.0`, SDK pini `10.0.302`; kural **`verify.ps1` ve `global.json` pininde** koşuyor. Geçiş **ATOMİK**. Riskler `BORCLAR.md`'de.
 - 🔒 **K108 — KAPI KİMLİĞİ SPEC-YERELDİR** (Onur, 2 Ağu 2026): atıf **daima** kapsam önekli (`A10/G18`). Kapısı `kapi-ad-teklik-kapisi.py` (§2 adım 4b). Gerekçe: hafıza K108.
@@ -108,7 +108,7 @@ o70: iş emri **iki kâğıt turunda DÜŞTÜ** ⇒ `K53`/1 **tur 3 açılmadı*
 - **K41** — ADR 0003 v7 **DONDURULDU**; açılması üç şartın BİRLİKTE sağlanmasına + Onur'un açık onayına bağlı.
 - 🔒 **K127 — KİLİT ÖNCESİ BAĞIMSIZ DENETİM (Onur, 3 Ağu 2026):** kilit checkpoint'i **denetçinin ÇIKTI YOLUNU** taşır; yoksa *"denetim KOŞULMADI"* diye **açıkça** yazar. **Kanonik metin `CLAUDE.md`'de**, `K53/1` ile çelişmez (turun sayısını değil **zamanlamasını** sabitler). 🔴 Mekanik kapısı **YOK** ⇒ `B-O52-2`.
 - 🔒 **K129 · K130 — `A13` KABUL + spec yeniden kilitlendi (Onur, o53).** Kurallar `A13/G27`–`G30` + `M162`–`M170`'te koşuyor. 🔴 Yaşayan beş sınır **`B-O53-1`…`5`**'te. Ders: **okunan onarım, ölçülmüş onarım değildir.**
-- 🔒 **K133 · K136 — `SS2` KİLİTLENDİ ve KABUL EDİLDİ** (Onur, o55/o56); kurallar `SS2/G31`–`G34` + `M171`–`M188`'de **koşuyor**. 🔴 Yaşayan üç sınır: `B-SS2-4` · 🟢 başlık düzenleme UI'ı **o68'de GELDİ ve KABUL EDİLDİ** (`K174`) · kriter 8 **hâlâ tamamlanma anahtarıyla** koşuyor (§4) · `B-SS2-5`.
+- 🟢 **K133 · K136 · K187 — `SS2` KİLİTLENDİ, KABUL EDİLDİ ve KRİTER 8 KAPANDI** (Onur; o55/o56/**o71**) ⇒ `K73` gereği tek atıf. Kurallar `SS2/G31`–`G34` + `M171`–`M188`'de koşuyor. 🔴 Yaşayan sınırlar: `B-SS2-4` · `B-SS2-5` · `B-O71-5` (çakışma ekranı görseli).
 - 🔒 **K137/K138 · K142/K144 — `W1`+`W2` KİLİTLENDİ *ve* KABUL EDİLDİ ⇒ K73 gereği ÇEKİLDİ.** Kurallar prozada değil **`W1/G35`–`G38` + `W2/G39`–`G42` kapılarında** koşuyor. Yaşayan sınırlar: `BORCLAR.md` (`B-W1-1`…`B-W1-7`) + `KANIT/W2/05-…` §4. 🔴 Bu satırın o60'a kadar taşıdığı **ÖLÜ BEYAN** ve `K145` ERRATUM: **hafızada**.
 - 🔒 **K170 — `ADR 0004`: MEKANİKLEŞTİR (Onur, o66) ⇒ `K175`① ile **HÜKÜMSÜZ** (o68).** Gövde üç kez düştü (`K164`·`K165`·`K169`), artefakt **PARK**. `K170`'in üç ayağı ve gerekçe: hafıza `K170` + `K175`.
 - 🟢 **K167 + K168 — `W3b` KİLİTLENDİ *ve* KABUL EDİLDİ (Onur, o66) ⇒ `K73` gereği ÇEKİLDİ.** `K127` denetimi kilitten **ÖNCE** koştu; kurallar `W3b/G48`–`G51` + 20 mutantta koşuyor. Sınırlar `BORCLAR.md`. Gerekçe: hafıza `K167`/`K168`.
