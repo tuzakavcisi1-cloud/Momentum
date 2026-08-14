@@ -1,61 +1,66 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 5/10 · kutu 21 Ağu 2026 · son ölçüm 14 Ağu 2026 13:52 TSİ (oturum 73) · HEAD `a2971aa`**
+**BİTTİ: 5/10 (liste KİLİTLİ) · kutu 21 Ağu 2026 · HEAD `6e34270` · CI `ci #39` 🔴 (tek test) — düzeltmesi YAZILDI, commit BEKLİYOR · son ölçüm 14 Ağu 2026, oturum 73**
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
-> ② bu dosya ③ test durumu (CI'dan ya da `C:\src\flutter\bin\flutter.bat test`).
-> Başka açılış ritüeli yok. `arsiv/` AÇILMAZ.
+> ② bu dosya ③ CI durumu (GitHub Actions; Cowork claude-in-chrome ile **cihazdan** okuyabilir).
+> **Flutter komutları `src/client`'tan koşulur** (bilinen sınır 2). `arsiv/` AÇILMAZ.
 
 ## Ne yapıldı (oturum 73 · 14 Ağu 2026)
 
-- Açılış yeni usulle koştu. Ölçüldü: HEAD `a2971aa`, `.git/index.lock` yok,
-  `user.email` = `onurkesimbjk@gmail.com`.
-- **Sil turu çalışma ağacında bulundu, commit'lenmemiş:** `metinler.dart` ·
-  `gorev_listesi_ekrani.dart` · `gorev_satiri.dart` · `g14_dikey_donus_kapisi_test.dart` (M) +
-  `gorev_satiri_silme_test.dart` (yeni).
-- `docs/ODEV.md` okundu ve **BİTTİ listesi onun §4 kapsam kilidinden türetildi** (devirdeki taslak
-  ODEV'den türetilmemişti, var olanın tarifiydi). Ölçülen boşluk: backend `TaskProjection`
-  **12 alan** materyalize ediyor, istemci Drift tablosu **7 kolon** taşıyor, arayüzde **2** görünüyor.
-- Onur kilitledi: **ORTA kapsam** · kutu **21 Ağu 2026** · araclar ayrılır, `KANIT/` yerinde kalır.
-- Eski canlı defterler `arsiv/`'e taşındı — **70 dosya, hepsi `R100` (saf yeniden adlandırma,
-  içerik değişmedi), hiçbir şey silinmedi:** sekizli + eski `CLAUDE.md`/`DURUM.md` +
-  `PROJE-ESASLARI-SABLON.md` + `_SILINECEKLER/`.
-- `araclar/` **ayrıldı**: 26 oturum-aparatı `arsiv/araclar/`'a indi; CI'nın çağırdığı `verify.ps1`
-  ve bağımlılık/yayın araçları kökte kaldı ⇒ `verify.ps1`'in `$repoRoot`'u bozulmadı,
-  **backend CI kırılmadı** (ölçüldü: `ci.yml` yalnız `./araclar/verify.ps1` çağırıyor).
-- Yeni tek sayfa `CLAUDE.md` + `DURUM.md` yazıldı.
+- `docs/ODEV.md` §4 kilidi ile ürün karşılaştırıldı: backend `TaskProjection` **12 alan** materyalize
+  ediyor, istemci Drift tablosu **7 kolon**, arayüzde **2**. BİTTİ listesi ODEV'den yeniden türetildi.
+- Onur kilitledi: **ORTA kapsam** · kutu **21 Ağu** · 10 maddelik liste (`CLAUDE.md` §2), sayaç **5/10**.
+- **71 dosya `arsiv/`'e** taşındı (hepsi `R100` saf yeniden adlandırma); `araclar/` ayrıldı (26 oturum
+  aparatı `arsiv/araclar/`'a; CI'nın çağırdığı `verify.ps1` + bağımlılık/yayın araçları kökte kaldı);
+  yeni tek sayfa `CLAUDE.md` (8.151 b) + `DURUM.md`; README'nin 6 bayat atıfı düzeltildi.
+- Commit + push: `a2971aa..6e34270`, 79 dosya. **CI cihazdan okundu** (claude-in-chrome).
 
-## Sıradaki iş
+## SİL TURUNUN DENETİMİ — ölçüldü (teslim sınırı turu, 1/2 ayak tamam)
 
-1. **Commit + push (Onur ya da Claude Code'da):** indekste bekleyen 70 yeniden adlandırma + yeni
-   `CLAUDE.md`/`DURUM.md` + sil turunun 5 dosyası. Mount'tan commit yasak, bu yüzden bekliyor.
-2. **Ölç:** `flutter analyze --fatal-infos` = 0 · `flutter test` sayısı (o71 tabanı 549).
-   Push edilince `ci.yml` ikisini de kendisi koşar.
-3. **Sil dilimini teslim sınırında TEK turda denetle** — canlı çıktıda: gerçek tarayıcıda dört
-   eylem (ekle/düzenle/tamamla/sil) · `gorev_satiri.dart`'ın `_dikeyMi()` sabitler toplamına
-   `onSil` terimi eklendi mi (eklenmemişse ölçülen düzen ile çizilen düzen **sessizce ayrışır**) ·
-   üç mutant ısırır. Sonra README'den *"silme arayüzde yok"* beyanı kalkar.
-4. **Dilim: öncelik + son tarih** (`CLAUDE.md` §3).
+**Geçenler (ölçüldü):**
+- `flutter analyze --fatal-infos` **geçti** (test adımına geçebildi; ci.yml sırası analyze → test).
+- **554 / 555 test geçti**, `g14_dikey_donus_kapisi` dâhil. (o71 tabanı 549 + sil turunun 6 testi.)
+- İş emrinin dört kritik deseni kodda: `onSil` null ise ikon çizilmiyor (`gorev_satiri.dart:217`) ·
+  `tooltip: Metinler.gorevSil` (284) · `showDialog<bool>` + `if (onaylandi == true) onSil!()` (299/332) ·
+  🟢 **en kritik kalem: `_dikeyMi()` sabitler toplamına `onSil` terimi EKLENMİŞ** (112) ⇒ ölçülen düzen
+  ile çizilen düzen **ayrışmıyor**, M77b sınıfı kusur yok.
+
+**Düşen (1 test) — ürün kusuru DEĞİL:**
+- `test/a11y_statik_tasma_test.dart` → *R4: pozitif kontrol — tarayıcının bulduğu `Text(` aday sayısı*.
+  `expect(adaylar.length, 16)`; sil onay diyaloğu yeni `Text(` düğümleri ekledi ⇒ taban bayatladı.
+  Doktrin gereği **taban bilerek güncellenir** (aynı satır daha önce 8→12→13→16 güncellenmişti).
+  Ham ölçüm: `lib/sunum` + `lib/vitrin` bugün **21** ham `Text(` taşıyor (tarayıcının kriteri daha dar);
+  emsal o68 diyaloğu **+3** getirmişti ⇒ **[TAHMİN] 19**. Kesin sayı testin `reason` çıktısındadır.
+- 🔴 **İkinci bulgu:** testin ADI *"aday sayisi = 12"* diyor, `expect` **16**. o68'de pin güncellenirken
+  ad güncellenmemiş ⇒ CI çıktısı yanlış sayı raporluyor (bu oturumda ölçümü bir kez yanılttı).
+- **Kırılma bu commit'ten geldi:** `ci #38` (`a2971aa`, sil öncesi) *completed successfully*, `ci #39` failed.
+
+**Kalan ayak:** canlı doğrulama. `pages` son kez o71'de koştu ⇒ canlı adres hâlâ sil'siz sürümü
+gösteriyor. Sıra: pin düzelt → CI yeşil → `pages` `workflow_dispatch` → canlı adreste dört eylem
+(ekle/düzenle/tamamla/sil) **cihazdaki tarayıcıdan** ölçülür. Yeşil olunca sayaç **6/10**, README'den
+*"silme arayüzde yok"* beyanı kalkar. *(Mutant koşumu ısrar edilmiyor — yeni usulde denetim canlı
+çıktıya bakar, `MOD: NORMAL` ⇒ tek tur.)*
 
 ## Bilinen sınırlar
 
-1. **Sil turu denetlenmedi.** Claude Code bitirdiğini beyan etti; Cowork **ölçmedi**. En kritik
-   kalem `_dikeyMi()` sabitler terimi (yukarıda).
-2. **Test sayısı ÖLÇÜLEMEDİ.** Bu oturumda Windows kabuğu yoktu: Desktop Commander bağlı değil,
-   `device_bash`'in Linux VM'inde `flutter`/`dart` yok (`which` boş döndü). Yeşil varsayılmadı.
-3. **Push durumu ÖLÇÜLEMEDİ** (o72'den devrediyor) — cihaz VM'inde `git fetch` HTTP 403 (proxy),
-   buluttan GitHub API kapalı. Tek komutla kapanır:
-   `git fetch origin && git rev-list --left-right --count origin/main...HEAD`.
-4. **README bayat, teslim sınırında tazelenecek:** *"silme arayüzde yok"* beyanı duruyor
-   (satır 93 ve 291) · `PROJE_HAFIZA.md`/`BORCLAR.md`/`ORTAM.md` atıfları (satır 76, 229-230) artık
-   `arsiv/` altına işaret ediyor · borç sayımı (satır 262-267) yeni usulde geçersiz ·
-   `araclar/` atıfları (satır 74, 220, 269) ayrılmadan önceki hâli anlatıyor.
-5. **Kapı bütçesi hâlâ ihlal.** `KANIT/` yerinde: 24 MB, README'de *"1.316 izlenen dosya"*.
-   Taşınamaz çünkü README'de **9**, `docs/ADR/*`'da **~20** canlı bağlantı ona çıpalı — Onur'un
-   ölçülmüş kararı: teslimi kırmamak bütçeyi kapatmaktan önce gelir.
-6. **Kimlik `devUserId` ile taşınıyor**, `WireOp.ActorId` istemci-beyanlı ⇒ gerçek zamanlı
-   işbirliği iki **gerçek** kullanıcıyla gösterilemez (kapsam dışı yazıldı).
-7. **`docs/ADR/0003` kilitli değil** (dosya adı `...-v7-YAZIM-DEVAM-EDIYOR.md`). Yeni usulde kâğıt
-   denetlenmez ⇒ **teslimi bloke etmez**, ama kilitsiz olduğu README'de beyan edilir.
-8. **Devirden düşen kalem:** `KIMLIKLER.md` D1 kimlik tazeleme bulgusu, belge `arsiv/`'e indiği ve
-   kimlik defteri tutulmadığı için **kendiliğinden kapandı** (o72'de Onur'un öngördüğü koşul gerçekleşti).
+1. **CI kırmızı ve düzeltmesi commit edilmedi.** `test/a11y_statik_tasma_test.dart`'ta **beş** bayat
+   sayı tazelendi (pin `16`→**20** · test adı `12`→20 · `reason` metni · gerekçe yorumu · dosya başlığı
+   yorumu); aday sayısı **20** olarak tarayıcının kendi kuralıyla ölçüldü (`+4` = sil onay diyaloğunun
+   başlık/gövde/İptal/Sil düğümleri). Dosya bayt-doğrulandı, CRLF=0. **Commit + push Onur'da.**
+2. 🔴 **Flutter komutu repo kökünden koşulursa yalan söyler [14 Ağu'da ısırdı].** Kökte `pubspec.yaml`
+   YOK; kökten `analyze` **2866 issue** verdi — hepsi `uri_does_not_exist` ve ondan türeyenler, çünkü
+   `package:drift/...` çözülemiyor. `src/client/.dart_tool/package_config.json` diskte **VAR** ⇒ ürün
+   kusuru değil, çalışma dizini kusuru. **Doğru dizin `src/client`.** PowerShell 5.1'de `&&` yok, `;` yaz.
+3. **Kapı bütçesi ihlal ve bu bulgu onun canlı örneği:** ürün kodu her değiştiğinde sabit sayı pinli
+   kapı kırılıyor. `KANIT/` (24 MB) da yerinde — README'de 9, `docs/ADR/*`'da ~20 canlı bağlantı ona
+   çıpalı; Onur'un kararı: teslimi kırmamak bütçeyi kapatmaktan önce gelir.
+4. **README bayat:** *"silme arayüzde yok"* (satır 93, 291) ve istemci test sayısı **549** — ikisi de
+   canlı doğrulama turunda tazelenecek (gerçek sayı 555).
+5. **Kimlik `devUserId` ile taşınıyor**, `WireOp.ActorId` istemci-beyanlı ⇒ gerçek zamanlı işbirliği
+   iki **gerçek** kullanıcıyla gösterilemez (kapsam dışı yazıldı).
+6. **`docs/ADR/0003` kilitli değil.** Yeni usulde kâğıt denetlenmez ⇒ teslimi bloke etmez, README'de
+   kilitsiz olduğu beyan edilir.
+7. **Kapanan kalemler:** push ölçüldü (`origin/main` = `6e34270`) · `flutter test` sayısı ölçüldü (555) ·
+   `analyze` hükmü ölçüldü (geçti) · `KIMLIKLER.md` D1 bulgusu defter arşive indiği için düştü ·
+   *"GitHub'a erişimim yok"* beyanı **yanlıştı** — claude-in-chrome cihazdan okuyor, kanonik ölçüm yeri.

@@ -15,7 +15,8 @@ library;
 //
 // GOREV-A9 [K93/spec SS5/G5] -- GENISLETME: R1 (mevcut, degismez) + R2 (YENI:
 // ellipsis tasiyan HER govde maxLines de tasir) + R4 (YENI: pozitif kontrol --
-// tarayicinin bulduğu Text( aday sayisi = 12 [GOREV-SS2 T5'te 8'den guncellendi],
+// tarayicinin bulduğu Text( aday sayisi = 20 [taban 8 -> 12 -> 13 -> 16 -> 20 guncellendi;
+// kanonik deger R4'un expect'indedir, bu satir ona atiftir],
 // arac kendini kanitlar). R3 (govde
 // toplayicinin KENDISI dogru topluyor mu) ayri bir test DEGILDIR -- yalniz
 // mutantlarla (M105/M107) sinanir (spec SS7 kriter 4'un sayi hesabi: yalniz
@@ -154,7 +155,7 @@ void main() {
   });
 
   test(
-    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 12 (arac kendini kanitlar)',
+    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 20 (arac kendini kanitlar)',
     () {
       final dosyalar = _taranacakDosyalar();
       final adaylar = <String>[];
@@ -176,11 +177,15 @@ void main() {
       // baslik duzenleme diyaloğu (`_BaslikDuzenleDiyaloguState.build()`) UC
       // YENI Text( cagrisi ekledi (diyalog basligi + Iptal dugmesi + Kaydet
       // dugmesi, ucu de overflow/maxLines korumali) ⇒ 13 + 3 = 16.
+      // 🔴 IS-EMRI-o72 TABAN BILEREK GUNCELLENDI 16 -> 20: gorev_satiri.dart'a
+      // silme onay diyalogu DORT YENI Text( cagrisi ekledi (diyalog basligi +
+      // govde + Iptal dugmesi + Sil dugmesi) ⇒ 16 + 4 = 20. Test ADI da bu
+      // turda tazelendi: o68'de pin 13->16 olurken ad "12" kalmisti.
       expect(
         adaylar.length,
-        16,
+        20,
         reason:
-            'Text( aday sayisi 16 DEGIL -- ya tarayici bozuldu (regex hic '
+            'Text( aday sayisi 20 DEGIL -- ya tarayici bozuldu (regex hic '
             'eslesmiyor ⇒ R1/R2 kor) ya taban degisti (yeni bir Text( eklendi/'
             'silindi). Bulunanlar:\n${adaylar.join('\n')}',
       );
