@@ -69,7 +69,7 @@ değil, **ölçüm kanıtıdır**. Ne aradığınıza göre:
 | ne arıyorsanız | nereye bakın |
 |---|---|
 | **Ürün kodu** | `src/backend/` (.NET, 4 katman) · `src/client/lib/` (Flutter) |
-| **Testler** | `tests/` (backend, **127** test) · `src/client/test/` (istemci, 549 test) |
+| **Testler** | `tests/` (backend, **127** test) · `src/client/test/` (istemci, **555** test) |
 | **Mimari kararlar** | `docs/ADR/` |
 | **Ölçüm araçları** | `araclar/` — CI'nın koştuğu `verify.ps1` + bağımlılık/yayın araçları; oturum kapıları `arsiv/araclar/` altına alındı (14 Ağu 2026) |
 | **Ham ölçüm kanıtları** | `KANIT/` — **1.316 izlenen dosya, 23 MB** |
@@ -90,7 +90,7 @@ gizlediği değil **belgelediği** bir olgudur.
 | `src/backend/Momentum.Application` | CQRS (Mediator), doğrulama, işlem davranışı |
 | `src/backend/Momentum.Infrastructure` | PostgreSQL kalıcılığı, outbox dağıtıcısı |
 | `src/backend/Momentum.Api` | kompozisyon kökü: uç noktalar, SignalR hub'ı, sağlık, OpenAPI/Scalar |
-| `src/client` | Flutter: Drift ile çevrimdışı CRUD (ekle · **başlık düzenle** · tamamla), itme kuyruğu, çekme, çakışma rozeti. 🔴 **Silme veri katmanında vardır** (`GorevDeposu.sil`, `silindi` tombstone, senkron protokolüne bağlı) **ama arayüzde tetikleyicisi yoktur** — beyan edilmiş sınır, canlı demoda ölçüldü (14 Ağu 2026). |
+| `src/client` | Flutter: Drift ile çevrimdışı CRUD (ekle · **başlık düzenle** · tamamla), itme kuyruğu, çekme, çakışma rozeti. Silme **arayüzde tetiklenir**: çöp ikonu → onay diyaloğu → `silindi` tombstone. Canlı demoda ölçüldü (14 Ağu 2026): ekle → sil ikonu → İptal hiçbir şey silmiyor → onay siliyor → sekme yenilenince silinmiş kalıyor. |
 
 **Senkron:** çift yönlü — yerel yazma → itme kuyruğu → `POST /v1/sync`; sunucu tarafında outbox +
 imleç tabanlı çekme (snapshot/artımlı, `hasMore`). Çakışma çözümü yerel LWW + kullanıcıya görünür
@@ -292,8 +292,10 @@ Bu liste **kısaltılmadı, yumuşatılmadı ve teslimden önce temizlenmedi.** 
 - **Üretim dağıtım topolojisi** (CDN, ters vekil) kapsam dışı; ters vekil COOP/COEP'i ezebilir ve
   bu **ölçülmez**. 🟢 **Ayrı statik host artık kapsam dışı değil:** Pages demosu tam olarak odur ve
   sonuçları **ölçülmüştür** (§Canlı demo).
-- **Silme arayüzde yok.** `GorevDeposu.sil` ve `silindi` tombstone'u veri katmanında vardır ve
-  senkron protokolüne bağlıdır; ekranda onu çağıran bir tetikleyici **yoktur** (ölçüldü, 14 Ağu 2026).
+- 🟢 **Silme artık arayüzde:** çöp ikonu → *"Bu görev silinsin mi?"* onay diyaloğu → `silindi`
+  tombstone, senkron protokolüne bağlı. **Canlı demoda uçtan uca ölçüldü (14 Ağu 2026):** görev
+  eklendi · sil ikonu diyaloğu açtı · **İptal hiçbir şey silmedi** · onay sildi · sekme yenilenince
+  silinmiş kaldı. Bu satır, aynı yerde duran *"silme arayüzde yok"* beyanının halefidir.
 
 ---
 

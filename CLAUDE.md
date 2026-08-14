@@ -18,7 +18,7 @@ Canlı demo: `https://tuzakavcisi1-cloud.github.io/Momentum/`
 ## 2. BİTTİ LİSTESİ (kutu **21 Ağu 2026** · sayaç DURUM.md'nin ilk satırında)
 
 - [x] Kullanıcı görev ekler, başlığını düzenler, tamamlandı olarak işaretler
-- [ ] Kullanıcı görevi siler (onay sorarak) — *yazıldı, commit'lenmedi, denetlenmedi*
+- [x] Kullanıcı görevi siler (onay sorarak) — *canlıda ölçüldü, 14 Ağu 2026*
 - [ ] Kullanıcı göreve **öncelik** ve **son tarih** verir, ikisini de listede görür
 - [ ] Kullanıcı göreve **etiket** ekler ve etikete göre süzer
 - [ ] Kullanıcı görevlerini **başlıkta arar**
