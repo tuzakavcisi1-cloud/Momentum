@@ -2,7 +2,7 @@
 
 > **Bu dosya kısa kalmak ZORUNDADIR.** Tavan **≤ 32 KB** [K58]; aşarsa budanır, tarihçe `PROJE_HAFIZA.md`'ye taşınır. Kapısı `belge-tavan-kapisi.py` (§2 adım 3). 🔴 Aracın banner sürümü bayat — `B-O50-2`.
 > `PROJE_HAFIZA.md` artık **APPEND-ONLY KARAR ARŞİVİDİR**; oturum açılışında **okunmaz**, yalnız *"bu karar neden alındı?"* diye sorulduğunda açılır.
-> **Son güncelleme:** 13 Ağu 2026, **o71** — 🟢 **`SS2` KRİTER 8 KABUL** (`K187`) · 🟢 `R8` kırıldı (CORP, 23 satır, `K186`) · 🟢 **`verify.ps1` EXIT 0, test 127/127** (SSH.NET CVE pini, `K188`) · `T2` budandı. 🔴 **ÜÇ COMMIT İTİLMEDİ**. *(o39–o68 arşivde.)*
+> **Son güncelleme:** 14 Ağu 2026, **o71** — 🟢 **CANLI DEMO YAYINDA** (`K193`/`K194`; adres §4'te, ölçüm `KANIT/o71/16-pages-demo/07-`) · 🟢 `SS2` kriter 8 KABUL (`K187`) · 🟢 `R8` kırıldı (`K186`) · 🟢 `verify.ps1` EXIT 0, 127/127 (`K188`). 🔴 **Push/ileri-geri durumu BURADA YAZILMAZ — §2 adım 7'de ÖLÇÜLÜR (`K82-b`).** *(o39–o68 arşivde.)*
 
 ---
 
@@ -67,7 +67,6 @@ koşuyor; hüküm `KANIT/W3b/06-KABUL-HUKMU-COWORK.md`, anlatım **hafızada**. 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026):** ① cihaz senkron kanıtı ② hedef yığın MSSQL —
 **birlikte** sağlanınca açılır. Maliyet ve `Rule3` **arşivde**.
 🟢 **README VAR (o63, `K162`)** — mimari · **ölçülmüş** çalıştırma sırası · **iki zorunlu şart** · ölçüm disiplini · beyan edilmiş sınırlar; **vitrin görseli o71'de eklendi** (`K190`). 🔴 Depo görünürlüğü **yazılmaz, ÖLÇÜLÜR**: *"public"* iddiası o47'de çürüdü, o53'te **PRIVATE** ölçüldü; 🟢 **13 Ağu 2026'da (o71) anonim erişimle PUBLIC ölçüldü** (`K191`) — kural değişmedi, ölçüm tarihlidir.
-**yazılmaz, ÖLÇÜLÜR**: *"public"* iddiası oturum 47'de çürüdü, oturum 53'te yine **PRIVATE** ölçüldü.
 
 🟢 **o64–o66 anlatımı HAFIZADA;** budanan metinler `_SILINECEKLER/o64|o65|o66/`'da.
 🔒 **`ADR 0004` KAPSAM DIŞI (`K175`①, o68):** gövde · `adr-hukum-kapisi.py` onarımı · kapı zinciri **PARK**.
@@ -80,14 +79,21 @@ kriter 9 `ci #25` (`e80cb19`, `main`) **Success**, dört çapa logda **birebir**
 🔴 `B-O63-2` **AÇIK**.
 
 🟢 **`SS2` TAMAMI KABUL EDİLDİ.** UI o68'de (`K174`), **kriter 8 uçtan uca o71'de** (`K187`, `babdee8`+`0b73d59`): B çevrimdışı `B1` ⇒ A **225,7 sn sonra** `A1` ⇒ B çevrimiçi, **bekleyen op'u varken** çakışma doğdu, rozet göründü ⇒ *Benimkini tut* projeksiyonu da yazdı, sunucuya ulaştı. Hüküm `KANIT/SS2/13-KABUL-HUKMU-COWORK-kriter8-UCTAN-UCA.md`. 🔴 Beyanlı sınır: çakışma **ekranının canlı görseli** yok (`B-O71-5`) · A'nın ekranı `[DOĞRULANMADI]`.
-(7/7 · **5/5 mutant** · `M7` ölmedi). 🔴 **KRİTER 8 AÇIK** — uçtan uca cihaz koşumu (`D-SS2-11`).
-o70'in iki düşen kâğıt turu (`K180`), `K181` ve `K182` erratumu: **hafızada**.
-*“backend logundan oku”* kilidini **ölçümle düşürdü** ⇒ **sunucunun PostgreSQL'i**. `KANIT/SS2/06`–`10`.
+(7/7 · **5/5 mutant** · `M7` ölmedi). 🟢 **`D-SS2-11` KAPANDI** (`K187`); eski *"kriter 8 AÇIK"* satırı **bayattı, budandı** (o71).
+o70'in iki düşen kâğıt turu (`K180`), `K181`/`K182` erratumu ve *“backend logundan oku”* kilidinin ölçümle düşüşü: **hafızada** (`KANIT/SS2/06`–`10`).
+
+🟢 **CANLI DEMO YAYINDA (o71, `K193`/`K194`):** `https://tuzakavcisi1-cloud.github.io/Momentum/` —
+`.github/workflows/pages.yml` (**yalnız `workflow_dispatch`**; `push:` tetiği bilerek eklenmedi).
+Kapı `kapi-cdn-ve-base-href` üç ayakta ölçer (`useLocalCanvasKit` varlığı · CDN URL yokluğu · base
+href), **beş mutantla** kanıtlı. 🔴 Canlı ölçüm hükmü **Cowork'ün**, koşum kanıtı
+`KANIT/o71/16-pages-demo/`: sekiz yayın-şartı temiz, **`sil` UI'da yok** ⇒ README'de beyan edildi.
+🔴 **Adres ve sınırlar dışında hiçbir canlı iddia buraya yazılmaz — ölçüm tarihlidir (14 Ağu 2026).**
 
 ---
 
 ## 5. YÜRÜRLÜKTEKİ KİLİTLER (tek satır; gerekçe `PROJE_HAFIZA.md`'de)
 
+- 🔒 **K192 · K193 · K194 — TESLİM (Onur, 13–14 Ağu 2026).** Proje **DONDURULDU** (yeni özellik/dilim/spec/ADR **AÇILMAZ**) · Pages iş emri **v2** kilitli (v1'i **üç bağımsız denetçi düşürdü**: `KANIT/o71/16-pages-demo/00-IS-EMRI-DENETIMI.md`) · demo **canlı ölçüldü**. Ders: **HTML'e yazılan dize ürün başlığını belirlemez — çalışma zamanı ezer.** Gerekçeler: hafıza `K192`–`K194`.
 - 🔒 **K175 — KAPSAM KESİMİ (Onur, 10 Ağu 2026, o68).** ① **`ADR 0004` KAPSAM DIŞI** — gövde, `adr-hukum-kapisi.py` onarımı ve kapı zinciri **PARK**; gerekçe `README`'ye tek paragraf. ② **YENİ ARTEFAKT YASAĞI** — `GOREV_CLAUDE_CODE`/`docs/ADR`/`araclar` altında yeni dosya **AÇILMAZ**; taban **32·6·41**. 🔴 Sayım `ls-files --cached --others --exclude-standard` ile yapılır — çıplak `ls-files` izlenmeyeni **GÖREMEZ** ve yasağın koruduğu sınıfa **KÖRDÜR**. Büyürse **DUR**. ③ **MUHASEBE OTURUM BAŞINA TEK YAZIM**; 90 açık borç **kapatılmaz, TESLİMDE BEYAN EDİLİR**. 🔴 o68'in `ADR 0004` onarım kilitleri ve `K170` **HÜKÜMSÜZ**. Sıra: depo görünürlüğü → `SS2` kriter 8 → backend CI → `README`. Taban düzeltmesi (33→32) ve ölçülmüş gerekçe: **hafıza K175 + o71**.
 - 🟢 **K174 — `SS2` kriter 8'in UI'ı KABUL (o68) ⇒ `K73` gereği ÇEKİLDİ**; **kriter 8'in KENDİSİ o71'de kapandı** (`K187`).
 - 🔒 **K71–K81 · K116–K120 — slice-3e · `R9`/`R10` · `A11` KABUL EDİLDİ; anlatım o56'da arşive taşındı (`K135-EK2`).** 🔴 **BAŞKA HİÇBİR CANLI BELGEDE İZİ OLMAYAN ALTI BEYAN BURADA KALIR** (`KANIT/o56/25-beyan-izi.txt`): ① `CursorHint` **yoksayılır** (`D6`) ② `Y3`'ün mutantı **YOK** ③ `G12` kriter 8 **UYGULANMAZ** ④ `D2` kural 3'ün `K != 'yerel'` istisnası ⑤ `R9` öncesi inmiş satırlar **`'yerel'` KALIR** (migration yasak) ⑥ `GOREV-slice-3d-cekme.md`'deki `D0` metni **bilerek bayat** (K70; kanonik metin `GOREV-A11` §3). 🟢 Kalan yedi beyan `BORCLAR.md`'de.
