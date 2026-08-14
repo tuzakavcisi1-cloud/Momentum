@@ -15,7 +15,7 @@ library;
 //
 // GOREV-A9 [K93/spec SS5/G5] -- GENISLETME: R1 (mevcut, degismez) + R2 (YENI:
 // ellipsis tasiyan HER govde maxLines de tasir) + R4 (YENI: pozitif kontrol --
-// tarayicinin bulduğu Text( aday sayisi = 20 [taban 8 -> 12 -> 13 -> 16 -> 20 guncellendi;
+// tarayicinin bulduğu Text( aday sayisi = 25 [taban 8 -> 12 -> 13 -> 16 -> 20 -> 25 guncellendi;
 // kanonik deger R4'un expect'indedir, bu satir ona atiftir],
 // arac kendini kanitlar). R3 (govde
 // toplayicinin KENDISI dogru topluyor mu) ayri bir test DEGILDIR -- yalniz
@@ -155,7 +155,7 @@ void main() {
   });
 
   test(
-    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 20 (arac kendini kanitlar)',
+    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 25 (arac kendini kanitlar)',
     () {
       final dosyalar = _taranacakDosyalar();
       final adaylar = <String>[];
@@ -181,11 +181,22 @@ void main() {
       // silme onay diyalogu DORT YENI Text( cagrisi ekledi (diyalog basligi +
       // govde + Iptal dugmesi + Sil dugmesi) ⇒ 16 + 4 = 20. Test ADI da bu
       // turda tazelendi: o68'de pin 13->16 olurken ad "12" kalmisti.
+      // 🔴 ODEV.md §4(a) TABAN BILEREK GUNCELLENDI 20 -> 25: gorev_satiri.dart
+      // 8 -> 13 Text( SATIRI'na cikti. BES YENI satir: (1) baslik ALTINDAKI
+      // meta satiri; (2) 'Öncelik' bolum etiketi; (3) oncelik ciplerinin
+      // label'i -- DORT cip TEK KAYNAK SATIRINDAN (`for` dongusu) uretildigi
+      // icin tarayici bunu BIR kez sayar; (4) 'Son tarih' bolum etiketi;
+      // (5) tarih dugmesinin etiketi. Diyalog basligi ile Iptal/Kaydet
+      // dugmeleri ZATEN sayiliyordu (o68'den), yenisi degildir.
+      // 🔴 TARAYICI TANE DEGIL SATIR SAYAR: ayni satirdaki iki `Text(` BIR
+      // aday eder (main dongusu satir basina bir kez `add` eder) -- bu sayi
+      // o kurala gore hesaplandi ve bulut aynasinda testin KENDI toplayici
+      // mantigi birebir taklit edilerek 25 olarak OLCULDU (varsayilmadi).
       expect(
         adaylar.length,
-        20,
+        25,
         reason:
-            'Text( aday sayisi 20 DEGIL -- ya tarayici bozuldu (regex hic '
+            'Text( aday sayisi 25 DEGIL -- ya tarayici bozuldu (regex hic '
             'eslesmiyor ⇒ R1/R2 kor) ya taban degisti (yeni bir Text( eklendi/'
             'silindi). Bulunanlar:\n${adaylar.join('\n')}',
       );

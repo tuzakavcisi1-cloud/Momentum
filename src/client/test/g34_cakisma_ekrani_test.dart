@@ -28,6 +28,16 @@ class _SahteDepo implements GorevDeposu {
   Future<void> ekle(String baslik) async {}
   @override
   Future<void> duzenle(String id, String yeniBaslik) async {}
+
+  // ODEV.md §4(a): arayuze eklenen yeni yazma yolu. Bu sahte depo onu
+  // KULLANMAZ -- govde bilerek bostur (mevcut `duzenle` stub'inin aynisi).
+  @override
+  Future<void> ayrintilariGuncelle(
+    String id, {
+    Yazim<String>? baslik,
+    Yazim<int?>? oncelik,
+    Yazim<DateTime?>? sonTarih,
+  }) async {}
   @override
   Future<void> tamamlaGeriAl(String id, {required bool tamamlandi}) async {}
   @override

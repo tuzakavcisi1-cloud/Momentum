@@ -1,19 +1,18 @@
 @TestOn('vm')
 library;
 
-// IS-EMRI-o68 -- SS2 kriter 8: baslik duzenleme UI'i.
+// IS-EMRI-o68 -- duzenleme UI'i (ODEV.md §4(a) ile GENISLETILDI: kalem ikonu
+// artik baslik + oncelik + son tarih'i TEK diyalogda duzenler).
 //
-// 🔴 BU DOSYA YENI BIR G<n>/D-<x> KAPISI ILAN ETMEZ (is emri §0) -- kilitli
-// `GOREV-SS2`nin bir parcasini urun yoluna baglayan URUN KODU testidir.
+// 🔴 BU DOSYA YENI BIR G<n>/D-<x> KAPISI ILAN ETMEZ -- kilitli davranisi
+// URUN YOLUNA baglayan urun kodu testidir.
 //
 // Kabul kriteri 4/5 (is emri §5): "M7 ISIRIYOR" ve "yeni ikon etiketli"
 // olcumu BU DOSYADA degil -- Semantics etiketi SABIT/gomulu oldugu icin
 // "etiket silinince ne olur" bir DART PARAMETRESI DEGIL, GERCEK BIR KAYNAK
-// MUTASYONUDUR (bu projenin M7/M75/M77 mutant yontemi -- ORTAM.md +
-// KANIT/A11/_mutant_kosucu.py emsali). O olcum bagimsiz bir betikle
-// AYRICA kosuldu ve ciktisi KANIT altindadir; bu dosya yalniz "etiket BUGUN
-// yerinde mi + guideline BUGUN geciyor mu"yu dogrudan sinar (M7'nin
-// kendisini degil, on kosulunu).
+// MUTASYONUDUR (bu projenin M7/M75/M77 mutant yontemi). O olcum bagimsiz
+// bir betikle AYRICA kosuldu ve ciktisi KANIT altindadir; bu dosya yalniz
+// "etiket BUGUN yerinde mi + guideline BUGUN geciyor mu"yu sinar.
 //
 // dart:io kullanir (kriter 7'nin STATIK ayagi) ⇒ @TestOn('vm') PAZARLIKSIZ
 // (g14_dikey_donus_kapisi_test.dart emsali).
@@ -26,7 +25,7 @@ import 'package:client/veri/gorev_deposu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Gorev _sahteGorev() => Gorev(
+Gorev _sahteGorev({int? oncelik, DateTime? sonTarih}) => Gorev(
   id: 'g68-ornek',
   baslik: 'Eski baslik',
   tamamlandi: false,
@@ -34,14 +33,16 @@ Gorev _sahteGorev() => Gorev(
   guncellendi: DateTime.utc(2026, 8, 10),
   senkronDurumu: 'yerel',
   silindi: false,
+  oncelik: oncelik,
+  sonTarih: sonTarih,
 );
 
 Widget _sarmala(Widget cocuk) => MaterialApp(home: Scaffold(body: cocuk));
 
 void main() {
-  group('IS-EMRI-o68 -- GorevSatiri baslik duzenleme', () {
+  group('IS-EMRI-o68 + ODEV §4(a) -- GorevSatiri duzenleme diyalogu', () {
     testWidgets(
-      'onBaslikDuzenlendi NULL iken duzenleme ikonu HIC CIZILMEZ',
+      'onAyrintilarDuzenlendi NULL iken duzenleme ikonu HIC CIZILMEZ',
       (tester) async {
         await tester.pumpWidget(
           _sarmala(
@@ -53,19 +54,15 @@ void main() {
     );
 
     testWidgets(
-      'ikon gorunur -> basilir -> diyalogda kaydet -> duzenle(id, yeniBaslik) cagrildi',
+      'ikon gorunur -> basilir -> diyalogda kaydet -> YALNIZ baslik Yazim`i dolu',
       (tester) async {
-        String? cagrilanId;
-        String? cagrilanBaslik;
+        GorevAyrintiDegisikligi? yakalanan;
         await tester.pumpWidget(
           _sarmala(
             GorevSatiri(
               gorev: _sahteGorev(),
               onTamamlaDegisti: (_) {},
-              onBaslikDuzenlendi: (yeni) {
-                cagrilanId = _sahteGorev().id;
-                cagrilanBaslik = yeni;
-              },
+              onAyrintilarDuzenlendi: (d) => yakalanan = d,
             ),
           ),
         );
@@ -77,8 +74,8 @@ void main() {
         expect(find.byType(AlertDialog), findsOneWidget);
         // NOT: find.text('Eski baslik') BURADA BELIRSIZDIR -- GorevSatiri'nin
         // KENDI baslik Text'i AYNI dizgeyi tasir, `find.text` hem `Text` hem
-        // `EditableText`i eslestirdigi icin IKI widget bulunur (ilk kosumda
-        // yakalandi). TextField'in controller'ini DOGRUDAN oku.
+        // `EditableText`i eslestirdigi icin IKI widget bulunur (o68'in ilk
+        // kosumunda yakalandi). TextField'in controller'ini DOGRUDAN oku.
         final alan = tester.widget<TextField>(find.byType(TextField));
         expect(alan.controller!.text, 'Eski baslik');
 
@@ -87,13 +84,19 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(AlertDialog), findsNothing);
-        expect(cagrilanId, 'g68-ornek');
-        expect(cagrilanBaslik, 'Yeni baslik');
+        expect(yakalanan, isNotNull);
+        expect(yakalanan!.baslik!.deger, 'Yeni baslik');
+        // 🔴 DEGISMEYEN ALAN TELE KONMAZ: `oncelik`/`sonTarih` `null`
+        // kalmali. Aksi halde her kaydet, degismemis alanlari YENI bir HLC
+        // ile yeniden damgalar ve arada gelen uzak bir yazimi LWW ile
+        // sessizce EZER (bu dilimin en sinsi kusur sinifi).
+        expect(yakalanan!.oncelik, isNull);
+        expect(yakalanan!.sonTarih, isNull);
       },
     );
 
     testWidgets(
-      'diyalogda IPTAL -> duzenle CAGRILMAZ',
+      'HICBIR SEY degismeden Kaydet -> geri cagirim CAGRILMAZ (bos op uretilmez)',
       (tester) async {
         var cagrildi = false;
         await tester.pumpWidget(
@@ -101,7 +104,131 @@ void main() {
             GorevSatiri(
               gorev: _sahteGorev(),
               onTamamlaDegisti: (_) {},
-              onBaslikDuzenlendi: (_) => cagrildi = true,
+              onAyrintilarDuzenlendi: (_) => cagrildi = true,
+            ),
+          ),
+        );
+
+        await tester.tap(find.byIcon(Icons.edit_outlined));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(Metinler.kaydetDugmesi));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AlertDialog), findsNothing, reason: 'diyalog KAPANIR');
+        expect(
+          cagrildi,
+          isFalse,
+          reason:
+              'D2: her op EN AZ BIR kanal tasimali -- hicbir alan degismediyse '
+              'op URETILMEZ (sunucu bos op`u BUTUN olarak reddeder)',
+        );
+      },
+    );
+
+    testWidgets(
+      'oncelik cipine basilir -> Kaydet -> YALNIZ oncelik Yazim`i dolu',
+      (tester) async {
+        GorevAyrintiDegisikligi? yakalanan;
+        await tester.pumpWidget(
+          _sarmala(
+            GorevSatiri(
+              gorev: _sahteGorev(),
+              onTamamlaDegisti: (_) {},
+              onAyrintilarDuzenlendi: (d) => yakalanan = d,
+            ),
+          ),
+        );
+
+        await tester.tap(find.byIcon(Icons.edit_outlined));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(Metinler.oncelikYuksek));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(Metinler.kaydetDugmesi));
+        await tester.pumpAndSettle();
+
+        expect(yakalanan, isNotNull);
+        expect(yakalanan!.oncelik, isNotNull);
+        expect(
+          yakalanan!.oncelik!.deger,
+          oncelikSayiya(Oncelik.yuksek),
+          reason: 'sayi ESLEMESI enumdan TURETILIR, elle yazilmaz',
+        );
+        expect(yakalanan!.baslik, isNull);
+        expect(yakalanan!.sonTarih, isNull);
+      },
+    );
+
+    testWidgets(
+      'ONCELIGI olan gorevde "Yok" cipine basilir -> Yazim(null) = TEMIZLE',
+      (tester) async {
+        GorevAyrintiDegisikligi? yakalanan;
+        await tester.pumpWidget(
+          _sarmala(
+            GorevSatiri(
+              gorev: _sahteGorev(oncelik: 1),
+              onTamamlaDegisti: (_) {},
+              onAyrintilarDuzenlendi: (d) => yakalanan = d,
+            ),
+          ),
+        );
+
+        await tester.tap(find.byIcon(Icons.edit_outlined));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(Metinler.oncelikYok));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(Metinler.kaydetDugmesi));
+        await tester.pumpAndSettle();
+
+        expect(yakalanan, isNotNull);
+        // 🔴 `Yazim` VAR ama `deger` NULL: "temizle". Duz `null` olsaydi
+        // "dokunma" demek olurdu ve temizleme SESSIZCE KAYBOLURDU.
+        expect(yakalanan!.oncelik, isNotNull);
+        expect(yakalanan!.oncelik!.deger, isNull);
+      },
+    );
+
+    testWidgets(
+      'SON TARIHI olan gorevde temizleme ikonu -> Kaydet -> Yazim(null)',
+      (tester) async {
+        GorevAyrintiDegisikligi? yakalanan;
+        await tester.pumpWidget(
+          _sarmala(
+            GorevSatiri(
+              gorev: _sahteGorev(sonTarih: DateTime.utc(2026, 8, 21)),
+              onTamamlaDegisti: (_) {},
+              onAyrintilarDuzenlendi: (d) => yakalanan = d,
+            ),
+          ),
+        );
+
+        await tester.tap(find.byIcon(Icons.edit_outlined));
+        await tester.pumpAndSettle();
+        expect(
+          find.text(GorevSatiri.tarihEtiketi(DateTime.utc(2026, 8, 21))),
+          findsWidgets,
+          reason: 'diyalog acilirken MEVCUT tarih dugmede gorunmeli',
+        );
+        await tester.tap(find.byTooltip(Metinler.sonTarihiTemizle));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(Metinler.kaydetDugmesi));
+        await tester.pumpAndSettle();
+
+        expect(yakalanan, isNotNull);
+        expect(yakalanan!.sonTarih, isNotNull);
+        expect(yakalanan!.sonTarih!.deger, isNull);
+      },
+    );
+
+    testWidgets(
+      'diyalogda IPTAL -> geri cagirim CAGRILMAZ',
+      (tester) async {
+        var cagrildi = false;
+        await tester.pumpWidget(
+          _sarmala(
+            GorevSatiri(
+              gorev: _sahteGorev(),
+              onTamamlaDegisti: (_) {},
+              onAyrintilarDuzenlendi: (_) => cagrildi = true,
             ),
           ),
         );
@@ -116,7 +243,7 @@ void main() {
     );
 
     testWidgets(
-      'diyalogda BOS baslik (kirpma sonrasi) -> duzenle CAGRILMAZ',
+      'diyalogda BOS baslik (kirpma sonrasi) -> geri cagirim CAGRILMAZ',
       (tester) async {
         var cagrildi = false;
         await tester.pumpWidget(
@@ -124,7 +251,7 @@ void main() {
             GorevSatiri(
               gorev: _sahteGorev(),
               onTamamlaDegisti: (_) {},
-              onBaslikDuzenlendi: (_) => cagrildi = true,
+              onAyrintilarDuzenlendi: (_) => cagrildi = true,
             ),
           ),
         );
@@ -136,11 +263,9 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(cagrildi, isFalse);
-        // OLCULDU (bagimsiz denetimde bulundu, sonra duzeltildi): bos
+        // OLCULDU (o68'de bagimsiz denetimde bulundu, sonra duzeltildi): bos
         // baslikta diyalog KAPANMAZ -- kapansaydi kullanicinin gozunde
         // IPTAL'den AYIRT EDILEMEZ olurdu (sessiz DUZENLEME kaybi).
-        // `GorevEkleAlani._gonder()` ile AYNI desen: gecersizse alan/diyalog
-        // ACIK kalir, kullanici duzeltebilir.
         expect(
           find.byType(AlertDialog),
           findsOneWidget,
@@ -155,11 +280,8 @@ void main() {
     // VAR (istenen budur) -- "kokte GestureDetector YOK" iddiasi agac
     // sirasina/derinligine baglidir ve YANLIS-POZITIF/YANLIS-NEGATIF
     // uretmeden dogrudan olculemez. STATIK kaynak taramasi burada daha
-    // GUVENILIR VE UCUZDUR (K53/3: statik mutant tavansiz) -- `build()`in
-    // DONDURDUGU Container'in ACILIS-KAPANIS araligi (ilk `return Container(`
-    // -- onunla AYNI GIRINTIDEKI kapanis `);`) `onTap:`/`GestureDetector(`
-    // ICERMEMELI; bu ikisi yalniz `_onayKutusu`/`_rozetler`/`_duzenleIkonu`
-    // GIBI AYRI METOTLARDA (govdenin DISINDA) yasamalidir.
+    // GUVENILIR VE UCUZDUR: `build()`in DONDURDUGU Container'in
+    // ACILIS-KAPANIS araligi `onTap:`/`GestureDetector(` ICERMEMELI.
     test(
       'kriter 7 (STATIK): build() donen Container -- onTap/GestureDetector TASIMAZ',
       () {
@@ -199,19 +321,16 @@ void main() {
             GorevSatiri(
               gorev: _sahteGorev(),
               onTamamlaDegisti: (_) {},
-              onBaslikDuzenlendi: (_) {},
+              onAyrintilarDuzenlendi: (_) {},
             ),
           ),
         );
         // NOT: `getSemantics(...)` ile TEK bir dugumun `.label`ini elle
         // okumak KIRILGANDIR -- `tooltip`in etiketi hangi dugume yazdigi
-        // Flutter surumune gore degisebilir (ilk kosumda hem `find.byIcon`
-        // hem `find.byType(IconButton)` BOS `.label` dondurdu, ikisi de
-        // YANLIS dugumdu). `meetsGuideline(labeledTapTargetGuideline)` bu
-        // projenin M7 icin kullandigi AYNI OLCUMDUR (GOREV-slice-3b:264) --
-        // dogrudan onu kosmak, Flutter'in ic agac detayina bagli olmadan
-        // "etiket VAR ve dokunma hedefiyle ESLESIYOR" sorusunu OTORITER
-        // sekilde yanitlar.
+        // Flutter surumune gore degisebilir (o68'in ilk kosumunda hem
+        // `find.byIcon` hem `find.byType(IconButton)` BOS `.label` dondurdu).
+        // `meetsGuideline(labeledTapTargetGuideline)` bu projenin M7 icin
+        // kullandigi AYNI OLCUMDUR.
         await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
         await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
         tutamac.dispose();

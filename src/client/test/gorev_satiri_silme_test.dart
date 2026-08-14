@@ -5,7 +5,7 @@ library;
 //
 // 🔴 BU DOSYA YENI BIR G<n>/D-<x> KAPISI ILAN ETMEZ (is emri §0) --
 // `GorevDeposu.sil` ZATEN VAR (gorev_deposu.dart:81/388), eksik olan yalniz
-// sunum katmani kablosuydu. Bu, kilitli o68 desenini (`onBaslikDuzenlendi`)
+// sunum katmani kablosuydu. Bu, kilitli o68 desenini (duzenleme ikonu)
 // AYNEN tekrarlayan urun kodu testidir --
 // gorev_satiri_duzenleme_test.dart'in BIREBIR AYNI sablonu (is emri §2).
 //

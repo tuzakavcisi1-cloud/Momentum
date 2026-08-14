@@ -1,0 +1,13 @@
+IS-EMRI-o72 -- M-o72-1/2/3 mutant kosumu (Claude Code)
+  TABAN sha8=13AFDCCF   16022 b  gorev_satiri.dart
+  TEMIZ-ONCE T2   EXIT=0
+  TEMIZ-ONCE T3   EXIT=0
+  TEMIZ-ONCE T4   EXIT=0
+  M-o72-1   tooltip satirini sil -> T2 isirmali           eslesme=1 ozdes=True T2=1 -> KIRMIZI (beklenen)
+  M-o72-2   D4 onSil terimini sabitlerden cikar -> T4 isirmali eslesme=1 ozdes=True T4=1 -> KIRMIZI (beklenen)
+  M-o72-3   iptal yolunu pop(true) yap -> T3 isirmali     eslesme=1 ozdes=True T3=1 -> KIRMIZI (beklenen)
+  SON sha8=13AFDCCF   16022 b  gorev_satiri.dart  ozdes=True
+  TEMIZ-SONRA T2   EXIT=0
+  TEMIZ-SONRA T3   EXIT=0
+  TEMIZ-SONRA T4   EXIT=0
+  ISIRAN MUTANT: 3/3

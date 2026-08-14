@@ -39,6 +39,16 @@ class _SahteDepo implements GorevDeposu {
   Future<void> duzenle(String id, String yeniBaslik) async =>
       cagrilar.add('duzenle:$id');
 
+  // ODEV.md §4(a): K112 dikisi (once YEREL YAZMA, sonra itme) YENI yazma
+  // yolu icin de olculebilsin diye AYNI listeye yazar.
+  @override
+  Future<void> ayrintilariGuncelle(
+    String id, {
+    Yazim<String>? baslik,
+    Yazim<int?>? oncelik,
+    Yazim<DateTime?>? sonTarih,
+  }) async => cagrilar.add('ayrintilar:$id');
+
   @override
   Future<void> tamamlaGeriAl(String id, {required bool tamamlandi}) async =>
       cagrilar.add('tamamla:$id:$tamamlandi');

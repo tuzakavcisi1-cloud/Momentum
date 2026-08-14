@@ -97,6 +97,28 @@ class $GorevlerTable extends Gorevler with TableInfo<$GorevlerTable, GorevRow> {
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _oncelikMeta = const VerificationMeta(
+    'oncelik',
+  );
+  @override
+  late final GeneratedColumn<int> oncelik = GeneratedColumn<int>(
+    'oncelik',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sonTarihMeta = const VerificationMeta(
+    'sonTarih',
+  );
+  @override
+  late final GeneratedColumn<DateTime> sonTarih = GeneratedColumn<DateTime>(
+    'son_tarih',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -106,6 +128,8 @@ class $GorevlerTable extends Gorevler with TableInfo<$GorevlerTable, GorevRow> {
     guncellendi,
     senkronDurumu,
     silindi,
+    oncelik,
+    sonTarih,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -175,6 +199,18 @@ class $GorevlerTable extends Gorevler with TableInfo<$GorevlerTable, GorevRow> {
         silindi.isAcceptableOrUnknown(data['silindi']!, _silindiMeta),
       );
     }
+    if (data.containsKey('oncelik')) {
+      context.handle(
+        _oncelikMeta,
+        oncelik.isAcceptableOrUnknown(data['oncelik']!, _oncelikMeta),
+      );
+    }
+    if (data.containsKey('son_tarih')) {
+      context.handle(
+        _sonTarihMeta,
+        sonTarih.isAcceptableOrUnknown(data['son_tarih']!, _sonTarihMeta),
+      );
+    }
     return context;
   }
 
@@ -212,6 +248,14 @@ class $GorevlerTable extends Gorevler with TableInfo<$GorevlerTable, GorevRow> {
         DriftSqlType.bool,
         data['${effectivePrefix}silindi'],
       )!,
+      oncelik: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}oncelik'],
+      ),
+      sonTarih: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}son_tarih'],
+      ),
     );
   }
 
@@ -229,6 +273,22 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
   final DateTime guncellendi;
   final String senkronDurumu;
   final bool silindi;
+
+  /// ODEV.md §4(a) "oncelik + son tarih" dilimi (schemaVersion 5 -> 6).
+  /// HAM `int?`tir -- sunucunun `priority` scalar'iyla (`ProjectionFields
+  /// .ReadInt`, `NumberStyles.Integer` + `InvariantCulture`) AYNI tur.
+  /// 1/2/3 disinda bir deger gelirse SAKLANIR ama ekranda cizilmez: baska
+  /// bir istemcinin yazdigi bilinmeyen degeri sessizce EZMEK, LWW'nin
+  /// altini oymak olurdu.
+  final int? oncelik;
+
+  /// TAKVIM GUNU PINI (PAZARLIKSIZ): daima `DateTime.utc(y, m, d)` --
+  /// saat/dakika DAIMA sifir, `isUtc` DAIMA true. Yerel saat dilimine
+  /// CEVRILMEZ: UTC+3'te `.toUtc()` gunu bir gun geri kaydirir
+  /// (yerel 21 Ağu 00:00 -> 20 Ağu 21:00Z). Tel bicimi bu degerin
+  /// `toIso8601String()`idir ve sunucunun
+  /// `yyyy-MM-dd'T'HH:mm:ss.FFFFFFFK` TryParseExact kalibina oturur.
+  final DateTime? sonTarih;
   const GorevRow({
     required this.id,
     required this.baslik,
@@ -237,6 +297,8 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
     required this.guncellendi,
     required this.senkronDurumu,
     required this.silindi,
+    this.oncelik,
+    this.sonTarih,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -248,6 +310,12 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
     map['guncellendi'] = Variable<DateTime>(guncellendi);
     map['senkron_durumu'] = Variable<String>(senkronDurumu);
     map['silindi'] = Variable<bool>(silindi);
+    if (!nullToAbsent || oncelik != null) {
+      map['oncelik'] = Variable<int>(oncelik);
+    }
+    if (!nullToAbsent || sonTarih != null) {
+      map['son_tarih'] = Variable<DateTime>(sonTarih);
+    }
     return map;
   }
 
@@ -260,6 +328,12 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
       guncellendi: Value(guncellendi),
       senkronDurumu: Value(senkronDurumu),
       silindi: Value(silindi),
+      oncelik: oncelik == null && nullToAbsent
+          ? const Value.absent()
+          : Value(oncelik),
+      sonTarih: sonTarih == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sonTarih),
     );
   }
 
@@ -276,6 +350,8 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
       guncellendi: serializer.fromJson<DateTime>(json['guncellendi']),
       senkronDurumu: serializer.fromJson<String>(json['senkronDurumu']),
       silindi: serializer.fromJson<bool>(json['silindi']),
+      oncelik: serializer.fromJson<int?>(json['oncelik']),
+      sonTarih: serializer.fromJson<DateTime?>(json['sonTarih']),
     );
   }
   @override
@@ -289,6 +365,8 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
       'guncellendi': serializer.toJson<DateTime>(guncellendi),
       'senkronDurumu': serializer.toJson<String>(senkronDurumu),
       'silindi': serializer.toJson<bool>(silindi),
+      'oncelik': serializer.toJson<int?>(oncelik),
+      'sonTarih': serializer.toJson<DateTime?>(sonTarih),
     };
   }
 
@@ -300,6 +378,8 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
     DateTime? guncellendi,
     String? senkronDurumu,
     bool? silindi,
+    Value<int?> oncelik = const Value.absent(),
+    Value<DateTime?> sonTarih = const Value.absent(),
   }) => GorevRow(
     id: id ?? this.id,
     baslik: baslik ?? this.baslik,
@@ -308,6 +388,8 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
     guncellendi: guncellendi ?? this.guncellendi,
     senkronDurumu: senkronDurumu ?? this.senkronDurumu,
     silindi: silindi ?? this.silindi,
+    oncelik: oncelik.present ? oncelik.value : this.oncelik,
+    sonTarih: sonTarih.present ? sonTarih.value : this.sonTarih,
   );
   GorevRow copyWithCompanion(GorevlerCompanion data) {
     return GorevRow(
@@ -326,6 +408,8 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
           ? data.senkronDurumu.value
           : this.senkronDurumu,
       silindi: data.silindi.present ? data.silindi.value : this.silindi,
+      oncelik: data.oncelik.present ? data.oncelik.value : this.oncelik,
+      sonTarih: data.sonTarih.present ? data.sonTarih.value : this.sonTarih,
     );
   }
 
@@ -338,7 +422,9 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
           ..write('olusturuldu: $olusturuldu, ')
           ..write('guncellendi: $guncellendi, ')
           ..write('senkronDurumu: $senkronDurumu, ')
-          ..write('silindi: $silindi')
+          ..write('silindi: $silindi, ')
+          ..write('oncelik: $oncelik, ')
+          ..write('sonTarih: $sonTarih')
           ..write(')'))
         .toString();
   }
@@ -352,6 +438,8 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
     guncellendi,
     senkronDurumu,
     silindi,
+    oncelik,
+    sonTarih,
   );
   @override
   bool operator ==(Object other) =>
@@ -363,7 +451,9 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
           other.olusturuldu == this.olusturuldu &&
           other.guncellendi == this.guncellendi &&
           other.senkronDurumu == this.senkronDurumu &&
-          other.silindi == this.silindi);
+          other.silindi == this.silindi &&
+          other.oncelik == this.oncelik &&
+          other.sonTarih == this.sonTarih);
 }
 
 class GorevlerCompanion extends UpdateCompanion<GorevRow> {
@@ -374,6 +464,8 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
   final Value<DateTime> guncellendi;
   final Value<String> senkronDurumu;
   final Value<bool> silindi;
+  final Value<int?> oncelik;
+  final Value<DateTime?> sonTarih;
   final Value<int> rowid;
   const GorevlerCompanion({
     this.id = const Value.absent(),
@@ -383,6 +475,8 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
     this.guncellendi = const Value.absent(),
     this.senkronDurumu = const Value.absent(),
     this.silindi = const Value.absent(),
+    this.oncelik = const Value.absent(),
+    this.sonTarih = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   GorevlerCompanion.insert({
@@ -393,6 +487,8 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
     required DateTime guncellendi,
     this.senkronDurumu = const Value.absent(),
     this.silindi = const Value.absent(),
+    this.oncelik = const Value.absent(),
+    this.sonTarih = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        baslik = Value(baslik),
@@ -406,6 +502,8 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
     Expression<DateTime>? guncellendi,
     Expression<String>? senkronDurumu,
     Expression<bool>? silindi,
+    Expression<int>? oncelik,
+    Expression<DateTime>? sonTarih,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -416,6 +514,8 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
       if (guncellendi != null) 'guncellendi': guncellendi,
       if (senkronDurumu != null) 'senkron_durumu': senkronDurumu,
       if (silindi != null) 'silindi': silindi,
+      if (oncelik != null) 'oncelik': oncelik,
+      if (sonTarih != null) 'son_tarih': sonTarih,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -428,6 +528,8 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
     Value<DateTime>? guncellendi,
     Value<String>? senkronDurumu,
     Value<bool>? silindi,
+    Value<int?>? oncelik,
+    Value<DateTime?>? sonTarih,
     Value<int>? rowid,
   }) {
     return GorevlerCompanion(
@@ -438,6 +540,8 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
       guncellendi: guncellendi ?? this.guncellendi,
       senkronDurumu: senkronDurumu ?? this.senkronDurumu,
       silindi: silindi ?? this.silindi,
+      oncelik: oncelik ?? this.oncelik,
+      sonTarih: sonTarih ?? this.sonTarih,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -466,6 +570,12 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
     if (silindi.present) {
       map['silindi'] = Variable<bool>(silindi.value);
     }
+    if (oncelik.present) {
+      map['oncelik'] = Variable<int>(oncelik.value);
+    }
+    if (sonTarih.present) {
+      map['son_tarih'] = Variable<DateTime>(sonTarih.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -482,6 +592,8 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
           ..write('guncellendi: $guncellendi, ')
           ..write('senkronDurumu: $senkronDurumu, ')
           ..write('silindi: $silindi, ')
+          ..write('oncelik: $oncelik, ')
+          ..write('sonTarih: $sonTarih, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2573,6 +2685,8 @@ typedef $$GorevlerTableCreateCompanionBuilder =
       required DateTime guncellendi,
       Value<String> senkronDurumu,
       Value<bool> silindi,
+      Value<int?> oncelik,
+      Value<DateTime?> sonTarih,
       Value<int> rowid,
     });
 typedef $$GorevlerTableUpdateCompanionBuilder =
@@ -2584,6 +2698,8 @@ typedef $$GorevlerTableUpdateCompanionBuilder =
       Value<DateTime> guncellendi,
       Value<String> senkronDurumu,
       Value<bool> silindi,
+      Value<int?> oncelik,
+      Value<DateTime?> sonTarih,
       Value<int> rowid,
     });
 
@@ -2628,6 +2744,16 @@ class $$GorevlerTableFilterComposer
 
   ColumnFilters<bool> get silindi => $composableBuilder(
     column: $table.silindi,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get oncelik => $composableBuilder(
+    column: $table.oncelik,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get sonTarih => $composableBuilder(
+    column: $table.sonTarih,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -2675,6 +2801,16 @@ class $$GorevlerTableOrderingComposer
     column: $table.silindi,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get oncelik => $composableBuilder(
+    column: $table.oncelik,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get sonTarih => $composableBuilder(
+    column: $table.sonTarih,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$GorevlerTableAnnotationComposer
@@ -2714,6 +2850,12 @@ class $$GorevlerTableAnnotationComposer
 
   GeneratedColumn<bool> get silindi =>
       $composableBuilder(column: $table.silindi, builder: (column) => column);
+
+  GeneratedColumn<int> get oncelik =>
+      $composableBuilder(column: $table.oncelik, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get sonTarih =>
+      $composableBuilder(column: $table.sonTarih, builder: (column) => column);
 }
 
 class $$GorevlerTableTableManager
@@ -2751,6 +2893,8 @@ class $$GorevlerTableTableManager
                 Value<DateTime> guncellendi = const Value.absent(),
                 Value<String> senkronDurumu = const Value.absent(),
                 Value<bool> silindi = const Value.absent(),
+                Value<int?> oncelik = const Value.absent(),
+                Value<DateTime?> sonTarih = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => GorevlerCompanion(
                 id: id,
@@ -2760,6 +2904,8 @@ class $$GorevlerTableTableManager
                 guncellendi: guncellendi,
                 senkronDurumu: senkronDurumu,
                 silindi: silindi,
+                oncelik: oncelik,
+                sonTarih: sonTarih,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2771,6 +2917,8 @@ class $$GorevlerTableTableManager
                 required DateTime guncellendi,
                 Value<String> senkronDurumu = const Value.absent(),
                 Value<bool> silindi = const Value.absent(),
+                Value<int?> oncelik = const Value.absent(),
+                Value<DateTime?> sonTarih = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => GorevlerCompanion.insert(
                 id: id,
@@ -2780,6 +2928,8 @@ class $$GorevlerTableTableManager
                 guncellendi: guncellendi,
                 senkronDurumu: senkronDurumu,
                 silindi: silindi,
+                oncelik: oncelik,
+                sonTarih: sonTarih,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

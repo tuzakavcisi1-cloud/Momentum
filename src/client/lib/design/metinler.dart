@@ -78,11 +78,13 @@ class Metinler {
       'Veriler kalıcı DEĞİL: sekme kapanınca silinir.';
   static const String duyuruDepolamaGeriDususu = 'Depolama geri düşüşü';
 
-  // IS-EMRI-o68 -- SS2 kriter 8: baslik duzenleme ikonu + diyaloğu. F6'nin
-  // 13 dizgesine DAHIL DEGIL (ayni EK deseni). Ayni dize hem ikonun
-  // Semantics(label:)'i hem diyalog basligi olarak kullanilir -- ikisi de
-  // ayni eylemi adlandirir, ayri dize UYDURULMAZ.
-  static const String baslikDuzenle = 'Başlığı düzenle';
+  // IS-EMRI-o68 -- duzenleme ikonu + diyaloğu. F6'nin 13 dizgesine DAHIL
+  // DEGIL (ayni EK deseni). Ayni dize hem ikonun tooltip'i hem diyalog
+  // basligi olarak kullanilir -- ikisi de ayni eylemi adlandirir, ayri dize
+  // UYDURULMAZ. ODEV.md §4(a): diyalog artik baslik + oncelik + son tarih
+  // duzenledigi icin dize 'Başlığı düzenle'den 'Görevi düzenle'ye gecti
+  // (F6'nin kilitli 13'unde DEGILDI, kilit bozulmadi).
+  static const String gorevDuzenle = 'Görevi düzenle';
   static const String iptalDugmesi = 'İptal';
   static const String kaydetDugmesi = 'Kaydet';
 
@@ -91,4 +93,33 @@ class Metinler {
   // hem ikonun tooltip'i hem diyalog basligi olarak kullanilir.
   static const String gorevSil = 'Görevi sil';
   static const String gorevSilOnay = 'Bu görev silinsin mi?';
+
+  // ODEV.md §4(a) -- oncelik + son tarih dilimi. F6'nin 13 dizgesine DAHIL
+  // DEGIL (o68/o72'nin ayni EK deseni).
+  static const String oncelikBasligi = 'Öncelik';
+  static const String oncelikYok = 'Yok';
+  static const String oncelikYuksek = 'Yüksek';
+  static const String oncelikOrta = 'Orta';
+  static const String oncelikDusuk = 'Düşük';
+  static const String sonTarihBasligi = 'Son tarih';
+  static const String sonTarihSec = 'Tarih seç';
+  static const String sonTarihiTemizle = 'Son tarihi temizle';
+
+  /// Ay kisaltmalari -- `intl` paketi BILEREK eklenmedi (yeni bagimlilik =
+  /// lisans + CVE kapisi; tek bir tarih etiketi icin orantisiz). Sira
+  /// PAZARLIKSIZ 1..12'dir ve `DateTime.month - 1` ile indislenir.
+  static const List<String> ayKisaltmalari = [
+    'Oca',
+    'Şub',
+    'Mar',
+    'Nis',
+    'May',
+    'Haz',
+    'Tem',
+    'Ağu',
+    'Eyl',
+    'Eki',
+    'Kas',
+    'Ara',
+  ];
 }

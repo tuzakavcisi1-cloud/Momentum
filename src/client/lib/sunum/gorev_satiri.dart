@@ -11,7 +11,7 @@ import 'senkron_rozeti.dart';
 ///
 /// PAZARLIKSIZ DOKUNMA SINIRI (T6): bu widget'in kendisi onTap TASIMAZ --
 /// dokunulabilir alanlar Checkbox, (varsa) CakismaRozeti'nin kendi
-/// GestureDetector'i ve (varsa) baslik duzenleme IconButton'idir; ucu de
+/// GestureDetector'i ve (varsa) duzenleme/silme IconButton'idir; hepsi
 /// KENDI dokunma hedefini tasir. Gerekce: dokunulabilir alan satir olsaydi
 /// metin semantics dugumune girer ve M7 isirmazdi (IS-EMRI-o68: kilit
 /// lafzi ucuncu alana genisledi, gerekce KORUNDU -- baslik metni hala
@@ -26,13 +26,16 @@ class GorevSatiri extends StatelessWidget {
   // çağrı yerleri (testler dâhil) bunu HİÇ bilmez -- `null` varsayılanı
   // güvenlidir çünkü o durumda `CakismaRozeti` zaten inşa edilmez.
   final GorevDeposu? depo;
-  // IS-EMRI-o68 SS2 kriter 8: baslik duzenleme. `null` ise ikon HIC CIZILMEZ
-  // -- mevcut cagri yerleri ve testler bunu hic bilmez (D-SS2-8'in `depo`
-  // alanindaki emsalin AYNISI, ayni turda ayni desen tekrar kullanildi).
-  final ValueChanged<String>? onBaslikDuzenlendi;
+  // ODEV.md §4(a) "oncelik + son tarih" dilimi: kalem ikonu artik BASLIK +
+  // ONCELIK + SON TARIH'i TEK diyalogda duzenler (o68'in `onBaslikDuzenlendi`
+  // parametresinin HALEFI -- ayni konum, ayni ikon, genisletilmis yuk).
+  // 🔴 SATIRA YENI IKON EKLENMEZ: `_dikeyMi()`nin sabitler toplamindaki
+  // kosullu terim SAYISI degismez, yalniz adi degisir -- M77b sinifi (olculen
+  // duzen ile cizilen duzenin sessizce ayrismasi) bu dilimde DOGMAZ.
+  // `null` ise ikon HIC CIZILMEZ (o68/o72 ile ayni desen).
+  final ValueChanged<GorevAyrintiDegisikligi>? onAyrintilarDuzenlendi;
   // IS-EMRI-o72: gorev silme. `null` ise ikon HIC CIZILMEZ -- mevcut cagri
-  // yerleri ve testler bunu hic bilmez (`onBaslikDuzenlendi` ile AYNI desen,
-  // ayni gerekce).
+  // yerleri ve testler bunu hic bilmez.
   final VoidCallback? onSil;
 
   const GorevSatiri({
@@ -42,7 +45,7 @@ class GorevSatiri extends StatelessWidget {
     this.senkronDurumu = SenkronDurumTuru.yerel,
     this.cakismaVarMi = false,
     this.depo,
-    this.onBaslikDuzenlendi,
+    this.onAyrintilarDuzenlendi,
     this.onSil,
   });
 
@@ -51,6 +54,49 @@ class GorevSatiri extends StatelessWidget {
   /// yururlukte (DESIGN.md'ye tek bayt yazilmaz). Spec §8/S7: bu bir
   /// TASARIM SECIMIDIR, olculmus esik degil.
   static const double baslikAsgari = MOlcu.dokunmaHedefi * 2;
+
+  /// SAF (BuildContext/saat/DB YOK): satirin baslik ALTINDA gorunecek meta
+  /// metni. Ikisi de yoksa `null` -- o zaman meta satiri HIC CIZILMEZ ve
+  /// satir yuksekligi bugunku degerinde kalir (mevcut duzen testleri, G13/
+  /// G14/G15, oncelik/son tarih tasimayan gorevlerle kosar ve ETKILENMEZ).
+  /// Bicim: `Yuksek · 21 Ağu 2026` -- ayirici sabittir, ikisinden biri yoksa
+  /// tek parca yazilir.
+  static String? metaMetni(Gorev gorev) {
+    final oncelik = oncelikSayidan(gorev.oncelik);
+    final parcalar = <String>[
+      if (oncelik != null) oncelikEtiketi(oncelik),
+      if (gorev.sonTarih != null) tarihEtiketi(gorev.sonTarih!),
+    ];
+    return parcalar.isEmpty ? null : parcalar.join(' · ');
+  }
+
+  /// SAF: takvim gunu etiketi. `sonTarih` PAZARLIKSIZ `DateTime.utc(y, m, d)`
+  /// oldugu icin (veritabani.dart TAKVIM GUNU PINI) burada YEREL SAATE
+  /// CEVIRME YAPILMAZ -- `.toLocal()` cagirmak UTC+3'te gunu bir gun geri
+  /// kaydirirdi (00:00Z -> onceki gun 03:00 degil, 00:00 yerel -> 21:00Z
+  /// yonunun tersi; her iki yon de gun kaymasi uretir).
+  static String tarihEtiketi(DateTime gun) =>
+      '${gun.day} ${Metinler.ayKisaltmalari[gun.month - 1]} ${gun.year}';
+
+  /// SAF + TAKVIM GUNU PINI'nin TEK normalizasyon noktasi. `showDatePicker`
+  /// YEREL bir `DateTime` dondurur; onu `.toUtc()` ile cevirmek UTC+3'te gunu
+  /// BIR GUN GERI kaydirir. Bu yuzden saat bileseni ATILIR ve y/m/d DOGRUDAN
+  /// UTC olarak yeniden kurulur.
+  /// 🔴 AYRI BIR METOT OLMASININ SEBEBI OLCULEBILIRLIK (bagimsiz denetim, o74):
+  /// `.utc`yi dusuren ya da `secilen.toUtc()` yazan mutantlar `.toLocal()`
+  /// ICERMEDIGI icin STATIK taramadan GECER; burada `isUtc == true` ve
+  /// `hour == 0` iddialari onlari ENV-BAGIMSIZ olarak (CI UTC koşsa bile)
+  /// oldurur.
+  static DateTime takvimGunu(DateTime secilen) =>
+      DateTime.utc(secilen.year, secilen.month, secilen.day);
+
+  /// SAF: enum -> gorunur etiket. Tek esleme (M77b: ikinci bir tablo yazmak
+  /// olculen ile cizilen degerin ayrismasina izin verirdi).
+  static String oncelikEtiketi(Oncelik oncelik) => switch (oncelik) {
+    Oncelik.yuksek => Metinler.oncelikYuksek,
+    Oncelik.orta => Metinler.oncelikOrta,
+    Oncelik.dusuk => Metinler.oncelikDusuk,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -95,20 +141,21 @@ class GorevSatiri extends StatelessWidget {
         boyaci.maxIntrinsicWidth + MOlcu.ikon + MBosluk.xs;
     boyaci.dispose();
 
-    // IS-EMRI-o68: baslik duzenleme ikonu `_rozetler()`in SONUNA eklenir
-    // (asagida) -- kendi 48dp dokunma hedefini CAKISMA ikonuyla AYNI
-    // desende rezerve eder. Buraya eklenmezse OLCULEN duzen (bu formul)
-    // ile CIZILEN duzen sessizce ayrisir -- M77b'nin uyardigi kusurun
-    // aynisi (IS-EMRI-o68 §1.5).
+    // IS-EMRI-o68: duzenleme ikonu `_rozetler()`in SONUNA eklenir (asagida)
+    // -- kendi 48dp dokunma hedefini CAKISMA ikonuyla AYNI desende rezerve
+    // eder. Buraya eklenmezse OLCULEN duzen (bu formul) ile CIZILEN duzen
+    // sessizce ayrisir -- M77b'nin uyardigi kusurun aynisi.
+    // 🔴 ODEV.md §4(a): oncelik/son tarih dilimi bu formule DOKUNMAZ --
+    // meta satiri BASLIGIN ALTINDA (dikey eksende) yasar, yatay genislik
+    // butcesinden tek piksel almaz; satira yeni IKON da eklenmemistir.
     final sabitler = MOlcu.dokunmaHedefi +
         MBosluk.s +
         MBosluk.s +
         (cakismaVarMi ? MOlcu.dokunmaHedefi + MBosluk.xs : 0) +
-        (onBaslikDuzenlendi != null ? MOlcu.dokunmaHedefi + MBosluk.xs : 0) +
+        (onAyrintilarDuzenlendi != null ? MOlcu.dokunmaHedefi + MBosluk.xs : 0) +
         // IS-EMRI-o72 D4: silme ikonu da `_rozetler()`e eklenir -- BURAYA
         // eklenmezse OLCULEN duzen (bu formul) ile CIZILEN duzen sessizce
-        // ayrisir (M77b sinifi, ayni gerekce onBaslikDuzenlendi icin
-        // yukarida yazildigi gibi).
+        // ayrisir (M77b sinifi, ayni gerekce yukarida yazildigi gibi).
         (onSil != null ? MOlcu.dokunmaHedefi + MBosluk.xs : 0);
 
     return sabitler + baslikAsgari + rozetIstedigi > maxGenislik;
@@ -119,7 +166,7 @@ class GorevSatiri extends StatelessWidget {
       children: [
         _onayKutusu(),
         SizedBox(width: MBosluk.s),
-        Expanded(child: _baslik(context)),
+        Expanded(child: _baslikVeMeta(context)),
         SizedBox(width: MBosluk.s),
         ..._rozetler(context),
       ],
@@ -130,8 +177,8 @@ class GorevSatiri extends StatelessWidget {
   /// Rozet satiri onay kutusunun genisligi kadar GIRINTILIDIR (`maxWidth -
   /// 48 - 8`) -- bu satir SABIT kalir (checkbox genisligi degismedi), ama
   /// IS-EMRI-o68 ile bu girintili satirin ICERIGI degisti: `_rozetler()`
-  /// artik (varsa) baslik duzenleme ikonunu da tasir, CAKISMA ikonuyla
-  /// AYNI konumda. D-A7-3'un formulundeki `sabitler` bu ikisini de (cakisma
+  /// artik (varsa) duzenleme ikonunu da tasir, CAKISMA ikonuyla AYNI
+  /// konumda. D-A7-3'un formulundeki `sabitler` bu ikisini de (cakisma
   /// + duzenleme) AYRI AYRI, kosullu terimlerle sayar -- girinti SABITI
   /// ile `sabitler` arasindaki iliski YAKLASIKTIR (girinti tek bosluk
   /// `MBosluk.s` sayar, `sabitler` yatay tek-satirda IKI sayar: baslikla
@@ -149,7 +196,7 @@ class GorevSatiri extends StatelessWidget {
           children: [
             _onayKutusu(),
             SizedBox(width: MBosluk.s),
-            Expanded(child: _baslik(context)),
+            Expanded(child: _baslikVeMeta(context)),
           ],
         ),
         Padding(
@@ -174,11 +221,39 @@ class GorevSatiri extends StatelessWidget {
 
   /// GOREV-A8 [K90/spec SS4/Y1]: liste satirinda tek satir DOGRU davranistir
   /// -- sabit, OLCULMEZ (S1). Kayip KABUL EDILIR; `Semantics(label:
-  /// gorev.baslik)` (satir 125) tam metni tasir. `ellipsis` TEK BASINA
-  /// metni FIILEN tek satira indirdigi icin (B3, KANIT/A7) bugunku FIILI
-  /// davranis zaten budur -- degisiklik ORTUK olani ACIK yapar, duzen
-  /// DEGISMEZ (G13/G14/G15 risk almaz).
+  /// gorev.baslik)` tam metni tasir. `ellipsis` TEK BASINA metni FIILEN tek
+  /// satira indirdigi icin (B3, KANIT/A7) bugunku FIILI davranis zaten budur.
   static const int kGorevSatiriBaslikMaxSatir = 1;
+
+  /// ODEV.md §4(a): baslik + (varsa) meta satiri. Meta YOKSA agac BUGUNKU
+  /// haliyle AYNI kalir (tek `Text`) -- bos bir `Column` sarmalayici bile
+  /// eklenmez, boylece oncelik/son tarih tasimayan gorevlerin duzeni
+  /// olculebilir bicimde DEGISMEZ.
+  Widget _baslikVeMeta(BuildContext context) {
+    final meta = metaMetni(gorev);
+    if (meta == null) return _baslik(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _baslik(context),
+        Text(
+          meta,
+          style: MTipo.etiketS.copyWith(color: _metaRengi(context)),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+      ],
+    );
+  }
+
+  /// Renk YALNIZ YARDIMCIDIR: anlami METIN tasir (WCAG 1.4.1 -- renk tek
+  /// basina bilgi tasiyamaz). Ikisi de mevcut token'dir, yeni token
+  /// URETILMEZ (K46 yasagi yururlukte).
+  Color _metaRengi(BuildContext context) =>
+      oncelikSayidan(gorev.oncelik) == Oncelik.yuksek
+          ? MRenk.tehlike(context)
+          : MRenk.metinIkincil(context);
 
   Widget _baslik(BuildContext context) {
     return Text(
@@ -200,8 +275,8 @@ class GorevSatiri extends StatelessWidget {
   /// Once cakisma ikonu, sonra taban.
   /// 🔴 TEK GOVDE: yatay ve dikey duzen AYNI listeyi kullanir; kopyalanmis
   /// olsaydi M79 (dikeyde CakismaRozeti dusurulur) sessizce mumkun olurdu.
-  /// IS-EMRI-o68: (varsa) baslik duzenleme ikonu SONA eklenir -- durum
-  /// rozetleri (cakisma/senkron) ONCE, eylem ikonu EN SON.
+  /// IS-EMRI-o68: (varsa) duzenleme ikonu SONA eklenir -- durum rozetleri
+  /// (cakisma/senkron) ONCE, eylem ikonlari EN SON.
   List<Widget> _rozetler(BuildContext context) {
     return [
       if (cakismaVarMi) ...[
@@ -209,7 +284,7 @@ class GorevSatiri extends StatelessWidget {
         SizedBox(width: MBosluk.xs),
       ],
       Flexible(child: SenkronRozeti(durum: senkronDurumu)),
-      if (onBaslikDuzenlendi != null) ...[
+      if (onAyrintilarDuzenlendi != null) ...[
         SizedBox(width: MBosluk.xs),
         _duzenleIkonu(context),
       ],
@@ -221,39 +296,36 @@ class GorevSatiri extends StatelessWidget {
     ];
   }
 
-  /// IS-EMRI-o68 SS2 kriter 8: `onBaslikDuzenlendi` VARSA kendi 48dp dokunma
-  /// hedefini tasiyan AYRI bir IconButton (Onur kilidi ①: satirin kendisi
-  /// onTap TASIMAZ, T6 PAZARLIKSIZ).
+  /// IS-EMRI-o68 SS2 kriter 8: `onAyrintilarDuzenlendi` VARSA kendi 48dp
+  /// dokunma hedefini tasiyan AYRI bir IconButton (Onur kilidi ①: satirin
+  /// kendisi onTap TASIMAZ, T6 PAZARLIKSIZ).
   /// 🔴 `tooltip` ZORUNLUDUR -- bu, etiketi IconButton'in KENDI ic
   /// Semantics dugumune yazan yoldur. OLCULDU: disardan saran bir
   /// `Semantics(label:, button:true, child: IconButton(...))` BURADA
   /// ISE YARAMADI -- IconButton kendi `container:true` semantics dugumunu
   /// tasiyor, disaridaki sarmalayici AYRI bir dugume duser ve
   /// `labeledTapTargetGuideline` "tap eylemi olan dugumde etiket yok"
-  /// diye FAIL eder (ilk kosumda gorulup duzeltildi -- CakismaRozeti'nin
-  /// deseni GestureDetector+Semantics+Container'dir, IconButton'un KENDI
-  /// ic semantics'i VARDIR, ikisi AYNI DESEN DEGILDIR).
+  /// diye FAIL eder (ilk kosumda gorulup duzeltildi).
   /// Etiketsiz birakilirsa `labeledTapTargetGuideline` KENDISI FAIL eder ve
   /// M7 (CakismaRozeti'nin etiketini silme mutanti) o zaman etiketsiz-
   /// ikondan AYIRT EDILEMEZ hale gelir, yani M7 OLUR (IS-EMRI-o68 §1.4).
   Widget _duzenleIkonu(BuildContext context) {
-    final geriCagirim = onBaslikDuzenlendi!;
     return IconButton(
       icon: Icon(Icons.edit_outlined, size: MOlcu.ikon),
-      tooltip: Metinler.baslikDuzenle,
+      tooltip: Metinler.gorevDuzenle,
       constraints: BoxConstraints.tightFor(
         width: MOlcu.dokunmaHedefi,
         height: MOlcu.dokunmaHedefi,
       ),
       padding: EdgeInsets.zero,
-      onPressed: () => _baslikDuzenleDiyaloguAc(context, geriCagirim),
+      onPressed: () => _duzenleDiyaloguAc(context),
     );
   }
 
   /// IS-EMRI-o68 §3.2/§3.3: bir MODAL diyalog acar -- "yerinde" (satirin
   /// kendi govdesinde) `TextField` Onur tarafindan REDDEDILDI, bu ONDAN
   /// FARKLIDIR ve T6'yi ihlal etmez (satirin KENDISINE `onTap` eklenmez).
-  /// Govde `_BaslikDuzenleDiyalogu`'a tasindi (asagida) -- OLCULDU: bu
+  /// Govde `_GorevDuzenleDiyalogu`'a tasindi (asagida) -- OLCULDU: bu
   /// metodun ONCEKI govdesi `TextEditingController`i burada YARATIP
   /// `await showDialog(...)` SONRASI hemen `dispose()` ediyordu; iptal/
   /// kaydet'in Navigator.pop() COGRAFI FRAME'de kapanir ama diyalogun KAPANMA
@@ -261,17 +333,22 @@ class GorevSatiri extends StatelessWidget {
   /// o gecis SURERKEN hala TextField'a bagliyken dispose ediliyordu
   /// ("TextEditingController was used after being disposed", ilk kosumda
   /// yakalandi). Controller'i kendi State.dispose()'unda yok eden bir
-  /// StatefulWidget bu yarisi ORTADAN KALDIRIR -- framework onu SADECE
-  /// widget agactan GERCEKTEN kalktiginda cagirir.
-  Future<void> _baslikDuzenleDiyaloguAc(
-    BuildContext context,
-    ValueChanged<String> onKaydet,
-  ) async {
-    final yeniBaslik = await showDialog<String>(
+  /// StatefulWidget bu yarisi ORTADAN KALDIRIR.
+  /// ODEV.md §4(a): DONUS TIPI degisti -- `String` yerine hangi alanlarin
+  /// DEGISTIGINI tasiyan `GorevAyrintiDegisikligi`. `bosMu` ise (kullanici
+  /// hicbir seyi degistirmeden Kaydet'e bastiysa) geri cagirim CAGRILMAZ:
+  /// bos bir op sunucu tarafinda BUTUN olarak reddedilirdi (D2).
+  Future<void> _duzenleDiyaloguAc(BuildContext context) async {
+    final degisiklik = await showDialog<GorevAyrintiDegisikligi>(
       context: context,
-      builder: (_) => _BaslikDuzenleDiyalogu(baslangicBasligi: gorev.baslik),
+      builder: (_) => _GorevDuzenleDiyalogu(
+        baslangicBasligi: gorev.baslik,
+        baslangicOncelik: gorev.oncelik,
+        baslangicSonTarih: gorev.sonTarih,
+      ),
     );
-    if (yeniBaslik != null) onKaydet(yeniBaslik);
+    if (degisiklik == null || degisiklik.bosMu) return;
+    onAyrintilarDuzenlendi!(degisiklik);
   }
 
   /// IS-EMRI-o72: `_duzenleIkonu` ile AYNI iskelet (D3). `tooltip`
@@ -333,27 +410,44 @@ class GorevSatiri extends StatelessWidget {
   }
 }
 
-/// IS-EMRI-o68: `GorevSatiri._baslikDuzenleDiyaloguAc`'in diyalog govdesi --
-/// ayri bir StatefulWidget, cunku `TextEditingController`in yasam dongusu
-/// State'e baglanmali (yukaridaki metodun dokumantasyonu OLCULMUS gerekceyi
-/// tasir).
-class _BaslikDuzenleDiyalogu extends StatefulWidget {
-  final String baslangicBasligi;
+/// ODEV.md §4(a): oncelik secim seritinin TEK kaynagi. `Oncelik.values`ten
+/// TURETILIR -- elle yazilmis ikinci bir (sayi, etiket) tablosu, enum ile
+/// sessizce ayrisabilirdi (bu projede olculmus M77b sinifi).
+List<({int? deger, String etiket})> _oncelikSecenekleri() => [
+  (deger: null, etiket: Metinler.oncelikYok),
+  for (final o in Oncelik.values)
+    (deger: oncelikSayiya(o), etiket: GorevSatiri.oncelikEtiketi(o)),
+];
 
-  const _BaslikDuzenleDiyalogu({required this.baslangicBasligi});
+/// IS-EMRI-o68'in `_BaslikDuzenleDiyalogu`'sunun HALEFI: baslik + oncelik +
+/// son tarih TEK diyalogda. `TextEditingController`in yasam dongusu hala
+/// State'e baglidir (o68'de olculmus dispose yarisi).
+class _GorevDuzenleDiyalogu extends StatefulWidget {
+  final String baslangicBasligi;
+  final int? baslangicOncelik;
+  final DateTime? baslangicSonTarih;
+
+  const _GorevDuzenleDiyalogu({
+    required this.baslangicBasligi,
+    required this.baslangicOncelik,
+    required this.baslangicSonTarih,
+  });
 
   @override
-  State<_BaslikDuzenleDiyalogu> createState() =>
-      _BaslikDuzenleDiyaloguState();
+  State<_GorevDuzenleDiyalogu> createState() => _GorevDuzenleDiyaloguState();
 }
 
-class _BaslikDuzenleDiyaloguState extends State<_BaslikDuzenleDiyalogu> {
+class _GorevDuzenleDiyaloguState extends State<_GorevDuzenleDiyalogu> {
   late final TextEditingController _denetleyici;
+  late int? _oncelik;
+  late DateTime? _sonTarih;
 
   @override
   void initState() {
     super.initState();
     _denetleyici = TextEditingController(text: widget.baslangicBasligi);
+    _oncelik = widget.baslangicOncelik;
+    _sonTarih = widget.baslangicSonTarih;
   }
 
   @override
@@ -362,16 +456,67 @@ class _BaslikDuzenleDiyaloguState extends State<_BaslikDuzenleDiyalogu> {
     super.dispose();
   }
 
-  // OLCULDU (bagimsiz denetimde bulundu): `Navigator.pop(gorevBasligiDogrula
-  // (...))` KOSULSUZ cagrilirsa, bos baslikta `pop(null)` diyalogu YINE
-  // KAPATIR -- kullanicinin gozunde IPTAL'den AYIRT EDILEMEZ olur (sessiz
-  // veri kaybi degil ama sessiz DUZENLEME kaybi). `GorevEkleAlani._gonder()`
-  // AYNI durumda hicbir sey yapmadan geri doner (alan ACIK kalir) -- burada
-  // da AYNI desen: gecersizse diyalog ACIK KALIR, kullanici duzeltebilir.
+  /// Normalizasyon `GorevSatiri.takvimGunu`dedir (TEK nokta, orada olculur).
+  ///
+  /// 🔴 KELEPCE PAZARLIKSIZ [OLCULDU -- bagimsiz denetim, o74]:
+  /// `showDatePicker` `assert(!initialDate.isBefore(firstDate))` tasir ve
+  /// `_sonTarih` araligin DISINDA olabilir -- (a) baska bir istemci herhangi
+  /// bir `DateTimeOffset` yazabilir (sunucu kisitlamaz, biz de "bilinmeyen
+  /// degeri EZME" diyoruz), (b) takvim yili donunce eski bir yerel gorev de
+  /// aralik disina duser. Kelepcelenmezse tarih dugmesi HICBIR SEY YAPMAZ
+  /// (debug'da yakalanmamis assert, release'de sessiz bozukluk).
+  Future<void> _tarihSec() async {
+    final bugun = DateTime.now();
+    final ilk = DateTime(bugun.year - 1);
+    final son = DateTime(bugun.year + 5);
+    final mevcut = _sonTarih == null
+        ? DateTime(bugun.year, bugun.month, bugun.day)
+        : DateTime(_sonTarih!.year, _sonTarih!.month, _sonTarih!.day);
+    final baslangic = mevcut.isBefore(ilk)
+        ? ilk
+        : (mevcut.isAfter(son) ? son : mevcut);
+    final secilen = await showDatePicker(
+      context: context,
+      initialDate: baslangic,
+      firstDate: ilk,
+      lastDate: son,
+    );
+    if (secilen == null) return;
+    if (!mounted) return;
+    setState(() {
+      _sonTarih = GorevSatiri.takvimGunu(secilen);
+    });
+  }
+
+  // OLCULDU (o68'de bagimsiz denetimde bulundu): bos baslikta `pop(null)`
+  // diyalogu YINE KAPATIR ve kullanicinin gozunde IPTAL'den AYIRT EDILEMEZ
+  // olur (sessiz DUZENLEME kaybi). `GorevEkleAlani._gonder()` AYNI durumda
+  // hicbir sey yapmadan geri doner -- burada da AYNI desen: gecersizse
+  // diyalog ACIK KALIR.
   void _kaydet() {
     final gecerliBaslik = gorevBasligiDogrula(_denetleyici.text);
     if (gecerliBaslik == null) return;
-    Navigator.of(context).pop(gecerliBaslik);
+    // 🔴 [OLCULDU -- bagimsiz denetim, o74] Karsilastirma AYNI NORMALIZASYONDAN
+    // gecmis iki deger arasinda yapilir: `gecerliBaslik` KIRPILMIS, ham
+    // `baslangicBasligi` kirpilmamis olabilir (uzaktan 'Rapor ' gelebilir).
+    // Ham degerle karsilastirilsaydi, kullanici basliga HIC DOKUNMADAN yalniz
+    // onceligi degistirse bile `title` yeni bir HLC ile yeniden damgalanir ve
+    // arada gelen uzak bir baslik yazimini LWW ile EZERDI.
+    final baslangicGecerli =
+        gorevBasligiDogrula(widget.baslangicBasligi) ?? widget.baslangicBasligi;
+    Navigator.of(context).pop(
+      GorevAyrintiDegisikligi(
+        // YALNIZ DEGISEN alan `Yazim` ile isaretlenir. `Yazim(null)`
+        // "temizle" demektir, `null` "dokunma".
+        baslik: gecerliBaslik == baslangicGecerli
+            ? null
+            : Yazim(gecerliBaslik),
+        oncelik: _oncelik == widget.baslangicOncelik ? null : Yazim(_oncelik),
+        sonTarih: _sonTarih == widget.baslangicSonTarih
+            ? null
+            : Yazim(_sonTarih),
+      ),
+    );
   }
 
   // A11Y-4 STATIK (a11y_statik_tasma_test.dart R1/R2): HER Text( cagrisi
@@ -381,14 +526,89 @@ class _BaslikDuzenleDiyaloguState extends State<_BaslikDuzenleDiyalogu> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        Metinler.baslikDuzenle,
+        Metinler.gorevDuzenle,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
       ),
-      content: TextField(
-        controller: _denetleyici,
-        autofocus: true,
-        onSubmitted: (_) => _kaydet(),
+      // Buyuk metin olceginde (textScaler 2.0) diyalog govdesi tasabilir --
+      // kaydirilabilir sarmalayici, A11Y-4'un "kirpma sessizdir" kuralinin
+      // diyalog govdesindeki karsiligidir.
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _denetleyici,
+              autofocus: true,
+              onSubmitted: (_) => _kaydet(),
+            ),
+            SizedBox(height: MBosluk.m),
+            Text(
+              Metinler.oncelikBasligi,
+              style: MTipo.etiketS,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            SizedBox(height: MBosluk.xs),
+            // ChoiceChip: secenekler EKRANDA GORUNUR durur (acilir liste
+            // DEGIL). Gerekce OLCULMUSTUR: Flutter web'de otomasyon
+            // tiklamasi overlay menulerde ek bir tuzak katmani dogurur
+            // (hover -> tiklama sirasi), gorunur cipler o katmani hic
+            // yaratmaz -- canli olcum turu bu yuzden daha kisa.
+            Wrap(
+              spacing: MBosluk.xs,
+              children: [
+                for (final secenek in _oncelikSecenekleri())
+                  ChoiceChip(
+                    label: Text(
+                      secenek.etiket,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    selected: _oncelik == secenek.deger,
+                    onSelected: (_) =>
+                        setState(() => _oncelik = secenek.deger),
+                  ),
+              ],
+            ),
+            SizedBox(height: MBosluk.m),
+            Text(
+              Metinler.sonTarihBasligi,
+              style: MTipo.etiketS,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            SizedBox(height: MBosluk.xs),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _tarihSec,
+                    child: Text(
+                      _sonTarih == null
+                          ? Metinler.sonTarihSec
+                          : GorevSatiri.tarihEtiketi(_sonTarih!),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ),
+                ),
+                if (_sonTarih != null)
+                  IconButton(
+                    icon: Icon(Icons.close, size: MOlcu.ikon),
+                    tooltip: Metinler.sonTarihiTemizle,
+                    constraints: BoxConstraints.tightFor(
+                      width: MOlcu.dokunmaHedefi,
+                      height: MOlcu.dokunmaHedefi,
+                    ),
+                    padding: EdgeInsets.zero,
+                    onPressed: () => setState(() => _sonTarih = null),
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(

@@ -28,6 +28,20 @@ class Gorevler extends Table {
       )
       .withDefault(const Constant('yerel'))();
   BoolColumn get silindi => boolean().withDefault(const Constant(false))();
+  /// ODEV.md §4(a) "oncelik + son tarih" dilimi (schemaVersion 5 -> 6).
+  /// HAM `int?`tir -- sunucunun `priority` scalar'iyla (`ProjectionFields
+  /// .ReadInt`, `NumberStyles.Integer` + `InvariantCulture`) AYNI tur.
+  /// 1/2/3 disinda bir deger gelirse SAKLANIR ama ekranda cizilmez: baska
+  /// bir istemcinin yazdigi bilinmeyen degeri sessizce EZMEK, LWW'nin
+  /// altini oymak olurdu.
+  IntColumn get oncelik => integer().nullable()();
+  /// TAKVIM GUNU PINI (PAZARLIKSIZ): daima `DateTime.utc(y, m, d)` --
+  /// saat/dakika DAIMA sifir, `isUtc` DAIMA true. Yerel saat dilimine
+  /// CEVRILMEZ: UTC+3'te `.toUtc()` gunu bir gun geri kaydirir
+  /// (yerel 21 Ağu 00:00 -> 20 Ağu 21:00Z). Tel bicimi bu degerin
+  /// `toIso8601String()`idir ve sunucunun
+  /// `yyyy-MM-dd'T'HH:mm:ss.FFFFFFFK` TryParseExact kalibina oturur.
+  DateTimeColumn get sonTarih => dateTime().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -124,7 +138,7 @@ class Veritabani extends _$Veritabani {
     : super(baglanti ?? _uretimBaglantisi(bildirim));
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   /// GOREV-slice-3c D1/T3: v1->v2 SQLite bir CHECK kisitini ALTER TABLE ile
   /// degistiremez -- `gorevler` (yeni 5-degerli CHECK ile) `TableMigration`
@@ -137,13 +151,32 @@ class Veritabani extends _$Veritabani {
   /// GOREV-SS2 D-SS2-1: v4->v5 de SALT-EKLEMEDIR -- `cakismaKayitlari` yeni
   /// tablo, `Gorevler`e DOKUNULMAZ. Sira PAZARLIKSIZ (T1): v4 dump ONCE
   /// alinir (schemaVersion hala 4 iken), sonra bump, sonra generate.
+  /// ODEV.md §4(a) "oncelik + son tarih": v5->v6 da SALT-EKLEMEDIR ama
+  /// v4->v5'ten FARKLI olarak `Gorevler`e DOKUNUR -- iki NULLABLE sutun
+  /// `ALTER TABLE ... ADD COLUMN` ile eklenir (tablo YENIDEN YARATILMAZ,
+  /// `alterTable` cagrilmaz, CHECK kisiti degismez). Mevcut satirlar NULL
+  /// alir. v5 dump'i (`drift_schemas/drift_schema_v5.json`) BU DEGISIKLIKTEN
+  /// ONCE alinmisti -- sira ihlal edilmedi.
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
     onUpgrade: (m, from, to) async {
+      // [OLCULDU -- `flutter test`, o74: g3_kuyruk_kapisi v1->v3 COKTU]
+      // `alterTable` yeni tabloyu GUNCEL (v6) Dart tanimiyla yaratir, sonra
+      // ESKI tablodan TUM sutunlari SELECT eder. `oncelik`/`son_tarih` v1
+      // semasinda YOKTUR ⇒ `newColumns` yazilmazsa
+      // "no such column: oncelik" ile PATLAR (v1'den gelen her kullanicinin
+      // veritabani acilista olur). `newColumns` bu ikisini "eskisinde yok,
+      // kopyalama" diye isaretler; NULL alirlar.
+      final gorevlerYenidenYaratildi = from < 2;
       if (from < 2) {
         await m.createTable(senkronKuyrugu);
-        await m.alterTable(TableMigration(gorevler));
+        await m.alterTable(
+          TableMigration(
+            gorevler,
+            newColumns: [gorevler.oncelik, gorevler.sonTarih],
+          ),
+        );
       }
       // `createTable` cagiranin GUNCEL (v4) Dart tablo tanimini kullanir --
       // `ayarlar` burada YENI olusturulursa `imlecSahibi` ZATEN icindedir.
@@ -164,6 +197,17 @@ class Veritabani extends _$Veritabani {
       // `alterTable` cagrilmaz (Ö10).
       if (from < 5) {
         await m.createTable(cakismaKayitlari);
+      }
+      // ODEV.md §4(a): v5->v6 -- `Gorevler`e IKI NULLABLE sutun. `addColumn`
+      // ALTER TABLE ADD COLUMN uretir; tablo yeniden yaratilmaz, veri
+      // kopyalanmaz, CHECK kisitina dokunulmaz.
+      // 🔴 `gorevlerYenidenYaratildi` KOSULU PAZARLIKSIZ: v1'den gelen yolda
+      // tablo yukarida GUNCEL tanimla YENIDEN YARATILDI, iki sutun ZATEN
+      // icindedir -- ikinci kez eklemek "duplicate column" ile patlar.
+      // `ayarlar.imlecSahibi`nin (v3/v4) BIREBIR AYNI deseni.
+      if (from < 6 && !gorevlerYenidenYaratildi) {
+        await m.addColumn(gorevler, gorevler.oncelik);
+        await m.addColumn(gorevler, gorevler.sonTarih);
       }
     },
   );

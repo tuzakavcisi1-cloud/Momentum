@@ -9,6 +9,70 @@ import 'hlc.dart';
 import 'veritabani.dart';
 import 'wire_op.dart';
 
+/// ODEV.md §4(a): kullaniciya gorunen UC seviye. Ham `int?` hem DB'de hem
+/// telde tasinir (sunucu sozlesmesi: `priority` = scalar LWW `int?`); bu enum
+/// yalniz GOSTERIM ve SECIM icindir.
+/// SAYI ESLEMESI PINLI: 1 = yuksek, 2 = orta, 3 = dusuk (kucuk sayi = daha
+/// acil). `null` = oncelik yok.
+enum Oncelik { yuksek, orta, dusuk }
+
+/// SAF. Enum -> tel/DB sayisi.
+int? oncelikSayiya(Oncelik? oncelik) => switch (oncelik) {
+  Oncelik.yuksek => 1,
+  Oncelik.orta => 2,
+  Oncelik.dusuk => 3,
+  null => null,
+};
+
+/// SAF. Tel/DB sayisi -> enum. 1/2/3 DISINDAKI her sayi (ve `null`) `null`
+/// dondurur: bilinmeyen deger EKRANDA CIZILMEZ ama DB'de/telde DOKUNULMADAN
+/// durur (bkz. veritabani.dart `oncelik` sutunu).
+Oncelik? oncelikSayidan(int? sayi) => switch (sayi) {
+  1 => Oncelik.yuksek,
+  2 => Oncelik.orta,
+  3 => Oncelik.dusuk,
+  _ => null,
+};
+
+/// "YAZILACAK MI" ile "HANGI DEGER" AYRIMI. `null` = alan DEGISMEDI (tele hic
+/// konmaz); `Yazim(null)` = alan TEMIZLENDI (tele `value: null` konur).
+/// Tek bir `null`u iki anlamda kullanmak "temizle"yi "dokunma"dan ayirt
+/// edilemez yapardi -- drift'in `Value` / `Value.absent()` ayriminin AYNISI,
+/// ama drift turu widget katmanina SIZMADAN (F4 dikisi).
+class Yazim<T> {
+  final T deger;
+  const Yazim(this.deger);
+}
+
+/// Birlesik duzenleme diyalogunun donusu -- YALNIZ DEGISEN alanlar doludur.
+class GorevAyrintiDegisikligi {
+  final Yazim<String>? baslik;
+  final Yazim<int?>? oncelik;
+  final Yazim<DateTime?>? sonTarih;
+
+  const GorevAyrintiDegisikligi({this.baslik, this.oncelik, this.sonTarih});
+
+  /// Hicbir alan degismediyse op URETILMEZ: sunucu bos bir op'u BUTUN olarak
+  /// reddeder (D2 -- her op EN AZ BIR kanal tasir).
+  bool get bosMu => baslik == null && oncelik == null && sonTarih == null;
+}
+
+/// TEL BICIMI PINI (sunucu sozlesmesinden OLCULDU, varsayilmadi):
+/// `priority` -> `ProjectionFields.ReadInt` = `int.TryParse` +
+/// `NumberStyles.Integer` + `InvariantCulture` ⇒ ONDALIK TAMSAYI dizesi.
+/// Dart'in `int.toString()`i tam olarak bunu uretir.
+String? oncelikTele(int? oncelik) => oncelik?.toString();
+
+/// `dueAt` -> `ProjectionFields.ReadDate` = `TryParseExact` +
+/// `["yyyy-MM-dd'T'HH:mm:ss.FFFFFFFK", "yyyy-MM-dd'T'HH:mm:ssK"]` +
+/// `AssumeUniversal | AdjustToUniversal`. `DateTime.utc(...)
+/// .toIso8601String()` (`2026-08-21T00:00:00.000Z`) bu kaliba oturur.
+/// 🔴 `.toUtc()` DUSURULEMEZ: ofset TASIMAYAN bir dize `AssumeUniversal` ile
+/// UTC SAYILIR, yani yerel saat sessizce UTC diye okunurdu -- SS1.3'un uc
+/// saatlik kaymasinin AYNISI.
+String? sonTarihTele(DateTime? sonTarih) =>
+    sonTarih?.toUtc().toIso8601String();
+
 /// F4'un dikisi: widget'lar Drift'in urettigi satir sinifini (GorevRow)
 /// dogrudan tuketmez -- bu domain modeli araya girer. Adim 3'te beslenen
 /// tip degisirse (gercek senkron alanlari eklenirse) degisiklik yalniz
@@ -21,6 +85,12 @@ class Gorev {
   final DateTime guncellendi;
   final String senkronDurumu;
   final bool silindi;
+  /// ODEV.md §4(a). HAM sutunlardir (turetilmis rozet durumu DEGIL) --
+  /// `Gorev`in "yalniz ham projeksiyon tasir" invaryanti korunur.
+  /// Varsayilan `null`: mevcut ~40 cagri yeri (testler dahil) bunlari HIC
+  /// bilmez ve `null` onlarin GERCEK durumudur.
+  final int? oncelik;
+  final DateTime? sonTarih;
 
   const Gorev({
     required this.id,
@@ -30,10 +100,12 @@ class Gorev {
     required this.guncellendi,
     required this.senkronDurumu,
     required this.silindi,
+    this.oncelik,
+    this.sonTarih,
   });
 }
 
-/// GOREV-R10 D5: `Gorev` (ham 7 alan, K75 PAZARLIKSIZ degismez) + KUYRUKTAN
+/// GOREV-R10 D5: `Gorev` (YALNIZ ham projeksiyon sutunlari) + KUYRUKTAN
 /// TURETILEN rozet durumu TEK yerde -- widget'lar iki ayri parametre yerine
 /// (senkronDurumu, cakismaVarMi) TEK gorunum nesnesi tuketir. Ham `U`/`B`/`Z`
 /// sayimlari BURADAN DISARI CIKMAZ; yalniz turetilmis sonuc tasinir.
@@ -75,6 +147,17 @@ abstract class GorevDeposu {
   Future<void> ekle(String baslik);
 
   Future<void> duzenle(String id, String yeniBaslik);
+
+  /// ODEV.md §4(a): baslik + oncelik + son tarih TEK `WireOp`, TEK
+  /// `transaction()`. YALNIZ verilen (`Yazim` ile isaretlenmis) alanlar
+  /// yazilir -- degismemis bir alani yeniden damgalamak, arada gelen uzak
+  /// bir yazimi LWW ile sessizce ezerdi.
+  Future<void> ayrintilariGuncelle(
+    String id, {
+    Yazim<String>? baslik,
+    Yazim<int?>? oncelik,
+    Yazim<DateTime?>? sonTarih,
+  });
 
   Future<void> tamamlaGeriAl(String id, {required bool tamamlandi});
 
@@ -211,6 +294,8 @@ class DriftGorevDeposu implements GorevDeposu {
     guncellendi: satir.guncellendi,
     senkronDurumu: satir.senkronDurumu,
     silindi: satir.silindi,
+    oncelik: satir.oncelik,
+    sonTarih: satir.sonTarih,
   );
 
   /// GOREV-R10 D6 PAZARLIKSIZ: TEK sorgu, TEK `watch()` -- iki ayri stream +
@@ -343,6 +428,62 @@ class DriftGorevDeposu implements GorevDeposu {
       await (_db.update(_db.gorevler)..where((t) => t.id.equals(id))).write(
         GorevlerCompanion(
           baslik: Value(yeniBaslik),
+          guncellendi: Value(saat()),
+        ),
+      );
+      await _kuyrugaYaz(op);
+    });
+  }
+
+  /// D8-1 emsali: `Gorevler` satiri VE `WireOp` AYNI transaction'da.
+  /// Bir op icindeki TUM HLC'ler (opHlc + her alanin hlc'si) AYNI damgadir --
+  /// `sonrakiHlc()` BIR KEZ cagrilir (D3).
+  @override
+  Future<void> ayrintilariGuncelle(
+    String id, {
+    Yazim<String>? baslik,
+    Yazim<int?>? oncelik,
+    Yazim<DateTime?>? sonTarih,
+  }) async {
+    // D2: bos op URETILMEZ -- sunucu her op'un EN AZ BIR kanal tasimasini
+    // sart kosar; hicbir alan degismediyse ne projeksiyona ne kuyruga
+    // dokunulur (yoksa "hayalet op" dogar).
+    if (baslik == null && oncelik == null && sonTarih == null) return;
+
+    final opHlc = hlc.sonrakiHlc();
+    final op = WireOp(
+      operationId: idUret(),
+      clientId: hlc.clientId,
+      entityId: id,
+      actorId: actorId,
+      entityType: 'Task',
+      opHlc: opHlc,
+      fields: {
+        if (baslik != null)
+          'title': WireFieldWrite(value: baslik.deger, hlc: opHlc),
+        if (oncelik != null)
+          'priority': WireFieldWrite(
+            value: oncelikTele(oncelik.deger),
+            hlc: opHlc,
+          ),
+        if (sonTarih != null)
+          'dueAt': WireFieldWrite(
+            value: sonTarihTele(sonTarih.deger),
+            hlc: opHlc,
+          ),
+      },
+    );
+
+    await _db.transaction(() async {
+      await (_db.update(_db.gorevler)..where((t) => t.id.equals(id))).write(
+        GorevlerCompanion(
+          baslik: baslik != null ? Value(baslik.deger) : const Value.absent(),
+          oncelik: oncelik != null
+              ? Value(oncelik.deger)
+              : const Value.absent(),
+          sonTarih: sonTarih != null
+              ? Value(sonTarih.deger)
+              : const Value.absent(),
           guncellendi: Value(saat()),
         ),
       );

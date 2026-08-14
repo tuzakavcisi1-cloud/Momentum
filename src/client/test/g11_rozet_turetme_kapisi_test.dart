@@ -561,7 +561,12 @@ void main() {
 
   // ============ G11-A12 -- ham sayim sizmiyor + rozetDikisi SAF (D4/D5) ============
 
-  test('G11-A12a: Gorev alan sayisi DEGISMEDI -- ham U/B/Z sayimlari veri katmanindan disari cikmaz (D5)', () {
+  // 🔴 ODEV.md §4(a) TABAN BILEREK GUNCELLENDI (7 -> 9): `oncelik` + `sonTarih`
+  // eklendi. Bu testin KORUDUGU invaryant SAYI DEGIL, KAYNAKTIR: `Gorev`
+  // yalniz HAM PROJEKSIYON SUTUNU tasir; KUYRUKTAN TURETILEN U/B/Z sayimlari
+  // (ve rozet durumu) `GorevGorunum` katmaninda kalir. Iki yeni alan ham DB
+  // sutunudur ⇒ invaryant ihlal edilmedi, yalniz liste uzadi.
+  test('G11-A12a: Gorev YALNIZ ham sutun tasir -- U/B/Z sayimlari veri katmanindan disari cikmaz (D5)', () {
     final kaynak = File('lib/veri/gorev_deposu.dart').readAsStringSync();
     final sinifBaslangic = kaynak.indexOf('class Gorev {');
     expect(sinifBaslangic, greaterThan(-1), reason: 'Gorev sinifi bulunamadi');
@@ -575,9 +580,19 @@ void main() {
 
     expect(
       alanlar,
-      ['id', 'baslik', 'tamamlandi', 'olusturuldu', 'guncellendi', 'senkronDurumu', 'silindi'],
+      [
+        'id',
+        'baslik',
+        'tamamlandi',
+        'olusturuldu',
+        'guncellendi',
+        'senkronDurumu',
+        'silindi',
+        'oncelik',
+        'sonTarih',
+      ],
       reason:
-          'Gorev yalniz yedi ham alan tasir -- U/B/Z sayimlari GorevGorunum '
+          'Gorev yalniz HAM SUTUN tasir -- U/B/Z sayimlari GorevGorunum '
           'katmaninda kalmali, Gorev\'e SIZMAMALI',
     );
   });

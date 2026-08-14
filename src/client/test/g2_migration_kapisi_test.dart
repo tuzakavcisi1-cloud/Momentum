@@ -17,6 +17,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'generated_migrations/schema.dart';
 import 'generated_migrations/schema_v3.dart' as v3;
 import 'generated_migrations/schema_v4.dart' as v4;
+import 'generated_migrations/schema_v5.dart' as v5;
 
 Future<String?> _createTableSql(GeneratedDatabase db, String tablo) async {
   final satirlar = await db
@@ -45,10 +46,65 @@ void main() {
   Veritabani dosyaDbAc(String ad) =>
       Veritabani(NativeDatabase(File('${gecici.path}/$ad.sqlite')));
 
-  test('D1: schemaVersion == 5 (GOREV-SS2 T1: 4->5 zorunlu guncelleme)', () async {
+  test('D1: schemaVersion == 6 (ODEV §4(a): 5->6 zorunlu guncelleme)', () async {
     final db = dosyaDbAc('m1');
-    expect(db.schemaVersion, 5);
+    expect(db.schemaVersion, 6);
     await db.close();
+  });
+
+  // ODEV.md §4(a) -- "oncelik + son tarih" dilimi. v4->v5'ten FARKLI olarak
+  // bu migration `Gorevler`e DOKUNUR (iki nullable sutun), bu yuzden "SQL
+  // metni bayt bayt AYNI" iddiasi burada GECERSIZDIR -- yerine ONUN AYNASI
+  // yazilir: yeni sutunlar v6'da VAR, v5'te YOK.
+  test('ODEV §4(a): v5->v6 migration hatasiz -- gorevlerde oncelik + son_tarih sutunlari VAR', () async {
+    final verifier = SchemaVerifier(GeneratedHelper());
+    final schema = await verifier.schemaAt(5);
+    final yeniDb = Veritabani(schema.newConnection()); // migration'i tetikler
+
+    final sql = await _createTableSql(yeniDb, 'gorevler');
+    expect(sql, isNotNull);
+    expect(sql, contains('oncelik'), reason: 'v6 gorevler tablosunda oncelik sutunu olmali');
+    expect(sql, contains('son_tarih'), reason: 'v6 gorevler tablosunda son_tarih sutunu olmali');
+    await yeniDb.close();
+  });
+
+  // POZITIF KONTROL: yukaridaki test bir sey OLCUYOR mu? v5'te bu iki sutun
+  // YOKSA olcuyor; VARSA yukaridaki test bos bir iddiadir.
+  test('ODEV §4(a): v5 semasinda oncelik/son_tarih HENUZ YOK (pozitif kontrol)', () async {
+    final verifier = SchemaVerifier(GeneratedHelper());
+    final schema = await verifier.schemaAt(5);
+    final v5Db = v5.DatabaseAtV5(schema.newConnection());
+    final v5Sql = await _createTableSql(v5Db, 'gorevler');
+    await v5Db.close();
+
+    expect(v5Sql, isNotNull);
+    expect(v5Sql, isNot(contains('oncelik')));
+    expect(v5Sql, isNot(contains('son_tarih')));
+  });
+
+  test('ODEV §4(a): v5teki uc Gorevler satiri migration sonrasi durur, yeni sutunlari NULL', () async {
+    final verifier = SchemaVerifier(GeneratedHelper());
+    final schema = await verifier.schemaAt(5);
+    final eskiDb = v5.DatabaseAtV5(schema.newConnection());
+    for (final id in ['v6-1', 'v6-2', 'v6-3']) {
+      await eskiDb.customStatement(
+        "INSERT INTO gorevler (id, baslik, tamamlandi, olusturuldu, guncellendi, senkron_durumu, silindi) "
+        "VALUES (?, ?, 0, ?, ?, 'yerel', 0)",
+        [id, 'Gorev $id', DateTime.utc(2026, 1, 1).toIso8601String(), DateTime.utc(2026, 1, 1).toIso8601String()],
+      );
+    }
+    await eskiDb.close();
+
+    final yeniDb = Veritabani(schema.newConnection());
+    final satirlar = await yeniDb.select(yeniDb.gorevler).get();
+    expect(satirlar.map((s) => s.id).toSet(), {'v6-1', 'v6-2', 'v6-3'});
+    expect(
+      satirlar.every((s) => s.oncelik == null),
+      isTrue,
+      reason: 'ALTER TABLE ADD COLUMN mevcut satirlara NULL yazmali',
+    );
+    expect(satirlar.every((s) => s.sonTarih == null), isTrue);
+    await yeniDb.close();
   });
 
   test('D1: v3->v4 migration hatasiz -- uzak_alan_durumu tablosu var', () async {
@@ -80,7 +136,7 @@ void main() {
     await yeniDb.close();
   });
 
-  test('D1: Gorevler CREATE TABLE SQL metni v3 ve v4te bayt bayt AYNI', () async {
+  test('D1/ODEV §4(a): v3 -> GUNCEL -- gorevler YALNIZ iki nullable sutun kazanir', () async {
     final verifier = SchemaVerifier(GeneratedHelper());
 
     final v3Schema = await verifier.schemaAt(3);
@@ -88,13 +144,32 @@ void main() {
     final v3Sql = await _createTableSql(v3Db, 'gorevler');
     await v3Db.close();
 
-    final v4Schema = await verifier.schemaAt(3);
-    final v4Db = Veritabani(v4Schema.newConnection()); // migration'i tetikler
-    final v4Sql = await _createTableSql(v4Db, 'gorevler');
-    await v4Db.close();
+    final guncelSchema = await verifier.schemaAt(3);
+    final guncelDb = Veritabani(guncelSchema.newConnection()); // migration'i tetikler
+    final guncelSql = await _createTableSql(guncelDb, 'gorevler');
+    await guncelDb.close();
+
+    // 🔴 ODEV.md §4(a): bu testin ESKI iddiasi ("bayt bayt AYNI") ARTIK
+    // YANLIStir -- ve testin ne olctugu bastan beri yanlis adlandirilmisti:
+    // `Veritabani(...)` DAIMA EN GUNCEL semaya migrate eder, yani bu test
+    // "o adim dokunmadi" degil "BUGUNE KADAR dokunulmadi" olcuyordu.
+    // v5->v6 BILEREK dokunuyor. Yerine AYNI GUCTE bir iddia yazilir:
+    // gorevler tablosu YALNIZ iki nullable sutun kazanir -- CHECK kisitlari,
+    // varsayilanlar, sutun sirasi ve PK AYNEN durur. Tabloyu yeniden yaratip
+    // CHECK'i degistiren bir mutant burada HALA olur.
+    const ikiYeniSutun = ', "oncelik" INTEGER NULL, "son_tarih" TEXT NULL';
+    const pkCipasi = ', PRIMARY KEY(id))';
 
     expect(v3Sql, isNotNull);
-    expect(v4Sql, v3Sql, reason: 'D1: Gorevlere DOKUNULMAZ, alterTable cagrilmaz');
+    expect(v3Sql, isNot(contains('oncelik')), reason: 'pozitif kontrol: v3te YOK');
+    expect(v3Sql, contains(pkCipasi), reason: 'cipa yoksa asagidaki iddia BOSALIR');
+    expect(
+      guncelSql,
+      v3Sql!.replaceFirst(pkCipasi, ikiYeniSutun + pkCipasi),
+      reason:
+          'v3ten bugune gorevler tablosu YALNIZ iki nullable sutun kazanmali; '
+          'CHECK/varsayilan/sutun sirasi/PK DEGISMEMELI',
+    );
   });
 
   test('D1: UzakAlanDurumu PK (entityType, entityId, alan) -- ikinci yazim UPSERT, kopya satir dogmaz', () async {
@@ -157,7 +232,7 @@ void main() {
     await yeniDb.close();
   });
 
-  test('SS2 G31/c: Gorevler CREATE TABLE SQL metni v4 ve v5te bayt bayt AYNI', () async {
+  test('SS2 G31/c + ODEV §4(a): v4 -> GUNCEL -- gorevler YALNIZ iki nullable sutun kazanir', () async {
     final verifier = SchemaVerifier(GeneratedHelper());
 
     final v4Schema = await verifier.schemaAt(4);
@@ -165,13 +240,32 @@ void main() {
     final v4Sql = await _createTableSql(v4Db, 'gorevler');
     await v4Db.close();
 
-    final v5Schema = await verifier.schemaAt(4);
-    final v5Db = Veritabani(v5Schema.newConnection()); // migration'i tetikler
-    final v5Sql = await _createTableSql(v5Db, 'gorevler');
-    await v5Db.close();
+    final guncelSchema = await verifier.schemaAt(4);
+    final guncelDb = Veritabani(guncelSchema.newConnection()); // migration'i tetikler
+    final guncelSql = await _createTableSql(guncelDb, 'gorevler');
+    await guncelDb.close();
+
+    // 🔴 ODEV.md §4(a): bu testin ESKI iddiasi ("bayt bayt AYNI") ARTIK
+    // YANLIStir -- ve testin ne olctugu bastan beri yanlis adlandirilmisti:
+    // `Veritabani(...)` DAIMA EN GUNCEL semaya migrate eder, yani bu test
+    // "o adim dokunmadi" degil "BUGUNE KADAR dokunulmadi" olcuyordu.
+    // v5->v6 BILEREK dokunuyor. Yerine AYNI GUCTE bir iddia yazilir:
+    // gorevler tablosu YALNIZ iki nullable sutun kazanir -- CHECK kisitlari,
+    // varsayilanlar, sutun sirasi ve PK AYNEN durur. Tabloyu yeniden yaratip
+    // CHECK'i degistiren bir mutant burada HALA olur.
+    const ikiYeniSutun = ', "oncelik" INTEGER NULL, "son_tarih" TEXT NULL';
+    const pkCipasi = ', PRIMARY KEY(id))';
 
     expect(v4Sql, isNotNull);
-    expect(v5Sql, v4Sql, reason: 'D-SS2-1: Gorevlere DOKUNULMAZ, alterTable cagrilmaz');
+    expect(v4Sql, isNot(contains('oncelik')), reason: 'pozitif kontrol: v4te YOK');
+    expect(v4Sql, contains(pkCipasi), reason: 'cipa yoksa asagidaki iddia BOSALIR');
+    expect(
+      guncelSql,
+      v4Sql!.replaceFirst(pkCipasi, ikiYeniSutun + pkCipasi),
+      reason:
+          'D-SS2-1 + ODEV §4(a): v4ten bugune YALNIZ iki nullable sutun; '
+          'CHECK/varsayilan/sutun sirasi/PK DEGISMEMELI',
+    );
   });
 
   test('D1: ayarlar.imlecSahibi sutunu var -- eski (migration\'dan gelen) satirda null', () async {

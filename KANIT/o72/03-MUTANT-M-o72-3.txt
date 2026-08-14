@@ -1,0 +1,34 @@
+MUTANT M-o72-3 -- iptal yolunu pop(true) yap -> T3 isirmali
+dosya: C:\dev\Momentum\src\client\lib\sunum\gorev_satiri.dart
+eslesme sayisi: 1
+geri alma bayt-ozdes: True (sha8=13AFDCCF)
+HUKUM: KIRMIZI (beklenen)
+
+=== T3 EXIT=1 ===
+00:00 +0: loading C:/dev/Momentum/src/client/test/gorev_satiri_silme_test.dart
+00:00 +0: IS-EMRI-o72 -- GorevSatiri silme T3a -- ikona dokun -> diyalog acilir -> IPTAL -> onSil CAGRILMAZ
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: false
+  Actual: <true>
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/dev/Momentum/src/client/test/gorev_satiri_silme_test.dart:97:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1952:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+This was caught by the test expectation on the following line:
+  file:///C:/dev/Momentum/src/client/test/gorev_satiri_silme_test.dart line 97
+The test description was:
+  T3a -- ikona dokun -> diyalog acilir -> IPTAL -> onSil CAGRILMAZ
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -1: IS-EMRI-o72 -- GorevSatiri silme T3a -- ikona dokun -> diyalog acilir -> IPTAL -> onSil CAGRILMAZ [E]
+  Test failed. See exception logs above.
+  The test description was: T3a -- ikona dokun -> diyalog acilir -> IPTAL -> onSil CAGRILMAZ
+00:01 +0 -1: IS-EMRI-o72 -- GorevSatiri silme T3b -- ikona dokun -> diyalog acilir -> SIL -> onSil TAM BIR KEZ cagrilir
+00:01 +1 -1: Some tests failed.
+Failing tests:
+  C:/dev/Momentum/src/client/test/gorev_satiri_silme_test.dart: IS-EMRI-o72 -- GorevSatiri silme T3a -- ikona dokun -> diyalog acilir -> IPTAL -> onSil CAGRILMAZ

@@ -19,12 +19,20 @@ class _GorevGuncellemesi {
   // yapilamaz. `_kanalUygula`da kazanan kanalla BIRLIKTE yazilir.
   AlanAnahtari? baslikKazananAnahtari;
   AlanAnahtari? tamamlandiKazananAnahtari;
+  // ODEV.md §4(a): iki YENI skaler kanal. Deger `null` OLABILECEGI icin
+  // (alan temizlendi) "geldi mi" AYRI bir bayrakla tasinir -- yoksa
+  // "temizlendi" ile "hic gelmedi" ayirt edilemezdi.
+  int? oncelik;
+  bool oncelikGeldi = false;
+  DateTime? sonTarih;
+  bool sonTarihGeldi = false;
 }
 
 Hlc _hlcOku(Map<String, Object?> hlcMap) => Hlc.fromJson(hlcMap);
 
 /// GOREV-slice-3d D2/D4: `changes`/`snapshot` icin IKI AYRI ayristirici +
-/// uc alanin (baslik/tamamlandi/silindi) projeksiyonu. `kuyrukTabaniSaglayici`
+/// BES alanin (baslik/tamamlandi/silindi + ODEV.md §4(a) oncelik/sonTarih)
+/// projeksiyonu. `kuyrukTabaniSaglayici`
 /// T5'te gercek `kuyrukEnBuyuk`e baglanir -- burada saglanmazsa (T3 asamasi,
 /// G3 testleri) taban DAIMA null'dur, yani projeksiyon karari yalniz ESKI
 /// meta'ya karsi verilir (D5'in koruma katmani henuz yok).
@@ -186,7 +194,10 @@ class UzakDegisiklikUygulayici {
   /// kararini verir; kazanirsa `g`ye YALNIZ BILINEN UC ALANIN esini yazar.
   /// [KIRMIZI] D2 -- BILINMEYEN ALAN SESSIZCE ATLANMAZ: `_metaDepo` her
   /// zaman cagrilir (UzakAlanDurumu'na yazilir), projeksiyon eslemesi
-  /// yalniz `title`/`completion`/`isDeleted` icin vardir.
+  /// yalniz `title`/`completion`/`isDeleted`/`priority`/`dueAt` icin vardir.
+  /// 🔴 CAKISMA TESPITI bu iki YENI alan icin KAPSAM DISIDIR (`kanonikDize`
+  /// yalniz `fields:title` ve `groups:completion` tanir ve digerinde FIRLAR)
+  /// -- sinir DURUM.md'ye yazildi.
   Future<void> _kanalUygula({
     required String entityType,
     required String entityId,
@@ -206,7 +217,7 @@ class UzakDegisiklikUygulayici {
     );
     if (!projeksiyonKazandi) return;
 
-    // D4: yalniz UC eslemeden biri -- rozete (senkronDurumu) ASLA dokunulmaz.
+    // D4: yalniz BES eslemeden biri -- rozete (senkronDurumu) ASLA dokunulmaz.
     if (alan == 'fields:title') {
       g.baslik = fieldsDegeri ?? '';
       g.baslikKazananAnahtari = anahtar; // GOREV-SS2 D-SS2-2/1
@@ -215,6 +226,30 @@ class UzakDegisiklikUygulayici {
     } else if (alan == 'fields:isDeleted') {
       // [KIRMIZI] D4 -- Ordinal, TAM dize karsilastirma. "True"/"TRUE" silinmis SAYILMAZ.
       g.silindi = fieldsDegeri == 'true';
+      g.herhangiBirKanalKazandi = true;
+      g.guncellendiWallMs = g.guncellendiWallMs == null ? anahtar.wall : (anahtar.wall > g.guncellendiWallMs! ? anahtar.wall : g.guncellendiWallMs);
+    } else if (alan == 'fields:priority') {
+      // Sunucunun `ReadInt`iyle AYNI SONUC: ayristirilamayan deger NULL'a
+      // duser. FARK (SINIR, DURUM.md'ye yazildi): sunucu ayrica
+      // `MalformedFields` listesi tutar, istemcide o liste YOKTUR; ayrica
+      // .NET `NumberStyles.Integer` bastaki/sondaki bosluga izin verir,
+      // Dart'in `int.tryParse`i vermez -- ikisi de bizim URETTIGIMIZ tel
+      // bicimi icin (bosluksuz ondalik) AYNI davranir.
+      g.oncelik = fieldsDegeri == null ? null : int.tryParse(fieldsDegeri);
+      g.oncelikGeldi = true;
+      g.herhangiBirKanalKazandi = true;
+      g.guncellendiWallMs = g.guncellendiWallMs == null ? anahtar.wall : (anahtar.wall > g.guncellendiWallMs! ? anahtar.wall : g.guncellendiWallMs);
+    } else if (alan == 'fields:dueAt') {
+      // TAKVIM GUNU PINI: gelen dize UTC'dir (sunucu `AdjustToUniversal`
+      // ile kanoniklestirir, biz de `DateTime.utc(y,m,d)` gonderiyoruz) --
+      // `.toUtc()` yalniz garantiyi PEKISTIRIR, gun kaydirmaz.
+      // SINIR: `DateTime.tryParse` sunucunun `TryParseExact`inden DAHA
+      // MUSAMAHAKARDIR; okuma yonunde bu guvenlidir (gonderen bicimi biz
+      // pinliyoruz), yazma yonunde degil.
+      g.sonTarih = fieldsDegeri == null
+          ? null
+          : DateTime.tryParse(fieldsDegeri)?.toUtc();
+      g.sonTarihGeldi = true;
       g.herhangiBirKanalKazandi = true;
       g.guncellendiWallMs = g.guncellendiWallMs == null ? anahtar.wall : (anahtar.wall > g.guncellendiWallMs! ? anahtar.wall : g.guncellendiWallMs);
     } else if (alan == 'groups:completion') {
@@ -248,6 +283,8 @@ class UzakDegisiklikUygulayici {
                 olusturuldu: DateTime.fromMillisecondsSinceEpoch(olusturulduWall, isUtc: true),
                 guncellendi: DateTime.fromMillisecondsSinceEpoch(guncellendiWall, isUtc: true),
                 silindi: Value(g.silindi ?? false),
+                oncelik: Value(g.oncelik),
+                sonTarih: Value(g.sonTarih),
                 // R9/T1 (K72 -- P6/D4 DARALTILDI): INSERT-from-pull 'senkronize'
                 // ile dogar -- bu satirda bekleyen yerel yazim YOKTUR (henuz
                 // kuyrukta hic op yok), P6/P7'nin korudugu senaryo bu DEGILDIR.
@@ -260,6 +297,11 @@ class UzakDegisiklikUygulayici {
           baslik: g.baslik != null ? Value(g.baslik!) : const Value.absent(),
           tamamlandi: g.tamamlandi != null ? Value(g.tamamlandi!) : const Value.absent(),
           silindi: g.silindi != null ? Value(g.silindi!) : const Value.absent(),
+          // ODEV.md §4(a): "geldi mi" BAYRAGI ile karar verilir -- `g.oncelik
+          // != null` demek, gelen bir "temizle" (null) yazimini SESSIZCE
+          // DUSURURDU.
+          oncelik: g.oncelikGeldi ? Value(g.oncelik) : const Value.absent(),
+          sonTarih: g.sonTarihGeldi ? Value(g.sonTarih) : const Value.absent(),
           guncellendi: g.guncellendiWallMs != null
               ? Value(DateTime.fromMillisecondsSinceEpoch(g.guncellendiWallMs!, isUtc: true))
               : const Value.absent(),
