@@ -259,9 +259,14 @@ yapacağı bir iş de yoktur. `by-id` karşılığının olmaması da aynı kara
 
 ### 3. Açık borçlar — sayı gizlenmiyor
 
-`BORCLAR.md` teslim anında **97 işaretli satır** taşıyor; bunların **53'ü `B-…` kimlikli kalem**:
-**23 🔴 · 27 🟡 · 3 🟢 (kapanmış)**. En kalabalık aileler `B-O62` (8) · `B-O63` (6) · `B-O53` (5) ·
-`B-O64` (5) · `B-W3b` (5).
+`BORCLAR.md` teslim anında **108 işaretli satır** taşıyor; bunların **60'ı `B-…` kimlikli kalem**:
+**24 🔴 · 33 🟡 · 3 🟢 (kapanmış)**. En kalabalık aileler `B-O71` (12) · `B-O62` (9) · `B-O63` (6) ·
+`B-W3b` (6) · `B-O53` (5) · `B-O64` (5).
+
+🔴 **Sayım yöntemi burada yazılıdır ki bayatladığında ölçülebilsin** (14 Ağu 2026): *işaretli satır* =
+`BORCLAR.md`'de 🔴/🟡/🟢 geçen satır · *kalem* = ``**`B-…`**`` biçiminde geçen **tekil** kimlik ·
+*renk dağılımı* = ``- <renk> **`B-…`**`` ile başlayan satırlar. Bu sayıların **mekanik kapısı yoktur**
+(`araclar/sayi-tazeligi.py` yalnız *"altın küme N/M"* iddialarını ölçer) — yazılı borç: `B-O71-4`.
 
 Bu liste **kısaltılmadı, yumuşatılmadı ve teslimden önce temizlenmedi.** Bu deponun sözleşmesi
 şudur: *beyan edilmiş sınır kabul edilir, gizlenmiş sınır edilmez.* Bir borcun yazılı olması onun

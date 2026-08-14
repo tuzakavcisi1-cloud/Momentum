@@ -52,10 +52,7 @@
 
 🟢 **KAPANDI, ANLATIMLARI ARŞİVDE (K73):** K89–K100 · `A10` · `GOREV-A9c` · ①–④ (`K111` · `K112`/`K113` · `K115`/`K116`); kanıtlar `KANIT/`'ta, paket borçları `BORCLAR.md`'de.
 
-🟢 **⑤–⑩ KABUL EDİLDİ, ANLATIMLARI ARŞİVDE (K73):** `A11` (K121) · `A12` (K124) · `A13` (K129/K130) ·
-`SS2` (K136) · `W1` (K137/K138) · `W2` (K142/**K144**) — hepsini Onur kilitledi, her kriter **Cowork'ün
-KENDİ koşumuyla** (K26). Hükümler `KANIT/{A11/07,A12/04,A13/10,SS2/04,W1/01,W2/05}-*KABUL*`; `W2`'nin
-kriter-4 sapması **hafızada** (`K145` ERRATUM), sapma **beyanlı**.
+🟢 **⑤–⑩ KABUL EDİLDİ, ANLATIMLARI ARŞİVDE (K73):** `A11`·`A12`·`A13`·`SS2`·`W1`·`W2` (K121·K124·K129/130·K136·K137/138·K142/**K144**); hükümler `KANIT/{A11/07,A12/04,A13/10,SS2/04,W1/01,W2/05}-*KABUL*`, `W2` kriter-4 sapması ve `K145` ERRATUM **hafızada**.
 🔴 **Kapanmayan sınırlar:** `B-W1-1`…`B-W1-7` + `KANIT/W2/05-…` §4 · dört `W1` mutantı (`M195`–`M197`,
 `M199`) **yeniden KOŞULMADI** · **cihazda NAT** ⇒ SignalR yeniden bağlanma **hiç egzersiz edilmedi**.
 🔴 **`verify.ps1` ↔ çalışan `Momentum.Api` çakışması: kanonik metin `ORTAM.md`'de.**
@@ -66,21 +63,13 @@ koşuyor; hüküm `KANIT/W3b/06-KABUL-HUKMU-COWORK.md`, anlatım **hafızada**. 
 
 🔒 **MSSQL göçü PARK EDİLDİ (Onur, 1 Ağu 2026):** ① cihaz senkron kanıtı ② hedef yığın MSSQL —
 **birlikte** sağlanınca açılır. Maliyet ve `Rule3` **arşivde**.
-🟢 **README VAR (o63, `K162`)** — mimari · **ölçülmüş** çalıştırma sırası · **iki zorunlu şart** · ölçüm disiplini · beyan edilmiş sınırlar; **vitrin görseli o71'de eklendi** (`K190`). 🔴 Depo görünürlüğü **yazılmaz, ÖLÇÜLÜR**: *"public"* iddiası o47'de çürüdü, o53'te **PRIVATE** ölçüldü; 🟢 **13 Ağu 2026'da (o71) anonim erişimle PUBLIC ölçüldü** (`K191`) — kural değişmedi, ölçüm tarihlidir.
+🟢 **README VAR** (o63 `K162`; vitrin görseli `K190`, canlı demo bölümü + borç sayımı `K194`/`K195`). 🔴 Depo görünürlüğü **yazılmaz, ÖLÇÜLÜR** — 13 Ağu 2026'da anonim erişimle **PUBLIC** ölçüldü (`K191`); kural değişmedi, **ölçüm tarihlidir**.
 
-🟢 **o64–o66 anlatımı HAFIZADA;** budanan metinler `_SILINECEKLER/o64|o65|o66/`'da.
-🔒 **`ADR 0004` KAPSAM DIŞI (`K175`①, o68):** gövde · `adr-hukum-kapisi.py` onarımı · kapı zinciri **PARK**.
-o66'nın `K170` kilidi ve o68'in ADR 0004 onarım kilitleri **HÜKÜMSÜZ**; üç düşüşün (`K164`·`K165`·`K169`)
-anlatımı ve `K170`'in üç ayağı **hafızada** (o69'da budandı ⇒ `_SILINECEKLER/o69/`).
+🔒 **`ADR 0004` KAPSAM DIŞI (`K175`①):** gövde · `adr-hukum-kapisi.py` onarımı · kapı zinciri **PARK**; `K170` ve o68'in onarım kilitleri **HÜKÜMSÜZ**. o64–o66 ve üç düşüşün (`K164`·`K165`·`K169`) anlatımı **hafızada**, budanan metinler `_SILINECEKLER/o64…o69/`'da.
 
-🟢 **BACKEND CI KABUL EDİLDİ (`K178`) — `D-A13-4` KAPANDI.** On kriterin **onu da** geçti;
-kriter 9 `ci #25` (`e80cb19`, `main`) **Success**, dört çapa logda **birebir**, **120/120** test
-(`Persistence.Tests` 56/56 gerçek Postgres). Hükümler `KANIT/CI/10` + `KANIT/CI/11`.
-🔴 `B-O63-2` **AÇIK**.
+🟢 **BACKEND CI KABUL EDİLDİ (`K178`) — `D-A13-4` KAPANDI:** on kriterin onu da geçti, `ci #25` Success, **120/120** test; hükümler `KANIT/CI/10`+`KANIT/CI/11`, anlatım **hafızada**. 🔴 `B-O63-2` **AÇIK**.
 
-🟢 **`SS2` TAMAMI KABUL EDİLDİ.** UI o68'de (`K174`), **kriter 8 uçtan uca o71'de** (`K187`, `babdee8`+`0b73d59`): B çevrimdışı `B1` ⇒ A **225,7 sn sonra** `A1` ⇒ B çevrimiçi, **bekleyen op'u varken** çakışma doğdu, rozet göründü ⇒ *Benimkini tut* projeksiyonu da yazdı, sunucuya ulaştı. Hüküm `KANIT/SS2/13-KABUL-HUKMU-COWORK-kriter8-UCTAN-UCA.md`. 🔴 Beyanlı sınır: çakışma **ekranının canlı görseli** yok (`B-O71-5`) · A'nın ekranı `[DOĞRULANMADI]`.
-(7/7 · **5/5 mutant** · `M7` ölmedi). 🟢 **`D-SS2-11` KAPANDI** (`K187`); eski *"kriter 8 AÇIK"* satırı **bayattı, budandı** (o71).
-o70'in iki düşen kâğıt turu (`K180`), `K181`/`K182` erratumu ve *“backend logundan oku”* kilidinin ölçümle düşüşü: **hafızada** (`KANIT/SS2/06`–`10`).
+🟢 **`SS2` TAMAMI KABUL EDİLDİ** — UI o68 (`K174`), **kriter 8 uçtan uca o71** (`K187`; `D-SS2-11` **KAPANDI**). Hüküm `KANIT/SS2/13-…-UCTAN-UCA.md`, anlatım ve o70'in düşen turları **hafızada** (`KANIT/SS2/06`–`10`). 🔴 Beyanlı sınır: çakışma ekranının canlı görseli yok (`B-O71-5`), A'nın ekranı `[DOĞRULANMADI]`.
 
 🟢 **CANLI DEMO YAYINDA (o71, `K193`/`K194`):** `https://tuzakavcisi1-cloud.github.io/Momentum/` —
 `.github/workflows/pages.yml` (**yalnız `workflow_dispatch`**; `push:` tetiği bilerek eklenmedi).
