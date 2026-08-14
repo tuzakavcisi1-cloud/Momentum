@@ -1,6 +1,6 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 7/10 · kutu 21 Ağu 2026 · `ci #42` YEŞİL (589/589) · `pages #4` YEŞİL · canlı tur KOŞULDU · yerelleştirme commit BEKLİYOR · son ölçüm 14 Ağu 2026, oturum 74**
+**BİTTİ: 7/10 · kutu 21 Ağu 2026 · `ci #43` YEŞİL (589/589) · `pages #5` YEŞİL · canlı doğrulandı · son ölçüm 14 Ağu 2026, oturum 74**
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
 > ② bu dosya ③ CI durumu — **Cowork bunu claude-in-chrome ile cihazdaki Chrome'dan okur**
@@ -13,32 +13,31 @@
 --fatal-infos` *No issues found* · `flutter test` **589/589** · `ci #42` yeşil ·
 `pages #4` yayınlandı · canlı tur koşuldu (aşağıda).
 
-Kilitlenen tasarım (Onur): ① kodu Cowork yazar, commit+push Onur'da · ② öncelik
-ÜÇ seviye + yok (`1=Yüksek, 2=Orta, 3=Düşük`) · ③ son tarih YALNIZ GÜN · ④ kalem
-ikonu birleşik diyaloğa genişler, **satıra YENİ İKON EKLENMEZ**, değerler başlığın
-altındaki meta satırında görünür.
+Kilitlenen tasarım (Onur): ① öncelik ÜÇ seviye + yok (`1=Yüksek, 2=Orta,
+3=Düşük`) · ② son tarih YALNIZ GÜN · ③ kalem ikonu birleşik diyaloğa genişler,
+**satıra YENİ İKON EKLENMEZ**, değerler başlık altındaki meta satırında görünür.
 
 - **Şema v5→v6:** `Gorevler`e `oncelik` (`int?`) + `sonTarih` (`DateTime?`).
 - **Depo:** `Oncelik` enum + saf dönüşümler; `Yazim<T>` ("değişmedi" ≠ "temizlendi");
   `ayrintilariGuncelle()` = TEK `WireOp` + TEK `transaction()`, **yalnız değişen
   alan tele konar** (değişmemişi yeniden damgalamak uzak yazımı LWW ile ezerdi).
-- **Tel biçimi backend kaynağından ÖLÇÜLDÜ:** `priority` = ondalık tamsayı dizesi,
-  `dueAt` = `DateTime.utc(y,m,d).toIso8601String()`.
+- **Tel biçimi backend kaynağından ÖLÇÜLDÜ:** `priority` ondalık tamsayı dizesi,
+  `dueAt` = `DateTime.utc(y,m,d)` ISO-8601.
 - **TAKVİM GÜNÜ PİNİ:** tek normalizasyon noktası `GorevSatiri.takvimGunu()`;
   `isUtc`/`hour` iddialarıyla env-bağımsız ölçülüyor (CI UTC koşar, statik
   `.toLocal()` taraması tek başına yetmez).
 - **Uzak yol:** `fields:priority`/`fields:dueAt` bağlandı; "geldi mi" bayrağı
   sayesinde uzaktan TEMİZLEME (`value:null`) düşmüyor.
-- **R4 tabanı BİLEREK 20 → 25**; **`Gorev` alan pini 7 → 9**. İkisi de varsayılmadı.
+- **R4 tabanı 20 → 25**, **`Gorev` alan pini 7 → 9** — ikisi de bilerek, ölçülerek.
 
 ### İki tur denetim — ikisi de bulgu üretti
 
 **Tur 1 (2 bağımsız denetçi, kâğıt üstünde):** BLOKER yok; ikisi de **bağımsız
 olarak aynı çökmeyi** buldu — `showDatePicker` `initialDate` aralık dışında
-kalabiliyordu (uzak istemci herhangi bir tarih yazabilir), tarih düğmesi hiçbir
-şey yapmıyordu. **Kelepçe eklendi.** Ayrıca: takvim pininin yazma ayağı
-korumasızdı, ekran kablosu hiç ölçülmüyordu, "meta yoksa çizilmez" boş iddiaydı,
-başlık "değişmedi" kararı kırpmaya duyarlıydı — dördü de kapatıldı.
+kalabiliyordu (uzak istemci herhangi bir tarih yazabilir) ⇒ tarih düğmesi ölüydü.
+**Kelepçe eklendi.** Ayrıca: takvim pininin yazma ayağı korumasızdı, ekran
+kablosu ölçülmüyordu, "meta yoksa çizilmez" boş iddiaydı, başlık "değişmedi"
+kararı kırpmaya duyarlıydı — dördü de kapatıldı.
 
 **Tur 2 (`flutter test` — KOŞAN ARTEFAKT):** 4 düşüş. 🔴 **Biri GERÇEK
 REGRESYONDU ve tur 1 onu KAÇIRDI:** `v1→v2` adımındaki `alterTable`, güncel (v6)
@@ -71,16 +70,14 @@ Onur'un kararı (14 Ağu): sayaç 7/10, bu ayak sınır olarak yazılır.
 *'Select date' / 'August 2026' / 'Cancel' / 'OK'* çiziyordu (delege verilmezse
 Flutter yalnız en_US taşıyan `DefaultMaterialLocalizations`a düşer).
 `flutter_localizations` (SDK paketi, pub.dev'de yok — /api 404) + sabit
-`Locale('tr')` eklendi. Kırmızı çizgi ölçüldü: transitif **`intl` 0.20.3 ·
-advisory 0 · BSD-3-Clause** (dart-lang/i18n).
+`Locale('tr')` eklendi; `pages #5` sonrası CANLIDA DOĞRULANDI (takvim
+"Tarih seçin / Ağustos 2026 / İptal / Tamam", hafta Pazartesi'den başlıyor). Kırmızı çizgi ölçüldü: transitif **`intl` · advisory 0
+(paket geneli) · BSD-3-Clause** (dart-lang/i18n). *Erratum:* ilk beyan `0.20.3` (pub.dev'in
+en günceli) diyordu; `pub get` **`0.20.2`** çözdü — kanonik `pubspec.lock`tur.
 
 ## Sıradaki iş
 
-1. **Yerelleştirme commit'i (yarım kalan):** `pubspec.yaml` + `lib/main.dart`
-   cihaza YAZILDI ama `flutter pub get` / `analyze` / `test` / commit / push /
-   `pages` HENÜZ KOŞULMADI. Sıra: `flutter pub get` (yeni bağımlılık) →
-   `analyze --fatal-infos` → `test` → commit+push → `pages` tıklaması (insanda).
-   Doğrulama: demoda tarih seçici Türkçe mi.
+1. `pubspec.yaml` yorum erratumu + bu dosya commit BEKLİYOR (kod değişmedi).
 2. Sonraki dilim (ODEV §4a): **etiket ekleme + etikete göre süzme** — backend
    `tags` OR-Set olarak zaten hazır (`FieldStrategyRegistry`); istemcide OR-Set
    kanalı `uzak_degisiklik_uygulayici.dart`ta BİLİNÇLİ OLARAK yok sayılıyor
@@ -91,7 +88,9 @@ advisory 0 · BSD-3-Clause** (dart-lang/i18n).
 1. 🔴 **Flutter komutu repo kökünden koşulursa yalan söyler.** Doğru dizin
    `src/client`. PowerShell 5.1'de `&&` yok, `;` yaz.
 2. **Canlı ölçümde tıklama tuzağı:** hover'sız sentetik tıklama ve odaklı düğmede
-   Enter `TextButton`'ı tetiklemedi; **hover → tıklama** çalıştı.
+   Enter `TextButton`'ı tetiklemedi; **hover → tıklama** çalıştı. o74 EKİ: hover'lı
+   tıklama bile bazen İKİ kez gerekiyor (ilki yalnız ODAK verir) ve diyalogdaki
+   `İptal` hiç tetiklenmedi — modalı **Escape** kapattı.
 3. **Kapı bütçesi ihlali**; teslimi kırmamak bütçeyi kapatmaktan önce gelir.
 4. **Kimlik `devUserId` ile taşınıyor** ⇒ gerçek zamanlı işbirliği iki gerçek
    kullanıcıyla gösterilemez (kapsam dışı).
