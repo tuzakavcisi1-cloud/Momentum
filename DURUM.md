@@ -1,6 +1,6 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 6/10 · kutu 21 Ağu 2026 · `analyze` temiz · **589/589 test geçti** · commit BEKLİYOR · son ölçüm 14 Ağu 2026, oturum 74**
+**BİTTİ: 7/10 · kutu 21 Ağu 2026 · `ci #42` YEŞİL (589/589) · `pages #4` YEŞİL · canlı tur KOŞULDU · yerelleştirme commit BEKLİYOR · son ölçüm 14 Ağu 2026, oturum 74**
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
 > ② bu dosya ③ CI durumu — **Cowork bunu claude-in-chrome ile cihazdaki Chrome'dan okur**
@@ -9,9 +9,9 @@
 
 ## Ne yapıldı (oturum 74 · 14 Ağu 2026)
 
-**Öncelik + son tarih dilimi yazıldı, derlendi ve KOŞULDU:** `flutter analyze
---fatal-infos` → *No issues found*; `flutter test` → **589/589**. Canlı ayak
-(web adresinde uçtan uca) HENÜZ ÖLÇÜLMEDİ ⇒ sayaç hâlâ **6/10**.
+**Öncelik + son tarih dilimi KAPANDI — sayaç 6/10 → 7/10.** `analyze
+--fatal-infos` *No issues found* · `flutter test` **589/589** · `ci #42` yeşil ·
+`pages #4` yayınlandı · canlı tur koşuldu (aşağıda).
 
 Kilitlenen tasarım (Onur): ① kodu Cowork yazar, commit+push Onur'da · ② öncelik
 ÜÇ seviye + yok (`1=Yüksek, 2=Orta, 3=Düşük`) · ③ son tarih YALNIZ GÜN · ④ kalem
@@ -52,15 +52,39 @@ iddia aynı güçte yeniden yazıldı).
 **DERS (kanla):** kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ. "Denetim yalnız
 koşan artefakta" kuralı bu turda kendi lehine kanıt üretti.
 
+### Canlı tur (cihazdaki Chrome, Pages demosu, 14 Ağu 2026)
+
+**Ölçülenler — hepsi yeşil:** v5→v6 migration OPFS'te FİİLEN koştu ve o72'den
+kalan görev korundu · kalem ikonu *"Görevi düzenle"* birleşik diyaloğunu açtı
+(başlık + dört öncelik çipi + son tarih) · *Yüksek* seçildi · tarih seçici açıldı,
+21 Ağu seçildi, düğmede **21 Ağu 2026** göründü · Kaydet sonrası satırda meta:
+**"Yüksek · 21 Ağu 2026"**, başlığın ALTINDA, yüksek öncelik renginde · **sekme
+yenilendikten sonra da durdu ve GÜN KAYMADI** (21 → 21).
+
+**ÖLÇÜLEMEDİ:** ölçütün üçüncü ayağı *"ikinci istemciye eşitlenir"* — Pages
+demosunda backend YOKTUR (bilinen sınır 6), rozet *Gönderiliyor → Çevrimdışı*
+akışına düştü. Senkron borusunun kendisi BİTTİ maddeleri 7 ve 8'in konusudur ve
+iki yeni alanın o boruya bağlandığı 589 testte ölçülmüştür; **canlı değildir.**
+Onur'un kararı (14 Ağu): sayaç 7/10, bu ayak sınır olarak yazılır.
+
+**Turda çıkan bulgu — düzeltildi:** `showDatePicker` ürün Türkçe olmasına rağmen
+*'Select date' / 'August 2026' / 'Cancel' / 'OK'* çiziyordu (delege verilmezse
+Flutter yalnız en_US taşıyan `DefaultMaterialLocalizations`a düşer).
+`flutter_localizations` (SDK paketi, pub.dev'de yok — /api 404) + sabit
+`Locale('tr')` eklendi. Kırmızı çizgi ölçüldü: transitif **`intl` 0.20.3 ·
+advisory 0 · BSD-3-Clause** (dart-lang/i18n).
+
 ## Sıradaki iş
 
-1. Commit (**yol belirterek**, `git add -A` YASAK) + push.
-2. `pages` workflow_dispatch — o tek tıklama insanda.
-3. **BİTTİ ÖLÇÜTÜ (canlı):** web adresinde bir göreve öncelik + son tarih verilir,
-   sekme kapanıp açılınca DURUR, ikinci istemciye EŞİTLENİR. Yeşilse **7/10**.
-   Otomasyonda **hover → tıklama** sırası (bilinen sınır 2).
-4. Sonraki dilim (ODEV §4a): **etiket ekleme + etikete göre süzme** — backend
-   `tags` OR-Set olarak zaten hazır (`FieldStrategyRegistry`).
+1. **Yerelleştirme commit'i (yarım kalan):** `pubspec.yaml` + `lib/main.dart`
+   cihaza YAZILDI ama `flutter pub get` / `analyze` / `test` / commit / push /
+   `pages` HENÜZ KOŞULMADI. Sıra: `flutter pub get` (yeni bağımlılık) →
+   `analyze --fatal-infos` → `test` → commit+push → `pages` tıklaması (insanda).
+   Doğrulama: demoda tarih seçici Türkçe mi.
+2. Sonraki dilim (ODEV §4a): **etiket ekleme + etikete göre süzme** — backend
+   `tags` OR-Set olarak zaten hazır (`FieldStrategyRegistry`); istemcide OR-Set
+   kanalı `uzak_degisiklik_uygulayici.dart`ta BİLİNÇLİ OLARAK yok sayılıyor
+   (`sets` kanalı, SINIR D2/1.4) ⇒ o sınır bu dilimde açılacak.
 
 ## Bilinen sınırlar
 
@@ -73,7 +97,10 @@ koşan artefakta" kuralı bu turda kendi lehine kanıt üretti.
    kullanıcıyla gösterilemez (kapsam dışı).
 5. **`docs/ADR/0003` kilitli değil** — kâğıt denetlenmez, teslimi bloke etmez.
 6. **Pages demosunda backend yok** ⇒ rozetler "Bu cihazda → Gönderiliyor →
-   Çevrimdışı" akışına düşer; beklenen davranış.
+   Çevrimdışı" akışına düşer; beklenen davranış. **Sonucu:** üç ayaklı canlı
+   ölçütlerin "ikinci istemciye eşitlenir" ayağı Pages'te ASLA ölçülemez —
+   ölçülmesi isteniyorsa yerel backend + iki istemci gerekir (mayın 6/7).
+   Demoda o72/o74 ölçüm görevleri duruyor; değerlendirici onları görür.
 7. **[o74'te ısırdı] Mount'a yazmanın tek yolu YERİNDE yazmaktır.** `unzip -o` ve
    mount'tan dışarı `mv` "Operation not permitted" verir (ikisi de önce SİLMEYİ
    dener). Çalışan yol: `/tmp`e açıp `cat > <hedef>`.

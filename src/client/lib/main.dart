@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_driver/driver_extension.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'ag/gercek_zamanli_sinyal.dart';
 import 'ag/http_senkron_agi.dart';
@@ -82,6 +83,17 @@ class MomentumUygulamasi extends StatelessWidget {
     return MaterialApp(
       title: 'Momentum',
       debugShowCheckedModeBanner: false,
+      // ODEV.md §4(a) canli turunda OLCULDU (o74, Pages demosu): Material'in
+      // YERLESIK diyaloglari (`showDatePicker`) INGILIZCE ciziliyordu --
+      // delege listesi verilmezse Flutter `DefaultMaterialLocalizations`a
+      // duser ve o YALNIZ en_US tasir. Urunun KENDI metinleri zaten
+      // `Metinler`den Turkce geliyordu; ayrisan sey cerceve metinleriydi.
+      // 🔴 `locale` SABIT 'tr' PAZARLIKSIZ: uygulama TEK DILLIDIR. Cihaz
+      // dilini izlemek (locale'i dusurmek) Ingilizce bir cihazda takvimi
+      // yine Ingilizce cizerdi -- kapsam disi degil, YANLIS olurdu.
+      locale: const Locale('tr'),
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [Locale('tr')],
       theme: MomentumTema.olustur(Brightness.light),
       darkTheme: MomentumTema.olustur(Brightness.dark),
       // F5: --dart-define=DURUM_VITRINI=true ile durum vitrini acilir.

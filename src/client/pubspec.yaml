@@ -32,6 +32,16 @@ dependencies:
     sdk: flutter
   flutter_driver:
     sdk: flutter
+  # ODEV.md §4(a) canli turunda OLCULDU (o74): `showDatePicker` urun Turkce
+  # olmasina ragmen 'Select date'/'Cancel'/'OK'/'August 2026' ciziyordu --
+  # delege verilmezse Flutter `DefaultMaterialLocalizations`a (yalniz en_US)
+  # duser. Bu paket Flutter SDK'nin PARCASIDIR (pub.dev'de YOK, /api ucu 404).
+  # KIRMIZI CIZGI (yeni bagimlilik = lisans + CVE) transitif `intl` icin
+  # OLCULDU (14 Ağu 2026, pub.dev /api): intl 0.20.3 · advisory sayisi 0 ·
+  # lisans BSD-3-Clause (dart-lang/i18n, "Copyright 2013, the Dart project
+  # authors").
+  flutter_localizations:
+    sdk: flutter
   drift: ^2.34.2
   drift_flutter: ^0.3.1
   path_provider: ^2.1.6
