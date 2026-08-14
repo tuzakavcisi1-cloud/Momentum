@@ -36,6 +36,7 @@ Widget _sarmalayici({
   required SenkronDurumTuru durum,
   bool cakismaVarMi = false,
   ValueChanged<String>? onBaslikDuzenlendi,
+  VoidCallback? onSil,
 }) {
   return MaterialApp(
     home: Builder(
@@ -57,6 +58,7 @@ Widget _sarmalayici({
                   senkronDurumu: durum,
                   cakismaVarMi: cakismaVarMi,
                   onBaslikDuzenlendi: onBaslikDuzenlendi,
+                  onSil: onSil,
                 ),
               ),
             ),
@@ -223,6 +225,43 @@ void main() {
             reason:
                 'YALNIZ cakismaVarMi (onBaslikDuzenlendi NULL) VARKEN 420dp '
                 'YATAY kalmali -- 420dp testinin TABAN karsilastirmasi.',
+          );
+        },
+      );
+    },
+  );
+
+  group(
+    'IS-EMRI-o72 -- silme ikonu `sabitler` KALDIRACI (M-o72-2, M77b-sinifi)',
+    () {
+      // AYNI kaldirac deseni IS-EMRI-o68'in onBaslikDuzenlendi grubuyla:
+      // onSil'in eklediği terim (MOlcu.dokunmaHedefi + MBosluk.xs) BUYUKLUK
+      // olarak AYNIDIR ⇒ 370dp/1.0x/gonderilmemis esigi AYNEN gecerlidir
+      // (64+96+185,5=345,5<370 NULL iken; 116+96+185,5=397,5>370 VARKEN).
+      // Gerekce (is emri D4): `_dikeyMi`nin `sabitler` toplami onSil'in
+      // dokunma hedefini SAYMAZSA, OLCULEN duzen ile CIZILEN duzen sessizce
+      // ayrisir -- M-o72-2 tam bunu hedefler.
+      testWidgets(
+        '370dp + 1.0x + gonderilmemis + onSil VAR ⇒ DIKEY (kaldirac, D4 urun yolu)',
+        (tester) async {
+          await tester.pumpWidget(
+            _sarmalayici(
+              genislik: 370,
+              olcek: 1.0,
+              durum: SenkronDurumTuru.gonderilmemis,
+              onSil: () {},
+            ),
+          );
+          await tester.pump();
+          expect(
+            _duzenColumn(),
+            findsOneWidget,
+            reason:
+                'AYNI genislikte (370dp) onSil VARKEN DIKEY bekleniyordu -- '
+                '`_dikeyMi`nin `sabitler` toplami silme ikonunun 48dp+4dp '
+                'genisligini SAYMAZSA (ya da ikon CIZILDIGI HALDE formul '
+                'bunu gormezse) bu test SESSIZCE DUSER -- M77b-sinifi '
+                'kusurun tam kendisi (is emri D4/M-o72-2).',
           );
         },
       );

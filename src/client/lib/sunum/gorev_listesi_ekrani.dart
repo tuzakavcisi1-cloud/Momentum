@@ -152,6 +152,12 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
                             ),
                           ),
                         ),
+                        // IS-EMRI-o72: `onBaslikDuzenlendi`nin BIREBIR AYNI
+                        // deseni (K112: once YEREL YAZMA, sonra itme --
+                        // `_yerelYaz` sarmalayicisi ATLANMAZ).
+                        onSil: () => unawaited(
+                          _yerelYaz(() => widget.depo.sil(gorunum.gorev.id)),
+                        ),
                       );
                     },
                   );

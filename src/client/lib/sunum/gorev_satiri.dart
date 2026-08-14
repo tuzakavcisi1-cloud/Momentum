@@ -30,6 +30,10 @@ class GorevSatiri extends StatelessWidget {
   // -- mevcut cagri yerleri ve testler bunu hic bilmez (D-SS2-8'in `depo`
   // alanindaki emsalin AYNISI, ayni turda ayni desen tekrar kullanildi).
   final ValueChanged<String>? onBaslikDuzenlendi;
+  // IS-EMRI-o72: gorev silme. `null` ise ikon HIC CIZILMEZ -- mevcut cagri
+  // yerleri ve testler bunu hic bilmez (`onBaslikDuzenlendi` ile AYNI desen,
+  // ayni gerekce).
+  final VoidCallback? onSil;
 
   const GorevSatiri({
     super.key,
@@ -39,6 +43,7 @@ class GorevSatiri extends StatelessWidget {
     this.cakismaVarMi = false,
     this.depo,
     this.onBaslikDuzenlendi,
+    this.onSil,
   });
 
   /// GOREV-A7 D-A7-3: baslik icin ayrilan ASGARI genislik. 96dp'dir ve
@@ -99,7 +104,12 @@ class GorevSatiri extends StatelessWidget {
         MBosluk.s +
         MBosluk.s +
         (cakismaVarMi ? MOlcu.dokunmaHedefi + MBosluk.xs : 0) +
-        (onBaslikDuzenlendi != null ? MOlcu.dokunmaHedefi + MBosluk.xs : 0);
+        (onBaslikDuzenlendi != null ? MOlcu.dokunmaHedefi + MBosluk.xs : 0) +
+        // IS-EMRI-o72 D4: silme ikonu da `_rozetler()`e eklenir -- BURAYA
+        // eklenmezse OLCULEN duzen (bu formul) ile CIZILEN duzen sessizce
+        // ayrisir (M77b sinifi, ayni gerekce onBaslikDuzenlendi icin
+        // yukarida yazildigi gibi).
+        (onSil != null ? MOlcu.dokunmaHedefi + MBosluk.xs : 0);
 
     return sabitler + baslikAsgari + rozetIstedigi > maxGenislik;
   }
@@ -203,6 +213,11 @@ class GorevSatiri extends StatelessWidget {
         SizedBox(width: MBosluk.xs),
         _duzenleIkonu(context),
       ],
+      // IS-EMRI-o72: eylem ikonlari arasinda sira duzenle -> sil.
+      if (onSil != null) ...[
+        SizedBox(width: MBosluk.xs),
+        _silIkonu(context),
+      ],
     ];
   }
 
@@ -257,6 +272,64 @@ class GorevSatiri extends StatelessWidget {
       builder: (_) => _BaslikDuzenleDiyalogu(baslangicBasligi: gorev.baslik),
     );
     if (yeniBaslik != null) onKaydet(yeniBaslik);
+  }
+
+  /// IS-EMRI-o72: `_duzenleIkonu` ile AYNI iskelet (D3). `tooltip`
+  /// ZORUNLUDUR -- ayni gerekce yukarida `_duzenleIkonu`'nun belgesinde
+  /// yazili: disardan saran bir Semantics(label:) burada da ISE YARAMAZ
+  /// (IconButton kendi ic semantics dugumunu tasir, o68'de olculdu).
+  Widget _silIkonu(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.delete_outline, size: MOlcu.ikon),
+      tooltip: Metinler.gorevSil,
+      constraints: BoxConstraints.tightFor(
+        width: MOlcu.dokunmaHedefi,
+        height: MOlcu.dokunmaHedefi,
+      ),
+      padding: EdgeInsets.zero,
+      onPressed: () => _silOnayDiyaloguAc(context),
+    );
+  }
+
+  /// IS-EMRI-o72 D5: onay diyaloğu -- `showDialog<bool>`, TextEditingController
+  /// YOK ⇒ StatefulWidget'a gerek yok (o68'in dispose yarisi burada hic
+  /// DOGMAZ, cunku govde hicbir controller tasimaz). pop(true) donerse
+  /// onSil cagrilir; iptal / disari dokunma (pop(null)) ⇒ hicbir sey olmaz.
+  Future<void> _silOnayDiyaloguAc(BuildContext context) async {
+    final onaylandi = await showDialog<bool>(
+      context: context,
+      builder: (dialogBaglami) => AlertDialog(
+        title: Text(
+          Metinler.gorevSil,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        content: Text(
+          Metinler.gorevSilOnay,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogBaglami).pop(),
+            child: Text(
+              Metinler.iptalDugmesi,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogBaglami).pop(true),
+            child: Text(
+              Metinler.gorevSil,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+    if (onaylandi == true) onSil!();
   }
 }
 

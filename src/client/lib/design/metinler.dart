@@ -85,4 +85,10 @@ class Metinler {
   static const String baslikDuzenle = 'Başlığı düzenle';
   static const String iptalDugmesi = 'İptal';
   static const String kaydetDugmesi = 'Kaydet';
+
+  // IS-EMRI-o72 -- gorev silme eylemi (ikon + onay diyaloğu). F6'nin 13
+  // dizgesine DAHIL DEGIL (ayni EK deseni, IS-EMRI-o68 emsali). Ayni dize
+  // hem ikonun tooltip'i hem diyalog basligi olarak kullanilir.
+  static const String gorevSil = 'Görevi sil';
+  static const String gorevSilOnay = 'Bu görev silinsin mi?';
 }

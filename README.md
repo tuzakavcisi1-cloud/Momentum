@@ -71,9 +71,9 @@ değil, **ölçüm kanıtıdır**. Ne aradığınıza göre:
 | **Ürün kodu** | `src/backend/` (.NET, 4 katman) · `src/client/lib/` (Flutter) |
 | **Testler** | `tests/` (backend, **127** test) · `src/client/test/` (istemci, 549 test) |
 | **Mimari kararlar** | `docs/ADR/` |
-| **Ölçüm araçları (kapılar)** | `araclar/` — her biri `--altin-kume` ile **kendini kanıtlar** |
+| **Ölçüm araçları** | `araclar/` — CI'nın koştuğu `verify.ps1` + bağımlılık/yayın araçları; oturum kapıları `arsiv/araclar/` altına alındı (14 Ağu 2026) |
 | **Ham ölçüm kanıtları** | `KANIT/` — **1.316 izlenen dosya, 23 MB** |
-| **Süreç ve karar arşivi** | `PROJE_HAFIZA.md` (append-only) · `BORCLAR.md` · `DURUM.md` |
+| **Esaslar ve durum** | `CLAUDE.md` (tek talimat dosyası) · `DURUM.md` (canlı durum) · süreç tarihçesi `arsiv/` |
 
 **`KANIT/` nedir:** her kabul hükmünün, her düşmüş denetimin ve her mutant koşumunun **ham
 çıktısı**. Dosya adları arasında `…-DENETIMDE-DUSTU…`, `…-KILITLENEMEDI…` gibi kayıtlar görürsünüz —
@@ -217,7 +217,7 @@ kullanıcısı yoktur. Karar **açıkça** alınmıştır, sessizce atlanmamış
 Bu depoda bir iddia üç yoldan biriyle yaşar: **ölçülmüştür**, **`[DOĞRULANMADI]` işaretlidir**, ya
 da **borç olarak yazılmıştır**. Dördüncü yol yoktur.
 
-- **Kapılar kendini kanıtlar.** `araclar/` altındaki her ölçüm aracının bir **altın kümesi** vardır
+- **Kapılar kendini kanıtladı.** `arsiv/araclar/` altındaki her ölçüm aracının bir **altın kümesi** vardır
   ve `--altin-kume` ile koşar: temizde susmalı, kirlide ısırmalı. Kanıtlamayan araç kullanılmaz.
 - **Kör kapı yoktur.** Bir kuralın kapısı varsa, o kapının **ısırdığını** bir **mutant** kanıtlar —
   kuralı bilerek bozan, kapının kırmızı verdiğini ölçen ve sonra geri alan bir değişiklik.
@@ -226,8 +226,9 @@ da **borç olarak yazılmıştır**. Dördüncü yol yoktur.
   hâlde, bağımsız denetçiler onu kırdı ve araç **teslim edilmedi**.
 - **Ölçemediğine hüküm verilmez.** Ölçülemeyen şey *"temiz"* değil **`ÖLÇÜLEMEDİ`**'dir.
 
-Karar arşivi `PROJE_HAFIZA.md` (append-only), açık borçlar `BORCLAR.md`, canlı durum `DURUM.md`,
-ortam mayınları `ORTAM.md`, ölçüm kanıtları `KANIT/`.
+Proje esasları `CLAUDE.md`, canlı durum `DURUM.md`, ölçüm kanıtları `KANIT/`. Süreç tarihçesi —
+karar arşivi, borç · kimlik · kapı · ortam defterleri ve oturum araçları — `arsiv/` altındadır
+(**14 Ağu 2026'da donduruldu**; o tarihten sonra ayrı defter tutulmuyor).
 
 ---
 
@@ -259,14 +260,17 @@ yapacağı bir iş de yoktur. `by-id` karşılığının olmaması da aynı kara
 
 ### 3. Açık borçlar — sayı gizlenmiyor
 
-`BORCLAR.md` teslim anında **108 işaretli satır** taşıyor; bunların **60'ı `B-…` kimlikli kalem**:
+`arsiv/BORCLAR.md` **14 Ağu 2026'da dondurulduğunda 108 işaretli satır** taşıyordu; **60'ı `B-…` kimlikli kalem**:
 **24 🔴 · 33 🟡 · 3 🟢 (kapanmış)**. En kalabalık aileler `B-O71` (12) · `B-O62` (9) · `B-O63` (6) ·
 `B-W3b` (6) · `B-O53` (5) · `B-O64` (5).
 
 🔴 **Sayım yöntemi burada yazılıdır ki bayatladığında ölçülebilsin** (14 Ağu 2026): *işaretli satır* =
-`BORCLAR.md`'de 🔴/🟡/🟢 geçen satır · *kalem* = ``**`B-…`**`` biçiminde geçen **tekil** kimlik ·
-*renk dağılımı* = ``- <renk> **`B-…`**`` ile başlayan satırlar. Bu sayıların **mekanik kapısı yoktur**
-(`araclar/sayi-tazeligi.py` yalnız *"altın küme N/M"* iddialarını ölçer) — yazılı borç: `B-O71-4`.
+`arsiv/BORCLAR.md`'de 🔴/🟡/🟢 geçen satır · *kalem* = ``**`B-…`**`` biçiminde geçen **tekil** kimlik ·
+*renk dağılımı* = ``- <renk> **`B-…`**`` ile başlayan satırlar. Bu sayıların **mekanik kapısı yoktur**.
+
+🔴 **Defter 14 Ağu 2026'da kapatıldı ve yerine defter konmadı.** Yürürlükteki usul (`CLAUDE.md`
+İŞLEYİŞ md.6): bir kalem ya **şimdi yapılır**, ya **kapsamdan kesilip** `CLAUDE.md` §5'e ve buraya
+yazılır, ya **silinir**. Yukarıdaki 108 satır o tarihteki **donmuş** sayımdır; canlı liste değildir.
 
 Bu liste **kısaltılmadı, yumuşatılmadı ve teslimden önce temizlenmedi.** Bu deponun sözleşmesi
 şudur: *beyan edilmiş sınır kabul edilir, gizlenmiş sınır edilmez.* Bir borcun yazılı olması onun
