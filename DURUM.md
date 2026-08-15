@@ -28,8 +28,6 @@ Bulutta yazıldı/koşuldu (Flutter 3.44.6): `analyze --fatal-infos` temiz · **
   Sekiz kilitli kural (Onur, 15 Ağu) o dosyanın başlığındadır — kanonik yer ORASIDIR.
 - **Yazma yolu:** `ekle()` opsiyonel `oncelik`/`sonTarih`/`etiketler` aldı ⇒ dört alan **TEK `WireOp`
   + TEK `transaction`**. Verilmeyen alan tele HİÇ konmaz; boş `tags` deltası yazılmaz (D2).
-- **Ayrıştırma WIDGET'ta** (`GorevEkleAlani`): boş başlık reddi ayrıştırmadan SONRA bakılmalı —
-  `#iş` ham metni boş değildir. Ekranda ayrıştırılsaydı alan temizlenir, başlık sessizce düşerdi.
 - **41 MUTANT ÖLDÜ, sağkalan YOK.** İlk tur 27 (14 ayrıştırıcı + 13 yazma yolu/kablo). **İKİ
   BAĞIMSIZ DENETÇİ** 14 sağkalan daha buldu; hepsi kapatıldı.
 - **DENETİM İKİ ÜRÜN KUSURU ÇIKARDI (düzeltildi, elle doğrulandı):** (a) `int.parse` 64 biti aşan
@@ -44,10 +42,8 @@ Bulutta yazıldı/koşuldu (Flutter 3.44.6): `analyze --fatal-infos` temiz · **
 
 ## Canlı tur (cihaz Chrome, Pages demosu, 15 Ağu 2026 13:44 TSİ — COWORK KOŞTU)
 
-**Üç ayak da yeşil.** (1) Regresyon: dört eski görev + `Tümü`/`iş` şeridi yerinde. (2) Tek satır
-`yarın 17:00 rapor gönder #iş !p1` → satır **"17:00 rapor gönder"**, meta **"Yüksek · 16 Ağu 2026 ·
-#iş"**, alan temizlendi. (3) **Sekme KAPATILIP yeniden açıldı** — satır ve dört alan DURDU.
-Rozet `Gönderiliyor → Çevrimdışı` (bilinen sınır 6).
+**Üç ayak da yeşil.** Regresyon temiz · `yarın 17:00 rapor gönder #iş !p1` → **"17:00 rapor
+gönder"** / **"Yüksek · 16 Ağu 2026 · #iş"** · sekme kapat-aç sonrası dört alan da DURDU.
 
 ## Sıradaki iş
 
@@ -66,7 +62,8 @@ katlaması, Türkçe I/İ) kod yazılmadan ŞIKLARLA kilitlenir.
 6. **Pages demosunda backend yok** ⇒ rozetler "Bu cihazda → Gönderiliyor → Çevrimdışı"ya düşer;
    üç ayaklı ölçütlerin "ikinci istemciye eşitlenir" ayağı Pages'te ASLA ölçülemez.
 7. **Mount'a yazmanın tek yolu YERİNDE yazmaktır** (`unzip -o`/`mv` "Operation not permitted").
-   **[o77 ÖLÇÜLDÜ]** `device_commit_files` mount'a YAZAR ve sha256 birebir tutar (15/15).
+   **[o77 ÖLÇÜLDÜ]** `device_commit_files` mount'a YAZAR, sha256 birebir tutar (15/15) — AMA
+   `.github/workflows/*` **korumalıdır, reddedilir**; iş akışı dosyalarını Onur elle düzenler.
 8. **`pub cache` boşalabiliyor** (`flutter pub get` çözer); `--delete-conflicting-outputs` kaldırıldı.
 9. **Öncelik/son tarih/etiket için ÇAKIŞMA TESPİTİ kapsam dışı:** `kanonikDize` yalnız
    `fields:title` + `groups:completion` tanır. Uzak yolda `DateTime.tryParse` sunucunun
@@ -86,12 +83,15 @@ katlaması, Türkçe I/İ) kod yazılmadan ŞIKLARLA kilitlenir.
     Yeni bir sahte depo yazan, üç parametreyi de kabul etmek ZORUNDADIR.
 19. **[o77 ÖLÇÜLDÜ] `flutter test` `KANIT/slice-3c/02-G2/*.json`i her koşumda YENİDEN YAZAR**
     (yalnız UUID'ler değişir). Bu dört dosya commit'e GİRMEMELİ — `git add` yol belirterek yapılır.
-20. **[o77 KARAR BEKLİYOR] Tamamen ayrıştırılan girdide geri bildirim YOK:** `#iş !p1 yarın`
-    yazılıp Ekle'ye basılırsa görev oluşmaz, alan korunur ama hata metni yoktur. Önceden yalnız
-    BOŞ girdide oluşabilirdi; sınıf genişledi.
-21. **[o77] CI UTC koşar** ⇒ "gece yarısı" ayakları UTC'de zayıf; kritik dikiş sondayla kapatıldı.
-    `ekle`nin `sonTarih`i normalize EDİLMEZ (`ayrintilariGuncelle` ile AYNI sınır; canlı yol
-    güvenli, ayrıştırıcı daima `DateTime.utc(y,m,d)` üretir).
+20. **[o77 KESİLDİ — CLAUDE.md §5]** Tamamen ayrıştırılan girdide geri bildirim YOK: görev
+    oluşmaz, metin alanda kalır, hata metni yoktur.
+20b. **[o77 KESİLDİ — yazılı sınır]** `g13` taşma kapısı ürün konfigürasyonuna KÖR: düzenle/sil
+    ikonlarını hiç geçirmiyor, izole ölçümde rozet ikonlu satırda kırpılıyor (80 px / 262,5 px).
+    Canlıda taşma GÖRÜLMEDİ. Kapı bütçesi ihlalde ⇒ yeni kapı kodu yazılmaz; canlıda ısırırsa
+    (ikinci ısırık) kural doğar.
+21. **[o77] CI `istemci` işi artık `TZ: Europe/Istanbul` koşar** (ölçüldü: takım Istanbul, Midway
+    ve Kiritimati/UTC+14 altında 676/676). `ekle`nin `sonTarih`i normalize EDİLMEZ
+    (`ayrintilariGuncelle` ile AYNI sınır; ayrıştırıcı daima `DateTime.utc(y,m,d)` üretir).
 22. 🔴 **[o77 ÖLÇÜLDÜ] Canlı turda Ctrl+Shift+R YAPMA.** Hard reload drift'in SharedWorker'ını
     öldürüyor ve yeniden kurulamıyor: `drift_worker.js` isteği `pending` asılı kalıyor (aynı URL
     `fetch` ile 200 dönerken). `main()` `runApp`tan ÖNCE DB açılışını beklediği için **ekran

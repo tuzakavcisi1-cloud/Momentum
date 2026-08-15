@@ -12,6 +12,15 @@ defaults:
 jobs:
   istemci:
     runs-on: ubuntu-latest
+    # [Onur, 15 Agu 2026] Kosucu UTC'dir; "gece yarisi devrilmesi" ayaklari
+    # orada VAKUMDUR (yerel == UTC olunca iki takvim gunu ayrisamaz). Testler
+    # gercek kullanicinin saat diliminde kosar.
+    # OLCULDU (15 Agu 2026, 19:24 UTC -- 676/676 ucunde de yesil):
+    #   Europe/Istanbul  · Pacific/Midway (UTC-11, ayni takvim gunu)
+    #   Pacific/Kiritimati (UTC+14) -- yerel TARIH, UTC tarihinden FARKLI:
+    #   UTC 15 Agu 19:24 iken yerel 16 Agu 09:24. Gun ayrisma ayagi BUDUR.
+    env:
+      TZ: Europe/Istanbul
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2

@@ -3,17 +3,15 @@
 
 > Bu dosya ≤ 8 KB kalır ve projenin **TEK talimat dosyasıdır**; yanında tek `DURUM.md` yaşar
 > (≤ 8 KB, yerinde güncellenir: ne yapıldı · sıradaki iş · bilinen sınırlar).
-> `arsiv/` append-only tarihçedir ve **AÇILIŞTA OKUNMAZ**: oradaki eski defterlerin (hafıza, borç,
-> kimlik, kapı, ortam, tasarım, radar, iş emirleri, oturum araçları, eski CLAUDE/DURUM) hükmü
+> `arsiv/` append-only tarihçedir ve **AÇILIŞTA OKUNMAZ**: oradaki eski defterlerin hükmü
 > **kalkmıştır** — yalnız *"bu karar neden alındı?"* diye sorulunca açılır. Yeni canlı defter AÇILMAZ.
 > Bu iki dosya için kapı, mutant, altın küme yazılmaz; gözle denetlenir.
 
 ## 1. NE
 
-Çok platformlu görev yönetimi (to-do): **Flutter istemci** (Web + Android canlı, iOS yalnız CI'da
-derlenir — Mac yok) + **N-katmanlı .NET/ASP.NET Core** + **PostgreSQL**. Bir yazılım şirketinin
-**işe-alım/portfolyo ödevi**; odak mimari ve kod kalitesi. Kapsam otoritesi **`docs/ODEV.md`**.
-Canlı demo README'de.
+Çok platformlu görev yönetimi (to-do): **Flutter** (Web + Android canlı, iOS yalnız CI'da derlenir
+— Mac yok) + **N-katmanlı .NET/ASP.NET Core** + **PostgreSQL**. İşe-alım/portfolyo ödevi; odak
+mimari ve kod kalitesi. Kapsam otoritesi **`docs/ODEV.md`**. Canlı demo README'de.
 
 ## 2. BİTTİ LİSTESİ (kutu **21 Ağu 2026** · sayaç DURUM.md ilk satırı)
 
@@ -28,45 +26,46 @@ Canlı demo README'de.
 - [x] Değerlendirici uygulamayı canlı adresten açar; tema sistemin açık/karanlık ayarına uyar
 - [x] Değerlendirici depoyu klonlar, README'deki komutla testleri koşar ve yeşil görür
 
-*Bu listede yasak: spec/ADR/kapı/mutant/altın küme/borç. Madde eklemek §5'e kesme yazmadan olmaz.*
+*Bu listede yasak: spec/ADR/kapı/mutant/borç. Madde eklemek §5'e kesme yazmadan olmaz.*
 
 ## 3. SIRADAKİ İŞ (tek dikey dilim)
 
-**Başlıkta arama** — listedeki SON madde. Kutu dolarsa kesilecek ilk madde budur (§5'e yazılır).
-Liste üstünde tek arama alanı; **yeni şema YOK, yeni tel kanalı YOK** — süzme Dart tarafında,
-etiket çipiyle AYNI stream üzerinde ÇARPILIR. Eşleştirme kuralı (harf katlaması; Türkçe I/İ
-mayını, etiketlerde katlama YOK sınırı) kod yazılmadan **şıklarla kilitlenir**.
+**Başlıkta arama** — SON madde; kutu dolarsa kesilecek ilk madde budur.
+**KİLİTLİ [Onur, 15 Ağu]:** alan **çip şeridinin ÜSTÜNDE** · eşleştirme **Türkçe-güvenli katlama**
+(`I→ı`, `İ→i` ELLE; `toLowerCase` YASAK, aksan katlanmaz) · **her tuşta canlı** · boş sonuçta
+**"Eşleşen görev yok."** + süzgeçleri temizle · arama ile çip **ÇARPILIR** · sekme kapanınca
+sıfırlanır · **yeni şema/tel YOK** (süzme Dart tarafında, aynı stream).
 **Bitti ölçütü (canlı):** arama yazılır liste daralır, alan temizlenince geri gelir; etiket
 çipiyle birlikte ikisi birden uygulanır.
 
 ## 4. ORTAM MAYINLARI (yalnız ÖLÇÜLMÜŞ)
 
-1. **git okuma:** `--no-optional-locks` zorunlu. Mount'ta tüm-ağaç `status`/`diff` `device_bash`'in
-   45 sn tavanını aşar (EXIT 124) ve `.git/index.lock` bırakır ⇒ **dar komut** kullan
-   (`log --oneline -1` · `status --porcelain -- <yol>` · `diff --cached --name-status`) ve **her git
-   turunun sonunda kilidi yokla**; sandbox silemez, `mv` ile kaldırılır.
+1. **git okuma:** `--no-optional-locks` zorunlu. Mount'ta tüm-ağaç `status`/`diff` 45 sn tavanını
+   aşar (EXIT 124) ve `.git/index.lock` bırakır ⇒ **dar komut** (`log --oneline -1` ·
+   `status --porcelain -- <yol>` · `diff --cached --name-status`) ve **her turun sonunda kilidi
+   yokla**; sandbox silemez, `mv` ile kaldırılır.
 2. **git yazma:** `git add -A` **YASAK** (başka elin commit'lenmemiş işini kör alır) → yol belirt.
    Commit mesajına **çift tırnak yazma**. **Mount'tan commit YASAK** — Desktop Commander ya da
    Claude Code'dan yapılır. **PUSH ONUR'DA.** Author e-postası `onurkesimbjk@gmail.com`.
 3. **flutter `.bat`'tir** → tam yol `C:\src\flutter\bin\flutter.bat` (subprocess PATHEXT'i çözmez).
-   DC kabuğunda `flutter test` `PROGRAMFILES(X86)` enjekte edilmeden çöker.
-   `--platform chrome` bu ortamda sonuç üretmiyor.
+   DC kabuğunda `flutter test` `PROGRAMFILES(X86)` enjekte edilmeden çöker. `--platform chrome`
+   bu ortamda sonuç üretmiyor.
 4. **Kodlama:** yol **saf ASCII** kalmalı (Türkçe karakter `build_runner`, `flutter analyze`, AGP ve
    `.ps1` zincirlerini kırdı). `python` stdout cp1254 ⇒ `sys.stdout.reconfigure(encoding="utf-8")`.
 5. **Satır sonu / geri alım:** `* text=auto eol=lf` `core.autocrlf`'i **ezer**. Mount'ta
    `git restore`/`checkout --` **ÇALIŞMAZ** (unlink denenir) → `git show HEAD:<yol> > <yol>`;
    `git apply` çalışır ama sonuç **sha256 ile** doğrulanır.
-6. **`verify.ps1`, `Momentum.Api` ayaktayken koşulamaz** (MSB3026/3027 dosya kilidi) ⇒ sıra: cihaz
-   kanıtı → backend kapatılır (`netstat -ano | findstr :5298` **boş** dönerek ölçülür, varsayılmaz)
-   → `verify.ps1`. Kapatmayı yalnız Onur'un açık izniyle yap, yeniden başlatma.
+6. **`verify.ps1`, `Momentum.Api` ayaktayken koşulamaz** (MSB3026/3027) ⇒ sıra: cihaz kanıtı →
+   backend kapatılır (`netstat -ano | findstr :5298` **boş** dönerek ölçülür) → `verify.ps1`.
+   Kapatmayı yalnız Onur'un açık izniyle yap, yeniden başlatma.
 7. **Backend:** `ConnectionStrings__Momentum` verilmezse host **DB'siz** açılır, port **yine dinler**
    ⇒ hazırlık portla ölçülmez: `/health/ready` 200 + `POST /v1/sync` başlıksız 401 ve
    `X-Momentum-Dev-User` ile 200. `ASPNETCORE_ENVIRONMENT=Development` yoksa her istek 401.
 8. **Mount'ta `os.remove`/`unlink` YASAK** (sandbox silemez) → artık dosya
    `arsiv/_SILINECEKLER/<oturum>/`'e `mv` edilir; kalıcı silme Onur'da.
-9. **Bulut ≠ cihaz:** Cowork bulutta UTC koşar (3 sa geri) ⇒ tarih `TZ='Europe/Istanbul' date` ile
-   ölçülür. `device_stage_files` bulut kopyasına **bugünün** mtime'ını yazar ⇒ zaman ayağı olan aracın
-   hükmü **cihazda** alınır. Bulut tarayıcısı canlı kanıt **değildir**.
+9. **Bulut ≠ cihaz:** Cowork bulutta UTC koşar ⇒ tarih `TZ='Europe/Istanbul' date` ile ölçülür;
+   **CI `istemci` işi de `TZ: Europe/Istanbul` koşar** [o77]. `device_stage_files` bulut kopyasına
+   **bugünün** mtime'ını yazar. Bulut tarayıcısı canlı kanıt **değildir**.
 10. **Kapı bütçesi (İŞLEYİŞ md.3):** `araclar/` ÷ `src/` satır oranı ≤ %10; `src/**/test/` **girmez**
     (onlar üründür). Kökte kalan 11 dosya: `verify.ps1` (CI) · `pub-*`/`lisans-*` (bağımlılık) ·
     `web-*`/`yayin-*` (yayın). Yeni kapı dosyası açılmaz.
@@ -77,6 +76,8 @@ mayını, etiketlerde katlama YOK sınırı) kod yazılmadan **şıklarla kilitl
 - **§4(b)2 işbirliği vitrini:** sinyal kanalı kodda var, **çok kullanıcılı paylaşım/davet akışı yok**.
 - **§6.1 kimlik/oturum:** giriş ekranı yok; istemci `devUserId` taşır, `WireOp.ActorId` istemci-beyanlı.
 - **§8(4):** tek komutla ayağa kaldırma yok (`Dockerfile` yok; compose yalnız `postgres`).
+- **[o77 kesildi]** Ayrıştırma her şeyi yutunca (`#iş !p1 yarın`) hata metni YOK: metin alanda
+  kalır. Sessiz kayıp yok, geri bildirim de yok.
 - **Zaten kapsam dışı (§4.1/§6.1):** AI asistan · Google Takvim · Kanban/Takvim · iOS cihaz testi ·
   parola sıfırlama · e-posta doğrulama · OAuth · 2FA · RBAC.
 
