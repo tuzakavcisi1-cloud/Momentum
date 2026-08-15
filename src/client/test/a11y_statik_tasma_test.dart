@@ -15,7 +15,8 @@ library;
 //
 // GOREV-A9 [K93/spec SS5/G5] -- GENISLETME: R1 (mevcut, degismez) + R2 (YENI:
 // ellipsis tasiyan HER govde maxLines de tasir) + R4 (YENI: pozitif kontrol --
-// tarayicinin bulduğu Text( aday sayisi = 25 [taban 8 -> 12 -> 13 -> 16 -> 20 -> 25 guncellendi;
+// tarayicinin bulduğu Text( aday sayisi = 29 [taban 8 -> 12 -> 13 -> 16 -> 20 -> 25 -> 29
+// guncellendi;
 // kanonik deger R4'un expect'indedir, bu satir ona atiftir],
 // arac kendini kanitlar). R3 (govde
 // toplayicinin KENDISI dogru topluyor mu) ayri bir test DEGILDIR -- yalniz
@@ -155,7 +156,7 @@ void main() {
   });
 
   test(
-    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 25 (arac kendini kanitlar)',
+    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 29 (arac kendini kanitlar)',
     () {
       final dosyalar = _taranacakDosyalar();
       final adaylar = <String>[];
@@ -188,15 +189,23 @@ void main() {
       // icin tarayici bunu BIR kez sayar; (4) 'Son tarih' bolum etiketi;
       // (5) tarih dugmesinin etiketi. Diyalog basligi ile Iptal/Kaydet
       // dugmeleri ZATEN sayiliyordu (o68'den), yenisi degildir.
+      // 🔴 ODEV.md §4(a) ETIKET DILIMI TABAN BILEREK GUNCELLENDI 25 -> 29:
+      // DORT YENI Text( SATIRI -- gorev_satiri.dart'ta (1) 'Etiketler' bolum
+      // etiketi ve (2) InputChip'in label'i (etiket basina ayri cip, TEK
+      // kaynak satiri); gorev_listesi_ekrani.dart'ta (3) suzme seridinin
+      // 'Tümü' cipi ve (4) etiket ciplerinin label'i. Satir meta metni
+      // ZATEN sayiliyordu (oncelik diliminden) -- etiketler AYNI `Text(`e
+      // eklendigi icin yeni aday DEGILDIR.
       // 🔴 TARAYICI TANE DEGIL SATIR SAYAR: ayni satirdaki iki `Text(` BIR
       // aday eder (main dongusu satir basina bir kez `add` eder) -- bu sayi
       // o kurala gore hesaplandi ve bulut aynasinda testin KENDI toplayici
-      // mantigi birebir taklit edilerek 25 olarak OLCULDU (varsayilmadi).
+      // mantigi birebir taklit edilerek OLCULDU (varsayilmadi; etiket diliminde
+      // testin KENDI toplayicisi 29 saydi).
       expect(
         adaylar.length,
-        25,
+        29,
         reason:
-            'Text( aday sayisi 25 DEGIL -- ya tarayici bozuldu (regex hic '
+            'Text( aday sayisi 29 DEGIL -- ya tarayici bozuldu (regex hic '
             'eslesmiyor ⇒ R1/R2 kor) ya taban degisti (yeni bir Text( eklendi/'
             'silindi). Bulunanlar:\n${adaylar.join('\n')}',
       );

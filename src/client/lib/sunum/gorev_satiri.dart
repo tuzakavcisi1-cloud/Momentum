@@ -4,6 +4,7 @@ import '../design/metinler.dart';
 import '../design/tokens.dart';
 import '../veri/gorev_deposu.dart';
 import 'cakisma_rozeti.dart';
+import 'etiket_dogrulama.dart';
 import 'gorev_baslik_dogrulama.dart';
 import 'senkron_rozeti.dart';
 
@@ -66,6 +67,13 @@ class GorevSatiri extends StatelessWidget {
     final parcalar = <String>[
       if (oncelik != null) oncelikEtiketi(oncelik),
       if (gorev.sonTarih != null) tarihEtiketi(gorev.sonTarih!),
+      // ODEV.md §4(a) etiket dilimi: etiketler AYNI meta satirinin SONUNA,
+      // TEK parca olarak yazilir. IKINCI BIR SATIR/CIP SERIDI EKLENMEZ --
+      // G13/G14/G15 duzen testleri satir yuksekligine duyarlidir ve etiket
+      // tasiyan gorev, oncelik/son tarih tasiyan bir gorevle AYNI yuksekligi
+      // korur. '#' oneki ODEV.md §4(a)'nin dogal dil bicimiyle (`#iş`) AYNI.
+      if (gorev.etiketler.isNotEmpty)
+        gorev.etiketler.map((e) => '#$e').join(' '),
     ];
     return parcalar.isEmpty ? null : parcalar.join(' · ');
   }
@@ -102,9 +110,7 @@ class GorevSatiri extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: MRenk.ayirici(context)),
-        ),
+        border: Border(bottom: BorderSide(color: MRenk.ayirici(context))),
       ),
       padding: EdgeInsets.symmetric(vertical: MBosluk.xs),
       // GOREV-A7 D-A7-3: dar ekran + buyuk olcekte satir DIKEYE doner.
@@ -137,8 +143,7 @@ class GorevSatiri extends StatelessWidget {
       textScaler: MediaQuery.textScalerOf(context),
       maxLines: 1,
     )..layout();
-    final rozetIstedigi =
-        boyaci.maxIntrinsicWidth + MOlcu.ikon + MBosluk.xs;
+    final rozetIstedigi = boyaci.maxIntrinsicWidth + MOlcu.ikon + MBosluk.xs;
     boyaci.dispose();
 
     // IS-EMRI-o68: duzenleme ikonu `_rozetler()`in SONUNA eklenir (asagida)
@@ -148,11 +153,14 @@ class GorevSatiri extends StatelessWidget {
     // 🔴 ODEV.md §4(a): oncelik/son tarih dilimi bu formule DOKUNMAZ --
     // meta satiri BASLIGIN ALTINDA (dikey eksende) yasar, yatay genislik
     // butcesinden tek piksel almaz; satira yeni IKON da eklenmemistir.
-    final sabitler = MOlcu.dokunmaHedefi +
+    final sabitler =
+        MOlcu.dokunmaHedefi +
         MBosluk.s +
         MBosluk.s +
         (cakismaVarMi ? MOlcu.dokunmaHedefi + MBosluk.xs : 0) +
-        (onAyrintilarDuzenlendi != null ? MOlcu.dokunmaHedefi + MBosluk.xs : 0) +
+        (onAyrintilarDuzenlendi != null
+            ? MOlcu.dokunmaHedefi + MBosluk.xs
+            : 0) +
         // IS-EMRI-o72 D4: silme ikonu da `_rozetler()`e eklenir -- BURAYA
         // eklenmezse OLCULEN duzen (bu formul) ile CIZILEN duzen sessizce
         // ayrisir (M77b sinifi, ayni gerekce yukarida yazildigi gibi).
@@ -200,9 +208,7 @@ class GorevSatiri extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: EdgeInsets.only(
-            left: MOlcu.dokunmaHedefi + MBosluk.s,
-          ),
+          padding: EdgeInsets.only(left: MOlcu.dokunmaHedefi + MBosluk.s),
           child: Row(children: _rozetler(context)),
         ),
       ],
@@ -252,8 +258,8 @@ class GorevSatiri extends StatelessWidget {
   /// URETILMEZ (K46 yasagi yururlukte).
   Color _metaRengi(BuildContext context) =>
       oncelikSayidan(gorev.oncelik) == Oncelik.yuksek
-          ? MRenk.tehlike(context)
-          : MRenk.metinIkincil(context);
+      ? MRenk.tehlike(context)
+      : MRenk.metinIkincil(context);
 
   Widget _baslik(BuildContext context) {
     return Text(
@@ -289,10 +295,7 @@ class GorevSatiri extends StatelessWidget {
         _duzenleIkonu(context),
       ],
       // IS-EMRI-o72: eylem ikonlari arasinda sira duzenle -> sil.
-      if (onSil != null) ...[
-        SizedBox(width: MBosluk.xs),
-        _silIkonu(context),
-      ],
+      if (onSil != null) ...[SizedBox(width: MBosluk.xs), _silIkonu(context)],
     ];
   }
 
@@ -345,6 +348,7 @@ class GorevSatiri extends StatelessWidget {
         baslangicBasligi: gorev.baslik,
         baslangicOncelik: gorev.oncelik,
         baslangicSonTarih: gorev.sonTarih,
+        baslangicEtiketleri: gorev.etiketler,
       ),
     );
     if (degisiklik == null || degisiklik.bosMu) return;
@@ -427,10 +431,16 @@ class _GorevDuzenleDiyalogu extends StatefulWidget {
   final int? baslangicOncelik;
   final DateTime? baslangicSonTarih;
 
+  /// ODEV.md §4(a): diyalog KAPANDIGINDA fark alinir (eklenen/silinen) --
+  /// ara durumlar tele KONMAZ (kullanici ekleyip geri silerse hicbir op
+  /// dogmaz, `bosMu` bunu yakalar).
+  final List<String> baslangicEtiketleri;
+
   const _GorevDuzenleDiyalogu({
     required this.baslangicBasligi,
     required this.baslangicOncelik,
     required this.baslangicSonTarih,
+    required this.baslangicEtiketleri,
   });
 
   @override
@@ -439,21 +449,49 @@ class _GorevDuzenleDiyalogu extends StatefulWidget {
 
 class _GorevDuzenleDiyaloguState extends State<_GorevDuzenleDiyalogu> {
   late final TextEditingController _denetleyici;
+  late final TextEditingController _etiketDenetleyici;
   late int? _oncelik;
   late DateTime? _sonTarih;
+  late List<String> _etiketler;
 
   @override
   void initState() {
     super.initState();
     _denetleyici = TextEditingController(text: widget.baslangicBasligi);
+    // Ayri controller: baslik alanindan BAGIMSIZ yasar ve o68'de olculen
+    // dispose yarisina karsi AYNI korumayi (State.dispose) tasir.
+    _etiketDenetleyici = TextEditingController();
     _oncelik = widget.baslangicOncelik;
     _sonTarih = widget.baslangicSonTarih;
+    // KOPYA: `widget.baslangicEtiketleri` (depo listesi) DEGISTIRILMEZ --
+    // fark hesabi kapanista ONA karsi yapilir.
+    _etiketler = List<String>.of(widget.baslangicEtiketleri);
   }
 
   @override
   void dispose() {
     _denetleyici.dispose();
+    _etiketDenetleyici.dispose();
     super.dispose();
+  }
+
+  /// Dogrulama TEK KAYNAKTAN (`etiketDogrula`). Gecersizse alan
+  /// TEMIZLENMEZ ve hicbir sey olmaz -- `_kaydet`in bos baslikta diyalogu
+  /// ACIK BIRAKMASIYLA ayni desen (sessiz kayip YASAK).
+  void _etiketEkle() {
+    final gecerli = etiketDogrula(_etiketDenetleyici.text);
+    if (gecerli == null) return;
+    // AYNI METIN IKI KEZ EKLENMEZ: OR-Set'te eleman kimligi metnin
+    // KENDISIDIR; ikinci bir add-tag'i acmak uyeligi degistirmez, yalniz
+    // gereksiz tel trafigi ve ikinci bir tombstone dogururdu.
+    if (_etiketler.contains(gecerli)) {
+      _etiketDenetleyici.clear();
+      return;
+    }
+    setState(() {
+      _etiketler.add(gecerli);
+      _etiketDenetleyici.clear();
+    });
   }
 
   /// Normalizasyon `GorevSatiri.takvimGunu`dedir (TEK nokta, orada olculur).
@@ -508,13 +546,19 @@ class _GorevDuzenleDiyaloguState extends State<_GorevDuzenleDiyalogu> {
       GorevAyrintiDegisikligi(
         // YALNIZ DEGISEN alan `Yazim` ile isaretlenir. `Yazim(null)`
         // "temizle" demektir, `null` "dokunma".
-        baslik: gecerliBaslik == baslangicGecerli
-            ? null
-            : Yazim(gecerliBaslik),
+        baslik: gecerliBaslik == baslangicGecerli ? null : Yazim(gecerliBaslik),
         oncelik: _oncelik == widget.baslangicOncelik ? null : Yazim(_oncelik),
         sonTarih: _sonTarih == widget.baslangicSonTarih
             ? null
             : Yazim(_sonTarih),
+        // ODEV.md §4(a): FARK. Ekleyip geri silen kullanici hicbir op
+        // dogurmaz (iki kume de bos ⇒ `bosMu`).
+        etiketEklenen: _etiketler
+            .where((e) => !widget.baslangicEtiketleri.contains(e))
+            .toSet(),
+        etiketSilinen: widget.baslangicEtiketleri
+            .where((e) => !_etiketler.contains(e))
+            .toSet(),
       ),
     );
   }
@@ -539,6 +583,11 @@ class _GorevDuzenleDiyaloguState extends State<_GorevDuzenleDiyalogu> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
+              // ODEV.md §4(a) etiket dilimi: diyalogda ARTIK IKI TextField
+              // var (baslik + etiket) ⇒ `find.byType(TextField)` TEK BASINA
+              // BELIRSIZ. Anahtar, testlerin DOGRU alani hedeflemesi icin
+              // eklendi -- iddia gucu AYNI kalir, yalniz hedef netlesir.
+              key: const ValueKey('baslik_alani'),
               controller: _denetleyici,
               autofocus: true,
               onSubmitted: (_) => _kaydet(),
@@ -567,8 +616,7 @@ class _GorevDuzenleDiyaloguState extends State<_GorevDuzenleDiyalogu> {
                       maxLines: 1,
                     ),
                     selected: _oncelik == secenek.deger,
-                    onSelected: (_) =>
-                        setState(() => _oncelik = secenek.deger),
+                    onSelected: (_) => setState(() => _oncelik = secenek.deger),
                   ),
               ],
             ),
@@ -607,6 +655,61 @@ class _GorevDuzenleDiyaloguState extends State<_GorevDuzenleDiyalogu> {
                   ),
               ],
             ),
+            // ODEV.md §4(a) etiket dilimi: ekleme alani + mevcut etiketler.
+            SizedBox(height: MBosluk.m),
+            Text(
+              Metinler.etiketlerBasligi,
+              style: MTipo.etiketS,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            SizedBox(height: MBosluk.xs),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    key: const ValueKey('etiket_alani'),
+                    controller: _etiketDenetleyici,
+                    onSubmitted: (_) => _etiketEkle(),
+                  ),
+                ),
+                // `tooltip` ZORUNLU: etiketi IconButton'in KENDI ic
+                // Semantics dugumune yazan yol budur (o68'de olculdu --
+                // disardan saran Semantics `labeledTapTargetGuideline`i
+                // GECIRMEZ).
+                IconButton(
+                  icon: Icon(Icons.add, size: MOlcu.ikon),
+                  tooltip: Metinler.etiketEkle,
+                  constraints: BoxConstraints.tightFor(
+                    width: MOlcu.dokunmaHedefi,
+                    height: MOlcu.dokunmaHedefi,
+                  ),
+                  padding: EdgeInsets.zero,
+                  onPressed: _etiketEkle,
+                ),
+              ],
+            ),
+            if (_etiketler.isNotEmpty) ...[
+              SizedBox(height: MBosluk.xs),
+              Wrap(
+                spacing: MBosluk.xs,
+                children: [
+                  for (final etiket in _etiketler)
+                    InputChip(
+                      label: Text(
+                        etiket,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      // Silme YALNIZ diyalog KAPANINCA tele konar (fark
+                      // hesabi) -- burada yerel taslak listeden cikarilir.
+                      onDeleted: () =>
+                          setState(() => _etiketler.remove(etiket)),
+                      deleteButtonTooltipMessage: Metinler.etiketKaldir,
+                    ),
+                ],
+              ),
+            ],
           ],
         ),
       ),

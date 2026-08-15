@@ -628,6 +628,8 @@ class _KayitTutanDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Set<String>? etiketEklenen,
+    Set<String>? etiketSilinen,
   }) async => cagrilar.add(_Cagri(id, baslik, oncelik, sonTarih));
 
   @override

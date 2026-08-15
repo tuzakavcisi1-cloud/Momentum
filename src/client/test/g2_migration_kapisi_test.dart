@@ -15,9 +15,11 @@ import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'generated_migrations/schema.dart';
+import 'generated_migrations/schema_v1.dart' as v1;
 import 'generated_migrations/schema_v3.dart' as v3;
 import 'generated_migrations/schema_v4.dart' as v4;
 import 'generated_migrations/schema_v5.dart' as v5;
+import 'generated_migrations/schema_v6.dart' as v6;
 
 Future<String?> _createTableSql(GeneratedDatabase db, String tablo) async {
   final satirlar = await db
@@ -46,9 +48,9 @@ void main() {
   Veritabani dosyaDbAc(String ad) =>
       Veritabani(NativeDatabase(File('${gecici.path}/$ad.sqlite')));
 
-  test('D1: schemaVersion == 6 (ODEV §4(a): 5->6 zorunlu guncelleme)', () async {
+  test('D1: schemaVersion == 7 (ODEV §4(a) etiket dilimi: 6->7 zorunlu guncelleme)', () async {
     final db = dosyaDbAc('m1');
-    expect(db.schemaVersion, 6);
+    expect(db.schemaVersion, 7);
     await db.close();
   });
 
@@ -66,6 +68,74 @@ void main() {
     expect(sql, contains('oncelik'), reason: 'v6 gorevler tablosunda oncelik sutunu olmali');
     expect(sql, contains('son_tarih'), reason: 'v6 gorevler tablosunda son_tarih sutunu olmali');
     await yeniDb.close();
+  });
+
+  // ODEV.md §4(a) ETIKET DILIMI -- v6->v7. v4->v5'in AYNI deseni: SALT-EKLEME
+  // (yeni tablo), `Gorevler`e DOKUNULMAZ ⇒ "gorevler SQL metni BAYT BAYT AYNI"
+  // iddiasi burada GECERLIDIR ve yazilir.
+  test('etiket dilimi: v6->v7 migration hatasiz -- gorev_etiketleri tablosu VAR', () async {
+    final verifier = SchemaVerifier(GeneratedHelper());
+    final schema = await verifier.schemaAt(6);
+    final yeniDb = Veritabani(schema.newConnection()); // migration'i tetikler
+
+    final sql = await _createTableSql(yeniDb, 'gorev_etiketleri');
+    expect(sql, isNotNull, reason: 'v7de gorev_etiketleri tablosu olmali');
+    expect(sql, contains('add_tag'));
+    expect(sql, contains('iptal_edildi'));
+    await yeniDb.close();
+  });
+
+  // POZITIF KONTROL: yukaridaki test bir sey OLCUYOR mu? v6'da tablo YOKSA
+  // olcuyor; VARSA yukaridaki test bos bir iddiadir.
+  test('etiket dilimi: v6 semasinda gorev_etiketleri HENUZ YOK (pozitif kontrol)', () async {
+    final verifier = SchemaVerifier(GeneratedHelper());
+    final schema = await verifier.schemaAt(6);
+    final v6Db = v6.DatabaseAtV6(schema.newConnection());
+    final v6Sql = await _createTableSql(v6Db, 'gorev_etiketleri');
+    await v6Db.close();
+    expect(v6Sql, isNull);
+  });
+
+  // 🔴 SALT-EKLEME KANITI: v6->v7 `Gorevler`e DOKUNMADI. Bu iddia "bugune
+  // kadar dokunulmadi" degil, "BU ADIM dokunmadi" olcer -- v6 semasindaki
+  // gorevler SQL'i ile v7deki BIREBIR ayni olmali.
+  test('etiket dilimi: v6->v7 gorevler tablosunun SQL metni BAYT BAYT AYNI', () async {
+    final verifier = SchemaVerifier(GeneratedHelper());
+    final schema = await verifier.schemaAt(6);
+    final v6Db = v6.DatabaseAtV6(schema.newConnection());
+    final oncekiSql = await _createTableSql(v6Db, 'gorevler');
+    await v6Db.close();
+
+    final schema2 = await verifier.schemaAt(6);
+    final yeniDb = Veritabani(schema2.newConnection());
+    final sonrakiSql = await _createTableSql(yeniDb, 'gorevler');
+    await yeniDb.close();
+
+    expect(oncekiSql, isNotNull);
+    expect(sonrakiSql, oncekiSql);
+  });
+
+  // v1'den gelen kullanici: `gorevler` v1->v2'de YENIDEN YARATILIR, sonra
+  // v6->v7 yeni tabloyu ekler. Zincirin TAMAMI kosulur (o74'te v1 yolu bir
+  // kez COKMUSTU -- kagit denetimi bunu KACIRMISTI).
+  test('etiket dilimi: v1->v7 zinciri hatasiz -- gorev_etiketleri VAR, v1 satiri KORUNDU', () async {
+    final verifier = SchemaVerifier(GeneratedHelper());
+    final schema = await verifier.schemaAt(1);
+    final eskiDb = v1.DatabaseAtV1(schema.newConnection());
+    await eskiDb.customStatement(
+      "INSERT INTO gorevler (id, baslik, tamamlandi, olusturuldu, guncellendi, senkron_durumu, silindi) "
+      "VALUES ('v1-etiket', 'Eski gorev', 0, ?, ?, 'yerel', 0)",
+      [DateTime.utc(2026, 1, 1).toIso8601String(), DateTime.utc(2026, 1, 1).toIso8601String()],
+    );
+    await eskiDb.close();
+
+    final yeniDb = Veritabani(schema.newConnection());
+    final sql = await _createTableSql(yeniDb, 'gorev_etiketleri');
+    final satirlar = await yeniDb.select(yeniDb.gorevler).get();
+    await yeniDb.close();
+
+    expect(sql, isNotNull, reason: 'v1 yolundan gelen kullanicida da tablo yaratilmali');
+    expect(satirlar.map((s) => s.id).toSet(), {'v1-etiket'});
   });
 
   // POZITIF KONTROL: yukaridaki test bir sey OLCUYOR mu? v5'te bu iki sutun

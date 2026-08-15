@@ -50,11 +50,28 @@ class GorevAyrintiDegisikligi {
   final Yazim<int?>? oncelik;
   final Yazim<DateTime?>? sonTarih;
 
-  const GorevAyrintiDegisikligi({this.baslik, this.oncelik, this.sonTarih});
+  /// ODEV.md §4(a) etiket dilimi: OR-Set'te "yeni deger" YOKTUR, EKLEME ve
+  /// SILME vardir ⇒ bu iki alan `Yazim` DEGILDIR (bir OR-Set'i "temizlenmis"
+  /// diye damgalamak anlamsizdir). Bos kume = o yonde degisiklik yok.
+  final Set<String> etiketEklenen;
+  final Set<String> etiketSilinen;
+
+  const GorevAyrintiDegisikligi({
+    this.baslik,
+    this.oncelik,
+    this.sonTarih,
+    this.etiketEklenen = const {},
+    this.etiketSilinen = const {},
+  });
 
   /// Hicbir alan degismediyse op URETILMEZ: sunucu bos bir op'u BUTUN olarak
   /// reddeder (D2 -- her op EN AZ BIR kanal tasir).
-  bool get bosMu => baslik == null && oncelik == null && sonTarih == null;
+  bool get bosMu =>
+      baslik == null &&
+      oncelik == null &&
+      sonTarih == null &&
+      etiketEklenen.isEmpty &&
+      etiketSilinen.isEmpty;
 }
 
 /// TEL BICIMI PINI (sunucu sozlesmesinden OLCULDU, varsayilmadi):
@@ -70,8 +87,7 @@ String? oncelikTele(int? oncelik) => oncelik?.toString();
 /// 🔴 `.toUtc()` DUSURULEMEZ: ofset TASIMAYAN bir dize `AssumeUniversal` ile
 /// UTC SAYILIR, yani yerel saat sessizce UTC diye okunurdu -- SS1.3'un uc
 /// saatlik kaymasinin AYNISI.
-String? sonTarihTele(DateTime? sonTarih) =>
-    sonTarih?.toUtc().toIso8601String();
+String? sonTarihTele(DateTime? sonTarih) => sonTarih?.toUtc().toIso8601String();
 
 /// F4'un dikisi: widget'lar Drift'in urettigi satir sinifini (GorevRow)
 /// dogrudan tuketmez -- bu domain modeli araya girer. Adim 3'te beslenen
@@ -85,12 +101,21 @@ class Gorev {
   final DateTime guncellendi;
   final String senkronDurumu;
   final bool silindi;
+
   /// ODEV.md §4(a). HAM sutunlardir (turetilmis rozet durumu DEGIL) --
   /// `Gorev`in "yalniz ham projeksiyon tasir" invaryanti korunur.
   /// Varsayilan `null`: mevcut ~40 cagri yeri (testler dahil) bunlari HIC
   /// bilmez ve `null` onlarin GERCEK durumudur.
   final int? oncelik;
   final DateTime? sonTarih;
+
+  /// ODEV.md §4(a) etiket dilimi: OR-Set'in AKTIF elemanlari (iptal edilmis
+  /// tag'ler DISARIDA). Bu da HAM PROJEKSIYONDUR -- `gorevEtiketleri`
+  /// tablosundan AYNI sorguda toplanir, turetilmis rozet durumu DEGILDIR.
+  /// SIRALI ve BENZERSIZ (depo garanti eder) ⇒ ekranda deterministik.
+  /// Varsayilan bos liste: mevcut ~40 cagri yeri (testler dahil) bu alani
+  /// HIC bilmez ve bos liste onlarin GERCEK durumudur.
+  final List<String> etiketler;
 
   const Gorev({
     required this.id,
@@ -102,6 +127,7 @@ class Gorev {
     required this.silindi,
     this.oncelik,
     this.sonTarih,
+    this.etiketler = const [],
   });
 }
 
@@ -148,15 +174,25 @@ abstract class GorevDeposu {
 
   Future<void> duzenle(String id, String yeniBaslik);
 
-  /// ODEV.md §4(a): baslik + oncelik + son tarih TEK `WireOp`, TEK
-  /// `transaction()`. YALNIZ verilen (`Yazim` ile isaretlenmis) alanlar
+  /// ODEV.md §4(a): baslik + oncelik + son tarih + ETIKETLER TEK `WireOp`,
+  /// TEK `transaction()`. YALNIZ verilen (`Yazim` ile isaretlenmis) alanlar
   /// yazilir -- degismemis bir alani yeniden damgalamak, arada gelen uzak
   /// bir yazimi LWW ile sessizce ezerdi.
+  ///
+  /// Etiketler `Yazim` TASIMAZ (OR-Set'te "temizlendi" diye bir deger yoktur):
+  /// [etiketEklenen] her metin icin YENI bir add-tag'i uretir,
+  /// [etiketSilinen] o metnin O ANDA AKTIF tag'lerini iptal eder.
+  /// 🔴 `observed` listesi WIDGET'ta DEGIL, BURADA (transaction icinde)
+  /// cozulur: diyalog acikken gelen uzak bir add BAYAT bir `observed` ile
+  /// gonderilseydi ADD-WINS ile hayatta kalir, kullanicinin gordugu sonuc
+  /// ile sunucununki AYRISIRDI.
   Future<void> ayrintilariGuncelle(
     String id, {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Set<String>? etiketEklenen,
+    Set<String>? etiketSilinen,
   });
 
   Future<void> tamamlaGeriAl(String id, {required bool tamamlandi});
@@ -226,7 +262,8 @@ String kanonikDize(String alan, Object deger) {
     throw ArgumentError('Taninmayan senkronDurumu: $senkronDurumu');
   }
 
-  final cakismaVarMi = zehirli > 0 || senkronDurumu == 'cakisma' || cakismaKaydiSayisi > 0;
+  final cakismaVarMi =
+      zehirli > 0 || senkronDurumu == 'cakisma' || cakismaKaydiSayisi > 0;
 
   // BUILD-ZAMANI BULGU (K75 D2 kural 3'e ELE ALINMAMIŞ kenar durum --
   // ölçüldü, spec'e kopyalanmadı, Cowork/Onur'a build notunda bildirilir):
@@ -286,7 +323,7 @@ class DriftGorevDeposu implements GorevDeposu {
     required this.actorId,
   });
 
-  Gorev _map(GorevRow satir) => Gorev(
+  Gorev _map(GorevRow satir, {List<String> etiketler = const []}) => Gorev(
     id: satir.id,
     baslik: satir.baslik,
     tamamlandi: satir.tamamlandi,
@@ -296,7 +333,48 @@ class DriftGorevDeposu implements GorevDeposu {
     silindi: satir.silindi,
     oncelik: satir.oncelik,
     sonTarih: satir.sonTarih,
+    etiketler: etiketler,
   );
+
+  /// ODEV.md §4(a): etiket toplama BANT-ICI AYIRAC KULLANMAZ.
+  /// 🔴 [OLCULDU -- bagimsiz denetim, o76: IKI denetci AYNI kusuru buldu]
+  /// `group_concat(etiket, <ayirac>)` her ayirac secimi icin BANT-ICIDIR:
+  /// ayiraci ICINDE tasiyan bir eleman (uzaktan gelebilir -- sunucu serbest
+  /// metin kabul eder, uzunluk/karakter KISITLAMAZ) ekranda IKI HAYALET
+  /// etikete bolunuyordu ve o hayaletler SILINEMIYORDU (`WHERE etiket='a'`
+  /// hicbir aktif satir bulmaz ⇒ op uretilmez). Virgul yerine U+001F secmek
+  /// bu sinifi KUCULTUR, KAPATMAZ.
+  /// Cozum: `json_group_array` -- SQLite kacisi her karakteri (kontrol
+  /// karakterleri dahil, `\u001f`) tasir, cozme `jsonDecode` iledir.
+  /// OLCULDU (o76): VM sqlite 3.53.3 JSON1 iceriyor; `web/sqlite3.wasm`
+  /// ikilisi de `json_group_array` sembolunu tasiyor (JSON1 >= 3.38'de
+  /// cekirdektedir).
+  /// `FILTER (WHERE ... IS NOT NULL)`: sol birlestirmede eslesme yoksa
+  /// `[null]` degil `[]` doner.
+  /// 🔴 SQL AD BAGIMLILIGI: ifade drift'in urettigi tablo/sutun adlarina
+  /// (`gorev_etiketleri`.`etiket`) dayanir; ad degisirse sorgu PATLAR ve
+  /// etiket testleri ANINDA kirilir (sessiz bozulma degil).
+  static final Expression<String> etiketToplayici = CustomExpression<String>(
+    'json_group_array("gorev_etiketleri"."etiket") '
+    'FILTER (WHERE "gorev_etiketleri"."etiket" IS NOT NULL)',
+  );
+
+  /// SAF: toplayicinin JSON ciktisini BENZERSIZ + SIRALI listeye cevirir.
+  /// Fan-out (uc join) ayni etiketi tekrarlar ⇒ `toSet()` PAZARLIKSIZ.
+  /// Siralama kod-birimi sirasidir (sunucunun Ordinal karsilastirmasiyla
+  /// AYNI taban) -- Turkce harmanlama YOK, bu bir SINIRDIR.
+  /// BOS DIZE ELENIR: gosterilemez ve suzulemez bir cip cizmek yerine
+  /// projeksiyondan dusurulur -- satir ve TEL dokunulmadan durur
+  /// (bilinmeyen `priority` degerinin ayni doktrini).
+  static List<String> etiketleriCoz(String? hamJson) {
+    if (hamJson == null || hamJson.isEmpty) return const [];
+    final liste = (jsonDecode(hamJson) as List)
+        .whereType<String>()
+        .where((e) => e.isNotEmpty)
+        .toSet()
+        .toList();
+    return liste..sort();
+  }
 
   /// GOREV-R10 D6 PAZARLIKSIZ: TEK sorgu, TEK `watch()` -- iki ayri stream +
   /// combineLatest YASAK (ara karede yanlis rozet doğurur). `Gorevler`
@@ -317,10 +395,17 @@ class DriftGorevDeposu implements GorevDeposu {
   /// EKSİKSİZ karşılar (yalnız EK bir opsiyonel parametre).
   @override
   Stream<List<GorevGorunum>> gorevlerGorunur({
-    void Function(int ucusta, int bekleyen, int zehirli, int cakismaKaydiSayisi)? hamSayimGozlemcisi,
+    void Function(
+      int ucusta,
+      int bekleyen,
+      int zehirli,
+      int cakismaKaydiSayisi,
+    )?
+    hamSayimGozlemcisi,
   }) {
     final kuyruk = _db.senkronKuyrugu;
     final cakisma = _db.cakismaKayitlari;
+    final etiketler = _db.gorevEtiketleri;
     final ucustaSutunu = kuyruk.opId.count(
       filter: kuyruk.durum.equals('gonderildi'),
       distinct: true,
@@ -334,6 +419,16 @@ class DriftGorevDeposu implements GorevDeposu {
       distinct: true,
     );
     final cakismaSutunu = cakisma.alan.count(distinct: true);
+    // ODEV.md §4(a): etiketler UCUNCU bir `leftOuterJoin` ile gelir. JOIN
+    // SART: drift'in tablo bagimliligini gormesi (ve `watch()`in
+    // `gorevEtiketleri` degisince TAZELENMESI) icin -- ham bir
+    // `CustomExpression` alt-sorgusu stream'i TAZELEMEZDI.
+    // Fan-out ayni etiketi TEKRARLAR; benzersizlestirme ve SIRALAMA Dart
+    // tarafindadir (`etiketleriCoz`) -- SQL tarafinda DISTINCT denenmez
+    // (SQLite DISTINCT'i toplayici argumaniyla birlikte kabul etmez).
+    // Mevcut count(...) sutunlarinin `distinct: true`'su bu fan-out'a karsi
+    // ZATEN koruyor (D-SS2-5'te ikinci join icin ayni gerekce yazildi).
+    final etiketlerSutunu = etiketToplayici;
 
     final sorgu =
         _db.select(_db.gorevler).join([
@@ -348,9 +443,24 @@ class DriftGorevDeposu implements GorevDeposu {
               cakisma.entityId.equalsExp(_db.gorevler.id),
               useColumns: false,
             ),
+            // AKTIF uyelik suzgeci JOIN KOSULUNDADIR (`where` degil): sol
+            // birlestirmede `where`e konsaydi etiketi olmayan gorevler
+            // listeden DUSERDI (D6'nin `innerJoin` tuzaginin aynisi).
+            leftOuterJoin(
+              etiketler,
+              etiketler.gorevId.equalsExp(_db.gorevler.id) &
+                  etiketler.iptalEdildi.equals(false),
+              useColumns: false,
+            ),
           ])
           ..where(_db.gorevler.silindi.equals(false))
-          ..addColumns([ucustaSutunu, bekleyenSutunu, zehirliSutunu, cakismaSutunu])
+          ..addColumns([
+            ucustaSutunu,
+            bekleyenSutunu,
+            zehirliSutunu,
+            cakismaSutunu,
+            etiketlerSutunu,
+          ])
           ..groupBy([_db.gorevler.id])
           ..orderBy([
             OrderingTerm(expression: _db.gorevler.olusturuldu),
@@ -359,7 +469,11 @@ class DriftGorevDeposu implements GorevDeposu {
 
     return sorgu.watch().map(
       (satirlar) => satirlar.map((satir) {
-        final gorev = _map(satir.readTable(_db.gorevler));
+        // `group_concat` hicbir satir eslesmezse NULL doner (etiketsiz gorev).
+        final gorev = _map(
+          satir.readTable(_db.gorevler),
+          etiketler: etiketleriCoz(satir.read(etiketlerSutunu)),
+        );
         final ucusta = satir.read(ucustaSutunu) ?? 0;
         final bekleyen = satir.read(bekleyenSutunu) ?? 0;
         final zehirli = satir.read(zehirliSutunu) ?? 0;
@@ -444,37 +558,94 @@ class DriftGorevDeposu implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Set<String>? etiketEklenen,
+    Set<String>? etiketSilinen,
   }) async {
+    final eklenen = etiketEklenen ?? const <String>{};
+    final silinen = etiketSilinen ?? const <String>{};
     // D2: bos op URETILMEZ -- sunucu her op'un EN AZ BIR kanal tasimasini
     // sart kosar; hicbir alan degismediyse ne projeksiyona ne kuyruga
     // dokunulur (yoksa "hayalet op" dogar).
-    if (baslik == null && oncelik == null && sonTarih == null) return;
+    if (baslik == null &&
+        oncelik == null &&
+        sonTarih == null &&
+        eklenen.isEmpty &&
+        silinen.isEmpty) {
+      return;
+    }
 
     final opHlc = hlc.sonrakiHlc();
-    final op = WireOp(
-      operationId: idUret(),
-      clientId: hlc.clientId,
-      entityId: id,
-      actorId: actorId,
-      entityType: 'Task',
-      opHlc: opHlc,
-      fields: {
-        if (baslik != null)
-          'title': WireFieldWrite(value: baslik.deger, hlc: opHlc),
-        if (oncelik != null)
-          'priority': WireFieldWrite(
-            value: oncelikTele(oncelik.deger),
-            hlc: opHlc,
-          ),
-        if (sonTarih != null)
-          'dueAt': WireFieldWrite(
-            value: sonTarihTele(sonTarih.deger),
-            hlc: opHlc,
-          ),
-      },
-    );
+    final alanlar = {
+      if (baslik != null)
+        'title': WireFieldWrite(value: baslik.deger, hlc: opHlc),
+      if (oncelik != null)
+        'priority': WireFieldWrite(
+          value: oncelikTele(oncelik.deger),
+          hlc: opHlc,
+        ),
+      if (sonTarih != null)
+        'dueAt': WireFieldWrite(
+          value: sonTarihTele(sonTarih.deger),
+          hlc: opHlc,
+        ),
+    };
 
     await _db.transaction(() async {
+      // ETIKET YAZIMLARI TRANSACTION ICINDE: `observed` listesi BURADA
+      // cozulur (widget'ta DEGIL) -- bkz. `GorevDeposu.ayrintilariGuncelle`
+      // belgesindeki kirmizi uyari.
+      final adds = <WireSetAdd>[];
+      final removes = <WireSetRemove>[];
+
+      for (final etiket in eklenen) {
+        final tag = idUret();
+        adds.add(WireSetAdd(el: etiket, tag: tag, hlc: opHlc));
+        await _db
+            .into(_db.gorevEtiketleri)
+            .insert(
+              GorevEtiketleriCompanion.insert(
+                gorevId: id,
+                etiket: etiket,
+                addTag: tag,
+              ),
+              mode: InsertMode.insertOrIgnore,
+            );
+      }
+
+      for (final etiket in silinen) {
+        final aktifler =
+            await (_db.select(_db.gorevEtiketleri)..where(
+                  (t) =>
+                      t.gorevId.equals(id) &
+                      t.etiket.equals(etiket) &
+                      t.iptalEdildi.equals(false),
+                ))
+                .get();
+        // AKTIF TAG YOKSA REMOVE URETILMEZ: sunucunun `SetRemove`u YALNIZ
+        // gorulen tag'leri iptal eder ⇒ bos `observed` HICBIR SEY yapmaz,
+        // yalniz bos bir op dogururdu.
+        if (aktifler.isEmpty) continue;
+        removes.add(
+          WireSetRemove(
+            el: etiket,
+            observed: aktifler.map((s) => s.addTag).toList(),
+            hlc: opHlc,
+          ),
+        );
+        await (_db.update(_db.gorevEtiketleri)..where(
+              (t) =>
+                  t.gorevId.equals(id) &
+                  t.etiket.equals(etiket) &
+                  t.iptalEdildi.equals(false),
+            ))
+            .write(const GorevEtiketleriCompanion(iptalEdildi: Value(true)));
+      }
+
+      // D2 (ikinci kapi): yalniz "aktif tag'i olmayan bir etiketi sil"
+      // istendiyse hicbir kanal DOLMAZ -- projeksiyona da kuyruga da
+      // dokunulmadan cikilir.
+      if (alanlar.isEmpty && adds.isEmpty && removes.isEmpty) return;
+
       await (_db.update(_db.gorevler)..where((t) => t.id.equals(id))).write(
         GorevlerCompanion(
           baslik: baslik != null ? Value(baslik.deger) : const Value.absent(),
@@ -487,7 +658,21 @@ class DriftGorevDeposu implements GorevDeposu {
           guncellendi: Value(saat()),
         ),
       );
-      await _kuyrugaYaz(op);
+      await _kuyrugaYaz(
+        WireOp(
+          operationId: idUret(),
+          clientId: hlc.clientId,
+          entityId: id,
+          actorId: actorId,
+          entityType: 'Task',
+          opHlc: opHlc,
+          fields: alanlar,
+          sets: {
+            if (adds.isNotEmpty || removes.isNotEmpty)
+              'tags': WireSetDelta(adds: adds, removes: removes),
+          },
+        ),
+      );
     });
   }
 
@@ -540,7 +725,10 @@ class DriftGorevDeposu implements GorevDeposu {
 
     await _db.transaction(() async {
       await (_db.update(_db.gorevler)..where((t) => t.id.equals(id))).write(
-        GorevlerCompanion(silindi: const Value(true), guncellendi: Value(saat())),
+        GorevlerCompanion(
+          silindi: const Value(true),
+          guncellendi: Value(saat()),
+        ),
       );
       await _kuyrugaYaz(op);
     });

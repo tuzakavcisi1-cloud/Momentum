@@ -43,6 +43,8 @@ class _SahteDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Set<String>? etiketEklenen,
+    Set<String>? etiketSilinen,
   }) async {}
   @override
   Future<void> tamamlaGeriAl(String id, {required bool tamamlandi}) async {}

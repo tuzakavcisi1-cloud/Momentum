@@ -39,14 +39,16 @@ Hlc _hlcOku(Map<String, Object?> hlcMap) => Hlc.fromJson(hlcMap);
 class UzakDegisiklikUygulayici {
   final Veritabani _db;
   final UzakAlanDurumuDeposu _metaDepo;
-  final Future<AlanAnahtari?> Function(String entityId, String alan) kuyrukTabaniSaglayici;
+  final Future<AlanAnahtari?> Function(String entityId, String alan)
+  kuyrukTabaniSaglayici;
   // GOREV-SS2 D-SS2-2 on kosulu 2: cihazin KENDI clientId'si -- D-SS2-3 sart
   // 3'un ("kazanan biz degiliz") normHex karsilastirmasi bunsuz yapilamaz.
   final String clientId;
   // GOREV-SS2 D-SS2-11: turun BASINDA alinan anlik goruntuden cevaplanir.
   // Varsayilan (test/T3 asamasi): daima false -- sessiz yanlis-pozitif
   // uretmez, cakisma sart 2'si hic saglanmaz.
-  final Future<bool> Function(String entityId, String alan) bekleyenYerelYazimVarMi;
+  final Future<bool> Function(String entityId, String alan)
+  bekleyenYerelYazimVarMi;
   // GOREV-SS2 D-SS2-9: `olusturuldu` BUNDAN yazilir, `DateTime.now()`'in
   // DOGRUDAN cagrilmasi YASAKTIR (GorevDeposu'nun disiplininin aynisi).
   final DateTime Function() saat;
@@ -58,12 +60,15 @@ class UzakDegisiklikUygulayici {
     // (GUID BOS OLAMAZ) -- D-SS2-3 sart 3 (echo elemesi) T3'ten once hic
     // saglanamayacagi icin bu varsayilan yanlis-pozitif URETMEZ.
     this.clientId = '',
-    Future<AlanAnahtari?> Function(String entityId, String alan)? kuyrukTabaniSaglayici,
-    Future<bool> Function(String entityId, String alan)? bekleyenYerelYazimVarMi,
+    Future<AlanAnahtari?> Function(String entityId, String alan)?
+    kuyrukTabaniSaglayici,
+    Future<bool> Function(String entityId, String alan)?
+    bekleyenYerelYazimVarMi,
     DateTime Function()? saat,
   }) : _metaDepo = UzakAlanDurumuDeposu(_db),
        kuyrukTabaniSaglayici = kuyrukTabaniSaglayici ?? ((_, _) async => null),
-       bekleyenYerelYazimVarMi = bekleyenYerelYazimVarMi ?? ((_, _) async => false),
+       bekleyenYerelYazimVarMi =
+           bekleyenYerelYazimVarMi ?? ((_, _) async => false),
        saat = saat ?? (() => DateTime.now().toUtc());
 
   /// D2: `changes[i] = {cursor, payload}`; `payload` bir WireOp'tur, HER
@@ -75,10 +80,15 @@ class UzakDegisiklikUygulayici {
       final entityId = payload['entityId'] as String;
       final entityType = payload['entityType'] as String;
       final operationId = payload['operationId'] as String;
-      final opHlcWall = (payload['opHlc'] as Map<String, Object?>)['wallMs'] as int;
+      final opHlcWall =
+          (payload['opHlc'] as Map<String, Object?>)['wallMs'] as int;
 
       final g = guncellemeler.putIfAbsent(entityId, () => _GorevGuncellemesi());
-      g.olusturulduWallMs = g.olusturulduWallMs == null ? opHlcWall : (opHlcWall < g.olusturulduWallMs! ? opHlcWall : g.olusturulduWallMs);
+      g.olusturulduWallMs = g.olusturulduWallMs == null
+          ? opHlcWall
+          : (opHlcWall < g.olusturulduWallMs!
+                ? opHlcWall
+                : g.olusturulduWallMs);
 
       // [KIRMIZI] D2 -- null kanal korumasi PAZARLIKSIZ: her kanal okumasi
       // `as Map<String,Object?>? ?? const {}` bicimindedir.
@@ -92,7 +102,12 @@ class UzakDegisiklikUygulayici {
           entityType: entityType,
           entityId: entityId,
           alan: 'fields:$ad',
-          anahtar: AlanAnahtari(wall: hlc.wallMs, counter: hlc.counter, clientId: hlc.clientId, opId: operationId),
+          anahtar: AlanAnahtari(
+            wall: hlc.wallMs,
+            counter: hlc.counter,
+            clientId: hlc.clientId,
+            opId: operationId,
+          ),
           g: g,
           kanalAdi: ad,
           fieldsDegeri: deger,
@@ -104,12 +119,18 @@ class UzakDegisiklikUygulayici {
         final ad = girdi.key;
         final yazim = girdi.value as Map<String, Object?>;
         final hlc = _hlcOku(yazim['hlc'] as Map<String, Object?>);
-        final grupFields = (yazim['fields'] as Map<String, Object?>?) ?? const {};
+        final grupFields =
+            (yazim['fields'] as Map<String, Object?>?) ?? const {};
         await _kanalUygula(
           entityType: entityType,
           entityId: entityId,
           alan: 'groups:$ad',
-          anahtar: AlanAnahtari(wall: hlc.wallMs, counter: hlc.counter, clientId: hlc.clientId, opId: operationId),
+          anahtar: AlanAnahtari(
+            wall: hlc.wallMs,
+            counter: hlc.counter,
+            clientId: hlc.clientId,
+            opId: operationId,
+          ),
           g: g,
           kanalAdi: ad,
           groupFields: grupFields,
@@ -130,13 +151,176 @@ class UzakDegisiklikUygulayici {
           entityType: entityType,
           entityId: entityId,
           alan: 'order:$ad',
-          gelenAnahtar: AlanAnahtari(wall: hlc.wallMs, counter: hlc.counter, clientId: hlc.clientId, opId: operationId),
+          gelenAnahtar: AlanAnahtari(
+            wall: hlc.wallMs,
+            counter: hlc.counter,
+            clientId: hlc.clientId,
+            opId: operationId,
+          ),
           kuyrukTabani: await kuyrukTabaniSaglayici(entityId, 'order:$ad'),
         );
       }
-      // `sets` kanali bilincli olarak yok sayilir (SINIR, D2/1.4).
+      // ODEV.md §4(a): `sets` kanali ARTIK BAGLIDIR -- SINIR D2/1.4 KAPANDI.
+      // 🔴 `_kanalUygula`/`degerlendirVeMetaYaz` BU YOLA GIRMEZ:
+      // `UzakAlanDurumu`nun PK'si (entityType, entityId, alan) ALAN BASINA
+      // TEK KAZANAN demektir; OR-Set'te "kazanan deger" YOKTUR, uyelik TAG
+      // BASINADIR. Ayrica `hamAlanHlcCikar` bilinmeyen kanalda `StateError`
+      // FIRLATIR ⇒ `sets` LWW meta/kuyruk-tabani yoluna ASLA baglanmaz.
+      // 🔴 YAZILI SINIR [o76 denetimi]: `tags` DISINDAKI set adlari
+      // (`assignees`, `checklistItems` -- registry'de Task icin GECERLI)
+      // bu dilimde UYGULANMAZ. Sessiz degil, BEYAN EDILMIS bir sinirdir:
+      // istemcide o setlerin ne tablosu ne ekrani vardir; `UzakAlanDurumu`ya
+      // yazmak da YANLIS olurdu (OR-Set'te alan basina kazanan yoktur).
+      // AYRICA: sets, VAR OLMAYAN bir entity icin gelirse etiket satiri
+      // yazilir ama `Gorevler` satiri DOGMAZ (projeksiyon yalniz bilinen
+      // kanallardan dogar) -- satir gorunmez durur, sonradan gelen entity
+      // ile birlesir. Ikisi de DURUM.md/oturum belgesinde yazilidir.
+      final sets = (payload['sets'] as Map<String, Object?>?) ?? const {};
+      final tagsDelta = sets['tags'] as Map<String, Object?>?;
+      if (tagsDelta != null) {
+        await _etiketDeltaUygula(entityId, tagsDelta);
+      }
     }
     await _projeksiyonYaz(guncellemeler);
+  }
+
+  /// ODEV.md §4(a) §4.2 birlestirme kurallari. IKISI DE IDEMPOTENT ve
+  /// DEGISMELIDIR (hangi sirada gelirse gelsin sonuc AYNI):
+  ///  - `adds`    ⇒ `insertOrIgnore` (VAR OLAN SATIRA DOKUNMA) ⇒ iptal
+  ///    edilmis bir tag'in add'i OLU DOGAR = sunucunun `OrSetField`i.
+  ///  - `removes` ⇒ her `observed` tag icin satir ACILIR ve `iptalEdildi=true`
+  ///    yazilir; HIC GORULMEMIS bir tag icin de (sunucu `Cancelled.Add(...)`
+  ///    ile AYNISINI yapar) -- iptal KALICIDIR, sonra gelen add OLU DOGAR.
+  Future<void> _etiketDeltaUygula(
+    String entityId,
+    Map<String, Object?> delta,
+  ) async {
+    final adds = (delta['adds'] as List?) ?? const [];
+    for (final ham in adds) {
+      final add = ham as Map<String, Object?>;
+      await _db
+          .into(_db.gorevEtiketleri)
+          .insert(
+            GorevEtiketleriCompanion.insert(
+              gorevId: entityId,
+              etiket: add['el'] as String,
+              addTag: add['tag'] as String,
+            ),
+            mode: InsertMode.insertOrIgnore,
+          );
+    }
+
+    final removes = (delta['removes'] as List?) ?? const [];
+    for (final ham in removes) {
+      final remove = ham as Map<String, Object?>;
+      final el = remove['el'] as String;
+      final observed = (remove['observed'] as List?) ?? const [];
+      for (final tag in observed) {
+        await _db
+            .into(_db.gorevEtiketleri)
+            .insert(
+              GorevEtiketleriCompanion.insert(
+                gorevId: entityId,
+                etiket: el,
+                addTag: tag as String,
+                iptalEdildi: const Value(true),
+              ),
+              onConflict: DoUpdate(
+                (_) => const GorevEtiketleriCompanion(iptalEdildi: Value(true)),
+              ),
+            );
+      }
+    }
+  }
+
+  /// ODEV.md §4(a): snapshot uzlasmasi.
+  /// 🔴 SNAPSHOT YALNIZ AKTIF TAG TASIR -- `SyncPuller` `Cancelled:false,
+  /// Hlc: not null` suzgeci uygular (kaynaktan OLCULDU) ⇒ tombstone tele HIC
+  /// CIKMAZ. Dolayisiyla "snapshot'ta yok" iki AYRI seyi birden anlatir:
+  /// (a) uzakta iptal edildi, (b) benim add'im HENUZ GITMEDI. Ayrim
+  /// KUYRUKTAN yapilir: tag'i yazan op hala `bekliyor`/`gonderildi` ise
+  /// KORUNUR, degilse iptal edilir.
+  ///
+  /// Sunucu, TUM elemanlari iptal edilmis bir seti snapshot'a HIC KOYMAZ
+  /// (`elements.Count > 0` kosulu) ⇒ 'tags' anahtarinin YOKLUGU "uzakta
+  /// aktif etiket yok" demektir ve uzlasma YINE kosar. Ama `sets` ANAHTARI
+  /// hic yoksa (kismi/eski bir snapshot) uzlasma KOSMAZ: yoklugu "etiket
+  /// yok" diye okumak, kuyruga girmemis her yerel etiketi sessizce silerdi.
+  Future<void> _etiketSnapshotUzlas(String entityId, List<Object?> sets) async {
+    // 🔴 [OLCULDU -- bagimsiz denetim, o76] Anahtar (ELEMAN, TAG) CIFTIDIR,
+    // yalniz tag DEGIL: sunucunun `OrSetField.ElementState`i uyeligi
+    // (element, tag) basina tutar. Yalniz tag'e bakilsaydi, ayni tag baska
+    // bir eleman altinda aktif gorunduginde yerel satir iptal edilmezdi.
+    final uzaktakiCiftler = <(String, String)>{};
+    for (final ham in sets) {
+      final set = ham as Map<String, Object?>;
+      if (set['setName'] != 'tags') continue;
+      final elemanlar = (set['elements'] as List?) ?? const [];
+      for (final hamEleman in elemanlar) {
+        final eleman = hamEleman as Map<String, Object?>;
+        final el = eleman['element'] as String;
+        final aktifTagler = (eleman['activeTags'] as List?) ?? const [];
+        for (final hamTag in aktifTagler) {
+          final tag = (hamTag as Map<String, Object?>)['tag'] as String;
+          uzaktakiCiftler.add((el, tag));
+          // `insertOrIgnore`: YEREL TOMBSTONE KORUNUR -- kendi silmemiz
+          // sunucuya henuz islenmediyse snapshot o tag'i hala AKTIF gosterir
+          // ve satiri diriltmek kullanicinin sildigi etiketi geri getirirdi.
+          await _db
+              .into(_db.gorevEtiketleri)
+              .insert(
+                GorevEtiketleriCompanion.insert(
+                  gorevId: entityId,
+                  etiket: el,
+                  addTag: tag,
+                ),
+                mode: InsertMode.insertOrIgnore,
+              );
+        }
+      }
+    }
+
+    final yerelAktifler =
+        await (_db.select(_db.gorevEtiketleri)..where(
+              (t) => t.gorevId.equals(entityId) & t.iptalEdildi.equals(false),
+            ))
+            .get();
+    final fazlalik = yerelAktifler
+        .where((s) => !uzaktakiCiftler.contains((s.etiket, s.addTag)))
+        .toList();
+    if (fazlalik.isEmpty) return;
+
+    final kuyruktakiler = await _kuyruktakiTagler(entityId);
+    for (final satir in fazlalik) {
+      if (kuyruktakiler.contains(satir.addTag)) continue; // KUYRUK KORUMASI
+      await (_db.update(_db.gorevEtiketleri)..where(
+            (t) =>
+                t.gorevId.equals(satir.gorevId) &
+                t.etiket.equals(satir.etiket) &
+                t.addTag.equals(satir.addTag),
+          ))
+          .write(const GorevEtiketleriCompanion(iptalEdildi: Value(true)));
+    }
+  }
+
+  /// Kuyruktaki (`bekliyor`/`gonderildi`) op govdelerinden `"tag":"<GUID>"`
+  /// desenini cikarir. DECODE/RE-ENCODE YAPILMAZ (D1: govde yeniden
+  /// uretilmez -- `hamAlanHlcCikar`in AYNI doktrini).
+  /// `removes`in `observed`u BARE-STRING dizisidir (`["<guid>",...]`) ve bu
+  /// desene TAKILMAZ ⇒ silme op'u kuyruktayken o tag KORUNMAZ; dogrusu da
+  /// budur (kullanici o etiketi silmek istedi).
+  Future<Set<String>> _kuyruktakiTagler(String entityId) async {
+    final satirlar =
+        await (_db.select(_db.senkronKuyrugu)..where(
+              (t) =>
+                  t.entityId.equals(entityId) &
+                  t.durum.isIn(['bekliyor', 'gonderildi']),
+            ))
+            .get();
+    final desen = RegExp('"tag":"([^"]+)"');
+    return satirlar
+        .expand((s) => desen.allMatches(s.govdeJson).map((m) => m.group(1)!))
+        .toSet();
   }
 
   /// D2: `snapshot[i] = {entityType, entityId, scalars[], sets[], groups[]}`
@@ -155,12 +339,21 @@ class UzakDegisiklikUygulayici {
         final ad = scalar['field'] as String;
         final hlc = _hlcOku(scalar['hlc'] as Map<String, Object?>);
         final winOpId = scalar['winOperationId'] as String;
-        g.olusturulduWallMs = g.olusturulduWallMs == null ? hlc.wallMs : (hlc.wallMs < g.olusturulduWallMs! ? hlc.wallMs : g.olusturulduWallMs);
+        g.olusturulduWallMs = g.olusturulduWallMs == null
+            ? hlc.wallMs
+            : (hlc.wallMs < g.olusturulduWallMs!
+                  ? hlc.wallMs
+                  : g.olusturulduWallMs);
         await _kanalUygula(
           entityType: entityType,
           entityId: entityId,
           alan: 'fields:$ad',
-          anahtar: AlanAnahtari(wall: hlc.wallMs, counter: hlc.counter, clientId: hlc.clientId, opId: winOpId),
+          anahtar: AlanAnahtari(
+            wall: hlc.wallMs,
+            counter: hlc.counter,
+            clientId: hlc.clientId,
+            opId: winOpId,
+          ),
           g: g,
           kanalAdi: ad,
           fieldsDegeri: scalar['value'] as String?,
@@ -173,19 +366,37 @@ class UzakDegisiklikUygulayici {
         final ad = grup['group'] as String;
         final hlc = _hlcOku(grup['hlc'] as Map<String, Object?>);
         final winOpId = grup['winOperationId'] as String;
-        final grupFields = (grup['fields'] as Map<String, Object?>?) ?? const {};
-        g.olusturulduWallMs = g.olusturulduWallMs == null ? hlc.wallMs : (hlc.wallMs < g.olusturulduWallMs! ? hlc.wallMs : g.olusturulduWallMs);
+        final grupFields =
+            (grup['fields'] as Map<String, Object?>?) ?? const {};
+        g.olusturulduWallMs = g.olusturulduWallMs == null
+            ? hlc.wallMs
+            : (hlc.wallMs < g.olusturulduWallMs!
+                  ? hlc.wallMs
+                  : g.olusturulduWallMs);
         await _kanalUygula(
           entityType: entityType,
           entityId: entityId,
           alan: 'groups:$ad',
-          anahtar: AlanAnahtari(wall: hlc.wallMs, counter: hlc.counter, clientId: hlc.clientId, opId: winOpId),
+          anahtar: AlanAnahtari(
+            wall: hlc.wallMs,
+            counter: hlc.counter,
+            clientId: hlc.clientId,
+            opId: winOpId,
+          ),
           g: g,
           kanalAdi: ad,
           groupFields: grupFields,
         );
       }
-      // `sets` kanali bilincli olarak yok sayilir (SINIR, D2/1.4).
+      // ODEV.md §4(a): etiket uzlasmasi (SINIR D2/1.4 KAPANDI). `sets`
+      // ANAHTARI VARSA -- bos liste OLSA BILE -- kosar; anahtar HIC YOKSA
+      // kosmaz (gerekce `_etiketSnapshotUzlas` belgesinde).
+      if (entity.containsKey('sets')) {
+        await _etiketSnapshotUzlas(
+          entityId,
+          (entity['sets'] as List?) ?? const [],
+        );
+      }
     }
     await _projeksiyonYaz(guncellemeler);
   }
@@ -222,12 +433,20 @@ class UzakDegisiklikUygulayici {
       g.baslik = fieldsDegeri ?? '';
       g.baslikKazananAnahtari = anahtar; // GOREV-SS2 D-SS2-2/1
       g.herhangiBirKanalKazandi = true;
-      g.guncellendiWallMs = g.guncellendiWallMs == null ? anahtar.wall : (anahtar.wall > g.guncellendiWallMs! ? anahtar.wall : g.guncellendiWallMs);
+      g.guncellendiWallMs = g.guncellendiWallMs == null
+          ? anahtar.wall
+          : (anahtar.wall > g.guncellendiWallMs!
+                ? anahtar.wall
+                : g.guncellendiWallMs);
     } else if (alan == 'fields:isDeleted') {
       // [KIRMIZI] D4 -- Ordinal, TAM dize karsilastirma. "True"/"TRUE" silinmis SAYILMAZ.
       g.silindi = fieldsDegeri == 'true';
       g.herhangiBirKanalKazandi = true;
-      g.guncellendiWallMs = g.guncellendiWallMs == null ? anahtar.wall : (anahtar.wall > g.guncellendiWallMs! ? anahtar.wall : g.guncellendiWallMs);
+      g.guncellendiWallMs = g.guncellendiWallMs == null
+          ? anahtar.wall
+          : (anahtar.wall > g.guncellendiWallMs!
+                ? anahtar.wall
+                : g.guncellendiWallMs);
     } else if (alan == 'fields:priority') {
       // Sunucunun `ReadInt`iyle AYNI SONUC: ayristirilamayan deger NULL'a
       // duser. FARK (SINIR, DURUM.md'ye yazildi): sunucu ayrica
@@ -238,7 +457,11 @@ class UzakDegisiklikUygulayici {
       g.oncelik = fieldsDegeri == null ? null : int.tryParse(fieldsDegeri);
       g.oncelikGeldi = true;
       g.herhangiBirKanalKazandi = true;
-      g.guncellendiWallMs = g.guncellendiWallMs == null ? anahtar.wall : (anahtar.wall > g.guncellendiWallMs! ? anahtar.wall : g.guncellendiWallMs);
+      g.guncellendiWallMs = g.guncellendiWallMs == null
+          ? anahtar.wall
+          : (anahtar.wall > g.guncellendiWallMs!
+                ? anahtar.wall
+                : g.guncellendiWallMs);
     } else if (alan == 'fields:dueAt') {
       // TAKVIM GUNU PINI: gelen dize UTC'dir (sunucu `AdjustToUniversal`
       // ile kanoniklestirir, biz de `DateTime.utc(y,m,d)` gonderiyoruz) --
@@ -251,24 +474,36 @@ class UzakDegisiklikUygulayici {
           : DateTime.tryParse(fieldsDegeri)?.toUtc();
       g.sonTarihGeldi = true;
       g.herhangiBirKanalKazandi = true;
-      g.guncellendiWallMs = g.guncellendiWallMs == null ? anahtar.wall : (anahtar.wall > g.guncellendiWallMs! ? anahtar.wall : g.guncellendiWallMs);
+      g.guncellendiWallMs = g.guncellendiWallMs == null
+          ? anahtar.wall
+          : (anahtar.wall > g.guncellendiWallMs!
+                ? anahtar.wall
+                : g.guncellendiWallMs);
     } else if (alan == 'groups:completion') {
       final status = groupFields?['status'] as String?;
       g.tamamlandi = status == 'done'; // Ordinal, TAM dize
       g.tamamlandiKazananAnahtari = anahtar; // GOREV-SS2 D-SS2-2/1
       g.herhangiBirKanalKazandi = true;
-      g.guncellendiWallMs = g.guncellendiWallMs == null ? anahtar.wall : (anahtar.wall > g.guncellendiWallMs! ? anahtar.wall : g.guncellendiWallMs);
+      g.guncellendiWallMs = g.guncellendiWallMs == null
+          ? anahtar.wall
+          : (anahtar.wall > g.guncellendiWallMs!
+                ? anahtar.wall
+                : g.guncellendiWallMs);
     }
     // Bilinmeyen alan: UzakAlanDurumu'na YAZILDI (yukarida), projeksiyona DOKUNULMADI.
   }
 
-  Future<void> _projeksiyonYaz(Map<String, _GorevGuncellemesi> guncellemeler) async {
+  Future<void> _projeksiyonYaz(
+    Map<String, _GorevGuncellemesi> guncellemeler,
+  ) async {
     for (final girdi in guncellemeler.entries) {
       final entityId = girdi.key;
       final g = girdi.value;
       if (!g.herhangiBirKanalKazandi) continue;
 
-      final mevcut = await (_db.select(_db.gorevler)..where((t) => t.id.equals(entityId))).getSingleOrNull();
+      final mevcut = await (_db.select(
+        _db.gorevler,
+      )..where((t) => t.id.equals(entityId))).getSingleOrNull();
       if (mevcut == null) {
         // D4/B3: YENI entity -- yedi sutunlu Gorevler'e kurala bagli INSERT.
         final olusturulduWall = g.olusturulduWallMs ?? g.guncellendiWallMs ?? 0;
@@ -280,8 +515,14 @@ class UzakDegisiklikUygulayici {
                 id: entityId,
                 baslik: g.baslik ?? '',
                 tamamlandi: Value(g.tamamlandi ?? false),
-                olusturuldu: DateTime.fromMillisecondsSinceEpoch(olusturulduWall, isUtc: true),
-                guncellendi: DateTime.fromMillisecondsSinceEpoch(guncellendiWall, isUtc: true),
+                olusturuldu: DateTime.fromMillisecondsSinceEpoch(
+                  olusturulduWall,
+                  isUtc: true,
+                ),
+                guncellendi: DateTime.fromMillisecondsSinceEpoch(
+                  guncellendiWall,
+                  isUtc: true,
+                ),
                 silindi: Value(g.silindi ?? false),
                 oncelik: Value(g.oncelik),
                 sonTarih: Value(g.sonTarih),
@@ -295,7 +536,9 @@ class UzakDegisiklikUygulayici {
       } else {
         final companion = GorevlerCompanion(
           baslik: g.baslik != null ? Value(g.baslik!) : const Value.absent(),
-          tamamlandi: g.tamamlandi != null ? Value(g.tamamlandi!) : const Value.absent(),
+          tamamlandi: g.tamamlandi != null
+              ? Value(g.tamamlandi!)
+              : const Value.absent(),
           silindi: g.silindi != null ? Value(g.silindi!) : const Value.absent(),
           // ODEV.md §4(a): "geldi mi" BAYRAGI ile karar verilir -- `g.oncelik
           // != null` demek, gelen bir "temizle" (null) yazimini SESSIZCE
@@ -303,11 +546,18 @@ class UzakDegisiklikUygulayici {
           oncelik: g.oncelikGeldi ? Value(g.oncelik) : const Value.absent(),
           sonTarih: g.sonTarihGeldi ? Value(g.sonTarih) : const Value.absent(),
           guncellendi: g.guncellendiWallMs != null
-              ? Value(DateTime.fromMillisecondsSinceEpoch(g.guncellendiWallMs!, isUtc: true))
+              ? Value(
+                  DateTime.fromMillisecondsSinceEpoch(
+                    g.guncellendiWallMs!,
+                    isUtc: true,
+                  ),
+                )
               : const Value.absent(),
           // senkronDurumu YAZILMAZ (D4 PAZARLIKSIZ -- rozet dokunulmazligi).
         );
-        await (_db.update(_db.gorevler)..where((t) => t.id.equals(entityId))).write(companion);
+        await (_db.update(
+          _db.gorevler,
+        )..where((t) => t.id.equals(entityId))).write(companion);
 
         // GOREV-SS2 D-SS2-2: tespit noktasi -- `mevcut` burada ZATEN OKUNMUS
         // (yukarida), ekstra SELECT yok. Kanal kazanmadiysa (deger null)
@@ -350,30 +600,33 @@ class UzakDegisiklikUygulayici {
   }) async {
     final kazananBiziz = kazananAnahtari.clientHex == normHex(clientId);
 
-    final mevcutKayit = await (_db.select(_db.cakismaKayitlari)
-          ..where((t) => t.entityId.equals(entityId) & t.alan.equals(alan)))
-        .getSingleOrNull();
+    final mevcutKayit =
+        await (_db.select(_db.cakismaKayitlari)
+              ..where((t) => t.entityId.equals(entityId) & t.alan.equals(alan)))
+            .getSingleOrNull();
 
     if (mevcutKayit == null) {
       if (kazananBiziz) return; // sart 3
       final bekleyenVar = await bekleyenYerelYazimVarMi(entityId, alan);
       if (!bekleyenVar) return; // sart 2
       if (kanonikEski == kanonikYeni) return; // sart 4
-      await _db.into(_db.cakismaKayitlari).insert(
-        CakismaKayitlariCompanion.insert(
-          entityId: entityId,
-          alan: alan,
-          kaybedenDeger: kanonikEski,
-          kazananDeger: kanonikYeni,
-          kazananClientHex: kazananAnahtari.clientHex,
-          olusturuldu: saat(),
-        ),
-      );
+      await _db
+          .into(_db.cakismaKayitlari)
+          .insert(
+            CakismaKayitlariCompanion.insert(
+              entityId: entityId,
+              alan: alan,
+              kaybedenDeger: kanonikEski,
+              kazananDeger: kanonikYeni,
+              kazananClientHex: kazananAnahtari.clientHex,
+              olusturuldu: saat(),
+            ),
+          );
     } else {
       if (kazananBiziz) return; // sart 3 -- `/e`'de de aranir (M180b).
-      await (_db.update(_db.cakismaKayitlari)
-            ..where((t) => t.entityId.equals(entityId) & t.alan.equals(alan)))
-          .write(
+      await (_db.update(
+        _db.cakismaKayitlari,
+      )..where((t) => t.entityId.equals(entityId) & t.alan.equals(alan))).write(
         CakismaKayitlariCompanion(
           kazananDeger: Value(kanonikYeni),
           kazananClientHex: Value(kazananAnahtari.clientHex),

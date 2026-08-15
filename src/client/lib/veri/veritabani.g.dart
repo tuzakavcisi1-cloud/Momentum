@@ -2653,6 +2653,323 @@ class CakismaKayitlariCompanion extends UpdateCompanion<CakismaKaydiRow> {
   }
 }
 
+class $GorevEtiketleriTable extends GorevEtiketleri
+    with TableInfo<$GorevEtiketleriTable, GorevEtiketiRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GorevEtiketleriTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _gorevIdMeta = const VerificationMeta(
+    'gorevId',
+  );
+  @override
+  late final GeneratedColumn<String> gorevId = GeneratedColumn<String>(
+    'gorev_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _etiketMeta = const VerificationMeta('etiket');
+  @override
+  late final GeneratedColumn<String> etiket = GeneratedColumn<String>(
+    'etiket',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _addTagMeta = const VerificationMeta('addTag');
+  @override
+  late final GeneratedColumn<String> addTag = GeneratedColumn<String>(
+    'add_tag',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _iptalEdildiMeta = const VerificationMeta(
+    'iptalEdildi',
+  );
+  @override
+  late final GeneratedColumn<bool> iptalEdildi = GeneratedColumn<bool>(
+    'iptal_edildi',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("iptal_edildi" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [gorevId, etiket, addTag, iptalEdildi];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'gorev_etiketleri';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GorevEtiketiRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('gorev_id')) {
+      context.handle(
+        _gorevIdMeta,
+        gorevId.isAcceptableOrUnknown(data['gorev_id']!, _gorevIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_gorevIdMeta);
+    }
+    if (data.containsKey('etiket')) {
+      context.handle(
+        _etiketMeta,
+        etiket.isAcceptableOrUnknown(data['etiket']!, _etiketMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_etiketMeta);
+    }
+    if (data.containsKey('add_tag')) {
+      context.handle(
+        _addTagMeta,
+        addTag.isAcceptableOrUnknown(data['add_tag']!, _addTagMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_addTagMeta);
+    }
+    if (data.containsKey('iptal_edildi')) {
+      context.handle(
+        _iptalEdildiMeta,
+        iptalEdildi.isAcceptableOrUnknown(
+          data['iptal_edildi']!,
+          _iptalEdildiMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {gorevId, etiket, addTag};
+  @override
+  GorevEtiketiRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GorevEtiketiRow(
+      gorevId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}gorev_id'],
+      )!,
+      etiket: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}etiket'],
+      )!,
+      addTag: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}add_tag'],
+      )!,
+      iptalEdildi: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}iptal_edildi'],
+      )!,
+    );
+  }
+
+  @override
+  $GorevEtiketleriTable createAlias(String alias) {
+    return $GorevEtiketleriTable(attachedDatabase, alias);
+  }
+}
+
+class GorevEtiketiRow extends DataClass implements Insertable<GorevEtiketiRow> {
+  final String gorevId;
+  final String etiket;
+  final String addTag;
+  final bool iptalEdildi;
+  const GorevEtiketiRow({
+    required this.gorevId,
+    required this.etiket,
+    required this.addTag,
+    required this.iptalEdildi,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['gorev_id'] = Variable<String>(gorevId);
+    map['etiket'] = Variable<String>(etiket);
+    map['add_tag'] = Variable<String>(addTag);
+    map['iptal_edildi'] = Variable<bool>(iptalEdildi);
+    return map;
+  }
+
+  GorevEtiketleriCompanion toCompanion(bool nullToAbsent) {
+    return GorevEtiketleriCompanion(
+      gorevId: Value(gorevId),
+      etiket: Value(etiket),
+      addTag: Value(addTag),
+      iptalEdildi: Value(iptalEdildi),
+    );
+  }
+
+  factory GorevEtiketiRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GorevEtiketiRow(
+      gorevId: serializer.fromJson<String>(json['gorevId']),
+      etiket: serializer.fromJson<String>(json['etiket']),
+      addTag: serializer.fromJson<String>(json['addTag']),
+      iptalEdildi: serializer.fromJson<bool>(json['iptalEdildi']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'gorevId': serializer.toJson<String>(gorevId),
+      'etiket': serializer.toJson<String>(etiket),
+      'addTag': serializer.toJson<String>(addTag),
+      'iptalEdildi': serializer.toJson<bool>(iptalEdildi),
+    };
+  }
+
+  GorevEtiketiRow copyWith({
+    String? gorevId,
+    String? etiket,
+    String? addTag,
+    bool? iptalEdildi,
+  }) => GorevEtiketiRow(
+    gorevId: gorevId ?? this.gorevId,
+    etiket: etiket ?? this.etiket,
+    addTag: addTag ?? this.addTag,
+    iptalEdildi: iptalEdildi ?? this.iptalEdildi,
+  );
+  GorevEtiketiRow copyWithCompanion(GorevEtiketleriCompanion data) {
+    return GorevEtiketiRow(
+      gorevId: data.gorevId.present ? data.gorevId.value : this.gorevId,
+      etiket: data.etiket.present ? data.etiket.value : this.etiket,
+      addTag: data.addTag.present ? data.addTag.value : this.addTag,
+      iptalEdildi: data.iptalEdildi.present
+          ? data.iptalEdildi.value
+          : this.iptalEdildi,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GorevEtiketiRow(')
+          ..write('gorevId: $gorevId, ')
+          ..write('etiket: $etiket, ')
+          ..write('addTag: $addTag, ')
+          ..write('iptalEdildi: $iptalEdildi')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(gorevId, etiket, addTag, iptalEdildi);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GorevEtiketiRow &&
+          other.gorevId == this.gorevId &&
+          other.etiket == this.etiket &&
+          other.addTag == this.addTag &&
+          other.iptalEdildi == this.iptalEdildi);
+}
+
+class GorevEtiketleriCompanion extends UpdateCompanion<GorevEtiketiRow> {
+  final Value<String> gorevId;
+  final Value<String> etiket;
+  final Value<String> addTag;
+  final Value<bool> iptalEdildi;
+  final Value<int> rowid;
+  const GorevEtiketleriCompanion({
+    this.gorevId = const Value.absent(),
+    this.etiket = const Value.absent(),
+    this.addTag = const Value.absent(),
+    this.iptalEdildi = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  GorevEtiketleriCompanion.insert({
+    required String gorevId,
+    required String etiket,
+    required String addTag,
+    this.iptalEdildi = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : gorevId = Value(gorevId),
+       etiket = Value(etiket),
+       addTag = Value(addTag);
+  static Insertable<GorevEtiketiRow> custom({
+    Expression<String>? gorevId,
+    Expression<String>? etiket,
+    Expression<String>? addTag,
+    Expression<bool>? iptalEdildi,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (gorevId != null) 'gorev_id': gorevId,
+      if (etiket != null) 'etiket': etiket,
+      if (addTag != null) 'add_tag': addTag,
+      if (iptalEdildi != null) 'iptal_edildi': iptalEdildi,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  GorevEtiketleriCompanion copyWith({
+    Value<String>? gorevId,
+    Value<String>? etiket,
+    Value<String>? addTag,
+    Value<bool>? iptalEdildi,
+    Value<int>? rowid,
+  }) {
+    return GorevEtiketleriCompanion(
+      gorevId: gorevId ?? this.gorevId,
+      etiket: etiket ?? this.etiket,
+      addTag: addTag ?? this.addTag,
+      iptalEdildi: iptalEdildi ?? this.iptalEdildi,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (gorevId.present) {
+      map['gorev_id'] = Variable<String>(gorevId.value);
+    }
+    if (etiket.present) {
+      map['etiket'] = Variable<String>(etiket.value);
+    }
+    if (addTag.present) {
+      map['add_tag'] = Variable<String>(addTag.value);
+    }
+    if (iptalEdildi.present) {
+      map['iptal_edildi'] = Variable<bool>(iptalEdildi.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GorevEtiketleriCompanion(')
+          ..write('gorevId: $gorevId, ')
+          ..write('etiket: $etiket, ')
+          ..write('addTag: $addTag, ')
+          ..write('iptalEdildi: $iptalEdildi, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$Veritabani extends GeneratedDatabase {
   _$Veritabani(QueryExecutor e) : super(e);
   $VeritabaniManager get managers => $VeritabaniManager(this);
@@ -2661,6 +2978,9 @@ abstract class _$Veritabani extends GeneratedDatabase {
   late final $AyarlarTable ayarlar = $AyarlarTable(this);
   late final $UzakAlanDurumuTable uzakAlanDurumu = $UzakAlanDurumuTable(this);
   late final $CakismaKayitlariTable cakismaKayitlari = $CakismaKayitlariTable(
+    this,
+  );
+  late final $GorevEtiketleriTable gorevEtiketleri = $GorevEtiketleriTable(
     this,
   );
   @override
@@ -2673,6 +2993,7 @@ abstract class _$Veritabani extends GeneratedDatabase {
     ayarlar,
     uzakAlanDurumu,
     cakismaKayitlari,
+    gorevEtiketleri,
   ];
 }
 
@@ -3995,6 +4316,195 @@ typedef $$CakismaKayitlariTableProcessedTableManager =
       CakismaKaydiRow,
       PrefetchHooks Function()
     >;
+typedef $$GorevEtiketleriTableCreateCompanionBuilder =
+    GorevEtiketleriCompanion Function({
+      required String gorevId,
+      required String etiket,
+      required String addTag,
+      Value<bool> iptalEdildi,
+      Value<int> rowid,
+    });
+typedef $$GorevEtiketleriTableUpdateCompanionBuilder =
+    GorevEtiketleriCompanion Function({
+      Value<String> gorevId,
+      Value<String> etiket,
+      Value<String> addTag,
+      Value<bool> iptalEdildi,
+      Value<int> rowid,
+    });
+
+class $$GorevEtiketleriTableFilterComposer
+    extends Composer<_$Veritabani, $GorevEtiketleriTable> {
+  $$GorevEtiketleriTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get gorevId => $composableBuilder(
+    column: $table.gorevId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get etiket => $composableBuilder(
+    column: $table.etiket,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get addTag => $composableBuilder(
+    column: $table.addTag,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get iptalEdildi => $composableBuilder(
+    column: $table.iptalEdildi,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$GorevEtiketleriTableOrderingComposer
+    extends Composer<_$Veritabani, $GorevEtiketleriTable> {
+  $$GorevEtiketleriTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get gorevId => $composableBuilder(
+    column: $table.gorevId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get etiket => $composableBuilder(
+    column: $table.etiket,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get addTag => $composableBuilder(
+    column: $table.addTag,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get iptalEdildi => $composableBuilder(
+    column: $table.iptalEdildi,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$GorevEtiketleriTableAnnotationComposer
+    extends Composer<_$Veritabani, $GorevEtiketleriTable> {
+  $$GorevEtiketleriTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get gorevId =>
+      $composableBuilder(column: $table.gorevId, builder: (column) => column);
+
+  GeneratedColumn<String> get etiket =>
+      $composableBuilder(column: $table.etiket, builder: (column) => column);
+
+  GeneratedColumn<String> get addTag =>
+      $composableBuilder(column: $table.addTag, builder: (column) => column);
+
+  GeneratedColumn<bool> get iptalEdildi => $composableBuilder(
+    column: $table.iptalEdildi,
+    builder: (column) => column,
+  );
+}
+
+class $$GorevEtiketleriTableTableManager
+    extends
+        RootTableManager<
+          _$Veritabani,
+          $GorevEtiketleriTable,
+          GorevEtiketiRow,
+          $$GorevEtiketleriTableFilterComposer,
+          $$GorevEtiketleriTableOrderingComposer,
+          $$GorevEtiketleriTableAnnotationComposer,
+          $$GorevEtiketleriTableCreateCompanionBuilder,
+          $$GorevEtiketleriTableUpdateCompanionBuilder,
+          (
+            GorevEtiketiRow,
+            BaseReferences<
+              _$Veritabani,
+              $GorevEtiketleriTable,
+              GorevEtiketiRow
+            >,
+          ),
+          GorevEtiketiRow,
+          PrefetchHooks Function()
+        > {
+  $$GorevEtiketleriTableTableManager(
+    _$Veritabani db,
+    $GorevEtiketleriTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GorevEtiketleriTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GorevEtiketleriTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GorevEtiketleriTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> gorevId = const Value.absent(),
+                Value<String> etiket = const Value.absent(),
+                Value<String> addTag = const Value.absent(),
+                Value<bool> iptalEdildi = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => GorevEtiketleriCompanion(
+                gorevId: gorevId,
+                etiket: etiket,
+                addTag: addTag,
+                iptalEdildi: iptalEdildi,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String gorevId,
+                required String etiket,
+                required String addTag,
+                Value<bool> iptalEdildi = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => GorevEtiketleriCompanion.insert(
+                gorevId: gorevId,
+                etiket: etiket,
+                addTag: addTag,
+                iptalEdildi: iptalEdildi,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$GorevEtiketleriTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Veritabani,
+      $GorevEtiketleriTable,
+      GorevEtiketiRow,
+      $$GorevEtiketleriTableFilterComposer,
+      $$GorevEtiketleriTableOrderingComposer,
+      $$GorevEtiketleriTableAnnotationComposer,
+      $$GorevEtiketleriTableCreateCompanionBuilder,
+      $$GorevEtiketleriTableUpdateCompanionBuilder,
+      (
+        GorevEtiketiRow,
+        BaseReferences<_$Veritabani, $GorevEtiketleriTable, GorevEtiketiRow>,
+      ),
+      GorevEtiketiRow,
+      PrefetchHooks Function()
+    >;
 
 class $VeritabaniManager {
   final _$Veritabani _db;
@@ -4009,4 +4519,6 @@ class $VeritabaniManager {
       $$UzakAlanDurumuTableTableManager(_db, _db.uzakAlanDurumu);
   $$CakismaKayitlariTableTableManager get cakismaKayitlari =>
       $$CakismaKayitlariTableTableManager(_db, _db.cakismaKayitlari);
+  $$GorevEtiketleriTableTableManager get gorevEtiketleri =>
+      $$GorevEtiketleriTableTableManager(_db, _db.gorevEtiketleri);
 }

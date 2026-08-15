@@ -76,10 +76,10 @@ void main() {
         // KENDI baslik Text'i AYNI dizgeyi tasir, `find.text` hem `Text` hem
         // `EditableText`i eslestirdigi icin IKI widget bulunur (o68'in ilk
         // kosumunda yakalandi). TextField'in controller'ini DOGRUDAN oku.
-        final alan = tester.widget<TextField>(find.byType(TextField));
+        final alan = tester.widget<TextField>(find.byKey(const ValueKey('baslik_alani')));
         expect(alan.controller!.text, 'Eski baslik');
 
-        await tester.enterText(find.byType(TextField), 'Yeni baslik');
+        await tester.enterText(find.byKey(const ValueKey('baslik_alani')), 'Yeni baslik');
         await tester.tap(find.text(Metinler.kaydetDugmesi));
         await tester.pumpAndSettle();
 
@@ -258,7 +258,7 @@ void main() {
 
         await tester.tap(find.byIcon(Icons.edit_outlined));
         await tester.pumpAndSettle();
-        await tester.enterText(find.byType(TextField), '   ');
+        await tester.enterText(find.byKey(const ValueKey('baslik_alani')), '   ');
         await tester.tap(find.text(Metinler.kaydetDugmesi));
         await tester.pumpAndSettle();
 

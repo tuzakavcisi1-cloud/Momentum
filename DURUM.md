@@ -1,6 +1,6 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 7/10 · kutu 21 Ağu 2026 · `ci #43` YEŞİL (589/589) · `pages #5` YEŞİL · canlı doğrulandı · son ölçüm 14 Ağu 2026, oturum 74**
+**BİTTİ: 7/10 · kutu 21 Ağu 2026 · `ci #44` YEŞİL (589/589) · `pages #5` YEŞİL · canlı doğrulandı · son ölçüm 14 Ağu 2026, oturum 76**
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
 > ② bu dosya ③ CI durumu — **Cowork bunu claude-in-chrome ile cihazdaki Chrome'dan okur**
@@ -30,58 +30,47 @@ Kilitlenen tasarım (Onur): ① öncelik ÜÇ seviye + yok (`1=Yüksek, 2=Orta,
   sayesinde uzaktan TEMİZLEME (`value:null`) düşmüyor.
 - **R4 tabanı 20 → 25**, **`Gorev` alan pini 7 → 9** — ikisi de bilerek, ölçülerek.
 
-### İki tur denetim — ikisi de bulgu üretti
+### İki tur denetim + canlı tur (o74) — özet
 
-**Tur 1 (2 bağımsız denetçi, kâğıt üstünde):** BLOKER yok; ikisi de **bağımsız
-olarak aynı çökmeyi** buldu — `showDatePicker` `initialDate` aralık dışında
-kalabiliyordu (uzak istemci herhangi bir tarih yazabilir) ⇒ tarih düğmesi ölüydü.
-**Kelepçe eklendi.** Ayrıca: takvim pininin yazma ayağı korumasızdı, ekran
-kablosu ölçülmüyordu, "meta yoksa çizilmez" boş iddiaydı, başlık "değişmedi"
-kararı kırpmaya duyarlıydı — dördü de kapatıldı.
+Tur 1 (kâğıt, 2 denetçi): `showDatePicker` `initialDate` aralık dışına düşüp tarih
+düğmesini ÖLDÜREBİLİYORDU → kelepçe eklendi. **Tur 2 (`flutter test`) GERÇEK bir
+regresyon buldu ve tur 1 onu KAÇIRDI:** v1→v2 `alterTable` v1'de olmayan sütunları
+SELECT ediyordu ⇒ v1'den gelen kullanıcının DB'si açılışta çöküyordu (`newColumns`
+ile kapatıldı). **DERS (kanla): kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ.**
+Canlı tur (cihaz Chrome, Pages): migration OPFS'te koştu, meta satırı **"Yüksek ·
+21 Ağu 2026"** göründü, sekme yenilendi, GÜN KAYMADI. Takvim Türkçeleştirildi
+(`flutter_localizations` + `Locale('tr')`, `intl` 0.20.2 · BSD-3 · advisory 0).
+Ayrıntı: proje belgesi `claude/devir-oturum-75.md` ve o74 notları.
 
-**Tur 2 (`flutter test` — KOŞAN ARTEFAKT):** 4 düşüş. 🔴 **Biri GERÇEK
-REGRESYONDU ve tur 1 onu KAÇIRDI:** `v1→v2` adımındaki `alterTable`, güncel (v6)
-Dart tanımıyla tablo yaratıp eski 7 sütunlu tablodan `oncelik`/`son_tarih` SELECT
-ediyordu ⇒ **v1'den gelen kullanıcının veritabanı açılışta çöküyordu.**
-`newColumns:` + `gorevlerYenidenYaratildi` koşulu eklendi (`ayarlar.imlecSahibi`
-emsali). Kalan üçü bayat pindi (`Gorev` 7→9; iki "bayt bayt AYNI" testi — bunlar
-adının aksine "o adım dokunmadı" değil "*bugüne kadar* dokunulmadı" ölçüyordu,
-iddia aynı güçte yeniden yazıldı).
+## Oturum 76 (14 Ağu 2026) — ETİKET DİLİMİ: KOD BİTTİ, CANLI ÖLÇÜM BEKLİYOR
 
-**DERS (kanla):** kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ. "Denetim yalnız
-koşan artefakta" kuralı bu turda kendi lehine kanıt üretti.
+Dilim BULUTTA yazıldı ve koşuldu: CI'nin pinlediği **Flutter 3.44.6** bulut
+konteynerine kuruldu (cihazın Linux VM'inde flutter/dart YOK — ölçüldü).
+`analyze --fatal-infos` *No issues found* · `flutter test` **628/628** (taban 589,
+değiştirmeden önce de ölçüldü). 25 dosya cihaza yazıldı ve **sha256 ile bayt-bayt
+doğrulandı**; commit + push + Pages ONUR'DA.
 
-### Canlı tur (cihazdaki Chrome, Pages demosu, 14 Ağu 2026)
-
-**Ölçülenler — hepsi yeşil:** v5→v6 migration OPFS'te FİİLEN koştu ve o72'den
-kalan görev korundu · kalem ikonu *"Görevi düzenle"* birleşik diyaloğunu açtı
-(başlık + dört öncelik çipi + son tarih) · *Yüksek* seçildi · tarih seçici açıldı,
-21 Ağu seçildi, düğmede **21 Ağu 2026** göründü · Kaydet sonrası satırda meta:
-**"Yüksek · 21 Ağu 2026"**, başlığın ALTINDA, yüksek öncelik renginde · **sekme
-yenilendikten sonra da durdu ve GÜN KAYMADI** (21 → 21).
-
-**ÖLÇÜLEMEDİ:** ölçütün üçüncü ayağı *"ikinci istemciye eşitlenir"* — Pages
-demosunda backend YOKTUR (bilinen sınır 6), rozet *Gönderiliyor → Çevrimdışı*
-akışına düştü. Senkron borusunun kendisi BİTTİ maddeleri 7 ve 8'in konusudur ve
-iki yeni alanın o boruya bağlandığı 589 testte ölçülmüştür; **canlı değildir.**
-Onur'un kararı (14 Ağu): sayaç 7/10, bu ayak sınır olarak yazılır.
-
-**Turda çıkan bulgu — düzeltildi:** `showDatePicker` ürün Türkçe olmasına rağmen
-*'Select date' / 'August 2026' / 'Cancel' / 'OK'* çiziyordu (delege verilmezse
-Flutter yalnız en_US taşıyan `DefaultMaterialLocalizations`a düşer).
-`flutter_localizations` (SDK paketi, pub.dev'de yok — /api 404) + sabit
-`Locale('tr')` eklendi; `pages #5` sonrası CANLIDA DOĞRULANDI (takvim
-"Tarih seçin / Ağustos 2026 / İptal / Tamam", hafta Pazartesi'den başlıyor). Kırmızı çizgi ölçüldü: transitif **`intl` · advisory 0
-(paket geneli) · BSD-3-Clause** (dart-lang/i18n). *Erratum:* ilk beyan `0.20.3` (pub.dev'in
-en günceli) diyordu; `pub get` **`0.20.2`** çözdü — kanonik `pubspec.lock`tur.
+- **Şema v6→v7 (SALT-EKLEME):** `gorev_etiketleri(gorevId, etiket, addTag,
+  iptalEdildi)`. `Gorevler`e DOKUNULMADI ⇒ v1 yolu etkilenmedi (v1→v7 zinciri test).
+- **Tel:** `sets.tags.{adds,removes}` aynası (`el/tag/observed/hlc`) — sunucu
+  `SyncContracts.cs`'ten ÖLÇÜLDÜ. `sets` kanalı LWW meta'ya (`UzakAlanDurumu`) ve
+  `hamAlanHlcCikar`a ASLA bağlanmaz (OR-Set'te alan başına kazanan YOKTUR).
+- **Birleştirme:** adds=insertOrIgnore (tombstone kalıcı, geç gelen add ÖLÜ DOĞAR) ·
+  removes=observed başına satır açar + iptal eder ⇒ idempotent + değişmeli (test).
+- **Snapshot:** tombstone TELE ÇIKMAZ (`SyncPuller` süzgeci) ⇒ snapshot'ta olmayan
+  yerel tag, op'u hâlâ kuyruktaysa KORUNUR, değilse iptal edilir.
+- **UI:** diyalogda etiket alanı + `InputChip`; satırda meta metnine `#etiket`;
+  listenin üstünde TEK SEÇİM çip şeridi (Dart tarafında süzme, aynı stream).
+- **Pinler ölçülerek güncellendi:** R4 25→29 · `Gorev` alan 9→10 · schemaVersion 6→7.
+- **Bağımsız denetim (iki denetçi, 14 mutant): iki CİDDİ bulgu kapatıldı** — bant-içi
+  ayraç (`group_concat`→`json_group_array`) + `_kuyruktakiTagler`'in iki mutantı.
 
 ## Sıradaki iş
 
-1. `pubspec.yaml` yorum erratumu + bu dosya commit BEKLİYOR (kod değişmedi).
-2. Sonraki dilim (ODEV §4a): **etiket ekleme + etikete göre süzme** — backend
-   `tags` OR-Set olarak zaten hazır (`FieldStrategyRegistry`); istemcide OR-Set
-   kanalı `uzak_degisiklik_uygulayici.dart`ta BİLİNÇLİ OLARAK yok sayılıyor
-   (`sets` kanalı, SINIR D2/1.4) ⇒ o sınır bu dilimde açılacak.
+1. **Etiket dilimini CANLIDA ölç** (ODEV §4a): commit + push → `ci` yeşil → `pages`
+   workflow_dispatch (düğme İNSANDA) → cihaz Chrome'da: etiket ekle, çiple süz,
+   sekmeyi kapat/aç → durdu mu. Yeşilse sayaç **8/10**. Tasarım kilidi ve adım
+   sırası: `claude/devir-oturum-75.md` §4.
 
 ## Bilinen sınırlar
 
@@ -119,3 +108,11 @@ en günceli) diyordu; `pub get` **`0.20.2`** çözdü — kanonik `pubspec.lock`
     edilmedi (aynı `_kanalUygula`ya düşüyor).
 13. **ÖLÇÜLDÜ, TEMİZ:** `kuyrukEnBuyuk`/`hamAlanHlcCikar` alan adı beyaz listesi
     tutmuyor ⇒ D5 koruması iki yeni kanalı da kapsıyor.
+14. **Etiketlerde BÜYÜK/KÜÇÜK HARF KATLAMASI YOK** (bilinçli): sunucu OR-Set
+    elemanlarını Ordinal karşılaştırır ⇒ `İş` ile `iş` AYRI etiketlerdir. Türkçe
+    I/İ katlaması ayrı bir mayındır, kapsam dışı.
+15. **Etiket 32 karakter sınırı YALNIZ İSTEMCİ kelepçesidir**; sunucu uzunluk
+    kısıtlamaz ⇒ uzaktan gelen daha uzun etiket EZİLMEZ, çizilir. Etiketler
+    `kanonikDize`ye girmez ⇒ çakışma ekranı onları göstermez (OR-Set'te
+    "kaybeden değer" kavramı yoktur).
+16. Etiket sıralaması KOD-BİRİMİ sırasıdır (`10`<`2`, `İş` sonda); Türkçe harmanlama YOK.

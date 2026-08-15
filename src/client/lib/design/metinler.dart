@@ -105,6 +105,17 @@ class Metinler {
   static const String sonTarihSec = 'Tarih seç';
   static const String sonTarihiTemizle = 'Son tarihi temizle';
 
+  // ODEV.md §4(a) -- etiket dilimi. F6'nin 13 dizgesine DAHIL DEGIL
+  // (o68/o72/oncelik diliminin AYNI EK deseni).
+  static const String etiketlerBasligi = 'Etiketler';
+  static const String etiketEkle = 'Etiket ekle';
+  static const String etiketKaldir = 'Etiketi kaldır';
+
+  /// Suzme seridindeki "suzme yok" cipi. Etiket metni ile CAKISABILIR
+  /// ("Tümü" adli bir etiket) -- cip SECIMI metne gore DEGIL, `secili ==
+  /// null` durumuna gore verilir, bu yuzden cakisma davranisi bozmaz.
+  static const String etiketTumu = 'Tümü';
+
   /// Ay kisaltmalari -- `intl` paketi BILEREK eklenmedi (yeni bagimlilik =
   /// lisans + CVE kapisi; tek bir tarih etiketi icin orantisiz). Sira
   /// PAZARLIKSIZ 1..12'dir ve `DateTime.month - 1` ile indislenir.

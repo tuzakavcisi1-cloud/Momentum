@@ -28,6 +28,7 @@ class Gorevler extends Table {
       )
       .withDefault(const Constant('yerel'))();
   BoolColumn get silindi => boolean().withDefault(const Constant(false))();
+
   /// ODEV.md §4(a) "oncelik + son tarih" dilimi (schemaVersion 5 -> 6).
   /// HAM `int?`tir -- sunucunun `priority` scalar'iyla (`ProjectionFields
   /// .ReadInt`, `NumberStyles.Integer` + `InvariantCulture`) AYNI tur.
@@ -35,6 +36,7 @@ class Gorevler extends Table {
   /// bir istemcinin yazdigi bilinmeyen degeri sessizce EZMEK, LWW'nin
   /// altini oymak olurdu.
   IntColumn get oncelik => integer().nullable()();
+
   /// TAKVIM GUNU PINI (PAZARLIKSIZ): daima `DateTime.utc(y, m, d)` --
   /// saat/dakika DAIMA sifir, `isUtc` DAIMA true. Yerel saat dilimine
   /// CEVRILMEZ: UTC+3'te `.toUtc()` gunu bir gun geri kaydirir
@@ -117,9 +119,12 @@ class UzakAlanDurumu extends Table {
 @DataClassName('CakismaKaydiRow')
 class CakismaKayitlari extends Table {
   TextColumn get entityId => text()();
-  TextColumn get alan => text()(); // 'fields:title' | 'groups:completion' -- BASKASI YOK
-  TextColumn get kaybedenDeger => text()(); // YEREL deger, ezilmeden ONCE -- kanonik dize
-  TextColumn get kazananDeger => text()(); // UZAK deger -- AYNI kanonik dize fonksiyonundan
+  TextColumn get alan =>
+      text()(); // 'fields:title' | 'groups:completion' -- BASKASI YOK
+  TextColumn get kaybedenDeger =>
+      text()(); // YEREL deger, ezilmeden ONCE -- kanonik dize
+  TextColumn get kazananDeger =>
+      text()(); // UZAK deger -- AYNI kanonik dize fonksiyonundan
   TextColumn get kazananClientHex => text()();
   DateTimeColumn get olusturuldu => dateTime()();
 
@@ -127,7 +132,40 @@ class CakismaKayitlari extends Table {
   Set<Column> get primaryKey => {entityId, alan};
 }
 
-@DriftDatabase(tables: [Gorevler, SenkronKuyrugu, Ayarlar, UzakAlanDurumu, CakismaKayitlari])
+/// ODEV.md §4(a) "etiket" dilimi (schemaVersion 6 -> 7): OR-Set'in ISTEMCI
+/// AYNASI. ELEMAN = ETIKET METNININ KENDISI (K-o75/①; `Tag` entity'sinin
+/// GUID'i ve global yeniden adlandirma KAPSAM DISI) -- uyelik ise TAG
+/// BASINADIR: ayni etiket icin farkli istemcilerin actigi BIRDEN COK add-tag
+/// AYNI ANDA yasar, ADD-WINS semantigi budur.
+///
+/// `iptalEdildi` KALICI TOMBSTONE'dur: iptal edilmis bir tag'in sonradan
+/// gelen add'i OLU DOGAR (sunucunun `OrSetField`i ile AYNI sonuc).
+///
+/// HLC SUTUNU YAZILMAZ: istemci compaction yapmiyor, okunmayacak sutun OLU
+/// SUTUNDUR (`CakismaKayitlari`nin `entityType`i dusurme emsali). AYNI
+/// gerekceyle `entityType`/`setName` de YOK -- bu dilimde TEK entity turu
+/// (`Task`) ve TEK set (`tags`) vardir.
+@DataClassName('GorevEtiketiRow')
+class GorevEtiketleri extends Table {
+  TextColumn get gorevId => text()();
+  TextColumn get etiket => text()();
+  TextColumn get addTag => text()();
+  BoolColumn get iptalEdildi => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column> get primaryKey => {gorevId, etiket, addTag};
+}
+
+@DriftDatabase(
+  tables: [
+    Gorevler,
+    SenkronKuyrugu,
+    Ayarlar,
+    UzakAlanDurumu,
+    CakismaKayitlari,
+    GorevEtiketleri,
+  ],
+)
 class Veritabani extends _$Veritabani {
   // GOREV-W2 T2 (denetim BL-3): imza KONUMSAL kalir -- 31 mevcut cagri
   // (`Veritabani(` deseni, cogu test-executor'i konumsal geciyor) bozulmaz.
@@ -138,7 +176,7 @@ class Veritabani extends _$Veritabani {
     : super(baglanti ?? _uretimBaglantisi(bildirim));
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   /// GOREV-slice-3c D1/T3: v1->v2 SQLite bir CHECK kisitini ALTER TABLE ile
   /// degistiremez -- `gorevler` (yeni 5-degerli CHECK ile) `TableMigration`
@@ -208,6 +246,14 @@ class Veritabani extends _$Veritabani {
       if (from < 6 && !gorevlerYenidenYaratildi) {
         await m.addColumn(gorevler, gorevler.oncelik);
         await m.addColumn(gorevler, gorevler.sonTarih);
+      }
+      // ODEV.md §4(a) etiket dilimi: v6->v7 SALT-EKLEMEDIR -- `gorevEtiketleri`
+      // YENI bir tablodur, `Gorevler`e DOKUNULMAZ, `alterTable` CAGRILMAZ ⇒
+      // v1 yolundaki `gorevlerYenidenYaratildi` kosulu ETKILENMEZ (v4->v5'in
+      // BIREBIR AYNI deseni; v5->v6'nin `addColumn` dali gibi KOSULLU DEGIL,
+      // cunku yeni tablo hangi yoldan gelinirse gelinsin BIR KEZ yaratilir).
+      if (from < 7) {
+        await m.createTable(gorevEtiketleri);
       }
     },
   );
