@@ -1,54 +1,32 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 7/10 · kutu 21 Ağu 2026 · `ci #44` YEŞİL (589/589) · `pages #5` YEŞİL · canlı doğrulandı · son ölçüm 14 Ağu 2026, oturum 76**
+**BİTTİ: 8/10 · kutu 21 Ağu 2026 · `ci #45` YEŞİL (628/628) · `pages #6` YEŞİL · canlı doğrulandı · son ölçüm 15 Ağu 2026, oturum 76**
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
 > ② bu dosya ③ CI durumu — **Cowork bunu claude-in-chrome ile cihazdaki Chrome'dan okur**
 > (kanonik ölçüm yeri cihazdır; bulut tarayıcısı değil). `arsiv/` AÇILMAZ.
 > **Flutter komutları `src/client`'tan koşulur** (bilinen sınır 1).
 
-## Ne yapıldı (oturum 74 · 14 Ağu 2026)
+## Ne yapıldı — oturum 74 (özet; ayrıntı proje belgelerinde)
 
-**Öncelik + son tarih dilimi KAPANDI — sayaç 6/10 → 7/10.** `analyze
---fatal-infos` *No issues found* · `flutter test` **589/589** · `ci #42` yeşil ·
-`pages #4` yayınlandı · canlı tur koşuldu (aşağıda).
+**Öncelik + son tarih dilimi (6/10 → 7/10):** `Gorevler`e `oncelik`/`sonTarih` (şema v5→v6) ·
+TEK `WireOp` + TEK `transaction`, yalnız DEĞİŞEN alan tele konar · **TAKVİM GÜNÜ PİNİ**
+(`DateTime.utc(y,m,d)`, tek normalizasyon noktası `GorevSatiri.takvimGunu`) · uzak yolda
+"geldi mi" bayrağı (uzaktan TEMİZLEME düşmüyor). Takvim Türkçeleştirildi
+(`flutter_localizations` + `Locale('tr')`; `intl` **0.20.2** · BSD-3 · advisory 0 — kanonik
+sürüm pub.dev değil **`pubspec.lock`**). Canlıda doğrulandı: meta "Yüksek · 21 Ağu 2026",
+sekme yenilendi, GÜN KAYMADI.
 
-Kilitlenen tasarım (Onur): ① öncelik ÜÇ seviye + yok (`1=Yüksek, 2=Orta,
-3=Düşük`) · ② son tarih YALNIZ GÜN · ③ kalem ikonu birleşik diyaloğa genişler,
-**satıra YENİ İKON EKLENMEZ**, değerler başlık altındaki meta satırında görünür.
+**DERS (kanla):** kâğıt denetimi migration'ın **v1 yolunu KOŞAMAZ** — iki bağımsız denetçi bir
+çökmeyi buldu ama `v1→v2` regresyonunu KAÇIRDI; onu `flutter test` yakaladı.
 
-- **Şema v5→v6:** `Gorevler`e `oncelik` (`int?`) + `sonTarih` (`DateTime?`).
-- **Depo:** `Oncelik` enum + saf dönüşümler; `Yazim<T>` ("değişmedi" ≠ "temizlendi");
-  `ayrintilariGuncelle()` = TEK `WireOp` + TEK `transaction()`, **yalnız değişen
-  alan tele konar** (değişmemişi yeniden damgalamak uzak yazımı LWW ile ezerdi).
-- **Tel biçimi backend kaynağından ÖLÇÜLDÜ:** `priority` ondalık tamsayı dizesi,
-  `dueAt` = `DateTime.utc(y,m,d)` ISO-8601.
-- **TAKVİM GÜNÜ PİNİ:** tek normalizasyon noktası `GorevSatiri.takvimGunu()`;
-  `isUtc`/`hour` iddialarıyla env-bağımsız ölçülüyor (CI UTC koşar, statik
-  `.toLocal()` taraması tek başına yetmez).
-- **Uzak yol:** `fields:priority`/`fields:dueAt` bağlandı; "geldi mi" bayrağı
-  sayesinde uzaktan TEMİZLEME (`value:null`) düşmüyor.
-- **R4 tabanı 20 → 25**, **`Gorev` alan pini 7 → 9** — ikisi de bilerek, ölçülerek.
-
-### İki tur denetim + canlı tur (o74) — özet
-
-Tur 1 (kâğıt, 2 denetçi): `showDatePicker` `initialDate` aralık dışına düşüp tarih
-düğmesini ÖLDÜREBİLİYORDU → kelepçe eklendi. **Tur 2 (`flutter test`) GERÇEK bir
-regresyon buldu ve tur 1 onu KAÇIRDI:** v1→v2 `alterTable` v1'de olmayan sütunları
-SELECT ediyordu ⇒ v1'den gelen kullanıcının DB'si açılışta çöküyordu (`newColumns`
-ile kapatıldı). **DERS (kanla): kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ.**
-Canlı tur (cihaz Chrome, Pages): migration OPFS'te koştu, meta satırı **"Yüksek ·
-21 Ağu 2026"** göründü, sekme yenilendi, GÜN KAYMADI. Takvim Türkçeleştirildi
-(`flutter_localizations` + `Locale('tr')`, `intl` 0.20.2 · BSD-3 · advisory 0).
-Ayrıntı: proje belgesi `claude/devir-oturum-75.md` ve o74 notları.
-
-## Oturum 76 (14 Ağu 2026) — ETİKET DİLİMİ: KOD BİTTİ, CANLI ÖLÇÜM BEKLİYOR
+## Oturum 76 (14-15 Ağu 2026) — ETİKET DİLİMİ **CANLI YEŞİL** (7/10 → 8/10)
 
 Dilim BULUTTA yazıldı ve koşuldu: CI'nin pinlediği **Flutter 3.44.6** bulut
 konteynerine kuruldu (cihazın Linux VM'inde flutter/dart YOK — ölçüldü).
 `analyze --fatal-infos` *No issues found* · `flutter test` **628/628** (taban 589,
 değiştirmeden önce de ölçüldü). 25 dosya cihaza yazıldı ve **sha256 ile bayt-bayt
-doğrulandı**; commit + push + Pages ONUR'DA.
+doğrulandı**. `ci #45` + `pages #6` YEŞİL (cihaz Chrome'unda görüldü, 15 Ağu 11:15).
 
 - **Şema v6→v7 (SALT-EKLEME):** `gorev_etiketleri(gorevId, etiket, addTag,
   iptalEdildi)`. `Gorevler`e DOKUNULMADI ⇒ v1 yolu etkilenmedi (v1→v7 zinciri test).
@@ -65,12 +43,20 @@ doğrulandı**; commit + push + Pages ONUR'DA.
 - **Bağımsız denetim (iki denetçi, 14 mutant): iki CİDDİ bulgu kapatıldı** — bant-içi
   ayraç (`group_concat`→`json_group_array`) + `_kuyruktakiTagler`'in iki mutantı.
 
+## Canlı tur (cihaz Chrome, Pages demosu, 15 Ağu 2026 ~11:10 TSİ — COWORK KOŞTU)
+
+**Üç ayak da yeşil:** satırda **`#iş`** meta metninde göründü · çipe dokununca liste **4 satırdan
+1'e** düştü (`Tümü` seçimi kalktı) · **sekme KAPATILIP yeniden açıldı**, görev ve `#iş` DURDU,
+şerit yine çizildi (süzme seçimi sıfırlandı — hafızada tutulmuyor, beklenen). Rozet
+`Gönderiliyor → Çevrimdışı`: bilinen sınır 6.
+**ÖLÇÜLEMEDİ:** ölçütün *ikinci istemciye eşitlenir* ayağı — Pages'te backend YOK (o74 kararı).
+
 ## Sıradaki iş
 
-1. **Etiket dilimini CANLIDA ölç** (ODEV §4a): commit + push → `ci` yeşil → `pages`
-   workflow_dispatch (düğme İNSANDA) → cihaz Chrome'da: etiket ekle, çiple süz,
-   sekmeyi kapat/aç → durdu mu. Yeşilse sayaç **8/10**. Tasarım kilidi ve adım
-   sırası: `claude/devir-oturum-75.md` §4.
+1. **Doğal dille tek satır ekleme** (ODEV §4.1/K7-a — Onur 15 Ağu'da kilitledi):
+   `yarın 17:00 rapor gönder #iş !p1` → tarih + etiket + öncelik ayrıştırması. Ayrıştırdığı ÜÇ
+   alan da artık HAZIR. Ayrıştırıcı SAF + deterministik olmalı (property + mutant kapısı).
+2. Sonra **başlıkta arama** (kutu dolarsa kesilecek İLK madde budur).
 
 ## Bilinen sınırlar
 
@@ -116,3 +102,5 @@ doğrulandı**; commit + push + Pages ONUR'DA.
     `kanonikDize`ye girmez ⇒ çakışma ekranı onları göstermez (OR-Set'te
     "kaybeden değer" kavramı yoktur).
 16. Etiket sıralaması KOD-BİRİMİ sırasıdır (`10`<`2`, `İş` sonda); Türkçe harmanlama YOK.
+17. **[o76 teslim doğrulaması]** Denetçinin *sunucu sözleşmesi birebir* beyanı bağımsız
+    doğrulandı: `SyncContracts.cs` + `OrSetField.cs` kaynaktan okundu, TUTTU.

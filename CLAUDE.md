@@ -13,14 +13,14 @@
 Çok platformlu görev yönetimi (to-do): **Flutter istemci** (Web + Android canlı, iOS yalnız CI'da
 derlenir — Mac yok) + **N-katmanlı .NET/ASP.NET Core** + **PostgreSQL**. Bir yazılım şirketinin
 **işe-alım/portfolyo ödevi**; odak mimari ve kod kalitesi. Kapsam otoritesi **`docs/ODEV.md`**.
-Canlı demo: `https://tuzakavcisi1-cloud.github.io/Momentum/`
+Canlı demo README'de.
 
-## 2. BİTTİ LİSTESİ (kutu **21 Ağu 2026** · sayaç DURUM.md'nin ilk satırında)
+## 2. BİTTİ LİSTESİ (kutu **21 Ağu 2026** · sayaç DURUM.md ilk satırı)
 
 - [x] Kullanıcı görev ekler, başlığını düzenler, tamamlandı olarak işaretler
-- [x] Kullanıcı görevi siler (onay sorarak) — *canlıda ölçüldü, 14 Ağu 2026*
-- [ ] Kullanıcı göreve **öncelik** ve **son tarih** verir, ikisini de listede görür
-- [ ] Kullanıcı göreve **etiket** ekler ve etikete göre süzer
+- [x] Kullanıcı görevi siler (onay sorarak) — *canlı 14 Ağu*
+- [x] Kullanıcı göreve **öncelik** ve **son tarih** verir, ikisini de listede görür — *canlı 14 Ağu*
+- [x] Kullanıcı göreve **etiket** ekler ve etikete göre süzer — *canlı 15 Ağu*
 - [ ] Kullanıcı görevlerini **başlıkta arar**
 - [ ] Kullanıcı görevi **tek satır doğal dille** ekler (`yarın 17:00 rapor gönder #iş !p1`)
 - [x] Uygulama internetsiz çalışır, veri kalıcıdır, bağlantı gelince kendiliğinden eşitlenir
@@ -28,15 +28,15 @@ Canlı demo: `https://tuzakavcisi1-cloud.github.io/Momentum/`
 - [x] Değerlendirici uygulamayı canlı adresten açar; tema sistemin açık/karanlık ayarına uyar
 - [x] Değerlendirici depoyu klonlar, README'deki komutla testleri koşar ve yeşil görür
 
-*Bu listede yasak: spec, ADR, kapı, mutant, altın küme, borç. Madde eklemek §5'e bir kesme yazmadan olmaz.*
+*Bu listede yasak: spec/ADR/kapı/mutant/altın küme/borç. Madde eklemek §5'e kesme yazmadan olmaz.*
 
 ## 3. SIRADAKİ İŞ (tek dikey dilim)
 
-**Öncelik + son tarih.** Backend `TaskProjection` ikisini **zaten materyalize ediyor**
-(`priority`, `dueAt`); eksik olan istemci. Dilim: Drift tablosuna iki kolon + migration · satırda
-görünür gösterim · düzenleme yüzeyi · senkron zarfına bağlanma. **Bitti ölçütü (canlı):** web
-adresinde bir göreve öncelik ve son tarih verilir, sekme kapanıp açılınca durur, ikinci istemciye
-eşitlenir. Katman katman ilerlemek yok.
+**Doğal dille tek satır ekleme** [Onur, 15 Ağu 2026]: `yarın 17:00 rapor gönder #iş !p1` → başlık
++ son tarih + etiket + öncelik. Üç alan HAZIR, **yeni şema YOK**; mevcut yazma yolu (TEK
+`WireOp`, TEK `transaction`). Ayrıştırıcı **SAF + deterministik** ("bugün" dışarıdan verilir) ⇒
+property + mutant kapısı. Ayrıştırılamayan kısım **başlıkta kalır** (sessiz kayıp yok).
+**Bitti ölçütü (canlı):** tek satır yazılır, görev doğru alanlarla oluşur, sekme kapanınca durur.
 
 ## 4. ORTAM MAYINLARI (yalnız ÖLÇÜLMÜŞ)
 
@@ -48,12 +48,13 @@ eşitlenir. Katman katman ilerlemek yok.
    Commit mesajına **çift tırnak yazma**. **Mount'tan commit YASAK** — Desktop Commander ya da
    Claude Code'dan yapılır. **PUSH ONUR'DA.** Author e-postası `onurkesimbjk@gmail.com`.
 3. **flutter `.bat`'tir** → tam yol `C:\src\flutter\bin\flutter.bat` (subprocess PATHEXT'i çözmez).
-   DC kabuğunda `flutter test`, alt sürece `PROGRAMFILES(X86)` enjekte edilmeden çöker.
+   DC kabuğunda `flutter test` `PROGRAMFILES(X86)` enjekte edilmeden çöker.
    `--platform chrome` bu ortamda sonuç üretmiyor.
 4. **Kodlama:** yol **saf ASCII** kalmalı (Türkçe karakter `build_runner`, `flutter analyze`, AGP ve
    `.ps1` zincirlerini kırdı). `python` stdout cp1254 ⇒ `sys.stdout.reconfigure(encoding="utf-8")`.
-5. **Satır sonu:** `.gitattributes`'taki `* text=auto eol=lf` çeviriyor ve `core.autocrlf`'i **eziyor**
-   ⇒ bayt-özdeşlik ölçen el LF'e normalize eder; geri alımda `git restore` **YASAK** (ikili yedek+sha).
+5. **Satır sonu / geri alım:** `* text=auto eol=lf` `core.autocrlf`'i **ezer**. Mount'ta
+   `git restore`/`checkout --` **ÇALIŞMAZ** (unlink denenir) → `git show HEAD:<yol> > <yol>`;
+   `git apply` çalışır ama sonuç **sha256 ile** doğrulanır.
 6. **`verify.ps1`, `Momentum.Api` ayaktayken koşulamaz** (MSB3026/3027 dosya kilidi) ⇒ sıra: cihaz
    kanıtı → backend kapatılır (`netstat -ano | findstr :5298` **boş** dönerek ölçülür, varsayılmaz)
    → `verify.ps1`. Kapatmayı yalnız Onur'un açık izniyle yap, yeniden başlatma.
@@ -74,9 +75,9 @@ eşitlenir. Katman katman ilerlemek yok.
 - **`docs/ODEV.md` §4(a)'dan kesildi:** liste · proje · tekrar (RRULE) · hatırlatıcı.
 - **§4(b)2 işbirliği vitrini:** sinyal kanalı kodda var, **çok kullanıcılı paylaşım/davet akışı yok**.
 - **§6.1 kimlik/oturum:** giriş ekranı yok; istemci `devUserId` taşır, `WireOp.ActorId` istemci-beyanlı.
-- **§8(4) tek komutla ayağa kaldırma:** `Dockerfile` yazılmadı, compose yalnız `postgres` tanımlıyor.
-- **Zaten kapsam dışıydı (§4.1 / §6.1):** AI asistan · Google Takvim · Kanban/Takvim görünümü ·
-  iOS fiili cihaz testi · parola sıfırlama · e-posta doğrulama · OAuth · 2FA · RBAC.
+- **§8(4):** tek komutla ayağa kaldırma yok (`Dockerfile` yok; compose yalnız `postgres`).
+- **Zaten kapsam dışı (§4.1/§6.1):** AI asistan · Google Takvim · Kanban/Takvim · iOS cihaz testi ·
+  parola sıfırlama · e-posta doğrulama · OAuth · 2FA · RBAC.
 
 ---
 
