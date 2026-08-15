@@ -36,7 +36,12 @@ class _BosDepo implements GorevDeposu {
   @override
   Stream<List<GorevGorunum>> gorevlerGorunur() => Stream.value(const []);
   @override
-  Future<void> ekle(String baslik) async {}
+  Future<void> ekle(
+    String baslik, {
+    int? oncelik,
+    DateTime? sonTarih,
+    Set<String> etiketler = const {},
+  }) async {}
   @override
   Future<void> duzenle(String id, String yeniBaslik) async {}
 

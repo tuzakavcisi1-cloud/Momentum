@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../design/metinler.dart';
 import '../design/tokens.dart';
+import 'dogal_dil_ayristirici.dart';
 import 'gorev_baslik_dogrulama.dart';
 
 /// SS3.1 -- alt sabit giris + ekle dugmesi.
@@ -9,10 +10,27 @@ import 'gorev_baslik_dogrulama.dart';
 /// A11Y-2 (G5): focusedBorder.borderSide.width == MOlcu.odakKalinlik ve
 /// rengi == MRenk.birincil(context) -- bu ozellik DOGRUDAN bu widget'in
 /// InputDecoration'inda tanimlanir (M15 mutanti bu satiri hedefler).
+///
+/// ODEV.md §4(a) DOGAL DIL DILIMI: ayristirma BU WIDGET'TA yapilir, ekranda
+/// DEGIL. 🔴 Gerekce OLCULDU: bos baslik reddi ayristirmadan SONRA bakilmak
+/// zorundadir -- `#iş` tek basina yazildiginda ham metin BOS DEGILDIR, ama
+/// ayristirmadan sonra baslik BOSTUR. Ekranda ayristirilsaydi widget alani
+/// TEMIZLER, ekran da bos basligi sessizce duserdi (o68'de olculen SESSIZ
+/// KAYIP deseninin aynisi).
 class GorevEkleAlani extends StatefulWidget {
-  final ValueChanged<String> onEkle;
+  /// Ayristirilmis ekleme istegi. `baslik` `gorevBasligiDogrula`dan GECMISTIR
+  /// (bos olamaz).
+  final ValueChanged<DogalDilSonucu> onEkle;
 
-  const GorevEkleAlani({super.key, required this.onEkle});
+  /// Ayristiricinin "bugun"u. 🔴 Ayristirici SAFTIR; saati okuyan tek yer
+  /// BURASIDIR ve testte pinlenebilsin diye disaridan verilebilir.
+  final DateTime Function() simdi;
+
+  const GorevEkleAlani({
+    super.key,
+    required this.onEkle,
+    this.simdi = DateTime.now,
+  });
 
   @override
   State<GorevEkleAlani> createState() => _GorevEkleAlaniState();
@@ -22,11 +40,24 @@ class _GorevEkleAlaniState extends State<GorevEkleAlani> {
   final _denetleyici = TextEditingController();
 
   void _gonder() {
+    final ayristirilan = dogalDilAyristir(
+      _denetleyici.text,
+      bugun: widget.simdi(),
+    );
     // IS-EMRI-o68 §3.3: dogrulama (kirpma + bos reddi) `GorevSatiri`'nin
     // baslik duzenleme diyaloğuyla PAYLASILIR -- kopyalanmaz.
-    final metin = gorevBasligiDogrula(_denetleyici.text);
+    final metin = gorevBasligiDogrula(ayristirilan.baslik);
+    // Gecersizse ALAN TEMIZLENMEZ: kullanicinin yazdigi metin EKRANDA KALIR
+    // (`GorevSatiri._kaydet` ile ayni desen -- sessiz kayip YASAK).
     if (metin == null) return;
-    widget.onEkle(metin);
+    widget.onEkle(
+      DogalDilSonucu(
+        baslik: metin,
+        oncelik: ayristirilan.oncelik,
+        sonTarih: ayristirilan.sonTarih,
+        etiketler: ayristirilan.etiketler,
+      ),
+    );
     _denetleyici.clear();
   }
 

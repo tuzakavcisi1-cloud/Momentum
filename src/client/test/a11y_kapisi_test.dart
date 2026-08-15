@@ -117,7 +117,12 @@ class _SabitDepo implements GorevDeposu {
     }).toList(),
   );
   @override
-  Future<void> ekle(String baslik) async {}
+  Future<void> ekle(
+    String baslik, {
+    int? oncelik,
+    DateTime? sonTarih,
+    Set<String> etiketler = const {},
+  }) async {}
   @override
   Future<void> duzenle(String id, String yeniBaslik) async {}
 
@@ -148,7 +153,12 @@ class _HataliDepo implements GorevDeposu {
   Stream<List<GorevGorunum>> gorevlerGorunur() =>
       Stream.error(StateError('mock hata'));
   @override
-  Future<void> ekle(String baslik) async {}
+  Future<void> ekle(
+    String baslik, {
+    int? oncelik,
+    DateTime? sonTarih,
+    Set<String> etiketler = const {},
+  }) async {}
   @override
   Future<void> duzenle(String id, String yeniBaslik) async {}
 

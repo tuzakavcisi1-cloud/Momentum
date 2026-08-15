@@ -170,7 +170,25 @@ abstract class GorevDeposu {
   /// olarak doner (Gorev + turetilmis senkronDurumu/cakismaVarMi).
   Stream<List<GorevGorunum>> gorevlerGorunur();
 
-  Future<void> ekle(String baslik);
+  /// ODEV.md §4(a) DOGAL DIL DILIMI: ekleme de baslik + oncelik + son tarih +
+  /// ETIKETLERI TEK `WireOp` ve TEK `transaction()` ile yazar.
+  ///
+  /// 🔴 IKI CAGRI (once `ekle`, sonra `ayrintilariGuncelle`) YASAK: iki op
+  /// uretir, ikisi arasinda cekme turu koparsa uzak taraf BASLIKSIZ olmayan
+  /// ama ONCELIKSIZ bir gorev gorur ve tel trafigi ikiye katlanir.
+  ///
+  /// Alanlar OPSIYONELDIR: mevcut cagri yerleri (testler dahil) bunlari HIC
+  /// bilmez ve `null` / bos kume onlarin GERCEK durumudur -- yeni bir sema
+  /// GEREKMEZ (v7'de kalinir).
+  ///
+  /// DOGRULAMA BURADA DEGILDIR: baslik/etiket kurallari `gorevBasligiDogrula`
+  /// ve `etiketDogrula`nin tekelindedir, cagiran onlardan gecirir.
+  Future<void> ekle(
+    String baslik, {
+    int? oncelik,
+    DateTime? sonTarih,
+    Set<String> etiketler = const {},
+  });
 
   Future<void> duzenle(String id, String yeniBaslik);
 
@@ -496,10 +514,39 @@ class DriftGorevDeposu implements GorevDeposu {
   }
 
   @override
-  Future<void> ekle(String baslik) async {
+  Future<void> ekle(
+    String baslik, {
+    int? oncelik,
+    DateTime? sonTarih,
+    Set<String> etiketler = const {},
+  }) async {
     final simdi = saat();
     final id = idUret();
     final opHlc = hlc.sonrakiHlc();
+
+    // D3 emsali: op icindeki TUM HLC'ler AYNI damgadir (`sonrakiHlc()` BIR
+    // KEZ cagrildi). YENI varlikta `null` bir alani tele koymak ANLAMSIZDIR
+    // (sunucuda zaten yoktur) ⇒ yalniz VERILEN alanlar yazilir; bos bir
+    // `dueAt: null` yazmak, arada gelen uzak bir yazimi LWW ile ezerdi.
+    final alanlar = {
+      'title': WireFieldWrite(value: baslik, hlc: opHlc),
+      if (oncelik != null)
+        'priority': WireFieldWrite(value: oncelikTele(oncelik), hlc: opHlc),
+      if (sonTarih != null)
+        'dueAt': WireFieldWrite(value: sonTarihTele(sonTarih), hlc: opHlc),
+    };
+
+    // ETIKET ADD'LERI: YENI varlikta `observed` COZULMEZ (ortada iptal
+    // edilecek gorulmus tag YOKTUR) -- `ayrintilariGuncelle`nin add kolunun
+    // AYNISI, remove kolu olmadan.
+    final adds = <WireSetAdd>[];
+    final etiketTaglari = <String, String>{};
+    for (final etiket in etiketler) {
+      final tag = idUret();
+      etiketTaglari[etiket] = tag;
+      adds.add(WireSetAdd(el: etiket, tag: tag, hlc: opHlc));
+    }
+
     final op = WireOp(
       operationId: idUret(),
       clientId: hlc.clientId,
@@ -507,7 +554,8 @@ class DriftGorevDeposu implements GorevDeposu {
       actorId: actorId,
       entityType: 'Task',
       opHlc: opHlc,
-      fields: {'title': WireFieldWrite(value: baslik, hlc: opHlc)},
+      fields: alanlar,
+      sets: {if (adds.isNotEmpty) 'tags': WireSetDelta(adds: adds)},
     );
 
     await _db.transaction(() async {
@@ -519,8 +567,22 @@ class DriftGorevDeposu implements GorevDeposu {
               baslik: baslik,
               olusturuldu: simdi,
               guncellendi: simdi,
+              oncelik: Value(oncelik),
+              sonTarih: Value(sonTarih),
             ),
           );
+      for (final giris in etiketTaglari.entries) {
+        await _db
+            .into(_db.gorevEtiketleri)
+            .insert(
+              GorevEtiketleriCompanion.insert(
+                gorevId: id,
+                etiket: giris.key,
+                addTag: giris.value,
+              ),
+              mode: InsertMode.insertOrIgnore,
+            );
+      }
       await _kuyrugaYaz(op);
     });
   }

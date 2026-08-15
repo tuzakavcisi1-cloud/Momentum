@@ -30,7 +30,12 @@ class _SahteDepo implements GorevDeposu {
   Stream<List<GorevGorunum>> gorevlerGorunur() => _denetleyici.stream;
 
   @override
-  Future<void> ekle(String baslik) async => cagrilar.add('ekle:$baslik');
+  Future<void> ekle(
+    String baslik, {
+    int? oncelik,
+    DateTime? sonTarih,
+    Set<String> etiketler = const {},
+  }) async => cagrilar.add('ekle:$baslik');
 
   @override
   Future<void> duzenle(String id, String yeniBaslik) async =>

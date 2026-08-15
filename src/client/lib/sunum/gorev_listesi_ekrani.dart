@@ -252,8 +252,19 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
               ),
             ),
             GorevEkleAlani(
-              onEkle: (baslik) =>
-                  unawaited(_yerelYaz(() => widget.depo.ekle(baslik))),
+              // K112: ONCE yerel yazma, SONRA itme (`_yerelYaz` sirayi
+              // pazarliksiz tutar). Dort alan TEK `ekle()` cagrisina gider ⇒
+              // TEK `WireOp`.
+              onEkle: (istek) => unawaited(
+                _yerelYaz(
+                  () => widget.depo.ekle(
+                    istek.baslik,
+                    oncelik: istek.oncelik,
+                    sonTarih: istek.sonTarih,
+                    etiketler: istek.etiketler.toSet(),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

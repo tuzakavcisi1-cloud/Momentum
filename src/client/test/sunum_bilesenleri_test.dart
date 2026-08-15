@@ -2,6 +2,7 @@ import 'package:client/design/metinler.dart';
 import 'package:client/design/tema.dart';
 import 'package:client/sunum/bos_durum.dart';
 import 'package:client/sunum/cakisma_rozeti.dart';
+import 'package:client/sunum/dogal_dil_ayristirici.dart';
 import 'package:client/sunum/gorev_ekle_alani.dart';
 import 'package:client/sunum/gorev_satiri.dart';
 import 'package:client/sunum/hata_durumu.dart';
@@ -31,7 +32,12 @@ class _SahteDepo implements GorevDeposu {
   @override
   Stream<List<GorevGorunum>> gorevlerGorunur() => const Stream.empty();
   @override
-  Future<void> ekle(String baslik) async {}
+  Future<void> ekle(
+    String baslik, {
+    int? oncelik,
+    DateTime? sonTarih,
+    Set<String> etiketler = const {},
+  }) async {}
   @override
   Future<void> duzenle(String id, String yeniBaslik) async {}
 
@@ -228,7 +234,7 @@ void main() {
     testWidgets('metin girip ekle dugmesine basinca onEkle cagrilir', (
       tester,
     ) async {
-      String? eklenen;
+      DogalDilSonucu? eklenen;
       await tester.pumpWidget(
         _sarmala(
           Scaffold(body: GorevEkleAlani(onEkle: (v) => eklenen = v)),
@@ -236,11 +242,11 @@ void main() {
       );
       await tester.enterText(find.byType(TextField), 'Ekmek al');
       await tester.tap(find.byIcon(Icons.add));
-      expect(eklenen, 'Ekmek al');
+      expect(eklenen?.baslik, 'Ekmek al');
     });
 
     testWidgets('bos metinle onEkle cagrilmaz', (tester) async {
-      String? eklenen;
+      DogalDilSonucu? eklenen;
       await tester.pumpWidget(
         _sarmala(
           Scaffold(body: GorevEkleAlani(onEkle: (v) => eklenen = v)),
