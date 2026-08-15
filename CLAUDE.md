@@ -22,7 +22,7 @@ Canlı demo README'de.
 - [x] Kullanıcı göreve **öncelik** ve **son tarih** verir, ikisini de listede görür — *canlı 14 Ağu*
 - [x] Kullanıcı göreve **etiket** ekler ve etikete göre süzer — *canlı 15 Ağu*
 - [ ] Kullanıcı görevlerini **başlıkta arar**
-- [ ] Kullanıcı görevi **tek satır doğal dille** ekler (`yarın 17:00 rapor gönder #iş !p1`)
+- [x] Kullanıcı görevi **tek satır doğal dille** ekler — *canlı 15 Ağu*
 - [x] Uygulama internetsiz çalışır, veri kalıcıdır, bağlantı gelince kendiliğinden eşitlenir
 - [x] İki cihaz aynı görevi değiştirince kullanıcı çakışmayı görür ve hangi değerin kazandığını anlar
 - [x] Değerlendirici uygulamayı canlı adresten açar; tema sistemin açık/karanlık ayarına uyar
@@ -32,11 +32,12 @@ Canlı demo README'de.
 
 ## 3. SIRADAKİ İŞ (tek dikey dilim)
 
-**Doğal dille tek satır ekleme** [Onur, 15 Ağu 2026]: `yarın 17:00 rapor gönder #iş !p1` → başlık
-+ son tarih + etiket + öncelik. Üç alan HAZIR, **yeni şema YOK**; mevcut yazma yolu (TEK
-`WireOp`, TEK `transaction`). Ayrıştırıcı **SAF + deterministik** ("bugün" dışarıdan verilir) ⇒
-property + mutant kapısı. Ayrıştırılamayan kısım **başlıkta kalır** (sessiz kayıp yok).
-**Bitti ölçütü (canlı):** tek satır yazılır, görev doğru alanlarla oluşur, sekme kapanınca durur.
+**Başlıkta arama** — listedeki SON madde. Kutu dolarsa kesilecek ilk madde budur (§5'e yazılır).
+Liste üstünde tek arama alanı; **yeni şema YOK, yeni tel kanalı YOK** — süzme Dart tarafında,
+etiket çipiyle AYNI stream üzerinde ÇARPILIR. Eşleştirme kuralı (harf katlaması; Türkçe I/İ
+mayını, etiketlerde katlama YOK sınırı) kod yazılmadan **şıklarla kilitlenir**.
+**Bitti ölçütü (canlı):** arama yazılır liste daralır, alan temizlenince geri gelir; etiket
+çipiyle birlikte ikisi birden uygulanır.
 
 ## 4. ORTAM MAYINLARI (yalnız ÖLÇÜLMÜŞ)
 
