@@ -20,8 +20,14 @@
 #      (--dart-define=SENKRON_SUNUCU_URL). Varsayilan http://localhost:5298'dir;
 #      compose'da portu degistirirsen ISTEMCI API'YI BULAMAZ -- ayni degeri
 #      SENKRON_SUNUCU_URL yapi argumaniyla da vermelisin.
-#   3. Bu dosya HENUZ CALISTIRILARAK OLCULMEDI: ne bulut kabugunda ne masaustu
-#      VM'inde docker daemon var. Tek olcum yeri CI'dir (tek-komut kapisi).
+#   3. `api` servisinde healthcheck YOKTUR: aspnet taban imajinda curl/wget
+#      bulunmaz ve sirf yoklama icin imaja arac eklemek calisma yuzeyini buyutur.
+#      Hazirlik DISARIDAN olculur: curl -fsS http://localhost:5298/health/ready
+#
+# BU DOSYA OLCULDU (16 Agu 2026): `.github/workflows/paket.yml` her ilgili push'ta
+# `docker compose up --build`i GitHub runner'inda kosar ve dort ayagi pozitif
+# kontrollu sinar (migrator cikis 0 + sema · kokte index.html · COOP/COEP istemci
+# belgesinde · 401->200 · eslesmeyen API yolu 404). Kosum 2: hepsi yesil, 2 dk 37 sn.
 # =============================================================================
 
 
@@ -71,11 +77,17 @@ COPY src/client ./
 # cevrimdisi vitrini olan bir uygulamanin demosu internet istemez.
 # base-href `/` cunku istemci kokten servis edilir (Pages'te `/Momentum/` idi).
 ARG SENKRON_SUNUCU_URL=http://localhost:5298
+# DEV_USER_ID BOS BIRAKILIRSA her kurulum RASTGELE bir kullanici uretir (olculdu:
+# ayarlari_hazirla.dart b-dali) ⇒ paketteki web istemcisi ile APK birbirini GORMEZ
+# ve iki-istemci vitrini paketten cikmaz. compose bu yuzden sabit bir demo kimligi
+# verir; varsayilanin BOS kalmasi mevcut davranisi degistirmemek icindir.
+ARG DEV_USER_ID=
 RUN flutter build web --release \
       --no-web-resources-cdn \
       --no-wasm-dry-run \
       --base-href / \
-      --dart-define=SENKRON_SUNUCU_URL=${SENKRON_SUNUCU_URL}
+      --dart-define=SENKRON_SUNUCU_URL=${SENKRON_SUNUCU_URL} \
+      --dart-define=DEV_USER_ID=${DEV_USER_ID}
 
 
 # --- 2) SUNUCU: .NET publish + migration bundle -------------------------------

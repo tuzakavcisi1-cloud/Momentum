@@ -13,6 +13,11 @@
 - Önemli bir yazılım şirketinden gelen **işe-alım / portfolyo ödevi**.
 - İstenen: **çok platformlu görev yönetimi (to-do) uygulaması** — Flutter istemci + N-katmanlı
   .NET 9 / ASP.NET Core backend + PostgreSQL.
+  > **⏱ ERRATA [16 Ağu 2026 — o79]:** brief'te söylenen **.NET 9**'dur ve bu satır o sözlü aktarımın
+  > kaydıdır; **değiştirilmemiştir**. Ancak fiilen koşan sürüm **net10.0**'dır (`src/backend/
+  > Directory.Build.props`, K111 ölçülmüş geçiş, oturum 48) ve SDK `global.json`'da **10.0.302**
+  > ile pinlidir. Teslim belgelerinde (README, imaj) **net10.0** yazılır; ödevin teknoloji şartı
+  > "modern .NET" olarak karşılanmıştır, düşürülmemiştir.
 - **Yazılı kapsam verilmedi ve verilmeyecek.** Gerekçe (Onur'un aktarımı): karşı taraf
   **adayın hayal gücünü / kapsam kurma yeteneğini** de değerlendirmek istiyor.
   ⇒ **Kapsamı biz tanımlıyoruz ve bu tanımın kendisi değerlendirmeye tabidir.**

@@ -100,14 +100,55 @@ rozet. **Gerçek zamanlı:** SignalR üzerinden **yüksüz sinyal** (veri taşı
 
 ## Çalıştırma
 
-Ölçülmüş sıra. Adımları atlamayın — her biri en az bir kez ısırdı.
+İki yol var: **değerlendirici yolu** (tek komut) ve **geliştirici yolu** (elle, parça parça).
 
-### 1. PostgreSQL
+### 0. Tek komut — değerlendirici yolu
 
 ```bash
-docker compose up -d          # konteyner adı: momentum-postgres
-docker ps                     # healthy görünene kadar YOKLA, sabit sleep verme
+docker compose up --build     # → http://localhost:5298
 ```
+
+Bu tek komut şunu kurar: `postgres` → sağlıklı olunca `migrator` (EF migration paketi şemayı kurar
+ve **çıkar**) → `api` (backend **ve** Flutter web istemcisi **aynı kökenden**). Tarayıcıda
+`http://localhost:5298` adresini açtığınızda uygulamanın **backend'li** hâlini görürsünüz — Pages
+demosundan farkı budur: orada backend yoktur, senkron rozetleri "Çevrimdışı"ya düşer.
+
+**Şema uygulamayı değil ayrı bir servis kurar.** Uygulamanın kendi şemasını değiştirmesi üretimde
+anti-desendir; `api`, `migrator`'a `service_completed_successfully` ile bağlıdır.
+
+🟢 **Bu iddia ölçülmüştür, beyan değildir.** `.github/workflows/paket.yml` her ilgili push'ta
+GitHub-barındırmalı runner'da tam olarak bu komutu koşar ve şu dört ayağı **pozitif kontrollü**
+sınar (16 Ağu 2026, koşum 2, 2 dk 37 sn, hepsi yeşil):
+
+| ayak | ne ölçülür |
+|---|---|
+| migrator | çıkış kodu **0** *ve* `public` şemada **≥3 tablo** oluştu (yerelde ölçülen gerçek sayı: **11**) |
+| 1 | `GET /` **aynı kökenden** `index.html` döner (`flutter_bootstrap.js` görülür) |
+| 2 | **COOP `same-origin` + COEP `require-corp` istemci BELGESİNE değer** — izolasyonun fiilen çalıştığı yer burasıdır |
+| 3 | `POST /v1/sync` başlıksız **401**, `X-Momentum-Dev-User` ile **200** |
+| 4 | `GET /v1/BULUNMAYAN-UC` **404** döner, `index.html` **dönmez** |
+
+🔴 **Üç sınır beyan edilmiştir, gizlenmemiştir:**
+
+1. İmaj `ASPNETCORE_ENVIRONMENT=Development` ile koşar — dev-kimlik kalkanı yalnız orada
+   devrededir; başka her ortamda varsayılan-ret **her isteği 401'e düşürür**. Kimlik dilimi
+   kapsam dışıdır (aşağıda [Kapsam dışı](#kapsam-dışı--teslim-beyanı)).
+2. Web istemcisi kendi kökenini **derleme zamanında** öğrenir. Yayınlanan portu değiştirirseniz
+   `SENKRON_SUNUCU_URL` yapı argümanını da değiştirmelisiniz, yoksa tarayıcıdaki istemci API'yi
+   bulamaz.
+3. `api` servisinde **healthcheck yoktur**: `aspnet` taban imajında `curl`/`wget` bulunmaz ve
+   sırf yoklama için imaja araç eklemek çalışma yüzeyini büyütür. Hazırlık dışarıdan ölçülür:
+   `curl -fsS http://localhost:5298/health/ready`.
+
+### 1. PostgreSQL (geliştirici yolu)
+
+```bash
+docker compose up -d postgres   # SADECE veritabanı; konteyner adı: momentum-postgres
+docker ps                       # healthy görünene kadar YOKLA, sabit sleep verme
+```
+
+> Servis adı **verilmezse** `docker compose up -d` artık tüm sistemi (postgres + migrator + api)
+> kaldırır. Elle backend koşturacaksanız yalnız `postgres` isteyin, yoksa 5298 portu çakışır.
 
 ### 2. Backend
 
@@ -166,6 +207,60 @@ paket**. 🟢 Zincir bu kez **Windows'ta koştu** — önceki sürümlerde yaln�
 (erişilebilirlik etiketi ×2, düzen aritmetiği ×3) — **beşi de ısırdı**, ölü mutant yok.
 Kanıt: `KANIT/SS2/05-KABUL-HUKMU-COWORK-o68-baslik-duzenleme-UI.md`.
 🔴 Widget testi **uçtan uca değildir**: gerçek Android cihazda/emülatörde **koşulmadı**.
+
+---
+
+## Teslim paketi
+
+Paket üç parçadır: **çalışan sistem** (docker), **Android APK**, **Windows derlemesi**.
+
+### Paylaşılan kimlik — atlanırsa vitrin çıkmaz
+
+İstemci kimliği (`devUserId`) **kurulum başına rastgele** üretilir. İki istemcinin birbirini
+görmesi için ikisi de **aynı** `DEV_USER_ID` ile derlenmelidir; `docker-compose.yml` bu yüzden
+sabit bir demo kimliği verir. **APK ve Windows derlemesinde aynı değeri verin**, yoksa telefon
+ile tarayıcı iki ayrı kullanıcı olur ve senkron/çakışma vitrini görünmez.
+
+```
+DEV_USER_ID = deadbeef-0000-4000-8000-000000000001
+```
+
+> `DEV_USER_ID` mevcut kimlikten farklıysa ilk açılışta yerel görevler **ve** senkron kuyruğu
+> aynı transaction'da silinir (bilinçli: eski kullanıcının bekleyen op'ları yeni kimlikle
+> sunucuya itilmesin). GUID biçiminde olmayan bir değer **gürültülü hata** verir.
+
+### Android APK
+
+```bash
+cd src/client
+flutter build apk --release \
+  --dart-define=SENKRON_SUNUCU_URL=http://<makinenin-LAN-IPsi>:5298 \
+  --dart-define=DEV_USER_ID=deadbeef-0000-4000-8000-000000000001
+# çıktı: build/app/outputs/flutter-apk/app-release.apk
+```
+
+🔴 **`localhost` YAZMAYIN.** Telefon `localhost` dediğinde kendini kasteder; backend'i çalıştıran
+makinenin LAN IP'si gerekir. Emülatörde host'un takma adı `10.0.2.2`'dir (kodda varsayılan budur).
+
+🔴 **APK debug anahtarıyla imzalıdır.** `android/app/build.gradle.kts` içinde Flutter'ın varsayılan
+`signingConfig = signingConfigs.getByName("debug")` satırı ve `TODO`'su **duruyor**; üretim imza
+zinciri kurulmadı. Değerlendirici APK'yı kurarken "bilinmeyen kaynak" onayı verecektir. Bu bir
+gözden kaçma değil, **kapsam kararıdır** ve burada yazılıdır.
+
+### Windows
+
+```bash
+cd src/client
+flutter build windows --release \
+  --dart-define=SENKRON_SUNUCU_URL=http://localhost:5298 \
+  --dart-define=DEV_USER_ID=deadbeef-0000-4000-8000-000000000001
+# çıktı: build/windows/x64/runner/Release/
+```
+
+### iOS
+
+**Paket içinde yoktur.** Mac donanımı yoktur ⇒ iOS yalnız CI'da **derlenir**, cihazda hiç
+koşmadı. Kapsam kararı olarak `docs/ODEV.md` §4'te yazılıdır.
 
 ---
 

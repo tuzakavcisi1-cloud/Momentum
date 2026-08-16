@@ -24,6 +24,11 @@ x-momentum-imaj: &momentum-imaj
       # portu degistirirsen BU DEGERI DE degistir, yoksa tarayicidaki istemci
       # API'yi bulamaz (Dockerfile'da beyan edilmis sinir 2).
       SENKRON_SUNUCU_URL: http://localhost:5298
+      # SABIT DEMO KIMLIGI. Bos birakilsa her kurulum rastgele bir kullanici
+      # uretirdi ve paketteki web istemcisi ile APK birbirini GOREMEZDI -- iki
+      # istemcili senkron/cakisma vitrini paketin ANA GOSTERISI oldugu icin bu
+      # deger sabittir. APK/Windows derlemesinde de AYNI degeri verin.
+      DEV_USER_ID: deadbeef-0000-4000-8000-000000000001
   image: momentum:yerel
 
 services:
