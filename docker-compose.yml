@@ -1,6 +1,31 @@
-# Dev-only PostgreSQL for Momentum (GOREV slice-2b1 D1).
-# Secrets NEVER in the repo: the password is env-driven with an OBVIOUS dev default.
-# The API reads ConnectionStrings:Momentum from user-secrets / env, never from a committed file.
+# =============================================================================
+# Momentum — TEK KOMUTLA AYAGA KALKAN TAM SISTEM (ODEV §8(4))
+#
+#   docker compose up --build     ->  http://localhost:5298
+#
+# Zincir: postgres (saglikli) -> migrator (semayi kurar, BITER) -> api (kosar).
+# `api` semayi KENDISI kurmaz; uygulamanin kendi semasini degistirmesi uretimde
+# anti-desendir. Migration'lar EF bundle olarak AYRI bir servis kosar.
+#
+# Sirlar (kirmizi cizgi 1): parola env'den gelir ve varsayilani BARIZ SEKILDE
+# gelistirme parolasidir. Repoda .env YOKTUR; gercek bir dagitimda
+# POSTGRES_PASSWORD disaridan verilir.
+# =============================================================================
+
+# `migrator` ve `api` AYNI imajdir, yalnizca giris noktalari farklidir. Yapi
+# tanimi TEK YERDE durur: iki serviste ayri ayri yazilsaydi biri digerinden farkli
+# bir SENKRON_SUNUCU_URL ile derlenip ayni etiketi EZEBILIRDI.
+x-momentum-imaj: &momentum-imaj
+  build:
+    context: .
+    dockerfile: Dockerfile
+    args:
+      # Web istemcisi kendi kokenini DERLEME ZAMANINDA ogrenir. Asagida yayinlanan
+      # portu degistirirsen BU DEGERI DE degistir, yoksa tarayicidaki istemci
+      # API'yi bulamaz (Dockerfile'da beyan edilmis sinir 2).
+      SENKRON_SUNUCU_URL: http://localhost:5298
+  image: momentum:yerel
+
 services:
   postgres:
     image: postgres:17-alpine
@@ -18,6 +43,38 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
+  # EF migration paketi: semayi kurar ve CIKAR. Ayni imaj, farkli giris noktasi.
+  migrator:
+    <<: *momentum-imaj
+    container_name: momentum-migrator
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: ["/app/momentum-migrator"]
+    command:
+      - "--connection"
+      - "Host=postgres;Port=5432;Database=momentum;Username=${POSTGRES_USER:-momentum};Password=${POSTGRES_PASSWORD:-momentum_dev}"
+    restart: "no"
+
+  api:
+    <<: *momentum-imaj
+    container_name: momentum-api
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+    environment:
+      # Dev-kimlik kalkani YALNIZ Development'ta devrededir; baska her ortamda
+      # varsayilan-ret her istegi 401'e dusurur (Dockerfile'da beyan edilmis sinir 1).
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Momentum: "Host=postgres;Port=5432;Database=momentum;Username=${POSTGRES_USER:-momentum};Password=${POSTGRES_PASSWORD:-momentum_dev}"
+    ports:
+      - "5298:5298"
+    restart: unless-stopped
+    # BEYAN EDILMIS SINIR: `api` servisine healthcheck KONULMADI. aspnet taban
+    # imajinda curl/wget yoktur ve yalnizca yoklama icin imaja arac eklemek
+    # calisma yuzeyini buyutur. Hazirlik DISARIDAN olculur:
+    #   curl -fsS http://localhost:5298/health/ready
 
 volumes:
   momentum-pgdata:

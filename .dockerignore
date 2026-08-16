@@ -1,0 +1,35 @@
+# Docker yapi baglamini KUCUK ve DETERMINISTIK tutar.
+# Kural: derlemeye girmeyen her sey burada. Buyuyen bir baglam yavas yapi demek
+# degildir sadece -- yanlislikla sir/ artefakt tasima riskidir (kirmizi cizgi 1).
+
+.git
+.github
+arsiv
+docs
+KANIT
+tests
+
+# .NET ara ciktilari (imaj icinde YENIDEN uretilir)
+**/bin
+**/obj
+
+# Flutter ara ciktilari (imaj icinde YENIDEN uretilir)
+src/client/build
+src/client/.dart_tool
+src/client/.flutter-plugins*
+src/client/android
+src/client/ios
+src/client/linux
+src/client/macos
+src/client/windows
+
+# sirlar ve yerel yapilandirma -- ASLA imaja girmez
+**/*.env
+.env
+**/appsettings.*.local.json
+**/*.user
+
+# arac / gecici
+*.ps1
+*.md
+!README.md

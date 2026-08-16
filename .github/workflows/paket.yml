@@ -1,0 +1,110 @@
+name: paket
+
+# TEK-KOMUT KAPISI — ODEV §8(4)'un iddiasini MEKANIK olarak olcer:
+# "degerlendirici `docker compose up` yazar ve calisan uygulamayi gorur".
+# Bu iddia ne bulut kabugunda ne masaustu VM'inde olculebilir (ikisinde de docker
+# daemon yok) ⇒ TEK olcum yeri burasi.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Dockerfile"
+      - ".dockerignore"
+      - "docker-compose.yml"
+      - "src/**"
+      - "global.json"
+      - ".github/workflows/paket.yml"
+  workflow_dispatch: {}
+
+jobs:
+  tek-komut:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: sistemi tek komutla kaldir
+        run: docker compose up --build -d
+
+      - name: migrator BITTI ve semayi kurdu mu
+        shell: bash
+        run: |
+          set -euo pipefail
+          kod=$(docker inspect -f '{{.State.ExitCode}}' momentum-migrator)
+          durum=$(docker inspect -f '{{.State.Status}}' momentum-migrator)
+          echo "migrator: durum=$durum cikis=$kod"
+          [ "$durum" = "exited" ] || { echo "KIRMIZI: migrator bitmedi"; exit 1; }
+          [ "$kod" = "0" ] || { echo "KIRMIZI: migrator cikis kodu $kod"; exit 1; }
+          # POZITIF KONTROL (kor kapi yasagi): tablolar GERCEKTEN olustu mu?
+          tablolar=$(docker compose exec -T postgres \
+            psql -U "${POSTGRES_USER:-momentum}" -d momentum -tAc \
+            "select count(*) from information_schema.tables where table_schema='public'")
+          echo "public sema tablo sayisi: $tablolar"
+          [ "$tablolar" -ge 3 ] || { echo "KIRMIZI: sema kurulmamis (tablo=$tablolar)"; exit 1; }
+
+      - name: hazirlik (dis yoklama -- imajda curl YOK, bilerek)
+        shell: bash
+        run: |
+          set -uo pipefail
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:5298/health/ready >/dev/null 2>&1; then
+              echo "hazir (deneme $i)"; exit 0
+            fi
+            sleep 2
+          done
+          echo "KIRMIZI: /health/ready 120 sn icinde 200 donmedi"; exit 1
+
+      - name: AYAK 1 -- istemci AYNI KOKENDEN iniyor mu
+        shell: bash
+        run: |
+          set -euo pipefail
+          govde=$(curl -fsS http://localhost:5298/)
+          # POZITIF KONTROL: tarama gercekten govde goruyor mu?
+          [ -n "$govde" ] || { echo "KIRMIZI: kok bos dondu -- tarama kor"; exit 1; }
+          grep -q 'flutter_bootstrap.js' <<<"$govde" \
+            || { echo "KIRMIZI: kokte Flutter kabugu yok -- Istemci:KokDizin baglanmamis"; exit 1; }
+          echo "YESIL: index.html ayni kokenden iniyor"
+
+      - name: AYAK 2 -- COOP/COEP istemci BELGESINE degiyor mu
+        shell: bash
+        run: |
+          set -euo pipefail
+          basliklar=$(curl -fsS -D - -o /dev/null http://localhost:5298/)
+          [ -n "$basliklar" ] || { echo "KIRMIZI: baslik yok -- tarama kor"; exit 1; }
+          grep -iq 'cross-origin-opener-policy: *same-origin' <<<"$basliklar" \
+            || { echo "KIRMIZI: COOP istemci belgesinde YOK"; exit 1; }
+          grep -iq 'cross-origin-embedder-policy: *require-corp' <<<"$basliklar" \
+            || { echo "KIRMIZI: COEP istemci belgesinde YOK"; exit 1; }
+          echo "YESIL: izolasyon basliklari istemci belgesinde"
+
+      - name: AYAK 3 -- varsayilan-ret gercek mi (401) ve dev-kimlikle gecis (200)
+        shell: bash
+        run: |
+          set -euo pipefail
+          govde='{"clientId":"11111111-1111-1111-1111-111111111111","ops":[]}'
+          ret=$(curl -s -o /dev/null -w '%{http_code}' -X POST http://localhost:5298/v1/sync \
+                  -H 'Content-Type: application/json' -d "$govde")
+          [ "$ret" = "401" ] || { echo "KIRMIZI: basliksiz /v1/sync $ret dondu, 401 bekleniyordu"; exit 1; }
+          gec=$(curl -s -o /dev/null -w '%{http_code}' -X POST http://localhost:5298/v1/sync \
+                  -H 'Content-Type: application/json' \
+                  -H 'X-Momentum-Dev-User: 22222222-2222-2222-2222-222222222222' -d "$govde")
+          [ "$gec" = "200" ] || { echo "KIRMIZI: dev-kimlikli /v1/sync $gec dondu, 200 bekleniyordu"; exit 1; }
+          echo "YESIL: 401 -> 200"
+
+      - name: AYAK 4 -- eslesmeyen API yolu HTML DONMUYOR (o63 olcumu)
+        shell: bash
+        run: |
+          set -euo pipefail
+          kod=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:5298/v1/BULUNMAYAN-UC)
+          [ "$kod" = "404" ] || { echo "KIRMIZI: /v1/BULUNMAYAN-UC $kod dondu, 404 bekleniyordu"; exit 1; }
+          echo "YESIL: SPA geri-dususu API yollarini yutmuyor"
+
+      - name: kirmizida gunlukler
+        if: failure()
+        run: docker compose logs --no-color --tail 200
+
+      - name: temizle
+        if: always()
+        run: docker compose down -v
