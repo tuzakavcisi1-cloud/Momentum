@@ -18,25 +18,25 @@ ayrıştırıcı SAF, 41 mutant öldü. **DERS (o74):** kâğıt denetimi migrat
 
 **705/705**, 32 mutant öldü (tek sağkalan `dispose`). YENİ ŞEMA/TEL YOK. `arama_eslestirme.dart`
 SAF; katlama tablosu (`I→ı`, `İ→i`) TEK KAYNAK, ham `toLowerCase` YASAK, aksan KATLANMAZ. Süzme
-TEK `where`da (çip × arama). **Canlı tur (cihaz Chrome, Pages #8) beş ayak yeşil:** `ışık` →
-**IŞIK yak** · boş sonuçta temizle · `#iş`+`deneme` = BOŞ (çarpım) · süzgeç açıkken eklenen görev
-göründü · sekme kapat–aç sonrası arama sıfırlandı, veri durdu.
+TEK `where`da (çip × arama). **Canlı tur (Pages #8) beş ayak yeşil:** `ışık` → **IŞIK yak** · boş
+sonuçta temizle · `#iş`+`deneme` = BOŞ (çarpım) · süzgeç açıkken eklenen görev göründü · sekme
+kapat–aç sonrası arama sıfırlandı.
 
 ## Oturum 79 — teslim paketi (docker) ve KÖR KAPI dersi
 
-Yeni: `Dockerfile` (Flutter web → .NET publish → çalışma) · `docker-compose.yml`
-(postgres → migrator → api) · `docker-compose.gelistirme.yml` · `.github/workflows/paket.yml`.
-Şemayı `api` değil **ayrı migrator servisi** kurar (EF bundle, çerçeve-bağımlı 34,7 MB).
-**Bulutta yakalanan üç kusur:** `cirruslabs/flutter:3.44.6` **yok** (→ birinci taraf arşiv +
-sha256) · yüzen `sdk:10.0` `global.json` pinini kırabilirdi (→ `10.0.302`) · `ef bundle` başlangıç
-projesi **Api olamaz** (Design `PrivateAssets=all` → Infrastructure + tasarım-zamanı fabrikası).
+Yeni: `Dockerfile` · `docker-compose.yml` (postgres → migrator → api) ·
+`docker-compose.gelistirme.yml` · `.github/workflows/paket.yml`. Şemayı `api` değil **ayrı
+migrator servisi** kurar (EF bundle, 34,7 MB). **Bulutta yakalanan üç kusur:**
+`cirruslabs/flutter:3.44.6` **yok** (→ birinci taraf arşiv + sha256) · yüzen `sdk:10.0`
+`global.json` pinini kırabilirdi (→ `10.0.302`) · `ef bundle` başlangıç projesi **Api olamaz**
+(Design `PrivateAssets=all` → Infrastructure + tasarım-zamanı fabrikası).
 
-🔴 **KÖR KAPI (bu turun asıl dersi).** Kapının ilk sürümü gövdede `flutter_bootstrap.js`
-**dizesini** arıyordu; o dize `src/client/web/index.html:44` **şablonunda** zaten var. Bağımsız
-denetçi `Istemci:KokDizin`e yalnız `index.html` koydu: bütün Flutter çıktısı **404** dönerken
-**dört ayak da yeşil** yandı. Aynı denetim `≥3 tablo` eşiğinin yarım şemayı geçirdiğini ölçtü
-(8 tablo, `GET /v1/tasks` **500**). Kapı yeniden yazıldı: **dize değil VARLIK**, **sayı değil AD**,
-ve **ÜRÜN UCU**. Denetim: **3 bloker · 6 majör · 7 minör**; kapatılmayanlar §Bilinen sınırlar.
+🔴 **KÖR KAPI (bu turun asıl dersi).** İlk sürüm gövdede `flutter_bootstrap.js` **dizesini**
+arıyordu; o dize `src/client/web/index.html:44` **şablonunda** zaten var. Denetçi `Istemci:KokDizin`e
+yalnız `index.html` koydu: bütün Flutter çıktısı **404** dönerken **dört ayak da yeşil** yandı.
+`≥3 tablo` eşiği de yarım şemayı geçiriyordu (8 tablo, `GET /v1/tasks` **500**). Kapı yeniden
+yazıldı: **dize değil VARLIK**, **sayı değil AD**, **ÜRÜN UCU**. Denetim: **3 bloker · 6 majör ·
+7 minör**; kapatılmayanlar §Bilinen sınırlar.
 **DERS:** kapının yeşili, ölçtüğü şeyin ürün olduğunu kanıtlamaz — girdisi depoda zaten duruyorsa
 kapı kördür. **İKİNCİ DERS:** düzeltmenin yazılmış olması indiği anlamına gelmez (kör kapı
 düzeltmesi ilk denemede depoya inmedi, sha256 yakaladı). **ÜÇÜNCÜ DERS — YALANCI KIRMIZI:**
@@ -46,8 +46,10 @@ dosyaya indir, sonra ara. Kör kapı yalancı yeşildi; bu aynası.
 
 ## Sıradaki iş
 
-**`paket` koşum 7 YEŞİL** (`0902658`) — beş ayak + migrator + `DEV_USER_ID`. Ham ölçüm: `KANIT/o79/`.
-Sonra: APK üretimi (`DEV_USER_ID=deadbeef-0000-4000-8000-000000000001`), kutu kapanışı (21 Ağu).
+**`paket` koşum 7 YEŞİL** (`0902658`). **PAKET GERÇEK MAKİNEDE CANLI ÖLÇÜLDÜ** (17 Ağu, Windows +
+Docker Desktop): ilk derleme **27 dk** · `crossOriginIsolated=true` · drift **opfsLocks** (Pages'te
+`sharedIndexedDb`) · tarayıcıda yazılan görev **PostgreSQL'e ulaştı** (`GET /v1/tasks` 200).
+Ham ölçüm: `KANIT/o79/`. Sıradaki: APK (derleniyor), kutu kapanışı (21 Ağu).
 Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı: `IŞIK yak`, `Sut al`.
 
 ## Bilinen sınırlar
@@ -61,8 +63,9 @@ Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı
    kırılması manifestle gösterildi ama gerçek arm64'te KOŞULMADI · APK ve iki-istemci vitrini
    fiilen ölçülmedi · tarayıcı `crossOriginIsolated` ölçümü kapının göremediği yer.
 4. **Kimlik `devUserId` ile taşınıyor** ⇒ gerçek zamanlı işbirliği gösterilemez (kapsam dışı).
-6. **Pages demosunda backend yok** ⇒ rozetler "Bu cihazda → Gönderiliyor → Çevrimdışı"ya düşer;
-   "ikinci istemciye eşitlenir" ayağı Pages'te ASLA ölçülemez.
+6. **Pages demosunda backend yok** ⇒ rozetler "Çevrimdışı"ya düşer; senkron ayağı Pages'te ASLA
+   ölçülemez. **Pakette ölçülür** (o79 canlı tur). Eşitlenmiş satır rozet GÖSTERMEZ (`senkronize
+   => null`) — boş rozet alanı senkronize demektir.
 7. **[o79 ÖLÇÜLDÜ — eski madde YANLIŞTI] `.github/workflows/*` yalnız `device_commit_files`'ta
    reddedilir; `device_bash` oraya YAZABİLİR.** Koruma araçta, klasörde değil. Yol: korumasız
    yola yaz → cihazda `cp` → sha256 doğrula. **[Onur kilidi 16 Ağu: bu yol serbest.]**
@@ -82,11 +85,9 @@ Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı
     öldürür, yeniden kurulamaz: ekran **bomboş** kalır ve **konsolda hata olmaz**. Çözüm: Chrome'u
     tamamen kapat–aç. Ek tuzak: CanvasKit canvas'ı `flt-glass-pane`in SHADOW ROOT'undadır ⇒
     `querySelectorAll('canvas')` onu GÖREMEZ.
-23. **[o78 ÖLÇÜLDÜ] `'İ'.toLowerCase()` VM'de `[105]`, dart2js/Node'da `[105, 775]`** (i + U+0307)
-    ⇒ katlama tablosundan `İ` girişini silen mutant **VM'de davranışla ÖLMEZ** ama WEB'de `iş`
-    sorgusunu `İş görüşmesi`nden koparırdı. Test bu yüzden TABLOYU BİREBİR sınar (o77 dersinin aynısı).
-24. **[o78 ÖLÇÜLDÜ] Katlama VM↔web ayrışması:** `U+0000–U+024F` aralığında ayrışan **SIFIR**;
-    aralık dışında 465 kod noktası farklı katlanır. Ürün dili Türkçe ⇒ bilinçli sınır.
+23. **[o78 ÖLÇÜLDÜ] `'İ'.toLowerCase()` VM'de `[105]`, dart2js'te `[105, 775]`** ⇒ katlama
+    tablosundan `İ` silen mutant VM'de ÖLMEZ ama WEB'de arama kopardı; test TABLOYU BİREBİR sınar.
+    Katlama ayrışması `U+0000–U+024F` içinde SIFIR, dışında 465 kod noktası (bilinçli sınır).
 25. **[o78 ÖLÇÜLDÜ] `hintText` hiçbir mevcut kapıya görünmez** (`Text(` yok ⇒ statik tarayıcı
     görmez; semantik düğümde label/value boş ⇒ kontrast kapısı ATLAR). TEK pin
     `test/arama_dilimi_test.dart`. İpucu bu yüzden **'Ara'**ya kısaltıldı (320 dp'de kırpılıyordu).

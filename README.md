@@ -144,6 +144,22 @@ duruyor. Denetçi `Istemci:KokDizin`e **yalnız `index.html`** koyup API'yi kald
 oluşmadan kapı geçiyor, sonra `GET /v1/tasks` **500** veriyordu. Yukarıdaki sürüm ikisini de
 kapatır — dize değil **varlık** çekilir, sayı değil **ad** sorulur, ve **ürün ucu** çağrılır.
 
+🟢 **Paket, gerçek bir makinede canlı ölçüldü** (17 Ağu 2026, Windows + Docker Desktop + Chrome;
+ham kayıt `KANIT/o79/02-paket-CANLI-olcum-degerlendirici-makinesi.md`):
+
+- `crossOriginIsolated === **true**` ve `SharedArrayBuffer` **tanımlı** ⇒ aynı kökenden sunmak
+  izolasyonu **fiilen** üretiyor. Pages demosunda bu değer `false`'tur.
+- Depolama seçimi konsoldan birebir: `chosenImplementation=WasmStorageImplementation.**opfsLocks**`
+  — Pages'te aynı satır `sharedIndexedDb` der. İzolasyon başlıklarının somut karşılığı budur.
+- Tarayıcıya `yarin 17:00 paket denemesi #is !p1` yazıldı; `GET /v1/tasks` **200** döndü ve görevi
+  `priority: 1`, `tags: ["is"]` ile geri verdi ⇒ **istemcide yazılan satır PostgreSQL'e ulaştı**.
+  Bu ayak Pages demosunda ASLA ölçülemez.
+
+⏱ **İlk koşum maliyeti (ölçüldü, gizlenmiyor): 1639,7 sn ≈ 27 dakika.** Bunun 574 saniyesi
+Flutter arşivinin (1,54 GB) indirilmesidir; ayrıca `sdk:10.0.302` (185 MB), `aspnet:10.0` ve
+`postgres:17-alpine` iner. CI'da aynı yapı 2,5 dk sürer (hızlı ağ, Docker Desktop katmanı yok).
+**İkinci koşum katmanlardan gelir ve saniyeler alır.**
+
 🔴 **Üç sınır beyan edilmiştir, gizlenmemiştir:**
 
 1. İmaj `ASPNETCORE_ENVIRONMENT=Development` ile koşar — dev-kimlik kalkanı yalnız orada
