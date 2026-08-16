@@ -1,6 +1,6 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 9/10 · kutu 21 Ağu 2026 · arama dilimi KOD BİTTİ, CANLI TUR BEKLİYOR (10/10 ölçütü §Sıradaki iş). `ci #49` YEŞİL (676/676) · `pages #7` YEŞİL · doğal dil dilimi CANLI DOĞRULANDI (cihaz Chrome, 15 Ağu 13:44 TSİ).**
+**BİTTİ: 10/10 · kutu 21 Ağu 2026 · HEAD `12a8227` · `ci #50` YEŞİL (705/705) · `pages #8` YEŞİL · arama dilimi CANLI DOĞRULANDI (cihaz Chrome, 16 Ağu 2026 11:3x TSİ). Açık dilim YOK — kalan iş TESLİM.**
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
 > ② bu dosya ③ CI durumu — **cihazdaki Chrome'dan okunur** (bulut tarayıcısı kanıt değildir).
@@ -13,9 +13,8 @@
 dokunulmadı. Tel `sets.tags.{adds,removes}`; `sets` LWW meta'ya ASLA bağlanmaz. adds=insertOrIgnore ·
 removes=observed başına iptal ⇒ idempotent + değişmeli. Tombstone TELE ÇIKMAZ.
 **Doğal dil (o77):** `yarın 17:00 rapor gönder #iş !p1` → dört alan TEK `WireOp` + TEK `transaction`;
-ayrıştırıcı SAF (`DateTime.now()` yok). 41 mutant öldü. Denetim İKİ ürün kusuru çıkardı: `int.parse`
-64 bit taşması (VM/Android'de ekle düğmesi sessizce ölüyordu) → `int.tryParse`; yıl `0000` kabulü
-(sunucu `Malformed`'a atar ⇒ **sınır ötesi sessiz kayıp**) → `yil < 1` reddi.
+ayrıştırıcı SAF. 41 mutant öldü; denetim iki ürün kusuru çıkardı (`int.parse` taşması → `tryParse`;
+yıl `0000` → `yil < 1` reddi, **sınır ötesi sessiz kayıp**).
 **DERS (o74, kanla):** kâğıt denetimi migration'ın **v1 yolunu KOŞAMAZ**. **DERS (o77):** `.toUtc()`
 mutantı UTC koşan CI'da davranışla öldürülemez — ortamı değil **DİKİŞİ** ölç.
 
@@ -34,11 +33,22 @@ Bulutta yazıldı/koşuldu (Flutter 3.44.6): `analyze --fatal-infos` temiz · **
   eskisi (A8 taşma ölçümü ve vitrin testleri kaymasın diye).
 - **İKİ BAĞIMSIZ DENETÇİ** koştu; ikisi de ürün kusuru buldu, hepsi kapatıldı (aşağıdaki sınırlar).
 
-## Sıradaki iş — CANLI TUR (cihaz Chrome, Pages demosu)
+## Canlı tur — 16 Ağu 2026, cihaz Chrome, Pages #8 (COWORK KOŞTU) — BEŞ AYAK DA YEŞİL
 
-Kod cihaza yazıldı; **commit/push ONUR'DA**, sonra canlı tur. **Bitti ölçütü:** arama yazılır liste
-daralır · alan temizlenince geri gelir · etiket çipiyle ikisi birden uygulanır · süzgeç açıkken
-eklenen görev GÖRÜNÜR. Üçü de yeşilse **10/10**. Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22).
+1. **Türkçe katlama canlı:** `ışık` → **IŞIK yak** bulundu, liste 6 satırdan 1'e indi (VM'de
+   öldürülen `toLowerCase` mutantının WEB karşılığı).
+2. **Boş sonuç:** `ışıkzzz` → "Eşleşen görev yok." + "Süzgeçleri temizle"; çip şeridi DARALMADI,
+   "Henüz görev yok" yalanı kurulmadı. Düğme aramayı temizledi, tam liste geri geldi.
+3. **ÇARPIM:** `#iş` çipi seçiliyken `deneme` araması BOŞ döndü — "deneme" görevi listede var ama
+   etiketsiz ⇒ VE doğrulandı (VEYA olsaydı görünürdü).
+4. **Ekleme süzgeçleri sıfırladı:** `#iş` + `deneme` (boş sonuç) hâlindeyken "Sut al" eklendi →
+   arama alanı boşaldı, çip "Tümü"ye döndü, **"Sut al" listede göründü**.
+5. **Sekme kapat–aç:** arama SIFIRLANDI, eklenen görevler DURDU, ekran boş kalmadı.
+
+## Sıradaki iş — TESLİM
+
+Açık dilim yok. Kalan: README/demo görünürlüğü, kutu kapanışı (21 Ağu). Canlı turda
+**Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı bırakıldı: `IŞIK yak`, `Sut al`.
 
 ## Bilinen sınırlar
 
@@ -54,8 +64,8 @@ eklenen görev GÖRÜNÜR. Üçü de yeşilse **10/10**. Canlı turda **Ctrl+Shi
 7. **Mount'a yazmanın tek yolu YERİNDE yazmaktır.** `device_commit_files` mount'a YAZAR, sha256
    birebir tutar — AMA `.github/workflows/*` **korumalıdır, reddedilir**; iş akışını Onur elle düzenler.
 8. **`pub cache` boşalabiliyor** (`flutter pub get` çözer).
-9. **Öncelik/son tarih/etiket için ÇAKIŞMA TESPİTİ kapsam dışı:** `kanonikDize` yalnız
-   `fields:title` + `groups:completion` tanır. **Bilinmeyen `priority`** çizilmez ama EZİLMEZ.
+9. **ÇAKIŞMA TESPİTİ yalnız başlık/tamamlanma:** `kanonikDize` `fields:title` + `groups:completion`
+   tanır. **Bilinmeyen `priority`** çizilmez ama EZİLMEZ.
 14. **Etiketlerde BÜYÜK/KÜÇÜK HARF KATLAMASI YOK** (sunucu Ordinal karşılaştırır): `İş` ≠ `iş`.
     32 karakter sınırı YALNIZ İSTEMCİ kelepçesidir.
 16. **[o77] Doğal dil sınırları (kilitli):** `Yarın`/ASCII `yarin` TANINMAZ · saat başlıkta kalır ·

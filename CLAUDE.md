@@ -19,7 +19,7 @@ mimari ve kod kalitesi. Kapsam otoritesi **`docs/ODEV.md`**. Canlı demo README'
 - [x] Kullanıcı görevi siler (onay sorarak) — *canlı 14 Ağu*
 - [x] Kullanıcı göreve **öncelik** ve **son tarih** verir, ikisini de listede görür — *canlı 14 Ağu*
 - [x] Kullanıcı göreve **etiket** ekler ve etikete göre süzer — *canlı 15 Ağu*
-- [ ] Kullanıcı görevlerini **başlıkta arar**
+- [x] Kullanıcı görevlerini **başlıkta arar** — *canlı 16 Ağu*
 - [x] Kullanıcı görevi **tek satır doğal dille** ekler — *canlı 15 Ağu*
 - [x] Uygulama internetsiz çalışır, veri kalıcıdır, bağlantı gelince kendiliğinden eşitlenir
 - [x] İki cihaz aynı görevi değiştirince kullanıcı çakışmayı görür ve hangi değerin kazandığını anlar
@@ -30,13 +30,12 @@ mimari ve kod kalitesi. Kapsam otoritesi **`docs/ODEV.md`**. Canlı demo README'
 
 ## 3. SIRADAKİ İŞ (tek dikey dilim)
 
-**Başlıkta arama** — SON madde; kutu dolarsa kesilecek ilk madde budur.
-**KİLİTLİ [Onur, 15 Ağu]:** alan **çip şeridinin ÜSTÜNDE** · eşleştirme **Türkçe-güvenli katlama**
-(`I→ı`, `İ→i` ELLE; `toLowerCase` YASAK, aksan katlanmaz) · **her tuşta canlı** · boş sonuçta
-**"Eşleşen görev yok."** + süzgeçleri temizle · arama ile çip **ÇARPILIR** · sekme kapanınca
-sıfırlanır · **yeni şema/tel YOK** (süzme Dart tarafında, aynı stream).
-**Bitti ölçütü (canlı):** arama yazılır liste daralır, alan temizlenince geri gelir; etiket
-çipiyle birlikte ikisi birden uygulanır.
+**BİTTİ LİSTESİ 10/10 — açık dilim YOK.** Son madde (başlıkta arama) **16 Ağu canlı doğrulandı**
+(cihaz Chrome, Pages #8): `ışık` → **IŞIK yak** bulundu · çiple ÇARPILDI (`#iş` + `deneme` = boş) ·
+boş sonuçta "Eşleşen görev yok." + temizle · **ekleme süzgeçleri sıfırlar** (Onur kilidi 16 Ağu) ·
+sekme kapat–aç sonrası arama sıfırlandı, veri durdu.
+Yeni madde §5'e kesme yazmadan EKLENMEZ (İŞLEYİŞ md.1). Kutuda kalan iş dilim değil **teslim**:
+README/demo görünürlüğü ve kutu kapanışı.
 
 ## 4. ORTAM MAYINLARI (yalnız ÖLÇÜLMÜŞ)
 
