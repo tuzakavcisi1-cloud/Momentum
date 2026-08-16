@@ -39,8 +39,11 @@ services:
       POSTGRES_DB: momentum
       POSTGRES_USER: ${POSTGRES_USER:-momentum}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-momentum_dev}
-    ports:
-      - "5432:5432"
+    # 5432 YAYINLANMAZ (o79 denetim bulgusu m3): degerlendiricinin makinesinde
+    # calisan bir PostgreSQL varsa `up`, ~1,5 GB indirme ve tam derlemeden SONRA
+    # "Bind for 0.0.0.0:5432 failed" ile duserdi. migrator ve api zaten compose
+    # aginda `postgres` adiyla erisir. Disaridan psql baglamak isterseniz:
+    #   docker compose exec postgres psql -U momentum -d momentum
     volumes:
       - momentum-pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -48,6 +51,9 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    # api `unless-stopped` ile donuyordu, postgres donmuyordu (o79 bulgusu m1):
+    # makine yeniden baslayinca api tek basina kalkip /health/ready 503 verirdi.
+    restart: unless-stopped
 
   # EF migration paketi: semayi kurar ve CIKAR. Ayni imaj, farkli giris noktasi.
   migrator:

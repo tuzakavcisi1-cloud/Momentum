@@ -1,0 +1,17 @@
+# GELISTIRICI ORTUSU — yalnizca elle backend kosturanlar icin.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.gelistirme.yml up -d postgres
+#
+# NEDEN AYRI DOSYA: ana compose 5432'yi BILEREK yayinlamaz. Degerlendiricinin
+# makinesinde calisan bir PostgreSQL varsa, yayinlanan port `docker compose up
+# --build`i ~1,5 GB indirme ve tam derlemeden SONRA "Bind for 0.0.0.0:5432
+# failed" ile dusururdu (o79 denetim bulgusu m3). Tek-komut yolunun porta
+# ihtiyaci yok: migrator ve api compose aginda `postgres` adiyla erisir.
+# Ama `dotnet run`u HOST'ta kosturan gelistirici Host=localhost;Port=5432 ister.
+#
+# Port zaten doluysa: POSTGRES_PORT=5433 docker compose -f ... up -d postgres
+
+services:
+  postgres:
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"

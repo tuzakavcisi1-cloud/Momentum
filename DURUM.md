@@ -1,6 +1,6 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 10/10 · kutu 21 Ağu 2026 · HEAD `12a8227` · `ci #50` YEŞİL (705/705) · `pages #8` YEŞİL · arama dilimi CANLI DOĞRULANDI (cihaz Chrome, 16 Ağu 2026 11:3x TSİ). Açık dilim YOK — kalan iş TESLİM.**
+**BİTTİ: 10/10 · kutu 21 Ağu 2026 · `ci #50` YEŞİL (705/705) · `pages #8` YEŞİL · özellik dilimi YOK. TESLİM AŞAMASI: paketlenmiş build = docker imajı (API + web aynı köken) + Android APK. Windows masaüstü ve iOS cihaz KAPSAM DIŞI.**
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
 > ② bu dosya ③ CI durumu — **cihazdaki Chrome'dan okunur** (bulut tarayıcısı kanıt değildir).
@@ -8,47 +8,49 @@
 
 ## Oturum 74 · 76 · 77 (özet)
 
-**TAKVİM GÜNÜ PİNİ:** `DateTime.utc(y,m,d)`, tek nokta `GorevSatiri.takvimGunu`. `intl` **0.20.2**
-(kanonik sürüm `pubspec.lock`). **Etiket:** `gorev_etiketleri(...)` SALT-EKLEME, `Gorevler`e
-dokunulmadı. Tel `sets.tags.{adds,removes}`; `sets` LWW meta'ya ASLA bağlanmaz. adds=insertOrIgnore ·
-removes=observed başına iptal ⇒ idempotent + değişmeli. Tombstone TELE ÇIKMAZ.
-**Doğal dil (o77):** `yarın 17:00 rapor gönder #iş !p1` → dört alan TEK `WireOp` + TEK `transaction`;
-ayrıştırıcı SAF. 41 mutant öldü; denetim iki ürün kusuru çıkardı (`int.parse` taşması → `tryParse`;
-yıl `0000` → `yil < 1` reddi, **sınır ötesi sessiz kayıp**).
-**DERS (o74, kanla):** kâğıt denetimi migration'ın **v1 yolunu KOŞAMAZ**. **DERS (o77):** `.toUtc()`
-mutantı UTC koşan CI'da davranışla öldürülemez — ortamı değil **DİKİŞİ** ölç.
+**TAKVİM GÜNÜ PİNİ:** `DateTime.utc(y,m,d)`, tek nokta `GorevSatiri.takvimGunu`; `intl` **0.20.2**.
+**Etiket:** `gorev_etiketleri(...)` SALT-EKLEME; tel `sets.tags.{adds,removes}`, `sets` LWW meta'ya
+ASLA bağlanmaz; idempotent + değişmeli; tombstone TELE ÇIKMAZ. **Doğal dil (o77):** dört alan TEK
+`WireOp` + TEK `transaction`, ayrıştırıcı SAF, 41 mutant öldü; denetim iki ürün kusuru çıkardı
+(`int.parse` taşması; yıl `0000` → sınır ötesi sessiz kayıp).
+**DERS (o74):** kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ. **DERS (o77):** ortamı değil
+**DİKİŞİ** ölç.
 
-## Oturum 78 — başlıkta arama dilimi (KOD BİTTİ, canlı bekliyor)
+## Oturum 78 — başlıkta arama dilimi (KAPANDI, 10/10)
 
-Bulutta yazıldı/koşuldu (Flutter 3.44.6): `analyze --fatal-infos` temiz · **705/705** (taban 676) ·
-**32 mutant öldü** (18 ilk tur + 11 denetim sağkalanı + 3 kilit turu), bilinen tek sağkalan `dispose`.
-**YENİ ŞEMA YOK, YENİ TEL KANALI YOK.** Değişen altı dosya: `lib/sunum/arama_eslestirme.dart` (YENİ) ·
-`test/arama_dilimi_test.dart` (YENİ) · `gorev_listesi_ekrani.dart` · `bos_durum.dart` ·
-`design/metinler.dart` · `test/a11y_statik_tasma_test.dart` (R4 tabanı 29→30).
+Kod bulutta yazıldı/koşuldu: `analyze --fatal-infos` temiz · **705/705** (taban 676) · **32 mutant
+öldü**, tek sağkalan `dispose`. YENİ ŞEMA YOK, YENİ TEL KANALI YOK. `arama_eslestirme.dart` SAF;
+katlama tablosu (`I→ı`, `İ→i`) TEK KAYNAK, ham `toLowerCase` YASAK, aksan KATLANMAZ. Süzme TEK
+`where`da (çip × arama). İki bağımsız denetçi koştu, ikisi de ürün kusuru buldu.
+**Canlı tur 16 Ağu (cihaz Chrome, Pages #8) beş ayak da yeşil:** `ışık` → **IŞIK yak** · boş
+sonuçta "Eşleşen görev yok." + temizle · `#iş` + `deneme` = BOŞ (çarpım) · süzgeç açıkken eklenen
+görev göründü · sekme kapat–aç sonrası arama sıfırlandı, veri durdu.
 
-- **`arama_eslestirme.dart` SAF, sıfır bağımlılık.** Katlama tablosu (`I→ı`, `İ→i`) TEK KAYNAK;
-  ham `toLowerCase` YASAK; **aksan KATLANMAZ**; alt dize; boş/boşluk sorgu = süzme yok (kırpılır).
-- **Süzme TEK `where`da:** etiket çipi ile arama ÇARPILIR; ikinci süzme yolu açılmadı.
-- **`BosDurum.eslesmeYok`:** ayrı metin + "Süzgeçleri temizle"; birinci varyantın ağacı BİREBİR
-  eskisi (A8 taşma ölçümü ve vitrin testleri kaymasın diye).
-- **İKİ BAĞIMSIZ DENETÇİ** koştu; ikisi de ürün kusuru buldu, hepsi kapatıldı (aşağıdaki sınırlar).
+## Oturum 79 — teslim paketi (docker) ve KÖR KAPI dersi
 
-## Canlı tur — 16 Ağu 2026, cihaz Chrome, Pages #8 (COWORK KOŞTU) — BEŞ AYAK DA YEŞİL
+Yeni: `Dockerfile` (üç aşama: Flutter web → .NET publish → çalışma) · `docker-compose.yml`
+(postgres → migrator → api) · `docker-compose.gelistirme.yml` · `.github/workflows/paket.yml`.
+Şemayı `api` değil **ayrı migrator servisi** kurar (EF bundle, çerçeve-bağımlı 34,7 MB).
 
-1. **Türkçe katlama canlı:** `ışık` → **IŞIK yak** bulundu, liste 6 satırdan 1'e indi (VM'de
-   öldürülen `toLowerCase` mutantının WEB karşılığı).
-2. **Boş sonuç:** `ışıkzzz` → "Eşleşen görev yok." + "Süzgeçleri temizle"; çip şeridi DARALMADI,
-   "Henüz görev yok" yalanı kurulmadı. Düğme aramayı temizledi, tam liste geri geldi.
-3. **ÇARPIM:** `#iş` çipi seçiliyken `deneme` araması BOŞ döndü — "deneme" görevi listede var ama
-   etiketsiz ⇒ VE doğrulandı (VEYA olsaydı görünürdü).
-4. **Ekleme süzgeçleri sıfırladı:** `#iş` + `deneme` (boş sonuç) hâlindeyken "Sut al" eklendi →
-   arama alanı boşaldı, çip "Tümü"ye döndü, **"Sut al" listede göründü**.
-5. **Sekme kapat–aç:** arama SIFIRLANDI, eklenen görevler DURDU, ekran boş kalmadı.
+**Bulutta yakalanan üç kusur:** `cirruslabs/flutter:3.44.6` **yok** (→ birinci taraf arşiv +
+sha256) · yüzen `sdk:10.0` `global.json` pinini kırabilirdi (→ `10.0.302`) · `ef bundle` başlangıç
+projesi **Api olamaz** (Design `PrivateAssets=all` → Infrastructure + tasarım-zamanı fabrikası).
 
-## Sıradaki iş — TESLİM
+🔴 **KÖR KAPI (bu turun asıl dersi).** Kapının ilk sürümü servis edilen gövdede
+`flutter_bootstrap.js` **dizesini** arıyordu; o dize `src/client/web/index.html:44` **şablonunda**
+zaten var. Bağımsız denetçi `Istemci:KokDizin`e yalnız `index.html` koydu: bütün Flutter çıktısı
+**404** dönerken **dört ayak da yeşil** yandı. Aynı denetim migrator eşiğinin (`≥3 tablo`) yarım
+şemayı geçirdiğini ölçtü (`tasks`/`task_lists` yok, 8 tablo, `GET /v1/tasks` **500**). Kapı
+yeniden yazıldı: **dize değil VARLIK** çekilir (`flutter_bootstrap.js` + `useLocalCanvasKit` +
+`main.dart.js` >100 KB), **sayı değil AD** sorulur (sekiz tablo), ve **ÜRÜN UCU** çağrılır.
+**DERS:** bir kapının yeşili, ölçtüğü şeyin ürün olduğunu kanıtlamaz — girdisi depoda zaten
+duruyorsa kapı kördür.
 
-Açık dilim yok. Kalan: README/demo görünürlüğü, kutu kapanışı (21 Ağu). Canlı turda
-**Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı bırakıldı: `IŞIK yak`, `Sut al`.
+## Sıradaki iş
+
+Kapının yeni sürümü **henüz koşmadı** — push sonrası `paket` yeşili beklenir. Sonra: APK üretimi
+(`DEV_USER_ID=deadbeef-0000-4000-8000-000000000001`), kutu kapanışı (21 Ağu).
+Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı: `IŞIK yak`, `Sut al`.
 
 ## Bilinen sınırlar
 

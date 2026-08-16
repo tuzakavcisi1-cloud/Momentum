@@ -30,12 +30,11 @@ mimari ve kod kalitesi. Kapsam otoritesi **`docs/ODEV.md`**. Canlı demo README'
 
 ## 3. SIRADAKİ İŞ (tek dikey dilim)
 
-**BİTTİ LİSTESİ 10/10 — açık dilim YOK.** Son madde (başlıkta arama) **16 Ağu canlı doğrulandı**
-(cihaz Chrome, Pages #8): `ışık` → **IŞIK yak** bulundu · çiple ÇARPILDI (`#iş` + `deneme` = boş) ·
-boş sonuçta "Eşleşen görev yok." + temizle · **ekleme süzgeçleri sıfırlar** (Onur kilidi 16 Ağu) ·
-sekme kapat–aç sonrası arama sıfırlandı, veri durdu.
-Yeni madde §5'e kesme yazmadan EKLENMEZ (İŞLEYİŞ md.1). Kutuda kalan iş dilim değil **teslim**:
-README/demo görünürlüğü ve kutu kapanışı.
+**BİTTİ LİSTESİ 10/10 — özellik dilimi YOK.** Kalan iş **TESLİM**; teslim biçimi
+**paketlenmiş build** [Onur, 16 Ağu]: docker imajı (API + web istemcisi aynı köken) + Android APK.
+Tek-komut kapısı `.github/workflows/paket.yml`tedir; **ilk sürümü KÖRDÜ**, bağımsız denetim
+ölçerek düşürdü ve kapı yeniden yazıldı (dize değil VARLIK çekilir, sayı değil AD sorulur, ÜRÜN
+UCU çağrılır). Yeni madde §5'e kesme yazmadan EKLENMEZ (İŞLEYİŞ md.1).
 
 ## 4. ORTAM MAYINLARI (yalnız ÖLÇÜLMÜŞ)
 
@@ -74,7 +73,8 @@ README/demo görünürlüğü ve kutu kapanışı.
 - **`docs/ODEV.md` §4(a)'dan kesildi:** liste · proje · tekrar (RRULE) · hatırlatıcı.
 - **§4(b)2 işbirliği vitrini:** sinyal kanalı kodda var, **çok kullanıcılı paylaşım/davet akışı yok**.
 - **§6.1 kimlik/oturum:** giriş ekranı yok; istemci `devUserId` taşır, `WireOp.ActorId` istemci-beyanlı.
-- **§8(4):** tek komutla ayağa kaldırma yok (`Dockerfile` yok; compose yalnız `postgres`).
+- **Windows masaüstü hedefi yok** [Onur, 16 Ağu]: `src/client/` yalnız `android`/`ios`/`web`
+  taşır. Windows'ta uygulama **tarayıcıdan** çalışır (imajdaki web istemcisi).
 - **[o77 kesildi]** Ayrıştırma her şeyi yutunca (`#iş !p1 yarın`) hata metni YOK: metin alanda
   kalır. Sessiz kayıp yok, geri bildirim de yok.
 - **Zaten kapsam dışı (§4.1/§6.1):** AI asistan · Google Takvim · Kanban/Takvim · iOS cihaz testi ·

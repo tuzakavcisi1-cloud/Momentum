@@ -24,10 +24,12 @@
 #      bulunmaz ve sirf yoklama icin imaja arac eklemek calisma yuzeyini buyutur.
 #      Hazirlik DISARIDAN olculur: curl -fsS http://localhost:5298/health/ready
 #
-# BU DOSYA OLCULDU (16 Agu 2026): `.github/workflows/paket.yml` her ilgili push'ta
-# `docker compose up --build`i GitHub runner'inda kosar ve dort ayagi pozitif
-# kontrollu sinar (migrator cikis 0 + sema · kokte index.html · COOP/COEP istemci
-# belgesinde · 401->200 · eslesmeyen API yolu 404). Kosum 2: hepsi yesil, 2 dk 37 sn.
+# OLCUM: `.github/workflows/paket.yml` her ilgili push'ta `docker compose up
+# --build`i GitHub runner'inda kosar. Kapinin ILK SURUMU KORDU ve bagimsiz denetim
+# bunu olcerek gosterdi (yalniz index.html iceren bir kokle dort ayak da yesil
+# yandi); kapi o79'da yeniden yazildi -- artik derlenmis VARLIKLAR cekilir ve URUN
+# UCU cagrilir. Yesil/kirmizi durumu icin son `paket` kosumuna bakin; bu yorum bir
+# olcum KAYDI degil, kapinin NEREDE oldugunun isaretidir.
 # =============================================================================
 
 
@@ -40,7 +42,14 @@
 # BIREBIR ayni kalir ve tedarik zincirinde dogrulanmamis bir katman kalmaz.
 # Kaynak: storage.googleapis.com/flutter_infra_release/releases/releases_linux.json
 # (16 Agu 2026'da okundu: 3.44.6, kanal=stable).
-FROM debian:bookworm-slim AS istemci
+# --platform PINI ZORUNLUDUR (o79 denetim bulgusu B3): asagida cekilen Flutter
+# arsivi Google'in kendi manifestinde `dart_sdk_arch = x64`tir ve linux-arm64
+# yayini YOKTUR. Pin olmadan Apple Silicon bir makinede BuildKit taban imaji
+# `linux/arm64` cozer, x64 tarball iner, sha256 TUTAR (ayni URL) ve `flutter
+# --version` "cannot execute binary file" ile duser. Kapi bunu goremez, cunku
+# runner x64'tur. Pin, arm64 makinede bu katmani emulasyonla (yavas ama calisir)
+# kosturur. Calisma imaji pinlenmez -- `aspnet` cok mimarilidir.
+FROM --platform=linux/amd64 debian:bookworm-slim AS istemci
 
 ARG FLUTTER_SURUM=3.44.6
 ARG FLUTTER_SHA256=a6320fd72e9a2690c08e2a6a70874a30cb120dee7c78f49d2c628bd7c9e20525

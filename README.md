@@ -1,10 +1,17 @@
 # Momentum
 
-Çok platformlu görev yönetimi (to-do) uygulaması — **çevrimdışı-öncelikli senkron** ve **gerçek
-zamanlı işbirliği** vitrinli, işe-alım/portfolyo ödevi olarak geliştirilen bir mimari çalışması.
+Çok platformlu görev yönetimi (to-do) uygulaması — **çevrimdışı-öncelikli senkron ve çakışma
+çözümü** vitrinli, işe-alım/portfolyo ödevi olarak geliştirilen bir mimari çalışması.
 
 **Flutter** istemci (Android + Web; iOS yalnız CI'da derlenir) · **N-katmanlı .NET 10 / ASP.NET Core**
 backend · **PostgreSQL**.
+
+🔴 **İlk cümlede ne YAZMADIĞIMA dikkat edin.** Ödevin ikinci vitrini olan **gerçek zamanlı
+işbirliği TESLİM EDİLMEDİ**: sinyal kanalı (SignalR hub + outbox dispatcher) kodda ve testlerde
+vardır, ama **çok kullanıcılı paylaşım/davet akışı yoktur** ve kimlik `devUserId` ile taşındığı
+için işbirliği **gösterilemez**. Paketteki iki istemci (tarayıcı + telefon) sabit bir demo
+kimliğiyle **aynı kullanıcıdır** — gördüğünüz şey işbirliği değil, **tek kullanıcının çok cihazlı
+senkronu**. Kesilen maddelerin tamamı: [Kapsam dışı](#kapsam-dışı--teslim-beyanı).
 
 > Bu depo bir ürün değil, bir **mühendislik disiplini** gösterimidir. Ayırt edici tarafı özellik
 > listesi değil, **her iddianın ölçülmüş olması** ve ölçülemeyenin **açıkça ölçülemedi diye
@@ -69,10 +76,10 @@ değil, **ölçüm kanıtıdır**. Ne aradığınıza göre:
 | ne arıyorsanız | nereye bakın |
 |---|---|
 | **Ürün kodu** | `src/backend/` (.NET, 4 katman) · `src/client/lib/` (Flutter) |
-| **Testler** | `tests/` (backend, **127** test) · `src/client/test/` (istemci, **555** test) |
+| **Testler** | `tests/` (backend, **127** test) · `src/client/test/` (istemci, **705** test) |
 | **Mimari kararlar** | `docs/ADR/` |
 | **Ölçüm araçları** | `araclar/` — CI'nın koştuğu `verify.ps1` + bağımlılık/yayın araçları; oturum kapıları `arsiv/araclar/` altına alındı (14 Ağu 2026) |
-| **Ham ölçüm kanıtları** | `KANIT/` — **1.316 izlenen dosya, 23 MB** |
+| **Ham ölçüm kanıtları** | `KANIT/` — **1.339 izlenen dosya, 16,3 MiB** |
 | **Esaslar ve durum** | `CLAUDE.md` (tek talimat dosyası) · `DURUM.md` (canlı durum) · süreç tarihçesi `arsiv/` |
 
 **`KANIT/` nedir:** her kabul hükmünün, her düşmüş denetimin ve her mutant koşumunun **ham
@@ -116,17 +123,26 @@ demosundan farkı budur: orada backend yoktur, senkron rozetleri "Çevrimdışı
 **Şema uygulamayı değil ayrı bir servis kurar.** Uygulamanın kendi şemasını değiştirmesi üretimde
 anti-desendir; `api`, `migrator`'a `service_completed_successfully` ile bağlıdır.
 
-🟢 **Bu iddia ölçülmüştür, beyan değildir.** `.github/workflows/paket.yml` her ilgili push'ta
-GitHub-barındırmalı runner'da tam olarak bu komutu koşar ve şu dört ayağı **pozitif kontrollü**
-sınar (16 Ağu 2026, koşum 2, 2 dk 37 sn, hepsi yeşil):
+**Bu iddiayı bir kapı ölçer.** `.github/workflows/paket.yml` her ilgili push'ta
+GitHub-barındırmalı runner'da tam olarak bu komutu koşar ve şunları sınar:
 
 | ayak | ne ölçülür |
 |---|---|
-| migrator | çıkış kodu **0** *ve* `public` şemada **≥3 tablo** oluştu (yerelde ölçülen gerçek sayı: **11**) |
-| 1 | `GET /` **aynı kökenden** `index.html` döner (`flutter_bootstrap.js` görülür) |
-| 2 | **COOP `same-origin` + COEP `require-corp` istemci BELGESİNE değer** — izolasyonun fiilen çalıştığı yer burasıdır |
+| migrator | çıkış kodu **0** *ve* şemanın **sekiz ana tablosu adıyla** yerinde (`tasks`, `task_lists`, `task_tags`, `outbox_messages`, `processed_operations`, `sync_scalar_meta`, `sync_orset_tags`, `sync_orset_removes`) |
+| 1 | `flutter_bootstrap.js` **gerçekten iner**, içinde `"useLocalCanvasKit":true` vardır ve `main.dart.js` **>100 KB** iner — yani derlenmiş uygulama imajın içindedir |
+| 2 | **COOP `same-origin` + COEP `require-corp` + CORP `same-origin` istemci BELGESİNE değer** |
 | 3 | `POST /v1/sync` başlıksız **401**, `X-Momentum-Dev-User` ile **200** |
-| 4 | `GET /v1/BULUNMAYAN-UC` **404** döner, `index.html` **dönmez** |
+| 4 | `GET /v1/tasks` **200** — ürün okuma ucu gerçekten çalışıyor |
+| 5 | `GET /v1/BULUNMAYAN-UC` **404** döner, `index.html` **dönmez** |
+
+🔴 **Bu kapının ilk sürümü KÖRDÜ ve bunu bağımsız bir denetim ölçerek gösterdi (16 Ağu 2026).**
+Kayıt temizlenmiyor, çünkü bu deponun sözleşmesi bu: ilk sürümde AYAK 1, servis edilen gövdede
+`flutter_bootstrap.js` **dizesini** arıyordu — o dize `src/client/web/index.html` şablonunda zaten
+duruyor. Denetçi `Istemci:KokDizin`e **yalnız `index.html`** koyup API'yi kaldırdı: Flutter
+çıktısının tamamı **404** dönerken dört ayak da **yeşil** yandı. Aynı denetim, migrator eşiğinin
+(`≥3 tablo`) yarım uygulanmış bir şemayı geçirdiğini de ölçtü: `tasks` ve `task_lists` hiç
+oluşmadan kapı geçiyor, sonra `GET /v1/tasks` **500** veriyordu. Yukarıdaki sürüm ikisini de
+kapatır — dize değil **varlık** çekilir, sayı değil **ad** sorulur, ve **ürün ucu** çağrılır.
 
 🔴 **Üç sınır beyan edilmiştir, gizlenmemiştir:**
 
@@ -143,12 +159,22 @@ sınar (16 Ağu 2026, koşum 2, 2 dk 37 sn, hepsi yeşil):
 ### 1. PostgreSQL (geliştirici yolu)
 
 ```bash
-docker compose up -d postgres   # SADECE veritabanı; konteyner adı: momentum-postgres
+docker compose -f docker-compose.yml -f docker-compose.gelistirme.yml up -d postgres
 docker ps                       # healthy görünene kadar YOKLA, sabit sleep verme
 ```
 
-> Servis adı **verilmezse** `docker compose up -d` artık tüm sistemi (postgres + migrator + api)
-> kaldırır. Elle backend koşturacaksanız yalnız `postgres` isteyin, yoksa 5298 portu çakışır.
+> **Örtü dosyası neden gerekli:** ana `docker-compose.yml` **5432'yi yayınlamaz** — değerlendiricinin
+> makinesinde çalışan bir PostgreSQL varsa tek-komut yolu, uzun bir derlemeden *sonra* port
+> çakışmasıyla düşerdi. Tek-komut yolunun porta ihtiyacı yoktur (servisler compose ağında
+> `postgres` adıyla konuşur); ama `dotnet run`'ı host'ta koşturan geliştirici ister. Port doluysa:
+> `POSTGRES_PORT=5433 docker compose -f ... up -d postgres`.
+>
+> Servis adı **verilmezse** `docker compose up -d` tüm sistemi (postgres + migrator + api) kaldırır.
+> Elle backend koşturacaksanız yalnız `postgres` isteyin, yoksa 5298 portu çakışır.
+>
+> **Parolayı sonradan değiştirirseniz:** `postgres` imajı `POSTGRES_PASSWORD`u yalnız **boş veri
+> dizininde** uygular. Volume duruyorken parola değiştirmek kimlik doğrulama hatası verir; çare
+> `docker compose down -v` (veriyi siler).
 
 ### 2. Backend
 
@@ -212,7 +238,13 @@ Kanıt: `KANIT/SS2/05-KABUL-HUKMU-COWORK-o68-baslik-duzenleme-UI.md`.
 
 ## Teslim paketi
 
-Paket üç parçadır: **çalışan sistem** (docker), **Android APK**, **Windows derlemesi**.
+Paket iki parçadır: **çalışan sistem** (docker imajı — API + web istemcisi) ve **Android APK**.
+
+**Windows'ta uygulama tarayıcıdan çalışır.** `docker compose up --build` Windows'ta da aynı tek
+komuttur; değerlendirici `http://localhost:5298`'i Edge/Chrome'da açar ve backend'li tam uygulamayı
+kullanır. **Yerel bir Windows masaüstü `.exe`'si yoktur** — Flutter'ın Windows masaüstü hedefi bu
+depoya hiç eklenmedi (`src/client/` altında yalnız `android`, `ios`, `web` vardır; ölçüldü).
+Kapsam kararıdır, aşağıda [Beyan edilmiş sınırlar](#beyan-edilmiş-sınırlar) bölümünde de yazılıdır.
 
 ### Paylaşılan kimlik — atlanırsa vitrin çıkmaz
 
@@ -246,16 +278,6 @@ makinenin LAN IP'si gerekir. Emülatörde host'un takma adı `10.0.2.2`'dir (kod
 `signingConfig = signingConfigs.getByName("debug")` satırı ve `TODO`'su **duruyor**; üretim imza
 zinciri kurulmadı. Değerlendirici APK'yı kurarken "bilinmeyen kaynak" onayı verecektir. Bu bir
 gözden kaçma değil, **kapsam kararıdır** ve burada yazılıdır.
-
-### Windows
-
-```bash
-cd src/client
-flutter build windows --release \
-  --dart-define=SENKRON_SUNUCU_URL=http://localhost:5298 \
-  --dart-define=DEV_USER_ID=deadbeef-0000-4000-8000-000000000001
-# çıktı: build/windows/x64/runner/Release/
-```
 
 ### iOS
 
