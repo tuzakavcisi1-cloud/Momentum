@@ -28,27 +28,27 @@ görev göründü · sekme kapat–aç sonrası arama sıfırlandı, veri durdu.
 
 ## Oturum 79 — teslim paketi (docker) ve KÖR KAPI dersi
 
-Yeni: `Dockerfile` (üç aşama: Flutter web → .NET publish → çalışma) · `docker-compose.yml`
+Yeni: `Dockerfile` (Flutter web → .NET publish → çalışma) · `docker-compose.yml`
 (postgres → migrator → api) · `docker-compose.gelistirme.yml` · `.github/workflows/paket.yml`.
 Şemayı `api` değil **ayrı migrator servisi** kurar (EF bundle, çerçeve-bağımlı 34,7 MB).
-
 **Bulutta yakalanan üç kusur:** `cirruslabs/flutter:3.44.6` **yok** (→ birinci taraf arşiv +
 sha256) · yüzen `sdk:10.0` `global.json` pinini kırabilirdi (→ `10.0.302`) · `ef bundle` başlangıç
 projesi **Api olamaz** (Design `PrivateAssets=all` → Infrastructure + tasarım-zamanı fabrikası).
 
-🔴 **KÖR KAPI (bu turun asıl dersi).** Kapının ilk sürümü servis edilen gövdede
-`flutter_bootstrap.js` **dizesini** arıyordu; o dize `src/client/web/index.html:44` **şablonunda**
-zaten var. Bağımsız denetçi `Istemci:KokDizin`e yalnız `index.html` koydu: bütün Flutter çıktısı
-**404** dönerken **dört ayak da yeşil** yandı. Aynı denetim migrator eşiğinin (`≥3 tablo`) yarım
-şemayı geçirdiğini ölçtü (`tasks`/`task_lists` yok, 8 tablo, `GET /v1/tasks` **500**). Kapı
-yeniden yazıldı: **dize değil VARLIK** çekilir (`flutter_bootstrap.js` + `useLocalCanvasKit` +
-`main.dart.js` >100 KB), **sayı değil AD** sorulur (sekiz tablo), ve **ÜRÜN UCU** çağrılır.
-**DERS:** bir kapının yeşili, ölçtüğü şeyin ürün olduğunu kanıtlamaz — girdisi depoda zaten
-duruyorsa kapı kördür.
+🔴 **KÖR KAPI (bu turun asıl dersi).** Kapının ilk sürümü gövdede `flutter_bootstrap.js`
+**dizesini** arıyordu; o dize `src/client/web/index.html:44` **şablonunda** zaten var. Bağımsız
+denetçi `Istemci:KokDizin`e yalnız `index.html` koydu: bütün Flutter çıktısı **404** dönerken
+**dört ayak da yeşil** yandı. Aynı denetim `≥3 tablo` eşiğinin yarım şemayı geçirdiğini ölçtü
+(8 tablo, `GET /v1/tasks` **500**). Kapı yeniden yazıldı: **dize değil VARLIK**, **sayı değil AD**,
+ve **ÜRÜN UCU**. Denetim: **3 bloker · 6 majör · 7 minör**; kapatılmayanlar §Bilinen sınırlar.
+**DERS:** kapının yeşili, ölçtüğü şeyin ürün olduğunu kanıtlamaz — girdisi depoda zaten duruyorsa
+kapı kördür. **İKİNCİ DERS:** düzeltmenin yazılmış olması indiği anlamına gelmez; kör kapı
+düzeltmesi ilk denemede depoya inmedi, sha256 yakaladı.
 
 ## Sıradaki iş
 
-Kapının yeni sürümü **henüz koşmadı** — push sonrası `paket` yeşili beklenir. Sonra: APK üretimi
+**`paket` koşum 5 YEŞİL** (`d75cbe4`, 2 dk 43 sn) — düzeltilmiş kapı, beş ayak + migrator.
+Ham ölçüm: `KANIT/o79/`. Sonra: APK üretimi
 (`DEV_USER_ID=deadbeef-0000-4000-8000-000000000001`), kutu kapanışı (21 Ağu).
 Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı: `IŞIK yak`, `Sut al`.
 
@@ -56,10 +56,12 @@ Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı
 
 1. 🔴 **Flutter komutu repo kökünden koşulursa yalan söyler.** Doğru dizin `src/client`.
    PowerShell 5.1'de `&&` yok, `;` yaz.
-2. **Canlı ölçümde tıklama tuzağı:** hover'sız sentetik tıklama çalışmaz; hover'lı tıklama bile bazen
-   İKİ kez gerekir; diyalogdaki `İptal` tetiklenmez, modalı **Escape** kapatır.
-3. **Kapı bütçesi ihlalde**; teslimi kırmamak bütçeyi kapatmaktan önce gelir ⇒ yeni kapı DOSYASI
-   açılmaz (widget/birim testleri orana girmez, onlar üründür).
+2. **Canlı ölçümde tıklama tuzağı:** hover'sız sentetik tıklama çalışmaz, hover'lı bile bazen İKİ
+   kez gerekir; diyalogdaki `İptal` tetiklenmez, modalı **Escape** kapatır.
+3. **Kapı bütçesi ihlalde** ⇒ yeni kapı DOSYASI açılmaz (widget/birim testleri orana girmez).
+   **[o79 AÇIK KALAN denetim bulguları]** `aspnet:10.0` yüzen etiket (SDK pinliyken) · arm64
+   kırılması manifestle gösterildi ama gerçek arm64'te KOŞULMADI · APK ve iki-istemci vitrini
+   fiilen ölçülmedi · tarayıcı `crossOriginIsolated` ölçümü kapının göremediği yer.
 4. **Kimlik `devUserId` ile taşınıyor** ⇒ gerçek zamanlı işbirliği gösterilemez (kapsam dışı).
 6. **Pages demosunda backend yok** ⇒ rozetler "Bu cihazda → Gönderiliyor → Çevrimdışı"ya düşer;
    "ikinci istemciye eşitlenir" ayağı Pages'te ASLA ölçülemez.
@@ -84,14 +86,11 @@ Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı
 23. **[o78 ÖLÇÜLDÜ] `'İ'.toLowerCase()` VM'de `[105]`, dart2js/Node'da `[105, 775]`** (i + U+0307)
     ⇒ katlama tablosundan `İ` girişini silen mutant **VM'de davranışla ÖLMEZ** ama WEB'de `iş`
     sorgusunu `İş görüşmesi`nden koparırdı. Test bu yüzden TABLOYU BİREBİR sınar (o77 dersinin aynısı).
-24. **[o78 ÖLÇÜLDÜ] Katlama VM↔web ayrışması:** 1.112.064 kod noktası tarandı; `U+0000–U+024F`
-    (Latin/Türkçe) aralığında ayrışan **SIFIR**, aralık dışında 465 kod noktası (Cherokee, Gürcüce
-    Mtavruli, Adlam, Deseret…) FARKLI katlanır. Ürün dili Türkçe ⇒ bilinçli sınır.
-25. **[o78 ÖLÇÜLDÜ] `hintText` hiçbir mevcut kapıya görünmez:** bir `Text(` olmadığı için R1/R2/R4
-    statik tarayıcısı görmez; alanın semantik düğümünde label/value BOŞ olduğu için
-    `textContrastGuideline` o düğümü **ATLAR**. İpucu metni + ipucu rengi + odak halkasının TEK pini
-    `test/arama_dilimi_test.dart`tedir. Arama ipucu bu yüzden **'Ara'**ya kısaltıldı (320 dp'de
-    'Görevlerde ara' 1.0x'te bile kırpılıyordu: çizilen 220 px / gereken 231 px).
+24. **[o78 ÖLÇÜLDÜ] Katlama VM↔web ayrışması:** `U+0000–U+024F` aralığında ayrışan **SIFIR**;
+    aralık dışında 465 kod noktası farklı katlanır. Ürün dili Türkçe ⇒ bilinçli sınır.
+25. **[o78 ÖLÇÜLDÜ] `hintText` hiçbir mevcut kapıya görünmez** (`Text(` yok ⇒ statik tarayıcı
+    görmez; semantik düğümde label/value boş ⇒ kontrast kapısı ATLAR). TEK pin
+    `test/arama_dilimi_test.dart`. İpucu bu yüzden **'Ara'**ya kısaltıldı (320 dp'de kırpılıyordu).
 26. **[o78 ÖLÇÜLDÜ] `dispose()` mutantı SAĞ KALIYOR** (flutter_test leak-tracking kapalı) — kapsanmayan
     sınıf, kapı yalanı değil. Yeni kapı kodu YAZILMADI (bütçe ihlalde).
 27. 🔴 **[o78 İKİNCİ KEZ ISIRDI] `dart format lib/` YASAK** — depo format-temiz DEĞİL; 10 ilgisiz
