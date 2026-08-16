@@ -111,6 +111,21 @@ class Metinler {
   static const String etiketEkle = 'Etiket ekle';
   static const String etiketKaldir = 'Etiketi kaldır';
 
+  // ODEV.md §4(a) -- baslikta ARAMA dilimi. F6'nin 13 dizgesine DAHIL DEGIL
+  // (o68/o72/oncelik/etiket diliminin AYNI EK deseni).
+  //
+  // `aramaEslesmeYok` BILEREK `bosDurum`dan AYRI bir dizgedir: gorevleri OLAN
+  // kullaniciya "Henüz görev yok." demek YALAN SOYLEYEN bir ekrandir (kilit
+  // maddesi 3).
+  // KISA TUTULDU (OLCULDU 15 Agu, denetim): 320 dp genislikte 'Görevlerde
+  // ara' 1.0x'te bile kirpiliyordu (cizilen 220 px / gereken 231 px) ve
+  // `hintText` bir `Text(` OLMADIGI icin R1 statik tarayicisi onu GORMEZ ⇒
+  // kirpma tam da doktrinin yasakladigi bicimde SESSIZ olurdu. Buyutec
+  // ikonuyla birlikte 'Ara' anlami tasir.
+  static const String aramaIpucu = 'Ara';
+  static const String aramaEslesmeYok = 'Eşleşen görev yok.';
+  static const String suzgecleriTemizle = 'Süzgeçleri temizle';
+
   /// Suzme seridindeki "suzme yok" cipi. Etiket metni ile CAKISABILIR
   /// ("Tümü" adli bir etiket) -- cip SECIMI metne gore DEGIL, `secili ==
   /// null` durumuna gore verilir, bu yuzden cakisma davranisi bozmaz.
