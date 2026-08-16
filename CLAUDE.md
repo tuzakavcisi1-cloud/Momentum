@@ -12,6 +12,8 @@
 Çok platformlu görev yönetimi (to-do): **Flutter** (Web + Android canlı, iOS yalnız CI'da derlenir
 — Mac yok) + **N-katmanlı .NET/ASP.NET Core** + **PostgreSQL**. İşe-alım/portfolyo ödevi; odak
 mimari ve kod kalitesi. Kapsam otoritesi **`docs/ODEV.md`**. Canlı demo README'de.
+**İŞ BÖLÜMÜ [Onur, 16 Ağu]:** ürün kodunu **Claude Code** yazar; Cowork tasarım · iş emri ·
+denetim · orkestrasyon · hafıza yapar, kod yazmaz.
 
 ## 2. BİTTİ LİSTESİ (kutu **21 Ağu 2026** · sayaç DURUM.md ilk satırı)
 
@@ -46,8 +48,8 @@ UCU çağrılır). Yeni madde §5'e kesme yazmadan EKLENMEZ (İŞLEYİŞ md.1).
    Commit mesajına **çift tırnak yazma**. **Mount'tan commit YASAK** — Desktop Commander ya da
    Claude Code'dan yapılır. **PUSH ONUR'DA.** Author e-postası `onurkesimbjk@gmail.com`.
 3. **flutter `.bat`'tir** → tam yol `C:\src\flutter\bin\flutter.bat` (subprocess PATHEXT'i çözmez).
-   DC kabuğunda `flutter test` `PROGRAMFILES(X86)` enjekte edilmeden çöker. `--platform chrome`
-   bu ortamda sonuç üretmiyor.
+   DC kabuğunda `flutter test` `PROGRAMFILES(X86)` enjekte edilmeden çöker; `--platform chrome`
+   bu ortamda sonuç üretmez.
 4. **Kodlama:** yol **saf ASCII** kalmalı (Türkçe karakter `build_runner`, `flutter analyze`, AGP ve
    `.ps1` zincirlerini kırdı). `python` stdout cp1254 ⇒ `sys.stdout.reconfigure(encoding="utf-8")`.
 5. **Satır sonu / geri alım:** `* text=auto eol=lf` `core.autocrlf`'i **ezer**. Mount'ta
@@ -62,11 +64,9 @@ UCU çağrılır). Yeni madde §5'e kesme yazmadan EKLENMEZ (İŞLEYİŞ md.1).
 8. **Mount'ta `os.remove`/`unlink` YASAK** (sandbox silemez) → artık dosya
    `arsiv/_SILINECEKLER/<oturum>/`'e `mv` edilir; kalıcı silme Onur'da.
 9. **Bulut ≠ cihaz:** Cowork bulutta UTC koşar ⇒ tarih `TZ='Europe/Istanbul' date` ile ölçülür;
-   **CI `istemci` işi de `TZ: Europe/Istanbul` koşar** [o77]. `device_stage_files` bulut kopyasına
-   **bugünün** mtime'ını yazar. Bulut tarayıcısı canlı kanıt **değildir**.
-10. **Kapı bütçesi (İŞLEYİŞ md.3):** `araclar/` ÷ `src/` satır oranı ≤ %10; `src/**/test/` **girmez**
-    (onlar üründür). Kökte kalan 11 dosya: `verify.ps1` (CI) · `pub-*`/`lisans-*` (bağımlılık) ·
-    `web-*`/`yayin-*` (yayın). Yeni kapı dosyası açılmaz.
+   **CI `istemci` işi de `TZ: Europe/Istanbul` koşar** [o77]. Bulut tarayıcısı canlı kanıt DEĞİLDİR.
+10. **Kapı bütçesi (İŞLEYİŞ md.3):** `araclar/` ÷ `src/` satır oranı ≤ %10; `src/**/test/` girmez
+    (onlar üründür). Yeni kapı dosyası açılmaz.
 
 ## 5. KAPSAM DIŞI (kesilenler — README'ye de yazılır)
 
@@ -77,7 +77,7 @@ UCU çağrılır). Yeni madde §5'e kesme yazmadan EKLENMEZ (İŞLEYİŞ md.1).
   taşır. Windows'ta uygulama **tarayıcıdan** çalışır (imajdaki web istemcisi).
 - **[o77 kesildi]** Ayrıştırma her şeyi yutunca (`#iş !p1 yarın`) hata metni YOK: metin alanda
   kalır. Sessiz kayıp yok, geri bildirim de yok.
-- **Zaten kapsam dışı (§4.1/§6.1):** AI asistan · Google Takvim · Kanban/Takvim · iOS cihaz testi ·
+- **Zaten kapsam dışı (ODEV §4.1/§6.1):** AI asistan · Google Takvim · Kanban/Takvim · iOS cihaz ·
   parola sıfırlama · e-posta doğrulama · OAuth · 2FA · RBAC.
 
 ---

@@ -9,22 +9,18 @@
 ## Oturum 74 · 76 · 77 (özet)
 
 **TAKVİM GÜNÜ PİNİ:** `DateTime.utc(y,m,d)`, tek nokta `GorevSatiri.takvimGunu`; `intl` **0.20.2**.
-**Etiket:** `gorev_etiketleri(...)` SALT-EKLEME; tel `sets.tags.{adds,removes}`, `sets` LWW meta'ya
-ASLA bağlanmaz; idempotent + değişmeli; tombstone TELE ÇIKMAZ. **Doğal dil (o77):** dört alan TEK
-`WireOp` + TEK `transaction`, ayrıştırıcı SAF, 41 mutant öldü; denetim iki ürün kusuru çıkardı
-(`int.parse` taşması; yıl `0000` → sınır ötesi sessiz kayıp).
-**DERS (o74):** kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ. **DERS (o77):** ortamı değil
-**DİKİŞİ** ölç.
+**Etiket:** `gorev_etiketleri(...)` SALT-EKLEME; `sets` LWW meta'ya ASLA bağlanmaz; idempotent +
+değişmeli; tombstone TELE ÇIKMAZ. **Doğal dil (o77):** dört alan TEK `WireOp` + TEK `transaction`,
+ayrıştırıcı SAF, 41 mutant öldü. **DERS (o74):** kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ.
+**DERS (o77):** ortamı değil **DİKİŞİ** ölç.
 
 ## Oturum 78 — başlıkta arama dilimi (KAPANDI, 10/10)
 
-Kod bulutta yazıldı/koşuldu: `analyze --fatal-infos` temiz · **705/705** (taban 676) · **32 mutant
-öldü**, tek sağkalan `dispose`. YENİ ŞEMA YOK, YENİ TEL KANALI YOK. `arama_eslestirme.dart` SAF;
-katlama tablosu (`I→ı`, `İ→i`) TEK KAYNAK, ham `toLowerCase` YASAK, aksan KATLANMAZ. Süzme TEK
-`where`da (çip × arama). İki bağımsız denetçi koştu, ikisi de ürün kusuru buldu.
-**Canlı tur 16 Ağu (cihaz Chrome, Pages #8) beş ayak da yeşil:** `ışık` → **IŞIK yak** · boş
-sonuçta "Eşleşen görev yok." + temizle · `#iş` + `deneme` = BOŞ (çarpım) · süzgeç açıkken eklenen
-görev göründü · sekme kapat–aç sonrası arama sıfırlandı, veri durdu.
+**705/705**, 32 mutant öldü (tek sağkalan `dispose`). YENİ ŞEMA/TEL YOK. `arama_eslestirme.dart`
+SAF; katlama tablosu (`I→ı`, `İ→i`) TEK KAYNAK, ham `toLowerCase` YASAK, aksan KATLANMAZ. Süzme
+TEK `where`da (çip × arama). **Canlı tur (cihaz Chrome, Pages #8) beş ayak yeşil:** `ışık` →
+**IŞIK yak** · boş sonuçta temizle · `#iş`+`deneme` = BOŞ (çarpım) · süzgeç açıkken eklenen görev
+göründü · sekme kapat–aç sonrası arama sıfırlandı, veri durdu.
 
 ## Oturum 79 — teslim paketi (docker) ve KÖR KAPI dersi
 
@@ -42,14 +38,16 @@ denetçi `Istemci:KokDizin`e yalnız `index.html` koydu: bütün Flutter çıkt�
 (8 tablo, `GET /v1/tasks` **500**). Kapı yeniden yazıldı: **dize değil VARLIK**, **sayı değil AD**,
 ve **ÜRÜN UCU**. Denetim: **3 bloker · 6 majör · 7 minör**; kapatılmayanlar §Bilinen sınırlar.
 **DERS:** kapının yeşili, ölçtüğü şeyin ürün olduğunu kanıtlamaz — girdisi depoda zaten duruyorsa
-kapı kördür. **İKİNCİ DERS:** düzeltmenin yazılmış olması indiği anlamına gelmez; kör kapı
-düzeltmesi ilk denemede depoya inmedi, sha256 yakaladı.
+kapı kördür. **İKİNCİ DERS:** düzeltmenin yazılmış olması indiği anlamına gelmez (kör kapı
+düzeltmesi ilk denemede depoya inmedi, sha256 yakaladı). **ÜÇÜNCÜ DERS — YALANCI KIRMIZI:**
+`curl … | grep -q` yazıldı; grep eşleşmeyi BULUNCA boruyu kapatıyor, curl `23` ile düşüyor,
+`pipefail` bunu kırmızıya çeviriyor ⇒ dize BULUNDUĞU HÂLDE ayak kırmızı yandı (koşum 6). Önce
+dosyaya indir, sonra ara. Kör kapı yalancı yeşildi; bu aynası.
 
 ## Sıradaki iş
 
-**`paket` koşum 5 YEŞİL** (`d75cbe4`, 2 dk 43 sn) — düzeltilmiş kapı, beş ayak + migrator.
-Ham ölçüm: `KANIT/o79/`. Sonra: APK üretimi
-(`DEV_USER_ID=deadbeef-0000-4000-8000-000000000001`), kutu kapanışı (21 Ağu).
+**`paket` koşum 7 YEŞİL** (`0902658`) — beş ayak + migrator + `DEV_USER_ID`. Ham ölçüm: `KANIT/o79/`.
+Sonra: APK üretimi (`DEV_USER_ID=deadbeef-0000-4000-8000-000000000001`), kutu kapanışı (21 Ağu).
 Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı: `IŞIK yak`, `Sut al`.
 
 ## Bilinen sınırlar
@@ -65,9 +63,10 @@ Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı
 4. **Kimlik `devUserId` ile taşınıyor** ⇒ gerçek zamanlı işbirliği gösterilemez (kapsam dışı).
 6. **Pages demosunda backend yok** ⇒ rozetler "Bu cihazda → Gönderiliyor → Çevrimdışı"ya düşer;
    "ikinci istemciye eşitlenir" ayağı Pages'te ASLA ölçülemez.
-7. **Mount'a yazmanın tek yolu YERİNDE yazmaktır.** `device_commit_files` mount'a YAZAR, sha256
-   birebir tutar — AMA `.github/workflows/*` **korumalıdır, reddedilir**; iş akışını Onur elle düzenler.
-8. **`pub cache` boşalabiliyor** (`flutter pub get` çözer).
+7. **[o79 ÖLÇÜLDÜ — eski madde YANLIŞTI] `.github/workflows/*` yalnız `device_commit_files`'ta
+   reddedilir; `device_bash` oraya YAZABİLİR.** Koruma araçta, klasörde değil. Yol: korumasız
+   yola yaz → cihazda `cp` → sha256 doğrula. **[Onur kilidi 16 Ağu: bu yol serbest.]**
+8. **`pub cache` boşalabiliyor** (`flutter pub get`).
 9. **ÇAKIŞMA TESPİTİ yalnız başlık/tamamlanma:** `kanonikDize` `fields:title` + `groups:completion`
    tanır. **Bilinmeyen `priority`** çizilmez ama EZİLMEZ.
 14. **Etiketlerde BÜYÜK/KÜÇÜK HARF KATLAMASI YOK** (sunucu Ordinal karşılaştırır): `İş` ≠ `iş`.
@@ -76,9 +75,9 @@ Canlı turda **Ctrl+Shift+R YAPMA** (sınır 22). Demoda iki ölçüm artefaktı
     yılsız `03.01` GEÇMİŞE düşer · `#İş` ile `#iş` ayrı etikettir.
 18. **[o77] `GorevDeposu.ekle` imzası** üç opsiyonel alan taşır ⇒ yeni sahte depo üçünü de kabul
     ETMEK ZORUNDADIR.
-19. **[o77 ÖLÇÜLDÜ] `flutter test` `KANIT/slice-3c/02-G2/*.json`i her koşumda YENİDEN YAZAR.**
-    Bu dört dosya commit'e GİRMEMELİ — `git add` yol belirterek yapılır.
-21. **[o77] CI `istemci` işi `TZ: Europe/Istanbul` koşar.** `ekle`nin `sonTarih`i normalize EDİLMEZ.
+19. **[o77] `flutter test` `KANIT/slice-3c/02-G2/*.json`i her koşumda YENİDEN YAZAR** ⇒ o dört
+    dosya commit'e GİRMEMELİ; `git add` yol belirterek yapılır.
+21. **[o77] CI `istemci` işi `TZ: Europe/Istanbul` koşar**; `ekle`nin `sonTarih`i normalize EDİLMEZ.
 22. 🔴 **[o77 ÖLÇÜLDÜ] Canlı turda Ctrl+Shift+R YAPMA.** Hard reload drift'in SharedWorker'ını
     öldürür, yeniden kurulamaz: ekran **bomboş** kalır ve **konsolda hata olmaz**. Çözüm: Chrome'u
     tamamen kapat–aç. Ek tuzak: CanvasKit canvas'ı `flt-glass-pane`in SHADOW ROOT'undadır ⇒
