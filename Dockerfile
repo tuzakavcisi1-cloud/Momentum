@@ -26,10 +26,37 @@
 
 
 # --- 1) ISTEMCI: Flutter web derlemesi ---------------------------------------
-# RISK (adlandiriliyor): cirruslabs imaji ucuncu taraftir ve `3.44.6` etiketinin
-# varligi OLCULMEDI. CI kirmizi yanarsa ilk bakilacak yer burasidir.
+# OLCULMUS KARAR (o79): once `ghcr.io/cirruslabs/flutter:3.44.6` denendi ve CI
+# birebir su hatayi verdi: "ghcr.io/cirruslabs/flutter:3.44.6: not found" --
+# o depoda 3.44.6 etiketi YOK (paket sayfasinda en yakini 3.44.0). Ucuncu tarafin
+# etiket takvimi bizim pinimizi baglamaz. Yerine BIRINCI TARAF arsiv cekilir ve
+# sha256 DOGRULANIR; surum boylece CI (subosito 3.44.6) ve pubspec.lock ile
+# BIREBIR ayni kalir ve tedarik zincirinde dogrulanmamis bir katman kalmaz.
+# Kaynak: storage.googleapis.com/flutter_infra_release/releases/releases_linux.json
+# (16 Agu 2026'da okundu: 3.44.6, kanal=stable).
+FROM debian:bookworm-slim AS istemci
+
 ARG FLUTTER_SURUM=3.44.6
-FROM ghcr.io/cirruslabs/flutter:${FLUTTER_SURUM} AS istemci
+ARG FLUTTER_SHA256=a6320fd72e9a2690c08e2a6a70874a30cb120dee7c78f49d2c628bd7c9e20525
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      ca-certificates curl git unzip xz-utils \
+ && rm -rf /var/lib/apt/lists/*
+
+# sha256 kontrolu bir konfor degil kapidir: tutmazsa yapi BURADA duser.
+RUN curl -fsSL -o /tmp/flutter.tar.xz \
+      "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_SURUM}-stable.tar.xz" \
+ && echo "${FLUTTER_SHA256}  /tmp/flutter.tar.xz" | sha256sum -c - \
+ && tar -xJf /tmp/flutter.tar.xz -C /opt \
+ && rm /tmp/flutter.tar.xz
+
+ENV PATH="/opt/flutter/bin:${PATH}"
+
+# Arsivin icinde .git vardir; sahiplik farki olursa flutter git cagrilarinda duser.
+RUN git config --global --add safe.directory /opt/flutter \
+ && flutter --version \
+ && flutter precache --web
 
 WORKDIR /kaynak/client
 
@@ -52,11 +79,12 @@ RUN flutter build web --release \
 
 
 # --- 2) SUNUCU: .NET publish + migration bundle -------------------------------
-# global.json SDK'yi 10.0.302 + rollForward=latestPatch ile pinler. RISK: taban
-# imajin SDK'si FARKLI bir ozellik bandindaysa (or. 10.0.1xx) latestPatch banda
-# ATLAMAZ ve restore "SDK bulunamadi" ile duser. CI kirmizisinda ikinci bakilacak
-# yer burasidir; cozum somut etiket (mcr...sdk:10.0.302) pinlemektir.
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS derleme
+# OLCULMUS PIN (o79): global.json SDK'yi 10.0.302 + rollForward=latestPatch ile
+# baglar ve latestPatch ozellik BANDI atlamaz. MCR etiket listesi okundu
+# (mcr.microsoft.com/v2/dotnet/sdk/tags/list, 16 Agu 2026): hem `10.0.302` hem
+# `10.0.400` yayinda ⇒ YUZEN `10.0` etiketi 10.0.400'e dusup restore'u kirabilirdi.
+# Bu yuzden SDK etiketi global.json ile BIREBIR pinlenir; yapi tekrarlanabilir olur.
+FROM mcr.microsoft.com/dotnet/sdk:10.0.302 AS derleme
 WORKDIR /kaynak
 
 # Sadece publish icin gereken agac: Api -> Application + Infrastructure + Domain.
@@ -76,14 +104,23 @@ RUN dotnet publish src/backend/Momentum.Api/Momentum.Api.csproj \
 # EF migration paketi (bundle): SEMAYI UYGULAMA DEGIL, AYRI BIR SERVIS KURAR.
 # Gerekce: uretimde uygulamanin kendi semasini degistirmesi anti-desendir; compose
 # `migrator` servisi bunu kosar, `api` ona service_completed_successfully ile baglidir.
-# Surum EF Core ile ayni bantta pinlenir (Infrastructure: 10.0.4).
+# Surum EF Core ile ayni bantta pinlenir (Infrastructure: 10.0.4; nuget.org'da
+# dogrulandi). BASLANGIC PROJESI = Infrastructure, Api DEGIL -- bu OLCULDU:
+# Api ile kosuldugunda komut birebir su hatayi verir:
+#   "Your startup project 'Momentum.Api' doesn't reference
+#    Microsoft.EntityFrameworkCore.Design."
+# Cunku Design paketi Infrastructure'da `PrivateAssets=all` ile durur ve Api'ye
+# AKMAZ. SyncDbContextDesignTimeFactory tam da bunun icin vardir: EF, context'i
+# uygulama host'u olmadan kurar. Bu olcum CI turu harcanmadan bulutta yapildi.
+#
+# `--self-contained` KULLANILMIYOR: calisma imajinda .NET calisma zamani zaten var.
+# Olculdu: self-contained paket 108 MB, cerceve-bagimli paket 34,7 MB.
 RUN dotnet tool install --global dotnet-ef --version 10.0.4
 ENV PATH="${PATH}:/root/.dotnet/tools"
 RUN dotnet ef migrations bundle \
       --project src/backend/Momentum.Infrastructure/Momentum.Infrastructure.csproj \
-      --startup-project src/backend/Momentum.Api/Momentum.Api.csproj \
+      --startup-project src/backend/Momentum.Infrastructure/Momentum.Infrastructure.csproj \
       --configuration Release \
-      --self-contained -r linux-x64 \
       -o /uygulama/momentum-migrator
 
 
@@ -103,7 +140,13 @@ USER momentum
 # HIC kurulmaz ve imaj yalnizca API olur (kill switch bedava gelir).
 ENV Istemci__KokDizin=/app/istemci \
     ASPNETCORE_URLS=http://+:5298 \
-    DOTNET_EnableDiagnostics=0
+    DOTNET_EnableDiagnostics=0 \
+    DOTNET_ROOT=/usr/share/dotnet
+# DOTNET_ROOT ACIKCA yazilir: migration paketi cerceve-bagimlidir ve apphost
+# calisma zamanini once DOTNET_ROOT'ta arar. Bulutta olculdu -- degisken yokken
+# paket "You must install .NET to run this application" ile duser. Kapi migrator
+# adiminda kirmizi yanarsa carei `--self-contained -r linux-x64`a donmektir
+# (bedeli: paket 34,7 MB yerine 108 MB).
 
 EXPOSE 5298
 
