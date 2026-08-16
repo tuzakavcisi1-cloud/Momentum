@@ -92,23 +92,25 @@ jobs:
           grep -q '"useLocalCanvasKit":true' <<<"$onyukleyici" \
             || { echo "KIRMIZI: useLocalCanvasKit yok -- --no-web-resources-cdn dusmus"; exit 1; }
 
-          # 1c: derlenmis UYGULAMA kodu var mi (bayt olcusuyle; bos/HTML geri-dusus
-          # yakalanir). Dosya adi degisirse burasi KIRMIZI yanar -- kor kalmaz.
-          bayt=$(curl -fsS -o /dev/null -w '%{size_download}' http://localhost:5298/main.dart.js) \
+          # 1c + 1d: uygulama kodunu BIR KEZ dosyaya indir, iki seyi olc.
+          #
+          # 🔴 `curl ... | grep -q ...` YAZILMAZ (kosum 6'da olculdu): grep eslesmeyi
+          # BULUNCA hemen cikar ve boruyu kapatir, curl `23 -- Failure writing output
+          # to destination` ile duser, `pipefail` bunu ayagin KIRMIZISINA cevirir.
+          # Yani dize BULUNDUGU HALDE kapi kirmizi yandi -- kor kapinin aynadaki
+          # goruntusu: YALANCI KIRMIZI. Once indir, sonra dosyada ara.
+          curl -fsS http://localhost:5298/main.dart.js -o /tmp/main.dart.js \
             || { echo "KIRMIZI: main.dart.js INMIYOR"; exit 1; }
+          bayt=$(stat -c '%s' /tmp/main.dart.js)
           echo "main.dart.js: $bayt bayt"
           [ "$bayt" -gt 100000 ] \
             || { echo "KIRMIZI: main.dart.js $bayt bayt -- derlenmis uygulama yok"; exit 1; }
 
-          # 1d: DEV_USER_ID derlemeye GERCEKTEN girdi mi (denetim bulgusu M3).
-          # README bu degeri "atlanirsa vitrin cikmaz" seviyesine cikariyor ama hicbir
-          # kapi onu olcmuyordu: compose'daki argumanin adi yanlis yazilsa Docker
-          # yalnizca "unused build arg" uyarisi verir, istemci BOS define ile derlenir,
-          # her kurulum RASTGELE kullanici uretir ve telefon ile tarayici birbirini
-          # gormez. `String.fromEnvironment` kullanilan bir sabittir ⇒ derlenmis JS'te
-          # dizge olarak bulunur.
-          curl -fsS http://localhost:5298/main.dart.js \
-            | grep -q 'deadbeef-0000-4000-8000-000000000001' \
+          # DEV_USER_ID derlemeye GERCEKTEN girdi mi (denetim bulgusu M3): compose'daki
+          # argumanin adi yanlis yazilsa Docker yalnizca "unused build arg" uyarisi
+          # verir, istemci BOS define ile derlenir, her kurulum RASTGELE kullanici
+          # uretir ve telefon ile tarayici birbirini gormez.
+          grep -q 'deadbeef-0000-4000-8000-000000000001' /tmp/main.dart.js \
             || { echo "KIRMIZI: DEV_USER_ID derlemeye GIRMEMIS -- iki istemci ayni kullanici olmaz"; exit 1; }
 
           echo "YESIL: kabuk + onyukleyici + uygulama kodu + demo kimligi ayni kokende, CDN kapali"
