@@ -128,4 +128,4 @@ cihazdaki görüntüsü yakalanmadı · iOS hiçbir cihazda koşmadı (yalnız C
 `src/backend/` — dört katman: `Momentum.Domain` · `Momentum.Application` · `Momentum.Infrastructure`
 · `Momentum.Api`. Testler `tests/` altında (127 test).
 `src/client/lib/` — `sunum` · `vitrin` · `veri` ayrımı; senkron ve çakışma çözümü `veri` altında.
-`KANIT/` — 1.352 izlenen dosya, 16,3 MiB ham ölçüm; düşmüş denetimler dahil, temizlenmemiş.
+`KANIT/` — 1.355 izlenen dosya, 16,3 MiB ham ölçüm; düşmüş denetimler dahil, temizlenmemiş.

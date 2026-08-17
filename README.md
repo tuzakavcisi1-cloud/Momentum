@@ -19,6 +19,29 @@ senkronu**. Kesilen maddelerin tamamı: [Kapsam dışı](#kapsam-dışı--teslim
 
 ---
 
+## Ne yapıyor
+
+Görev **ekle** · **başlığını düzenle** · **tamamla** · **sil** (çöp ikonu → onay diyaloğu). Göreve
+**öncelik** ve **son tarih** ver, ikisini de listede gör. **Etiket** ekle ve etikete göre **süz**
+(çip şeridi). Görevlerini **başlıkta ara**. Hepsini tek satır **doğal dille** de ekleyebilirsin:
+`#etiket`, `!p1` önceliği ve tarih ifadeleri metinden ayrışıp kendi alanlarına yazılır — ölçülmüş
+örnek §Çalıştırma 0'dadır (`#is` ve `!p1` ayrıştı, görev PostgreSQL'e bu alanlarla ulaştı).
+
+Tema, sistemin **açık/karanlık** ayarına uyar. Uygulama **internetsiz** çalışır, veri **kalıcıdır**,
+bağlantı gelince **kendiliğinden eşitlenir**; iki cihaz aynı görevi değiştirirse **çakışma
+kullanıcıya görünür** ve hangi değerin kazandığı anlaşılır.
+
+🔴 **Ayrıştırıcının sınırları ölçülmüştür ve yazılıdır:** ASCII `yarin` ve büyük harfli `Yarın`
+tanınmaz · saat başlıkta kalır · yılsız `03.01` geçmişe düşer · `#İş` ile `#iş` **ayrı**
+etikettir (sunucu Ordinal karşılaştırır). Ayrıştırma satırın tamamını yutarsa **hata metni
+gösterilmez**, metin alanda kalır — sessiz kayıp yoktur, geri bildirim de yoktur
+([Beyan edilmiş sınırlar](#beyan-edilmiş-sınırlar)).
+
+Yukarıdakilerin tamamı canlıdır (`CLAUDE.md` §2 bitti listesi **10/10**); kesilenler
+[Kapsam dışı](#kapsam-dışı--teslim-beyanı) bölümündedir.
+
+---
+
 ## Nasıl görünüyor
 
 **Çevrimdışı yazım → çakışma → kullanıcının kararı.** Vitrin bu: bağlantı yokken yazılan bir
@@ -70,16 +93,17 @@ mutantla** kanıtlandı (`KANIT/o71/16-pages-demo/01-mutant-kosumlari.txt`).
 
 ## Depo haritası — nereden başlamalı
 
-🔴 **Bu depo alışılmadık bir bileşim taşır ve bu bilinçlidir.** Dosyaların **%75'i** ürün kodu
-değil, **ölçüm kanıtıdır**. Ne aradığınıza göre:
+🔴 **Bu depo alışılmadık bir bileşim taşır ve bu bilinçlidir.** İzlenen dosyaların **%74'ü**
+(1.355 / 1.821) ürün kodu değil, **ölçüm kanıtıdır**. Ne aradığınıza göre:
 
 | ne arıyorsanız | nereye bakın |
 |---|---|
 | **Ürün kodu** | `src/backend/` (.NET, 4 katman) · `src/client/lib/` (Flutter) |
 | **Testler** | `tests/` (backend, **127** test) · `src/client/test/` (istemci, **708** test) |
-| **Mimari kararlar** | `docs/ADR/` |
+| **Mimari kararlar** | [`docs/ADR/`](docs/ADR/) |
+| **Kapsam otoritesi** | [`docs/ODEV.md`](docs/ODEV.md) — neyin istendiği; kesilenler [Kapsam dışı](#kapsam-dışı--teslim-beyanı) |
 | **Ölçüm araçları** | `araclar/` — CI'nın koştuğu `verify.ps1` + bağımlılık/yayın araçları; oturum kapıları `arsiv/araclar/` altına alındı (14 Ağu 2026) |
-| **Ham ölçüm kanıtları** | `KANIT/` — **1.352 izlenen dosya, 16,3 MiB** (17 Ağu 2026'da yeniden sayıldı) |
+| **Ham ölçüm kanıtları** | `KANIT/` — **1.355 izlenen dosya, 16,3 MiB** (`311b6d0`'da sayıldı, 17 Ağu 2026) |
 | **Esaslar ve durum** | `CLAUDE.md` (tek talimat dosyası) · `DURUM.md` (canlı durum) · süreç tarihçesi `arsiv/` |
 
 **`KANIT/` nedir:** her kabul hükmünün, her düşmüş denetimin ve her mutant koşumunun **ham
@@ -97,7 +121,7 @@ gizlediği değil **belgelediği** bir olgudur.
 | `src/backend/Momentum.Application` | CQRS (Mediator), doğrulama, işlem davranışı |
 | `src/backend/Momentum.Infrastructure` | PostgreSQL kalıcılığı, outbox dağıtıcısı |
 | `src/backend/Momentum.Api` | kompozisyon kökü: uç noktalar, SignalR hub'ı, sağlık, OpenAPI/Scalar |
-| `src/client` | Flutter: Drift ile çevrimdışı CRUD (ekle · **başlık düzenle** · tamamla), itme kuyruğu, çekme, çakışma rozeti. Silme **arayüzde tetiklenir**: çöp ikonu → onay diyaloğu → `silindi` tombstone. Canlı demoda ölçüldü (14 Ağu 2026): ekle → sil ikonu → İptal hiçbir şey silmiyor → onay siliyor → sekme yenilenince silinmiş kalıyor. |
+| `src/client` | Flutter: Drift ile çevrimdışı CRUD (ekle · **başlık düzenle** · tamamla · sil) + öncelik/son tarih, etiket ve etikete göre süzme, başlıkta arama, doğal dil ayrıştırma; itme kuyruğu, çekme, çakışma rozeti. Silme **arayüzde tetiklenir**: çöp ikonu → onay diyaloğu → `silindi` tombstone; canlı ölçümü ve iptal ayağının sınırı [Beyan edilmiş sınırlar](#beyan-edilmiş-sınırlar) bölümündedir. |
 
 **Senkron:** çift yönlü — yerel yazma → itme kuyruğu → `POST /v1/sync`; sunucu tarafında outbox +
 imleç tabanlı çekme (snapshot/artımlı, `hasMore`). Çakışma çözümü yerel LWW + kullanıcıya görünür
@@ -265,9 +289,14 @@ mutantla ölçülü) · erişilebilirlik duyurularının gerçek ekran okuyucuyl
 
 ## Teslim paketi
 
-📦 **Hazır paket: [Releases → `v1.0.0`](https://github.com/tuzakavcisi1-cloud/Momentum/releases/tag/v1.0.0)**
-— derlenmiş Android APK, sha256'sı ve imza/kimlik uyarılarıyla birlikte yayında. Aşağıdaki bölüm,
-paketi **kendiniz derlemek** istediğinizde geçerlidir.
+📦 **Hazır paket: [Releases → `v1.0.1`](https://github.com/tuzakavcisi1-cloud/Momentum/releases/latest)** (Latest)
+— derlenmiş Android APK (`momentum-v1.0.1-emulator.apk`, **59.953.218 bayt**), sha256'sı ve
+imza/kimlik uyarılarıyla birlikte yayında; derlendiği commit `a332b25`. Aşağıdaki bölüm, paketi
+**kendiniz derlemek** istediğinizde geçerlidir.
+
+> `v1.0.0` arşiv olarak durur ve **dokunulmamıştır** — kendi kaynağıyla tutarlıdır. Ama orada
+> uygulamanın görünen adı hâlâ `client`tır ve çalışma imajı yüzen `aspnet:10.0` etiketindedir;
+> `v1.0.1` tam olarak bunları kapatır. **Değerlendirici `v1.0.1`'i indirmelidir.**
 
 Paket iki parçadır: **çalışan sistem** (docker imajı — API + web istemcisi) ve **Android APK**.
 
@@ -317,7 +346,7 @@ gözden kaçma değil, **kapsam kararıdır** ve burada yazılıdır.
 ### iOS
 
 **Paket içinde yoktur.** Mac donanımı yoktur ⇒ iOS yalnız CI'da **derlenir**, cihazda hiç
-koşmadı. Kapsam kararı olarak `docs/ODEV.md` §4'te yazılıdır.
+koşmadı. Kapsam kararı olarak [`docs/ODEV.md`](docs/ODEV.md) §4'te yazılıdır.
 
 ---
 
@@ -347,8 +376,11 @@ göndermiyorsa bayrak varken de izolasyon yoktur. Ölçülmüş karşı-örnek: 
 
 🟢 **o71'de kapandı (kısmen):** şart artık **iki iş akışında mekanik olarak zorlanıyor** —
 `pages.yml` → `kapi-cdn-ve-base-href` (beş mutantla kanıtlı) ve `paket.yml` (17 Ağu 2026'da
-ölçüldü: `useLocalCanvasKit` düşerse kapı kırmızı yanar). 🔴 `ci.yml`'de **hâlâ zorlanmıyor** —
-kalan borç yazılıdır.
+ölçüldü: `useLocalCanvasKit` düşerse kapı kırmızı yanar). 🔴 **`ci.yml`'de zorlanmıyor** —
+17 Ağu 2026'da ölçüldü: `ci.yml` içinde ne `no-web-resources-cdn` ne `useLocalCanvasKit` geçiyor.
+Bu bir **borç kalemi olarak tutulmuyor** (defter 14 Ağu'da kapatıldı, §3); burada yazılı olmasının
+tek sebebi **ölçülmüş olmasıdır**. Şartın yayına giden iki yolu — Pages ve docker imajı — kapıyı
+zaten koşar.
 
 ### 2. Veri göçü **bilerek** kapsam dışıdır
 
@@ -446,9 +478,16 @@ Bu liste **kısaltılmadı, yumuşatılmadı ve teslimden önce temizlenmedi.** 
   bu **ölçülmez**. 🟢 **Ayrı statik host artık kapsam dışı değil:** Pages demosu tam olarak odur ve
   sonuçları **ölçülmüştür** (§Canlı demo).
 - 🟢 **Silme artık arayüzde:** çöp ikonu → *"Bu görev silinsin mi?"* onay diyaloğu → `silindi`
-  tombstone, senkron protokolüne bağlı. **Canlı demoda uçtan uca ölçüldü (14 Ağu 2026):** görev
-  eklendi · sil ikonu diyaloğu açtı · **İptal hiçbir şey silmedi** · onay sildi · sekme yenilenince
-  silinmiş kaldı. Bu satır, aynı yerde duran *"silme arayüzde yok"* beyanının halefidir.
+  tombstone, senkron protokolüne bağlı. **Canlı demoda ölçüldü (14 Ağu 2026):** görev eklendi ·
+  çöp ikonu diyaloğu açtı · onay sildi · sekme yenilenince silinmiş kaldı.
+  🔴 **İptal ayağı canlıda ölçülmedi:** sentetik tıklama diyalogdaki *İptal*'i ateşlemiyor
+  (ölçüldü), modalı ancak Escape kapatıyor ⇒ o ayak **widget testiyle** ölçülür ve **mutantla**
+  kanıtlıdır: iptal yolunu `pop(true)` yapan `M-o72-3` kapıyı kırmızıya düşürdü
+  (`KANIT/o72/03-MUTANT-M-o72-3.txt` · `03-MUTANT-OZET.txt`). Bu satır, aynı yerde duran
+  *"silme arayüzde yok"* beyanının halefidir.
+- 🔴 **Doğal dil ayrıştırması satırın tamamını yutarsa hata metni gösterilmez** (`#iş !p1 yarın`
+  gibi): metin giriş alanında kalır, görev eklenmez. Sessiz kayıp yoktur, geri bildirim de
+  yoktur — **kesilmiş kapsamdır** (`CLAUDE.md` §5, o77).
 - 🟢 **Yatay (landscape) yerleşim ölçüldü (17 Ağu 2026, gerçek telefon):** taşma şeridi yok, satır
   binmesi yok, ikonlar ekran dışına çıkmıyor; uzun başlık yatayda **tam** görünüyor, dikeyde `…` ile
   kırpılıyor. Tek gözlem: **yatayda klavye açıkken liste görünmez oluyor** (üst şerit + giriş alanı +

@@ -1,0 +1,39 @@
+GITHUB "About" PANELI — o82, 17 Agu 2026
+Olculdu (cihaz Chrome, 17 Agu ~22:57): panel BOS, birebir "No description, website,
+or topics provided." Depoyu ilk acan degerlendiricinin gozu sag raya gider ve canli
+demoya giden link orada YOKTUR.
+
+Asagidaki uc alan, GitHub'da depo sayfasi > sag rayda "About" yazisinin yanindaki
+DISLI ikonuna tiklayinca acilan kutuya girer. Uc alani da ELLE yaz/yapistir.
+
+
+--- 1) Description (tek satir, 350 karakter siniri) -------------------------------
+
+Cok platformlu gorev yonetimi: Flutter (Android + Web) + N-katmanli .NET 10 / ASP.NET Core + PostgreSQL. Cevrimdisi-oncelikli senkron ve kullaniciya gorunur cakisma cozumu; her iddia olculmus, olculemeyen "olculemedi" diye yazilmistir.
+
+
+--- 2) Website ------------------------------------------------------------------
+
+https://tuzakavcisi1-cloud.github.io/Momentum/
+
+(Ayni kutuda "Use your GitHub Pages website" diye bir onay kutusu cikarsa onu
+isaretlemek de ayni sonucu verir.)
+
+
+--- 3) Topics (her birini yazip Enter'a bas) ------------------------------------
+
+flutter
+dart
+dotnet
+aspnet-core
+postgresql
+offline-first
+sync
+conflict-resolution
+clean-architecture
+cqrs
+drift
+signalr
+
+
+NOT: Bu bir depo AYARIDIR, dosya degildir; commit gerektirmez, aninda yayina girer.
