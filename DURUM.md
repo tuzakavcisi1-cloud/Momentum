@@ -11,22 +11,21 @@
 **Takvim günü pini:** `DateTime.utc(y,m,d)`, tek nokta `GorevSatiri.takvimGunu`; `intl` **0.20.2**.
 **Etiket:** `gorev_etiketleri(...)` SALT-EKLEME; `sets` LWW meta'ya ASLA bağlanmaz; tombstone TELE ÇIKMAZ.
 **Doğal dil (o77):** dört alan TEK `WireOp` + TEK `transaction`; ayrıştırıcı SAF; 41 mutant öldü.
-**Arama (o78):** `arama_eslestirme.dart` SAF; katlama tablosu (`I→ı`, `İ→i`) TEK KAYNAK, ham
-`toLowerCase` YASAK; süzme TEK `where`da; 32 mutant öldü; canlı tur beş ayak yeşil.
+**Arama (o78):** `arama_eslestirme.dart` SAF; katlama tablosu TEK KAYNAK, ham `toLowerCase`
+YASAK; süzme TEK `where`da; 32 mutant öldü.
 **Dersler:** kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ (o74) · ortamı değil **DİKİŞİ** ölç (o77).
 
 ## Oturum 79 — docker paketi ve KÖR KAPI dersi
 
 `Dockerfile` · `docker-compose.yml` (postgres → migrator → api) · `paket.yml`. Şemayı `api` DEĞİL
-**ayrı migrator servisi** kurar. Bulutta yakalanan üç kusur: `cirruslabs/flutter:3.44.6` yok (→
-birinci taraf arşiv + sha256) · yüzen `sdk:10.0` `global.json` pinini kırabilirdi (→ `10.0.302`) ·
-`ef bundle` başlangıç projesi Api olamaz (→ Infrastructure + tasarım-zamanı fabrikası).
+**ayrı migrator servisi** kurar. Bulutta üç kusur yakalandı: `cirruslabs/flutter:3.44.6` yok ·
+yüzen `sdk:10.0` pini kırabilirdi (→ `10.0.302`) · `ef bundle` başlangıç projesi Api olamaz.
 🔴 **KÖR KAPI:** kapı gövdede `flutter_bootstrap.js` **dizesini** arıyordu; o dize
 `src/client/web/index.html:44` şablonunda zaten var ⇒ bütün Flutter çıktısı **404** dönerken **dört
 ayak da yeşil** yandı. Kapı yeniden yazıldı: **dize değil VARLIK · sayı değil AD · ÜRÜN UCU**.
 Denetim 3 bloker · 6 majör · 7 minör; kapatılmayanlar §sınır 3. **İkinci ders:** düzeltmenin
 yazılmış olması indiği anlamına gelmez (sha256 yakaladı). **Üçüncü ders:** `curl … | grep -q`
-YAZMA — grep boruyu kapatır, curl 23 düşer, `pipefail` **yalancı kırmızı** yakar.
+YAZMA — `pipefail` **yalancı kırmızı** yakar.
 
 ## Oturum 80 — KAPANDI (canlı)
 
@@ -41,10 +40,12 @@ tarayıcı ↔ telefon). O APK 59.953.214 bayt / üç ABI / **debug anahtarıyla
 
 ## Sıradaki iş — README son okuma (kutu kapanışı 21 Ağu)
 
-**TESLİM PAKETİ YAYINDA** (17 Ağu): `v1.0.0` → `09d0e75`, Latest. Varlık
-`momentum-v1.0.0-emulator.apk` 59.953.214 bayt, sha256 `1c67f1f4…d7d9` — **Release'ten indirilen
-dosyanın hash'i birebir tuttu**. APK `10.0.2.2:5298` + sabit `DEV_USER_ID` ile derlendi;
-`libapp.so`da LAN IP'si YOK (ölçüldü). Kalan tek iş: README son okuma.
+**TESLİM PAKETİ YAYINDA** (17 Ağu): `v1.0.0` → `09d0e75`, Latest; indirilen APK'nın hash'i tuttu.
+o81'de kapananlar: README 8 maddede tazelendi · `aspnet` **10.0.11**'e pinlendi (koşan imajdan
+doğrulandı) · uygulama adı her yerde **Momentum** · yatay yerleşim ÖLÇÜLDÜ.
+🔴 **KALAN:** ad değişti ⇒ APK **yeniden derlenir** → sha256 ölçülür → `v1.0.0` varlığı ve notu
+güncellenir (etiket değişmez). Release notundaki `src/server/`+`docs/adr/` **YANLIŞ**; doğrusu
+`src/backend/`+`docs/ADR/`.
 
 ## Bilinen sınırlar
 
@@ -53,14 +54,13 @@ dosyanın hash'i birebir tuttu**. APK `10.0.2.2:5298` + sabit `DEV_USER_ID` ile 
 2. **Canlı ölçümde tıklama tuzağı:** hover'sız sentetik tıklama çalışmaz, hover'lı bile bazen İKİ
    kez gerekir; diyalogdaki `İptal` tetiklenmez, modalı **Escape** kapatır.
 3. **Kapı bütçesi ihlalde** ⇒ yeni kapı DOSYASI açılmaz (widget/birim testleri orana girmez).
-   **[o79 AÇIK KALAN denetim bulguları]** `aspnet:10.0` yüzen etiket (SDK pinliyken) · arm64
-   kırılması manifestle gösterildi ama **gerçek arm64'te KOŞULMADI** · yatay (landscape) konum
-   telefonda denenmedi · A11Y-7 duyurusu TalkBack ile doğrulanmadı.
-   (APK ve iki-istemci vitrini o80'de ÖLÇÜLDÜ.)
+   **[o81] Kalan TEK açık bulgu:** arm64 kırılması manifestle gösterildi, **gerçek arm64'te
+   KOŞULMADI** (donanım yok). Ötekiler kapandı: `aspnet:10.0` pini iş emrinde · yatay yerleşim
+   ÖLÇÜLDÜ (temiz) · TalkBack **kapsam dışı** yazıldı (README §Beyan edilmiş sınırlar).
 4. **Kimlik `devUserId` ile taşınıyor** ⇒ gerçek zamanlı işbirliği gösterilemez (kapsam dışı).
-6. **Pages demosunda backend yok** ⇒ rozetler "Çevrimdışı"ya düşer; senkron ayağı Pages'te ASLA
-   ölçülemez. **Pakette ölçülür** (o79 canlı tur). Eşitlenmiş satır rozet GÖSTERMEZ (`senkronize
-   => null`) — boş rozet alanı senkronize demektir.
+6. **Pages demosunda backend yok** ⇒ satır kuyrukta kalır, rozet **"↑ Gönderiliyor"**da asılı
+   durur (o81 canlı ölçüm; "Çevrimdışı" diyen eski satır YANLIŞTI). Senkron ayağı Pages'te ASLA
+   ölçülemez, **pakette ölçülür**. Eşitlenmiş satır rozet GÖSTERMEZ (`senkronize => null`).
 7. **[o79 ÖLÇÜLDÜ] `.github/workflows/*` yalnız `device_commit_files`'ta reddedilir;
    `device_bash` oraya YAZABİLİR.** Koruma araçta, klasörde değil. Yol: korumasız yola yaz →
    cihazda `cp` → sha256 doğrula. **[Onur kilidi 16 Ağu: bu yol serbest.]**

@@ -76,10 +76,10 @@ değil, **ölçüm kanıtıdır**. Ne aradığınıza göre:
 | ne arıyorsanız | nereye bakın |
 |---|---|
 | **Ürün kodu** | `src/backend/` (.NET, 4 katman) · `src/client/lib/` (Flutter) |
-| **Testler** | `tests/` (backend, **127** test) · `src/client/test/` (istemci, **705** test) |
+| **Testler** | `tests/` (backend, **127** test) · `src/client/test/` (istemci, **708** test) |
 | **Mimari kararlar** | `docs/ADR/` |
 | **Ölçüm araçları** | `araclar/` — CI'nın koştuğu `verify.ps1` + bağımlılık/yayın araçları; oturum kapıları `arsiv/araclar/` altına alındı (14 Ağu 2026) |
-| **Ham ölçüm kanıtları** | `KANIT/` — **1.339 izlenen dosya, 16,3 MiB** |
+| **Ham ölçüm kanıtları** | `KANIT/` — **1.352 izlenen dosya, 16,3 MiB** (17 Ağu 2026'da yeniden sayıldı) |
 | **Esaslar ve durum** | `CLAUDE.md` (tek talimat dosyası) · `DURUM.md` (canlı durum) · süreç tarihçesi `arsiv/` |
 
 **`KANIT/` nedir:** her kabul hükmünün, her düşmüş denetimin ve her mutant koşumunun **ham
@@ -118,7 +118,8 @@ docker compose up --build     # → http://localhost:5298
 Bu tek komut şunu kurar: `postgres` → sağlıklı olunca `migrator` (EF migration paketi şemayı kurar
 ve **çıkar**) → `api` (backend **ve** Flutter web istemcisi **aynı kökenden**). Tarayıcıda
 `http://localhost:5298` adresini açtığınızda uygulamanın **backend'li** hâlini görürsünüz — Pages
-demosundan farkı budur: orada backend yoktur, senkron rozetleri "Çevrimdışı"ya düşer.
+demosundan farkı budur: orada backend yoktur, yazılan her satır kuyrukta kalır ve rozet
+*"↑ Gönderiliyor"*da asılı durur (17 Ağu 2026, canlı demoda ölçüldü).
 
 **Şema uygulamayı değil ayrı bir servis kurar.** Uygulamanın kendi şemasını değiştirmesi üretimde
 anti-desendir; `api`, `migrator`'a `service_completed_successfully` ile bağlıdır.
@@ -156,8 +157,10 @@ ham kayıt `KANIT/o79/02-paket-CANLI-olcum-degerlendirici-makinesi.md`):
   Bu ayak Pages demosunda ASLA ölçülemez.
 
 ⏱ **İlk koşum maliyeti (ölçüldü, gizlenmiyor): 1639,7 sn ≈ 27 dakika.** Bunun 574 saniyesi
-Flutter arşivinin (1,54 GB) indirilmesidir; ayrıca `sdk:10.0.302` (185 MB), `aspnet:10.0` ve
-`postgres:17-alpine` iner. CI'da aynı yapı 2,5 dk sürer (hızlı ağ, Docker Desktop katmanı yok).
+Flutter arşivinin (1,54 GB) indirilmesidir; ayrıca `sdk:10.0.302` (185 MB), `aspnet:10.0.11` ve
+`postgres:17-alpine` iner. **Her iki .NET taban imajı da birebir pinlidir, yüzen etiket yoktur**
+(17 Ağu 2026'da ölçüldü: yüzen `10.0` o an `10.0.11` veriyordu, komşu `10.0.10` da yayındaydı ⇒
+etiket bandı atlayabilirdi; ham ölçüm `KANIT/o81/01-aspnet-pin-olcumu.txt`). CI'da aynı yapı 2,5 dk sürer (hızlı ağ, Docker Desktop katmanı yok).
 **İkinci koşum katmanlardan gelir ve saniyeler alır.**
 
 🔴 **Üç sınır beyan edilmiştir, gizlenmemiştir:**
@@ -243,16 +246,28 @@ Bu anahtar **boşsa** statik servis ara katmanı **hiç kurulmaz** (kill switch 
 paket**. 🟢 Zincir bu kez **Windows'ta koştu** — önceki sürümlerde yalnız Linux konteynerde
 ölçülmüştü. Ham çıktı: `KANIT/o71/15-verify-CVE-pin-sonrasi.txt`.
 
-**İstemci, son ölçüm (10 Ağu 2026, Linux, Flutter 3.44.6 / Dart 3.12.2):**
-`flutter test` ⇒ **549/549 geçti** · `flutter analyze --fatal-infos` ⇒ **0 sorun**.
-Ölçümü **üreten el değil** bağımsız bir el koştu ve aynı turda **beş mutant** koşuldu
+**İstemci, son ölçüm (17 Ağu 2026, Flutter 3.44.6 / Dart 3.12.2):**
+`flutter test` ⇒ **708/708 geçti** · `flutter analyze` ⇒ **0 uyarı**.
+Ölçümü **üreten el değil** bağımsız bir el koşar; o68 turunda **beş mutant** koşuldu
 (erişilebilirlik etiketi ×2, düzen aritmetiği ×3) — **beşi de ısırdı**, ölü mutant yok.
 Kanıt: `KANIT/SS2/05-KABUL-HUKMU-COWORK-o68-baslik-duzenleme-UI.md`.
-🔴 Widget testi **uçtan uca değildir**: gerçek Android cihazda/emülatörde **koşulmadı**.
+
+🟢 **Widget testi artık tek ayak değil (17 Ağu 2026).** o79-o80'de paket **gerçek bir makinede**
+koştu ve **çift yönlü senkron iki gerçek istemcide** kanıtlandı: masaüstü tarayıcı ↔ **gerçek
+Android telefon**. Aynı turda telefonda bir düzen kusuru bulundu (boş senkron rozeti satırın
+yarısını yutuyordu), düzeltildi ve **yine gerçek telefonda** doğrulandı: başlığın çizilen genişliği
+**~225 px → ~450 px**. Ham kayıt: `KANIT/o79/`, `KANIT/o80/`.
+🔴 **Hâlâ ölçülmeyen:** çakışma çözüm ekranının canlı cihazdaki görüntüsü (widget testiyle,
+mutantla ölçülü) · erişilebilirlik duyurularının gerçek ekran okuyucuyla dinlenmesi
+(§Beyan edilmiş sınırlar).
 
 ---
 
 ## Teslim paketi
+
+📦 **Hazır paket: [Releases → `v1.0.0`](https://github.com/tuzakavcisi1-cloud/Momentum/releases/tag/v1.0.0)**
+— derlenmiş Android APK, sha256'sı ve imza/kimlik uyarılarıyla birlikte yayında. Aşağıdaki bölüm,
+paketi **kendiniz derlemek** istediğinizde geçerlidir.
 
 Paket iki parçadır: **çalışan sistem** (docker imajı — API + web istemcisi) ve **Android APK**.
 
@@ -290,6 +305,10 @@ flutter build apk --release \
 🔴 **`localhost` YAZMAYIN.** Telefon `localhost` dediğinde kendini kasteder; backend'i çalıştıran
 makinenin LAN IP'si gerekir. Emülatörde host'un takma adı `10.0.2.2`'dir (kodda varsayılan budur).
 
+ℹ️ **Release'teki hazır APK `10.0.2.2` ile derlenmiştir** — yani `docker compose up` ile **aynı
+makinede** koşan bir Android **emülatörü** içindir; gerçek telefonda çalışmaz. Telefon için
+yukarıdaki komutu kendi LAN IP'nizle koşun.
+
 🔴 **APK debug anahtarıyla imzalıdır.** `android/app/build.gradle.kts` içinde Flutter'ın varsayılan
 `signingConfig = signingConfigs.getByName("debug")` satırı ve `TODO`'su **duruyor**; üretim imza
 zinciri kurulmadı. Değerlendirici APK'yı kurarken "bilinmeyen kaynak" onayı verecektir. Bu bir
@@ -326,9 +345,10 @@ CanvasKit'i **aynı kökene** taşır. **Bayraksız derlenen bir sürümde izola
 🔴 **Tersi doğru değildir:** bayrak **gereklidir, yeterli değildir** — sunucu COOP/COEP
 göndermiyorsa bayrak varken de izolasyon yoktur. Ölçülmüş karşı-örnek: yukarıdaki **Canlı demo** bölümü (`crossOriginIsolated === false`).
 
-🟢 **o71'de kapandı (kısmen):** şart artık **Pages iş akışında mekanik olarak zorlanıyor**
-(`pages.yml` → `kapi-cdn-ve-base-href`, beş mutantla kanıtlı). 🔴 `ci.yml`'de **hâlâ
-zorlanmıyor** — kalan borç yazılıdır.
+🟢 **o71'de kapandı (kısmen):** şart artık **iki iş akışında mekanik olarak zorlanıyor** —
+`pages.yml` → `kapi-cdn-ve-base-href` (beş mutantla kanıtlı) ve `paket.yml` (17 Ağu 2026'da
+ölçüldü: `useLocalCanvasKit` düşerse kapı kırmızı yanar). 🔴 `ci.yml`'de **hâlâ zorlanmıyor** —
+kalan borç yazılıdır.
 
 ### 2. Veri göçü **bilerek** kapsam dışıdır
 
@@ -429,6 +449,13 @@ Bu liste **kısaltılmadı, yumuşatılmadı ve teslimden önce temizlenmedi.** 
   tombstone, senkron protokolüne bağlı. **Canlı demoda uçtan uca ölçüldü (14 Ağu 2026):** görev
   eklendi · sil ikonu diyaloğu açtı · **İptal hiçbir şey silmedi** · onay sildi · sekme yenilenince
   silinmiş kaldı. Bu satır, aynı yerde duran *"silme arayüzde yok"* beyanının halefidir.
+- 🟢 **Yatay (landscape) yerleşim ölçüldü (17 Ağu 2026, gerçek telefon):** taşma şeridi yok, satır
+  binmesi yok, ikonlar ekran dışına çıkmıyor; uzun başlık yatayda **tam** görünüyor, dikeyde `…` ile
+  kırpılıyor. Tek gözlem: **yatayda klavye açıkken liste görünmez oluyor** (üst şerit + giriş alanı +
+  klavye görüntü alanını dolduruyor) — hata çıkmaz, çökme yok.
+- 🔴 **A11Y-7 duyuruları TalkBack ile doğrulanmadı.** Duyurular widget testinde `announce` mesajı
+  yakalanarak ölçülür (`a11y_kapisi_test.dart`, `g15_bilesik_satir_kapisi_test.dart` — çift okuma
+  regresyonu dahil); **gerçek ekran okuyucuyla dinlenmedi.** Kapsam kararıdır.
 
 ---
 
