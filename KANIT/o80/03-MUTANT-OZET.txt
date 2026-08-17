@@ -1,0 +1,9 @@
+IS-EMRI-o80 -- M-o80-1/2/3 mutant kosumu (Claude Code)
+  TABAN sha8=46FA5C9B   32175 b  gorev_satiri.dart
+  TEMIZ-ONCE EXIT=0
+  M-o80-1   kosul kaldirilir (rozet HER durumda Flexible ile eklenir) -> eski kusur geri gelir eslesme=1 ozdes=True exit=1 -> KIRMIZI (beklenen)
+  M-o80-2   kosul ters cevrilir (dallar takas edilir -- yalniz BOSKEN Flexible) eslesme=1 ozdes=True exit=1 -> KIRMIZI (beklenen)
+  M-o80-3   kosul senkronize yerine baska bir duruma baglanir (yerel)  eslesme=1 ozdes=True exit=1 -> KIRMIZI (beklenen)
+  SON sha8=46FA5C9B   32175 b  gorev_satiri.dart  ozdes=True
+  TEMIZ-SONRA EXIT=0
+  ISIRAN MUTANT: 3/3

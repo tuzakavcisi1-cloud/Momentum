@@ -283,13 +283,39 @@ class GorevSatiri extends StatelessWidget {
   /// olsaydi M79 (dikeyde CakismaRozeti dusurulur) sessizce mumkun olurdu.
   /// IS-EMRI-o68: (varsa) duzenleme ikonu SONA eklenir -- durum rozetleri
   /// (cakisma/senkron) ONCE, eylem ikonlari EN SON.
+  /// IS-EMRI-o80 KILIT: `SenkronRozeti` esneklik havuzundan (flex:1) YALNIZ
+  /// GERCEKTEN BIR SEY CIZERKEN pay alir -- eskiden `Flexible(child:
+  /// SenkronRozeti(...))` HER ZAMAN aynı esneklik havuzunu (flex:1)
+  /// `Expanded(child: _baslikVeMeta(...))` ile paylasip, bos govde
+  /// (`SizedBox.shrink`, `senkronize` durumu) icin bile slotun YARISINI
+  /// yuturdu -- baslik yer varken kirpiliyordu (KANIT/o79/04). Kosul
+  /// `_dikeyMi()`nin ZATEN kullandigi AYNI yardimcidir (`SenkronRozeti.
+  /// metinIcin`) -- IKINCI bir esleme tablosu YAZILMAZ (M77b sinifi).
+  /// 🔴 OLCULMUS SAPMA (is emrinin kendi lafzindan): kilit metni "listesine
+  /// HIC GIRMEZ" diyordu; bu HARFIYEN uygulaninca `flutter test` ILE
+  /// OLCULEN gercek bir regresyon dogdu -- `SenkronRozeti` bir
+  /// `StatefulWidget`tir ve `senkronize`/`cevrimdisi`/`gonderilmemis`e
+  /// GECISTE bir kerelik A11Y-7 semantics duyurusu yollar (`didUpdateWidget`,
+  /// senkron_rozeti.dart:87-92). Widget'i LISTEDEN TAMAMEN CIKARMAK, tam da
+  /// gecis aninda (kuyrukta->senkronize) State'i DISPOSE eder ve "Senkronize
+  /// edildi" duyurusu HIC YOLLANMAZ -- a11y_kapisi_test.dart'in A11Y-7
+  /// vakasinda OLCULDU (Actual dizisinde 'Senkronize edildi' YOK). Duzeltme:
+  /// widget AYNI KONUMDA (SAME POSITION, State KORUNUR) kalir, yalniz
+  /// `Flexible` SARMALAYICISI kosulludur -- cizmiyorsa `SizedBox.shrink()`
+  /// govdesi zaten (0,0) intrinsik boyutludur ve Flexible OLMADAN Row'da
+  /// flex-payi TALEP ETMEZ, boylece `Expanded` TEK flex katilimci olarak
+  /// TUM alani alir (kilidin ARADIGI SONUC AYNI kalir) VE State/duyuru
+  /// mekanizmasi BOZULMAZ.
   List<Widget> _rozetler(BuildContext context) {
+    final rozetCiziyor = SenkronRozeti.metinIcin(senkronDurumu) != null;
     return [
       if (cakismaVarMi) ...[
         CakismaRozeti(entityId: gorev.id, depo: depo),
         SizedBox(width: MBosluk.xs),
       ],
-      Flexible(child: SenkronRozeti(durum: senkronDurumu)),
+      rozetCiziyor
+          ? Flexible(child: SenkronRozeti(durum: senkronDurumu))
+          : SenkronRozeti(durum: senkronDurumu),
       if (onAyrintilarDuzenlendi != null) ...[
         SizedBox(width: MBosluk.xs),
         _duzenleIkonu(context),
