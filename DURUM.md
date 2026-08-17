@@ -39,12 +39,12 @@ görev **PostgreSQL'e ulaştı**. **Çift yönlü senkron iki gerçek istemcide 
 tarayıcı ↔ telefon). O APK 59.953.214 bayt / üç ABI / **debug anahtarıyla imzalı**, ama
 `SENKRON_SUNUCU_URL` Onur'un LAN IP'sine gömülü ⇒ **değerlendiricide çalışmaz**.
 
-## Sıradaki iş — GitHub Release (kutu kapanışı 21 Ağu)
+## Sıradaki iş — README son okuma (kutu kapanışı 21 Ağu)
 
-**[Onur kilidi 17 Ağu]** Release APK'sı **`http://10.0.2.2:5298`** (emülatör varsayılanı) ile,
-**Onur'un makinesinde elle** derlenir — yeni ürün kodu YOK. Release notuna: sha256 · debug imza
-beyanı · `DEV_USER_ID` uyarısı · tek-komut docker bölümü · ölçülmüş kanıt özeti · KAPSAM DIŞI
-listesi. Sonra README son okuma.
+**TESLİM PAKETİ YAYINDA** (17 Ağu): `v1.0.0` → `09d0e75`, Latest. Varlık
+`momentum-v1.0.0-emulator.apk` 59.953.214 bayt, sha256 `1c67f1f4…d7d9` — **Release'ten indirilen
+dosyanın hash'i birebir tuttu**. APK `10.0.2.2:5298` + sabit `DEV_USER_ID` ile derlendi;
+`libapp.so`da LAN IP'si YOK (ölçüldü). Kalan tek iş: README son okuma.
 
 ## Bilinen sınırlar
 
