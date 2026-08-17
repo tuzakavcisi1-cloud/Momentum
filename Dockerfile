@@ -48,7 +48,8 @@
 # `linux/arm64` cozer, x64 tarball iner, sha256 TUTAR (ayni URL) ve `flutter
 # --version` "cannot execute binary file" ile duser. Kapi bunu goremez, cunku
 # runner x64'tur. Pin, arm64 makinede bu katmani emulasyonla (yavas ama calisir)
-# kosturur. Calisma imaji pinlenmez -- `aspnet` cok mimarilidir.
+# kosturur. Calisma imajina --platform pini KONMAZ -- `aspnet` cok mimarilidir;
+# surum pini ayridir, bkz. asagidaki OLCULMUS PIN (o81).
 FROM --platform=linux/amd64 debian:bookworm-slim AS istemci
 
 ARG FLUTTER_SURUM=3.44.6
