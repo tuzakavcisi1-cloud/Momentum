@@ -15,6 +15,11 @@
     <PackageReference Include="Scalar.AspNetCore" Version="2.16.15" />
     <!-- K-D4: URL-segment API versioning (/v1). -->
     <PackageReference Include="Asp.Versioning.Http" Version="8.1.1" />
+    <!-- IS-EMRI-o83 D1: JWT bearer auth. Ships in the ASP.NET Core shared framework (same category as
+         Microsoft.AspNetCore.OpenApi above, versioned WITH the runtime, not a third-party package);
+         its Microsoft.IdentityModel.* transitive deps are covered by the existing NuGetAudit gate
+         (Directory.Build.props) same as every other package here, no separate CVE step needed. -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10" />
     <!-- K-G3: structured logging + request logging + correlation-id. -->
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
   </ItemGroup>

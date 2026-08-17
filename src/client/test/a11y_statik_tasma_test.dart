@@ -15,7 +15,7 @@ library;
 //
 // GOREV-A9 [K93/spec SS5/G5] -- GENISLETME: R1 (mevcut, degismez) + R2 (YENI:
 // ellipsis tasiyan HER govde maxLines de tasir) + R4 (YENI: pozitif kontrol --
-// tarayicinin bulduğu Text( aday sayisi = 30 [taban 8 -> 12 -> 13 -> 16 -> 20 -> 25 -> 29 -> 30
+// tarayicinin bulduğu Text( aday sayisi = 34 [taban 8 -> 12 -> 13 -> 16 -> 20 -> 25 -> 29 -> 30 -> 34
 // guncellendi;
 // kanonik deger R4'un expect'indedir, bu satir ona atiftir],
 // arac kendini kanitlar). R3 (govde
@@ -156,7 +156,7 @@ void main() {
   });
 
   test(
-    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 30 (arac kendini kanitlar)',
+    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 34 (arac kendini kanitlar)',
     () {
       final dosyalar = _taranacakDosyalar();
       final adaylar = <String>[];
@@ -208,11 +208,16 @@ void main() {
       // aday DEGILDIR. Arama alaninin ipucu bir `Text(` degil `hintText`
       // dizgesidir ⇒ tarayiciya HIC gorunmez. Sayi VARSAYILMADI: testin
       // KENDI toplayicisi 30 saydi (bulutta kosuldu, 15 Agu 2026).
+      // 🔴 IS-EMRI-o83 (DILIM 1 KIMLIK) TABAN BILEREK GUNCELLENDI 30 -> 34:
+      // giris_ekrani.dart (YENI dosya) DORT Text( SATIRI ekledi -- baslik,
+      // hata metni, giris/kayit dugmesi etiketi, mod-degistirme baglantisi
+      // (dordu de overflow/maxLines korumali). Yeni ekranin KENDISI bu
+      // turun konusu -- baska hicbir dosyaya dokunulmadi.
       expect(
         adaylar.length,
-        30,
+        34,
         reason:
-            'Text( aday sayisi 30 DEGIL -- ya tarayici bozuldu (regex hic '
+            'Text( aday sayisi 34 DEGIL -- ya tarayici bozuldu (regex hic '
             'eslesmiyor ⇒ R1/R2 kor) ya taban degisti (yeni bir Text( eklendi/'
             'silindi). Bulunanlar:\n${adaylar.join('\n')}',
       );

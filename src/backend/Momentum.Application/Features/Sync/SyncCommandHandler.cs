@@ -155,6 +155,11 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
             // slice-3a F1: SAME op-transaction, right after PersistDeltaAsync, Applied branch ONLY.
             // ownerId is the AUTHENTICATED actor -- NEVER op.ActorId (F5, mutant-3's target).
             await _materializer.MaterializeAsync(op, entity, authenticatedActorId, cancellationToken);
+            // IS-EMRI-o83 F5 KILIDI (bu dilimin ASIL KAZANCI): D9'un onceki beyani -- "actor_id
+            // (denetim kaydi) govdeden gelmeye devam eder, ikisi bilerek ayri" -- artik SUPERSEDE
+            // edildi (bkz. BuildOutbox). Simdi GERCEK kullanicilar var; govdenin actorId iddiasini
+            // denetim kaydinda bile serbest birakmak, bir kullaniciya baskasinin yaptigi degisikligi
+            // YUKLEYEBILMEK demektir (dilim 3 isbirliginde gercek bir sahtekarlik riski).
             await _clientClock.UpsertGreatestAsync(op.ClientId, effective, cancellationToken);
             await _outbox.WriteAsync(BuildOutbox(wireOp, op, entity, effective, preProjectId, receiveWall, authenticatedActorId), cancellationToken);
         }
@@ -187,9 +192,11 @@ public sealed class SyncCommandHandler : ICommandHandler<SyncCommand, SyncRespon
             OwnerId: authenticatedActorId,
             ScopeId: scopeId,
             OldScopeId: oldScopeId,
-            ActorId: op.ActorId,
+            // IS-EMRI-o83 F5 KILIDI: govdenin actorId iddiasi ARTIK YOK SAYILIR (D9'un onceki
+            // "actor_id govdeden gelmeye devam eder" beyanini SUPERSEDE eder -- yukaridaki yorum).
+            ActorId: authenticatedActorId,
             EventType: $"{op.EntityType}.changed",
-            Payload: WireMapping.ClampedPayload(wireOp, receiveWall),
+            Payload: WireMapping.ClampedPayload(wireOp, receiveWall, authenticatedActorId),
             Hlc: effective.Encode(),
             OccurredAt: now,
             AvailableAt: now); // slice-2b2 D6-1: ONE clock source (TimeProvider) -- no SQL now() default

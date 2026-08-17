@@ -32,6 +32,12 @@ public sealed class SyncDbContext(DbContextOptions<SyncDbContext> options) : DbC
 
     public DbSet<TaskTagRow> TaskTags => Set<TaskTagRow>();
 
+    // IS-EMRI-o83 D1: plain CRUD tables (Infrastructure/Auth/*Store.cs), same DbContext as Sync's
+    // (one connection string, one migration history -- a second DbContext would double both for no gain).
+    public DbSet<UserRow> Users => Set<UserRow>();
+
+    public DbSet<RefreshTokenRow> RefreshTokens => Set<RefreshTokenRow>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);

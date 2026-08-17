@@ -35,15 +35,18 @@ public sealed class ScopeAndDriftAnchorTests(PostgresFixture fixture)
     }
 
     /// <summary>
-    /// D7 [mutantsiz -- surukleme cipasi, BULGU-C -- slice-3d D9 ile DUZELTILDI]: F5 daha once yalniz
-    /// materialize edilen yolu temizlemisti; outbox/SyncPuller yolu HALA govdedeki actorId'ye guveniyordu.
-    /// slice-3d D9 bunu kapatti (`BuildOutbox` artik `authenticatedActorId` alir). A olusturur; A daha
-    /// sonraki bir op'u KIMLIK DOGRULAR ama govdenin actorId'si B'dir (enjeksiyon) -- hem materialize
-    /// edilen sahip HEM outbox satirinin sahibi A'dir (govdenin B iddiasi YOK sayilir); `actor_id`
-    /// (denetim kaydi) HALA govdeden (B) gelir -- D9 BEYAN: bu ikisi bilerek AYRI kalir.
+    /// D7 [mutantsiz -- surukleme cipasi, BULGU-C -- slice-3d D9 ile DUZELTILDI, IS-EMRI-o83 F5 ile
+    /// GENISLETILDI]: F5 daha once yalniz materialize edilen yolu temizlemisti; outbox/SyncPuller yolu
+    /// HALA govdedeki actorId'ye guveniyordu. slice-3d D9 `BuildOutbox`i `authenticatedActorId` almaya
+    /// zorlayarak `owner_id`yi kapatti ama `actor_id` (denetim kaydi) BILEREK govdeden gelmeye devam
+    /// ediyordu ("D9 BEYAN"). IS-EMRI-o83 F5 bu beyani SUPERSEDE eder: artik gercek kullanicilar var,
+    /// govdenin actorId iddiasini denetim kaydinda bile serbest birakmak bir kullaniciya baskasinin
+    /// degisikligini YUKLEYEBILMEK demek. A olusturur; A daha sonraki bir op'u KIMLIK DOGRULAR ama
+    /// govdenin actorId'si B'dir (enjeksiyon) -- artik hem materialize edilen sahip HEM outbox
+    /// satirinin sahibi HEM `actor_id` A'dir (govdenin B iddiasi HER YERDE yok sayilir).
     /// </summary>
     [Fact]
-    public async Task D9_outbox_owner_comes_from_authenticated_actor_not_wire_actor()
+    public async Task D9_F5_outbox_owner_VE_actor_ikisi_de_authenticated_actorden_gelir_not_wire_actor()
     {
         var connectionString = await TestDatabase.CreateAsync(fixture);
         await using var app = new SyncTestApp(connectionString);
@@ -62,7 +65,7 @@ public sealed class ScopeAndDriftAnchorTests(PostgresFixture fixture)
             .ShouldBe(actorA, "D9: owner_id KIMLIK DOGRULAMADAN gelir, ASLA govdenin actorId'sinden");
         (await Db.ScalarAsync<Guid>(connectionString,
             "SELECT actor_id FROM outbox_messages WHERE aggregate_id = @e ORDER BY id DESC LIMIT 1", ("e", entity)))
-            .ShouldBe(actorB, "D9 BEYAN: actor_id (denetim kaydi) DEGISMEZ, govdeden gelmeye devam eder");
+            .ShouldBe(actorA, "IS-EMRI-o83 F5: actor_id ARTIK kimlik dogrulanmis aktorden gelir -- D9 BEYAN supersede edildi");
     }
 
     /// <summary>

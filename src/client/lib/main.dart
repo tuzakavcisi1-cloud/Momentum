@@ -5,15 +5,19 @@ import 'package:flutter_driver/driver_extension.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'ag/gercek_zamanli_sinyal.dart';
+import 'ag/http_auth_agi.dart';
 import 'ag/http_senkron_agi.dart';
 import 'ag/signalr_json_sinyal.dart';
 import 'design/tema.dart';
+import 'sunum/giris_ekrani.dart';
 import 'sunum/gorev_listesi_ekrani.dart';
 import 'veri/ayarlar_deposu.dart';
 import 'veri/ayarlari_hazirla.dart';
 import 'veri/depolama_durumu.dart';
 import 'veri/gorev_deposu.dart';
 import 'veri/hlc.dart';
+import 'veri/kimlik_deposu.dart';
+import 'veri/oturum_yoneticisi.dart';
 import 'veri/senkron_dongusu.dart';
 import 'veri/veritabani.dart';
 import 'vitrin/durum_vitrini.dart';
@@ -27,9 +31,13 @@ const String _senkronSunucuUrl = String.fromEnvironment(
   defaultValue: 'http://10.0.2.2:5298',
 );
 
-/// GOREV-A10 Y3: derleme-zamani `DEV_USER_ID` ezmesi -- iki cihazi ayni
-/// kullanici yapmanin yolu (bugune kadar `devUserId` her kurulumda
-/// rastgeleydi). Uygulamasi ayarlari_hazirla.dart'taki fonksiyona devredilir.
+/// GOREV-A10 Y3 (o71-o81 arasi): derleme-zamani `DEV_USER_ID` ezmesi -- iki
+/// cihazi ayni kullanici yapmanin ONCEKI yolu. IS-EMRI-o83 (DILIM 1 KIMLIK)
+/// itibariyle giris ekrani KAPIYI TUTAR; bu sabit `dev_user_id_define_test.dart`
+/// icin ve docker-compose.yml'nin `--dart-define` ARG'i icin TANIMLI KALIR
+/// (is emri s5 DOKUNMA listesi: "docker-compose.yml'deki DEV_USER_ID sabiti
+/// dilim 3'e kadar demo kimligi olarak kalir") ama asagidaki YENI giris
+/// akisinda ARTIK OKUNMAZ -- gercek kimlik artik OturumYoneticisi'nden gelir.
 const String devUserIdEzmesi = String.fromEnvironment('DEV_USER_ID');
 
 void main() async {
@@ -38,32 +46,144 @@ void main() async {
   if (const bool.fromEnvironment('ENABLE_FLUTTER_DRIVER')) {
     enableFlutterDriverExtension();
   }
-  // F5: durum vitrini gercek DB/ayarlar bootstrap'ina hic ihtiyac duymaz --
-  // "olu tuzagi engeller" gerekcesi burada da korunur (bkz. durum_vitrini.dart).
-  GorevDeposu? depo;
-  SenkronDongusu? dongu;
-  DepolamaBildirimi? depolamaBildirimi;
-  if (!const bool.fromEnvironment('DURUM_VITRINI')) {
-    final kurulum = await _uretimKurulumOlustur();
-    depo = kurulum.depo;
-    dongu = kurulum.dongu;
-    depolamaBildirimi = kurulum.depolamaBildirimi;
-    // D8/2 PAZARLIKSIZ: acilista `gonderildi` olan TUM satirlar `bekliyor`e
-    // doner (bir onceki koşum ucusun ortasinda cokmus olabilir).
-    await kurulum.dongu.gonderildiKurtar();
-    // slice-3d D0: PERIYODIK YOKLAMA YASAK -- Timer.periodic ile cekmek
-    // KALDIRILDI. Acilista once bekleyen (varsa) itilir, hemen ardindan
-    // KAPALI LISTE'nin 1. tetikleyicisi (acilis cekme turu) koşulur; ikisi
-    // AYNI tek-uçuş kilidini paylastigi icin cekme turu dogal olarak K3
-    // bayragiyla ertelenip itme bitince BIR KEZ koşar.
-    unawaited(kurulum.dongu.turCalistir());
-    unawaited(kurulum.dongu.cekmeTuruCalistir());
+  // F5: durum vitrini gercek DB/ayarlar/OTURUM bootstrap'ina hic ihtiyac
+  // duymaz -- "olu tuzagi engeller" gerekcesi burada da korunur (bkz.
+  // durum_vitrini.dart). Giris ekrani devre disi kalir.
+  if (const bool.fromEnvironment('DURUM_VITRINI')) {
+    runApp(const MomentumUygulamasi(depo: null));
+    return;
   }
-  runApp(
-    MomentumUygulamasi(depo: depo, dongu: dongu, depolama: depolamaBildirimi),
+  final oturumYoneticisi = OturumYoneticisi(
+    agi: HttpAuthAgi(sunucuTabanUrl: _senkronSunucuUrl),
+    depo: GuvenliKimlikDeposu(),
   );
+  runApp(_KimlikKapisi(oturumYoneticisi: oturumYoneticisi));
 }
 
+/// IS-EMRI-o83 s2.2/8/11: kok widget. Oturum yoksa [GirisEkrani], varsa
+/// (kurulum hazirlanana kadar kisa bir yukleme, sonra) uygulamanin kendisi.
+/// Sessiz yenileme dusup oturum sifirlaninca (`OturumYoneticisi.yenile`)
+/// BURAYA otomatik doner -- itme kuyrugu Drift'te durur, bu widget onu hic
+/// bilmez, bu yuzden "kuyruk korunur" (s2.2/11) EK KOD gerektirmez.
+class _KimlikKapisi extends StatefulWidget {
+  final OturumYoneticisi oturumYoneticisi;
+
+  const _KimlikKapisi({required this.oturumYoneticisi});
+
+  @override
+  State<_KimlikKapisi> createState() => _KimlikKapisiState();
+}
+
+class _KimlikKapisiState extends State<_KimlikKapisi> {
+  Future<_UretimKurulumu>? _kurulumGelecek;
+  String? _kurulumKullaniciId;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.oturumYoneticisi.oturum.addListener(_oturumDegisti);
+    unawaited(widget.oturumYoneticisi.baslat());
+  }
+
+  @override
+  void dispose() {
+    widget.oturumYoneticisi.oturum.removeListener(_oturumDegisti);
+    super.dispose();
+  }
+
+  void _oturumDegisti() {
+    final oturum = widget.oturumYoneticisi.oturum.value;
+    if (oturum == null) {
+      setState(() {
+        _kurulumGelecek = null;
+        _kurulumKullaniciId = null;
+      });
+      return;
+    }
+    // Sessiz yenileme YA DA `baslat()`in yeniden tetiklenmesi ayni kullanici
+    // icin oturum.value'yu TEKRAR yazabilir -- kurulum yalniz kullaniciId
+    // GERCEKTEN degisince (ilk giris, ya da farkli kullaniciyla yeniden
+    // giris) yeniden baslatilir.
+    if (_kurulumKullaniciId == oturum.kullaniciId) {
+      return;
+    }
+    _kurulumKullaniciId = oturum.kullaniciId;
+    final gelecek = _uretimKurulumOlustur(
+      widget.oturumYoneticisi,
+      oturum.kullaniciId,
+    );
+    unawaited(
+      gelecek.then((kurulum) async {
+        // D8/2 PAZARLIKSIZ: acilista `gonderildi` olan TUM satirlar
+        // `bekliyor`e doner (bir onceki koşum ucusun ortasinda cokmus
+        // olabilir) -- main()'in ESKI davranisiyla BIREBIR AYNI sira.
+        await kurulum.dongu.gonderildiKurtar();
+        unawaited(kurulum.dongu.turCalistir());
+        unawaited(kurulum.dongu.cekmeTuruCalistir());
+      }),
+    );
+    setState(() {
+      _kurulumGelecek = gelecek;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Momentum',
+      debugShowCheckedModeBanner: false,
+      // ODEV.md §4(a) canli turunda OLCULDU (o74, Pages demosu): Material'in
+      // YERLESIK diyaloglari (`showDatePicker`) INGILIZCE ciziliyordu --
+      // delege listesi verilmezse Flutter `DefaultMaterialLocalizations`a
+      // duser ve o YALNIZ en_US tasir. 🔴 `locale` SABIT 'tr' PAZARLIKSIZ.
+      locale: const Locale('tr'),
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [Locale('tr')],
+      theme: MomentumTema.olustur(Brightness.light),
+      darkTheme: MomentumTema.olustur(Brightness.dark),
+      home: _govdeOlustur(),
+    );
+  }
+
+  Widget _govdeOlustur() {
+    final oturum = widget.oturumYoneticisi.oturum.value;
+    if (oturum == null) {
+      return GirisEkrani(oturumYoneticisi: widget.oturumYoneticisi);
+    }
+    return FutureBuilder<_UretimKurulumu>(
+      future: _kurulumGelecek,
+      builder: (context, anlik) {
+        final kurulum = anlik.data;
+        if (kurulum == null) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        // G42/c (w2_dikis_kapisi_test.dart, M212 kapisi): ayri bir yerel
+        // degisken -- ekrana gecirilen bildirimin GERCEKTEN kurulumdan
+        // geldigi statik olarak da izlenebilir kalsin.
+        final depolama = kurulum.depolamaBildirimi;
+        return GorevListesiEkrani(
+          depo: kurulum.depo,
+          // K112: "Yenile" bugune kadar YALNIZ cekme kosuyordu.
+          onYenile: () => elleYenile(kurulum.dongu),
+          // K112: yerel yazma sonrasi ITME turu.
+          onYerelYazma: kurulum.dongu.turCalistir,
+          depolama: depolama,
+          // IS-EMRI-o83 s2.2/12: yenileme token'i sunucuda iptal edilir
+          // (OturumYoneticisi.cikisYap). Yerel veriye DOKUNULMAZ -- s2.3'teki
+          // karar SADECE farkli kullaniciyla giriste devreye girer
+          // (ayarlariHazirla ezme karsilastirmasi bir sonraki girişte kosar).
+          onCikisYap: () => unawaited(widget.oturumYoneticisi.cikisYap()),
+        );
+      },
+    );
+  }
+}
+
+/// F5: `--dart-define=DURUM_VITRINI=true` yolunda kullanilan minimal kabuk --
+/// [depo] `null` iken durum vitrinini gosterir, giris ekranini/OturumYoneticisi'ni
+/// hic kurmaz.
 class MomentumUygulamasi extends StatelessWidget {
   final GorevDeposu? depo;
   final SenkronDongusu? dongu;
@@ -83,14 +203,6 @@ class MomentumUygulamasi extends StatelessWidget {
     return MaterialApp(
       title: 'Momentum',
       debugShowCheckedModeBanner: false,
-      // ODEV.md §4(a) canli turunda OLCULDU (o74, Pages demosu): Material'in
-      // YERLESIK diyaloglari (`showDatePicker`) INGILIZCE ciziliyordu --
-      // delege listesi verilmezse Flutter `DefaultMaterialLocalizations`a
-      // duser ve o YALNIZ en_US tasir. Urunun KENDI metinleri zaten
-      // `Metinler`den Turkce geliyordu; ayrisan sey cerceve metinleriydi.
-      // 🔴 `locale` SABIT 'tr' PAZARLIKSIZ: uygulama TEK DILLIDIR. Cihaz
-      // dilini izlemek (locale'i dusurmek) Ingilizce bir cihazda takvimi
-      // yine Ingilizce cizerdi -- kapsam disi degil, YANLIS olurdu.
       locale: const Locale('tr'),
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [Locale('tr')],
@@ -101,9 +213,7 @@ class MomentumUygulamasi extends StatelessWidget {
           ? const DurumVitrini()
           : GorevListesiEkrani(
               depo: depo!,
-              // K112: "Yenile" bugune kadar YALNIZ cekme kosuyordu.
               onYenile: dongu == null ? null : () => elleYenile(dongu!),
-              // K112: yerel yazma sonrasi ITME turu.
               onYerelYazma: dongu?.turCalistir,
               depolama: depolama,
             ),
@@ -139,17 +249,25 @@ class _UretimKurulumu {
   );
 }
 
-/// GOREV-slice-3c T3/T4/T5/T6: ayarlar (clientId/devUserId) once yuklenir/
-/// uretilir; HLC ureteci VE senkron dongusu ayni ornegi (`hlc`) PAYLASIR --
-/// biri yeni op damgalar (T4), digeri sunucu yanitiyla birlestirir (D3).
-Future<_UretimKurulumu> _uretimKurulumOlustur() async {
+/// GOREV-slice-3c T3/T4/T5/T6 (IS-EMRI-o83 ile GENISLETILDI): ayarlar
+/// (clientId/devUserId) once yuklenir/uretilir -- `ezme` ARTIK derleme-zamani
+/// `DEV_USER_ID` DEGIL, [kullaniciId] (giris yapan kullanicinin GERCEK
+/// kimligi, `OturumYoneticisi`den). AYNI MEKANIZMA YENIDEN KULLANILIR (is
+/// emri s2.3): `ezme` yereldeki kimlikten farkliysa `ayarlariHazirla` yerel
+/// gorevleri/kuyrugu SESSIZCE TEMIZLER -- yeni bir mekanizma icat edilmedi.
+/// HLC ureteci VE senkron dongusu ayni ornegi (`hlc`) PAYLASIR (biri yeni op
+/// damgalar, digeri sunucu yanitiyla birlestirir).
+Future<_UretimKurulumu> _uretimKurulumOlustur(
+  OturumYoneticisi oturumYoneticisi,
+  String kullaniciId,
+) async {
   // GOREV-W2 T5/D-W2-7: baslangic degeri `olculmedi` SABITINDEDIR -- native
   // yolda dikis (`onResult`) hic cagrilmadigi icin (olculdu: `drift_flutter`
   // native implementasyonu `web:` secenegini hic okumuyor) bu deger DEGISMEZ.
   final depolamaBildirimi = DepolamaBildirimi(const DepolamaDurumu.olculmedi());
   final db = Veritabani(null, depolamaBildirimi);
   final ayarlarDeposu = AyarlarDeposu(db, idUret: uretimIdUret);
-  final ayarlar = await ayarlariHazirla(db, ayarlarDeposu, ezme: devUserIdEzmesi);
+  final ayarlar = await ayarlariHazirla(db, ayarlarDeposu, ezme: kullaniciId);
   final hlc = HlcUretici(
     simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
     clientId: ayarlar.clientId,
@@ -171,6 +289,11 @@ Future<_UretimKurulumu> _uretimKurulumOlustur() async {
     agi: HttpSenkronAgi(
       senkronUcNoktasi: Uri.parse('$_senkronSunucuUrl/v1/sync'),
       actorId: ayarlar.devUserId,
+      // IS-EMRI-o83 s2.2/10: 401'de sessiz yenileme -- ikisi de
+      // OturumYoneticisi'ne devredilir, HttpSenkronAgi JWT/refresh'in
+      // HICBIR AYRINTISINI bilmez (tek-yon bagimlilik).
+      erisimJetonuAl: oturumYoneticisi.gecerliErisimJetonuAl,
+      jetonuYenile: oturumYoneticisi.yenile,
     ),
     ayarlarDeposu: ayarlarDeposu,
     hlc: hlc,

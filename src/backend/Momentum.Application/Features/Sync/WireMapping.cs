@@ -43,13 +43,20 @@ public static class WireMapping
             op.OperationId, op.ClientId, op.EntityId, op.ActorId, op.EntityType, ToHlc(op.OpHlc), fields, sets, groups, order);
     }
 
-    /// <summary>Canonical JSON of the accepted op with every HLC clamped (ADR 0002 K2-B1, outbox payload).</summary>
-    public static string ClampedPayload(WireOp op, long serverReceiveWallMs)
+    /// <summary>
+    /// Canonical JSON of the accepted op with every HLC clamped (ADR 0002 K2-B1, outbox payload).
+    /// IS-EMRI-o83 F5 KILIDI: <paramref name="authenticatedActorId"/> OVERWRITES the wire-declared
+    /// <c>op.ActorId</c> here too -- not just in <c>OutboxRecord.ActorId</c> (SyncCommandHandler.BuildOutbox).
+    /// This payload is exactly what OTHER clients receive back as <c>WireChange.Payload</c> via pull; if
+    /// only the DB column were fixed, a spoofed actorId would still reach every OTHER client's screen.
+    /// </summary>
+    public static string ClampedPayload(WireOp op, long serverReceiveWallMs, Guid authenticatedActorId)
     {
         WireHlc Clamp(WireHlc h) => ToWire(HlcClamp.Clamp(ToHlc(h), serverReceiveWallMs));
 
         var clamped = op with
         {
+            ActorId = authenticatedActorId,
             OpHlc = Clamp(op.OpHlc),
             Fields = op.Fields?.ToDictionary(kv => kv.Key, kv => kv.Value with { Hlc = Clamp(kv.Value.Hlc) }, StringComparer.Ordinal),
             Order = op.Order?.ToDictionary(kv => kv.Key, kv => kv.Value with { Hlc = Clamp(kv.Value.Hlc) }, StringComparer.Ordinal),

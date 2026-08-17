@@ -2,15 +2,19 @@ using Asp.Versioning;
 using Asp.Versioning.Builder;
 using FluentValidation;
 using Mediator;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
 using Momentum.Api.Auth;
 using Momentum.Api.Endpoints;
 using Momentum.Api.Health;
 using Momentum.Api.Realtime;
 using Momentum.Api.Web;
 using Momentum.Application.Abstractions;
+using Momentum.Application.Abstractions.Auth;
 using Momentum.Application.Abstractions.Sync;
 using Momentum.Application.Behaviors;
+using Momentum.Application.Features.Auth;
 using Momentum.Application.Features.Sync;
 using Momentum.Infrastructure;
 using Momentum.Infrastructure.Sync;
@@ -43,20 +47,60 @@ builder.Services.AddMediator();
 builder.Services.AddSyncInfrastructure(hasDatabase
     ? connectionString!
     : "Host=localhost;Port=5432;Database=momentum;Username=momentum;Password=not_configured");
-// GOREV slice-3c D0: dev-identity shield, hard-scoped to Development; every other environment keeps
-// the deny-by-default NullCurrentUser (K-D5). AddHttpContextAccessor is D0's required companion --
-// DevCurrentUser reads the ambient request header through it.
+// GOREV slice-3c D0 (IS-EMRI-o83 s2.1/5/7 ile GENISLETILDI): ICurrentUser artik ONCELIKLE JWT'den
+// okur (her ortamda) -- eski deny-by-default NullCurrentUser'in yerini JwtCurrentUser alir (bir
+// gecerli JWT yoksa AYNI sekilde null doner, deny-by-default korunur). Development'ta EK OLARAK
+// X-Momentum-Dev-User basligi IKINCI/yedek yol olarak kalir (paket.yml AYAK 3 sozlesmesi -- s2.1/7,
+// DOKUNMA listesi s5). AddHttpContextAccessor JwtCurrentUser/DevCurrentUser'in ikisinin de ortak
+// gereksinimi.
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<JwtCurrentUser>();
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.AddScoped<ICurrentUser, DevCurrentUser>();
+    builder.Services.AddScoped<DevCurrentUser>();
+    builder.Services.AddScoped<ICurrentUser, CompositeCurrentUser>();
 }
 else
 {
-    builder.Services.AddScoped<ICurrentUser, NullCurrentUser>();      // deny-by-default (K-D5)
+    builder.Services.AddScoped<ICurrentUser, JwtCurrentUser>();       // deny-by-default when unauthenticated
 }
 builder.Services.AddScoped<IValidator<SyncRequest>, SyncRequestValidator>();
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>)); // K-G1
+
+// --- IS-EMRI-o83 D1: kimlik dilimi (users/refresh_tokens + JWT bearer) -------------------------
+// Jwt:Secret HER ortamda zorunludur (appsettings.Development.json belgeli bir demo degeri tasir,
+// docker-compose.yml'deki POSTGRES_PASSWORD varsayilani ile AYNI gerekce) -- eksikse sessizce
+// herkesi 401'e dusurmek yerine ACIKCA acilista PATLAR (K-D5 deny-by-default ruhu, ama ayni zamanda
+// "yanlislikla imzasiz calisiyor" durumunu da engeller).
+var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
+if (string.IsNullOrWhiteSpace(jwtOptions.Secret))
+{
+    throw new InvalidOperationException("Jwt:Secret yapilandirilmamis (appsettings.{Environment}.json ya da Jwt__Secret ortam degiskeni).");
+}
+
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = jwtOptions.Issuer,
+        ValidateAudience = true,
+        ValidAudience = jwtOptions.Audience,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(jwtOptions.Secret)),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromSeconds(30),
+    };
+});
+
+builder.Services.AddAuthInfrastructure(); // IUserStore/IRefreshTokenStore (Infrastructure/Auth)
+builder.Services.AddScoped<Momentum.Application.Abstractions.Auth.IPasswordHasher, AspNetPasswordHasher>();
+builder.Services.AddScoped<IAccessTokenIssuer, JwtAccessTokenIssuer>();
+builder.Services.AddScoped<IValidator<RegisterRequest>, RegisterRequestValidator>();
+builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
+builder.Services.AddScoped<IValidator<RefreshRequest>, RefreshRequestValidator>();
+builder.Services.AddScoped<IValidator<LogoutRequest>, LogoutRequestValidator>();
 
 // --- slice-2b2: realtime signal (K2-F2/G1/G3). ISignalPublisher binds to SignalR only HERE -- the
 //     dispatcher (Infrastructure) and the Domain/Application layers never see a SignalR type (D9-b). ---
@@ -139,6 +183,12 @@ if (builder.Environment.IsDevelopment() && corsAllowedOrigins.Length > 0) // W1/
     app.UseCors();
 }
 
+// IS-EMRI-o83 D1: populates HttpContext.User from a valid bearer JWT -- must run before anything that
+// reads ICurrentUser (JwtCurrentUser/CompositeCurrentUser above, and the /hubs/sync guard below).
+// No UseAuthorization(): nothing here uses [Authorize]/RequireAuthorization, every endpoint still does
+// its own explicit `currentUser.UserId is null -> 401` check (unchanged deny-by-default pattern).
+app.UseAuthentication();
+
 // Exception -> ProblemDetails, active in every environment (no Developer Exception Page leak).
 app.UseExceptionHandler();
 
@@ -197,6 +247,7 @@ ApiVersionSet versionSet = app.NewApiVersionSet()
 // Endpoints live in named static classes (arch rule 2; GOREV slice-1 D3).
 HealthEndpoints.Map(app);
 DiagnosticsEndpoints.Map(app, versionSet);
+AuthEndpoints.Map(app, versionSet); // IS-EMRI-o83 D1: POST /v1/auth/{register,login,refresh,logout}
 SyncEndpoints.Map(app, versionSet); // slice-2b1: POST /v1/sync
 TaskEndpoints.Map(app, versionSet); // slice-3a D4: GET /v1/tasks(/{id})
 TaskListEndpoints.Map(app, versionSet); // slice-3a D4: GET /v1/task-lists

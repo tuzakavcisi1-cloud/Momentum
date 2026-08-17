@@ -9,7 +9,7 @@ namespace Momentum.Persistence.Tests;
 public sealed class ModelValidationTests
 {
     [Fact]
-    public void Model_is_valid_and_has_ten_tables()
+    public void Model_is_valid_and_has_twelve_tables()
     {
         var options = new DbContextOptionsBuilder<SyncDbContext>()
             .UseNpgsql("Host=localhost;Database=x;Username=x;Password=x")
@@ -17,9 +17,10 @@ public sealed class ModelValidationTests
 
         using var db = new SyncDbContext(options);
 
-        // GOREV slice-3a kriter 2/12 (measured, not assumed): 7 sync tables + tasks/task_lists/task_tags.
+        // GOREV slice-3a kriter 2/12 (measured, not assumed): 7 sync tables + tasks/task_lists/task_tags
+        // + IS-EMRI-o83 D1'in users/refresh_tokens'i (10 -> 12, taban BILEREK guncellendi).
         // malformed_fields (List<string> -> text[]) is an EF primitive collection, NOT a separate entity type.
-        db.Model.GetEntityTypes().Count().ShouldBe(10); // building IModel throws if invalid
+        db.Model.GetEntityTypes().Count().ShouldBe(12); // building IModel throws if invalid
     }
 }
 

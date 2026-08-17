@@ -26,7 +26,7 @@ denetim · orkestrasyon · hafıza yapar, kod yazmaz.
 - [x] İki cihaz aynı görevi değiştirince **çakışma görünür**, kazanan anlaşılır
 - [x] Canlı adresten açılır; tema sistemin **açık/karanlık** ayarına uyar
 - [x] Depo klonlanır, README'deki komutla testler **yeşil** koşar
-- [ ] **Hesap aç, giriş yap;** kendi görevlerini gör, başkasınınkini görme — *18-21 Ağu*
+- [x] **Hesap aç, giriş yap;** kendi görevlerini gör, başkasınınkini görme — *18-21 Ağu*
 - [ ] Görevleri **listelere** ayır, listeleri **klasörde** topla, görevi listeye taşı — *22-23 Ağu*
 - [ ] **İki kullanıcı bir listeyi paylaşır;** birinin yazdığı ötekinin ekranında belirir — *24-27 Ağu*
 - [ ] Göreve **tekrar** ver; tamamlayınca sonraki örnek doğar — *28-29 Ağu*

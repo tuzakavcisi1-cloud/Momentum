@@ -1,0 +1,60 @@
+=== a) POST /v1/auth/register (A) ===
+HTTP 409
+{"detail":"email already registered"}
+
+=== a) POST /v1/auth/login (A, fallback) ===
+HTTP 200
+{"userId":"01a011f1-93bc-75b9-96f1-c7060cb76230","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWEwMTFmMS05M2JjLTc1YjktOTZmMS1jNzA2MGNiNzYyMzAiLCJuYmYiOjE3ODcwMDc1MDIsImV4cCI6MTc4NzAwODQwMiwiaXNzIjoiTW9tZW50dW0iLCJhdWQiOiJNb21lbnR1bSJ9.rVnu0eaNXwrLGtA4cBrceNWuvcZGRT-7coWBV4rYc7w","accessTokenExpiresAt":"2026-08-17T23:13:22.6975677+00:00","refreshToken":"7ZGD9HaXnhSCCPc3yXYTvT5o+g8d1EGDIIIuRqr1ju0="}
+
+=== a) POST /v1/sync (A gorev ekler, Bearer A) ===
+HTTP 200
+{"serverHlc":{"wallMs":1787007502703,"counter":0,"clientId":"33333333-3333-3333-3333-333333333333"},"nextCursor":{"xid":1359,"seq":0},"hasMore":false,"resyncRequired":false,"applied":[{"operationId":"01a011f2-896e-74cd-8029-b188d7e4cb5f","code":"Applied","effectiveOpHlc":{"wallMs":1787007502703,"counter":0,"clientId":"33333333-3333-3333-3333-333333333333"}}],"changes":[],"snapshot":[{"entityType":"Task","entityId":"11111111-1111-1111-1111-111111111111","scalars":[{"field":"title","value":"A'nin 
+
+=== b) POST /v1/auth/register (B) ===
+HTTP 409
+{"detail":"email already registered"}
+
+=== b) POST /v1/auth/login (B, fallback) ===
+HTTP 200
+{"userId":"01a011f1-965b-70ce-b4b1-dad500337c3d","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWEwMTFmMS05NjViLTcwY2UtYjRiMS1kYWQ1MDAzMzdjM2QiLCJuYmYiOjE3ODcwMDc1MDIsImV4cCI6MTc4NzAwODQwMiwiaXNzIjoiTW9tZW50dW0iLCJhdWQiOiJNb21lbnR1bSJ9.rWbt-QcA0kCdB46K5UqFskVZwqzdpc-iDGnONZZkH-g","accessTokenExpiresAt":"2026-08-17T23:13:22.9766117+00:00","refreshToken":"BWxwRAzsv3Uz/skIf470sdOk+YvjvsQUulYYRVrQ3l4="}
+
+=== b) GET /v1/tasks (Bearer B) ===
+HTTP 200
+A'nin gorevini icerir mi: False
+{"items":[],"nextCursor":null}
+
+=== c) POST /v1/sync (B gorev ekler, Bearer B) ===
+HTTP 200
+{"serverHlc":{"wallMs":1787007502993,"counter":0,"clientId":"66666666-6666-6666-6666-666666666666"},"nextCursor":{"xid":1362,"seq":0},"hasMore":false,"resyncRequired":false,"applied":[{"operationId":"01a011f2-8a91-74c1-9ca2-9823bacd85ef","code":"Applied","effectiveOpHlc":{"wallMs":1787007502993,"counter":0,"clientId":"66666666-6666-6666-6666-666666666666"}}],"changes":[],"snapshot":[{"entityType":"Task","entityId":"44444444-4444-4444-4444-444444444444","scalars":[{"field":"title","value":"B'nin 
+
+=== c) GET /v1/tasks (Bearer A) ===
+HTTP 200
+B'nin gorevini icerir mi: False
+{"items":[{"entityId":"11111111-1111-1111-1111-111111111111","title":"A'nin canli gorevi","notes":null,"priority":null,"dueAt":null,"remindAt":null,"projectId":null,"isDeleted":false,"recurrenceRule":null,"listPos":null,"boardPos":null,"status":null,"completedAt":null,"hasDeleteEditConflict":false,"malformedFields":[],"tags":[]}],"nextCursor":null}
+
+=== d) POST /v1/sync (SURESI GECMIS JWT, ayni imza sirriyla ZORLANDI) ===
+HTTP 401
+
+
+=== d) POST /v1/auth/refresh (A'nin GERCEK refresh token'i) ===
+HTTP 200
+{"userId":"01a011f1-93bc-75b9-96f1-c7060cb76230","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWEwMTFmMS05M2JjLTc1YjktOTZmMS1jNzA2MGNiNzYyMzAiLCJuYmYiOjE3ODcwMDc1MDMsImV4cCI6MTc4NzAwODQwMywiaXNzIjoiTW9tZW50dW0iLCJhdWQiOiJNb21lbnR1bSJ9.T0ckFH0awl4bif6qEKON6mEwThuYZ2HcysUh9fGOlU8","accessTokenExpiresAt":"2026-08-17T23:13:23.0941952+00:00","refreshToken":"l6JvrcSDiG3OxbixW/TwzSG9Bo713gphh+G5PvheJ9s="}
+
+=== d) POST /v1/sync (YENILENMIS token ile AYNI op TEKRAR gonderilir) ===
+HTTP 200
+{"serverHlc":{"wallMs":1787007502703,"counter":0,"clientId":"33333333-3333-3333-3333-333333333333"},"nextCursor":{"xid":1365,"seq":0},"hasMore":false,"resyncRequired":false,"applied":[{"operationId":"01a011f2-896e-74cd-8029-b188d7e4cb5f","code":"Duplicate","effectiveOpHlc":{"wallMs":1787007502703,"counter":0,"clientId":"33333333-3333-3333-3333-333333333333"}}],"changes":[],"snapshot":[{"entityType":"Task","entityId":"11111111-1111-1111-1111-111111111111","scalars":[{"field":"title","value":"A'ni
+
+=== e) yetkili/yetkisiz GET /v1/tasks ===
+yetkili=200
+yetkisiz=401
+
+=== OZET ===
+[DUR] A kaydi basarisiz (409) -- belki zaten var, login deneniyor
+a) A kaydoldu+giris yapti+gorev ekledi -> HTTP 200
+b) B, A'nin gorevini GORUYOR MU: False (beklenen: False)
+c) A, B'nin gorevini GORUYOR MU: False (beklenen: False)
+d.1) suresi gecmis JWT ile push -> HTTP 401 (beklenen: 401)
+d.2) refresh -> HTTP 200
+d.3) yenilenmis token ile ayni op tekrar -> HTTP 200 (beklenen: 200, kayip yok)
+e.1) GET /v1/tasks + Authorization -> HTTP 200 (beklenen: 200)
+e.2) GET /v1/tasks basliksiz -> HTTP 401 (beklenen: 401)

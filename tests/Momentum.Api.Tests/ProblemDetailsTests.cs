@@ -14,10 +14,16 @@ namespace Momentum.Api.Tests;
 /// </summary>
 public sealed class ProblemDetailsTests
 {
+    // IS-EMRI-o83 D1: Program.cs artik Jwt:Secret eksikse acilista PATLIYOR (bkz. Program.cs) --
+    // appsettings.Development.json'da gercek bir demo deger var ama Production-pinli bu testte YOK,
+    // bu yuzden test kendi (gercek olmayan, sadece gecerli-Base64) degerini ACIKCA verir.
+    private const string TestJwtSecret = "8YFLoBlqtpdfhP9Pk+fypjeAY5YFKsMrycqTHgw3zTI=";
+
     private static WebApplicationFactory<Program> ProductionFactoryWithThrowingEndpoint() =>
         new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.UseEnvironment("Production");
+            builder.UseSetting("Jwt:Secret", TestJwtSecret);
             builder.ConfigureServices(services =>
                 services.AddSingleton<IStartupFilter, ThrowingEndpointStartupFilter>());
         });

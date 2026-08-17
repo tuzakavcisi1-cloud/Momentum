@@ -16,6 +16,11 @@ public class DevKimlikKapisiTestleri
 {
     private const string SyncYolu = "/v1/sync";
 
+    // IS-EMRI-o83 D1: Program.cs artik Jwt:Secret eksikse acilista PATLIYOR (bkz. Program.cs) --
+    // appsettings.Development.json'da gercek bir demo deger var ama Production-pinli bu testte YOK,
+    // bu yuzden test kendi (gercek olmayan, sadece gecerli-Base64) degerini ACIKCA verir.
+    private const string TestJwtSecret = "8YFLoBlqtpdfhP9Pk+fypjeAY5YFKsMrycqTHgw3zTI=";
+
     private static StringContent MinimalIstek(Guid clientId) =>
         new(
             $$"""{"clientId":"{{clientId}}","clientHlc":null,"sinceCursor":null,"ops":[]}""",
@@ -56,7 +61,11 @@ public class DevKimlikKapisiTestleri
     public async Task Production_GecerliBaslikOlsaBile_401Doner()
     {
         await using var uygulama = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(b => b.UseEnvironment("Production"));
+            .WithWebHostBuilder(b =>
+            {
+                b.UseEnvironment("Production");
+                b.UseSetting("Jwt:Secret", TestJwtSecret);
+            });
         using var istemci = uygulama.CreateClient();
         istemci.DefaultRequestHeaders.Add("X-Momentum-Dev-User", Guid.NewGuid().ToString());
 

@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Momentum.Application.Abstractions.Auth;
 using Momentum.Application.Abstractions.Sync;
+using Momentum.Infrastructure.Auth;
 using Momentum.Infrastructure.Persistence;
 using Momentum.Infrastructure.Sync;
 
@@ -29,6 +31,18 @@ public static class DependencyInjection
         services.AddScoped(_ => new OutboxClaimStore(connectionString));
         services.AddScoped<IScopeMembershipSource, ScopeMembershipSource>();
 
+        return services;
+    }
+
+    /// <summary>
+    /// IS-EMRI-o83 D1: users/refresh_tokens ports. SEPARATE from <see cref="AddSyncInfrastructure"/>
+    /// (own name, own call site in Program.cs) even though both share <see cref="SyncDbContext"/> --
+    /// the two concerns (CRDT sync vs. plain-CRUD identity) stay independently readable/removable.
+    /// </summary>
+    public static IServiceCollection AddAuthInfrastructure(this IServiceCollection services)
+    {
+        services.AddScoped<IUserStore, UserStore>();
+        services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
         return services;
     }
 }

@@ -1,0 +1,5 @@
+SELECT owner_id, actor_id FROM outbox_messages WHERE operation_id = @op (op=01a011f3-f6eb-7057-9d36-f7e3639d511b)
+actorX (kimlik dogrulama basligi) = f6c0eda5-e492-414b-8ff1-7237dc20747d
+actorY (govdenin actorId iddiasi, ARTIK EZILIYOR) = 92a2e9fb-cab9-42ff-bf68-4e2fe3e2a240
+owner_id  = f6c0eda5-e492-414b-8ff1-7237dc20747d  (beklenen: actorX)
+actor_id  = f6c0eda5-e492-414b-8ff1-7237dc20747d  (beklenen: actorX -- o83 F5, D9'u supersede eder)

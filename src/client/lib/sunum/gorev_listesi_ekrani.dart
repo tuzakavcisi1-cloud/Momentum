@@ -44,12 +44,19 @@ class GorevListesiEkrani extends StatefulWidget {
   // -- geriye donuk uyumlu, DepolamaSeridi'ye hic ulasilmaz.
   final ValueListenable<DepolamaDurumu>? depolama;
 
+  // IS-EMRI-o83 s2.2/12: `null` ise (mevcut testler/durum vitrini) cikis
+  // dugmesi HIC gosterilmez -- geriye donuk uyumlu (onYenile/onYerelYazma/
+  // depolama'nin AYNI deseni). Yerel veriye ne olacagi main.dart'taki
+  // OturumYoneticisi.cikisYap ile AYNI karardadir (s2.3).
+  final VoidCallback? onCikisYap;
+
   const GorevListesiEkrani({
     super.key,
     required this.depo,
     this.onYenile,
     this.onYerelYazma,
     this.depolama,
+    this.onCikisYap,
   });
 
   @override
@@ -207,18 +214,26 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MRenk.yuzey(context),
-      appBar: widget.onYenile == null
+      appBar: (widget.onYenile == null && widget.onCikisYap == null)
           ? null
           : AppBar(
               backgroundColor: MRenk.yuzey(context),
               elevation: 0,
               actions: [
-                IconButton(
-                  key: const ValueKey('elle_yenile_dugmesi'),
-                  icon: const Icon(Icons.refresh),
-                  tooltip: 'Yenile',
-                  onPressed: () => widget.onYenile!(),
-                ),
+                if (widget.onYenile != null)
+                  IconButton(
+                    key: const ValueKey('elle_yenile_dugmesi'),
+                    icon: const Icon(Icons.refresh),
+                    tooltip: 'Yenile',
+                    onPressed: () => widget.onYenile!(),
+                  ),
+                if (widget.onCikisYap != null)
+                  IconButton(
+                    key: const ValueKey('cikis_yap_dugmesi'),
+                    icon: const Icon(Icons.logout),
+                    tooltip: Metinler.cikisYapDugmesi,
+                    onPressed: () => widget.onCikisYap!(),
+                  ),
               ],
             ),
       body: SafeArea(

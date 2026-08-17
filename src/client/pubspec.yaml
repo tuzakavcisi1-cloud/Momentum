@@ -52,6 +52,12 @@ dependencies:
   # K77/1 (slice-3e): kendi minimal SignalR-JSON istemcimizin tasima katmani.
   # BSD-3-Clause, pub.dev /advisories 0 kayit (T4'te pub-cve-kapisi/pub-lisans-kapisi ile dogrulanir).
   web_socket_channel: ^3.0.3
+  # IS-EMRI-o83 s2.2/9: YENI BAGIMLILIK -- kirmizi cizgi geregi lisans+CVE kapilari koşuldu (17 Agu
+  # 2026, KANIT/o83/05-pub-lisans-kapisi.txt + 06-pub-cve-kapisi.txt): flutter_secure_storage 11.0.0
+  # ve platform paketleri (darwin/linux/web/windows/platform_interface) + win32/ffi_leak_tracker ikisi
+  # de TEMIZ (exit 0) -- izinsiz lisans yok, bastirilmamis CVE yok. `flutter pub add` ile eklendi
+  # (surum uydurulmadi, lock dosyasi kanonik).
+  flutter_secure_storage: ^11.0.0
 
 dev_dependencies:
   flutter_test:

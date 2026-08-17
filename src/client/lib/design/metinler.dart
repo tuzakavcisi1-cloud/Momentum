@@ -148,4 +148,21 @@ class Metinler {
     'Kas',
     'Ara',
   ];
+
+  // IS-EMRI-o83 DILIM 1 (KIMLIK) -- giris/kayit ekrani. F6'nin 13 dizgesine
+  // DAHIL DEGIL (yukaridaki EK gruplarin AYNI deseni).
+  static const String girisEkraniBasligi = 'Momentum';
+  static const String epostaEtiketi = 'E-posta';
+  static const String sifreEtiketi = 'Parola';
+  static const String girisYapDugmesi = 'Giriş yap';
+  static const String kayitOlDugmesi = 'Kayıt ol';
+  static const String hesabinYokMu = 'Hesabın yok mu? Kayıt ol';
+  static const String zatenHesabinVarMi = 'Zaten hesabın var mı? Giriş yap';
+  static const String girisHatasiGecersizBilgi = 'E-posta veya parola hatalı.';
+  static const String girisHatasiEpostaKullanimda = 'Bu e-posta zaten kayıtlı.';
+  static const String girisHatasiGenel = 'Bir şeyler ters gitti, tekrar deneyin.';
+  static const String girisHatasiAg = 'Sunucuya ulaşılamadı, bağlantını kontrol et.';
+  static const String girisHatasiKisaSifre = 'Parola en az 8 karakter olmalı.';
+  static const String oturumAcikBekleniyor = 'Oturum hazırlanıyor…';
+  static const String cikisYapDugmesi = 'Çıkış yap';
 }
