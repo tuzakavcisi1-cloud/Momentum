@@ -1,0 +1,36 @@
+IS-EMRI-o81 -- aspnet:10.0 yuzen etiketinin olcumu (Claude Code, 17 Agu 2026)
+Komutlar PowerShell'den (bulut araci degil, yerelden) kosuldu.
+
+=== 1) docker pull mcr.microsoft.com/dotnet/aspnet:10.0 ===
+10.0: Pulling from dotnet/aspnet
+Digest: sha256:207cc51496778557731c81ff670333d8ade4a4fec22768fd1be8e78474a84ecf
+Status: Downloaded newer image for mcr.microsoft.com/dotnet/aspnet:10.0
+mcr.microsoft.com/dotnet/aspnet:10.0
+
+=== 2) docker run --rm mcr.microsoft.com/dotnet/aspnet:10.0 dotnet --list-runtimes ===
+Microsoft.AspNetCore.App 10.0.11 [/usr/share/dotnet/shared/Microsoft.AspNetCore.App]
+Microsoft.NETCore.App 10.0.11 [/usr/share/dotnet/shared/Microsoft.NETCore.App]
+
+SONUC: yuzen `10.0` etiketi SU AN 10.0.11 veriyor. Pin bu surume yazilir: aspnet:10.0.11
+
+=== 3) docker image inspect mcr.microsoft.com/dotnet/aspnet:10.0 --format '{{index .RepoDigests 0}}' ===
+mcr.microsoft.com/dotnet/aspnet@sha256:207cc51496778557731c81ff670333d8ade4a4fec22768fd1be8e78474a84ecf
+
+(Digest KANIT icin kaydedildi; FROM satirina digest KONMADI -- depo SDK'yi da tag ile
+pinliyor, bicim tutarli kalsin, is emri s3.)
+
+=== 4) MCR etiket listesi (yerelden, Invoke-RestMethod ile) ===
+Uri: https://mcr.microsoft.com/v2/dotnet/aspnet/tags/list
+Bulut araciyla OKUNMADI (is emri uyarisi: Cowork denedi, govde bozuk geldi -- 10.0.8/10.0.9
+eksik, 10.0.10/10.0.11 var iddiasi). Yerelden ham JSON cekildi, tam liste 55.3 KB
+(araclar/-disi bir gecici dosyaya kaydedildi, burada yalniz ilgili satirlar).
+
+grep '^10\.0\.11$' tam-liste.txt -> satir 605: 10.0.11   [ESLESTI -- YAYINDA]
+grep '^10\.0\.10$' tam-liste.txt -> satir 513: 10.0.10   [ESLESTI -- YAYINDA, komsu surum]
+grep '^10\.0\.12$' tam-liste.txt -> ESLESME YOK (henuz yayinlanmamis)
+
+SONUC: `10.0.11` bare-tag olarak MCR'de GERCEKTEN YAYINDA. Pin `aspnet:10.0.11` gecerli.
+
+=== KARAR ===
+Dockerfile:149 `FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS calisma`
+              -> `FROM mcr.microsoft.com/dotnet/aspnet:10.0.11 AS calisma`

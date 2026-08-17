@@ -146,7 +146,13 @@ RUN dotnet ef migrations bundle \
 
 
 # --- 3) CALISMA IMAJI ---------------------------------------------------------
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS calisma
+# OLCULMUS PIN (o81): yuzen `10.0` etiketi SU AN 10.0.11 veriyor (docker run --rm
+# mcr.microsoft.com/dotnet/aspnet:10.0 dotnet --list-runtimes, 17 Agu 2026). MCR
+# etiket listesi okundu (mcr.microsoft.com/v2/dotnet/aspnet/tags/list): `10.0.11`
+# bare-tag olarak yayinda, komsu `10.0.10` da yayinda ⇒ yuzen etiket ozellik
+# BANDI atlayabilir, tipki SDK pininin yukaridaki gerekcesindeki gibi. Bu yuzden
+# calisma imaji da SDK ile ayni bicimde BIREBIR pinlenir; yapi tekrarlanabilir olur.
+FROM mcr.microsoft.com/dotnet/aspnet:10.0.11 AS calisma
 WORKDIR /app
 
 COPY --from=derleme /uygulama ./
