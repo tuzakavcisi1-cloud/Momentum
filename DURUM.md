@@ -1,6 +1,6 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 10/10 · kutu 21 Ağu 2026 · özellik dilimi YOK · HEAD `ce630ec`. AŞAMA: TESLİM** = docker imajı (API + web aynı köken) + Android APK. Windows masaüstü ve iOS cihaz KAPSAM DIŞI.
+**BİTTİ: 10/10 · kutu 21 Ağu 2026 · özellik dilimi YOK · HEAD `a332b25`. AŞAMA: TESLİM EDİLDİ** = docker imajı (API + web aynı köken) + Android APK. Windows masaüstü ve iOS cihaz KAPSAM DIŞI.
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
 > ② bu dosya ③ CI durumu — **cihazdaki Chrome'dan okunur** (bulut tarayıcısı kanıt değildir).
@@ -38,14 +38,12 @@ görev **PostgreSQL'e ulaştı**. **Çift yönlü senkron iki gerçek istemcide 
 tarayıcı ↔ telefon). O APK 59.953.214 bayt / üç ABI / **debug anahtarıyla imzalı**, ama
 `SENKRON_SUNUCU_URL` Onur'un LAN IP'sine gömülü ⇒ **değerlendiricide çalışmaz**.
 
-## Sıradaki iş — README son okuma (kutu kapanışı 21 Ağu)
+## Sıradaki iş — kutu kapanışı (21 Ağu)
 
-**TESLİM PAKETİ YAYINDA** (17 Ağu): `v1.0.0` → `09d0e75`, Latest; indirilen APK'nın hash'i tuttu.
-o81'de kapananlar: README 8 maddede tazelendi · `aspnet` **10.0.11**'e pinlendi (koşan imajdan
-doğrulandı) · uygulama adı her yerde **Momentum** · yatay yerleşim ÖLÇÜLDÜ.
-🔴 **KALAN:** ad değişti ⇒ APK **yeniden derlenir** → sha256 ölçülür → `v1.0.0` varlığı ve notu
-güncellenir (etiket değişmez). Release notundaki `src/server/`+`docs/adr/` **YANLIŞ**; doğrusu
-`src/backend/`+`docs/ADR/`.
+**TESLİM TAMAM (17 Ağu).** `v1.0.1` → `a332b25`, **Latest**; indirilen APK'nın sha256'sı
+(`ee3b4e0b…6b46`) birebir tuttu. `v1.0.0` arşiv olarak duruyor, dokunulmadı. Kapılar `ci #67` ·
+`paket #9` · `pages #10` — üçü de `a332b25`. o81'de kapananlar: uygulama adı **Momentum** ·
+`aspnet:10.0.11` pini · yatay yerleşim · README 8 madde. **Kalan tek iş:** 21 Ağu README okuması.
 
 ## Bilinen sınırlar
 
