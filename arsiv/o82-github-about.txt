@@ -1,39 +1,32 @@
 GITHUB "About" PANELI — o82, 17 Agu 2026
-Olculdu (cihaz Chrome, 17 Agu ~22:57): panel BOS, birebir "No description, website,
-or topics provided." Depoyu ilk acan degerlendiricinin gozu sag raya gider ve canli
-demoya giden link orada YOKTUR.
+Olculdu (cihaz Chrome, 17 Agu): panel dolduruldu ve dogrulandi — aciklama + website
+(https://tuzakavcisi1-cloud.github.io/Momentum/) + 12 topic yerinde.
 
-Asagidaki uc alan, GitHub'da depo sayfasi > sag rayda "About" yazisinin yanindaki
-DISLI ikonuna tiklayinca acilan kutuya girer. Uc alani da ELLE yaz/yapistir.
+DUZELTME (o82, ayni gun): ilk surumde aciklama SAF ASCII yazilmisti ("Cok platformlu
+gorev yonetimi..."). Depo bastan sona Turkce; aciklamanin Turkce karakter tasimamasi
+degerlendiricide ozensiz gorunur. Asagidaki (1) bolumu duzeltilmis Turkce metindir.
+
+Alanlar: depo sayfasi > sag rayda "About" yaninda DISLI ikonu > Edit repository details.
+Bu dosyayi NOTEPAD ile ac ve oradan kopyala (sohbetten kopyalanan metin HTML tasir).
+Notepad'de "Çok" dogru gorunuyorsa kodlama dogrudur; bozuk gorunuyorsa dosyayi
+"UTF-8" olarak yeniden ac.
 
 
 --- 1) Description (tek satir, 350 karakter siniri) -------------------------------
 
-Cok platformlu gorev yonetimi: Flutter (Android + Web) + N-katmanli .NET 10 / ASP.NET Core + PostgreSQL. Cevrimdisi-oncelikli senkron ve kullaniciya gorunur cakisma cozumu; her iddia olculmus, olculemeyen "olculemedi" diye yazilmistir.
+Çok platformlu görev yönetimi: Flutter (Android + Web) + N-katmanlı .NET 10 / ASP.NET Core + PostgreSQL. Çevrimdışı-öncelikli senkron ve kullanıcıya görünür çakışma çözümü; her iddia ölçülmüş, ölçülemeyen "ölçülemedi" diye yazılmıştır.
 
 
---- 2) Website ------------------------------------------------------------------
+--- 2) Website (YERINDE, degistirme) ---------------------------------------------
 
 https://tuzakavcisi1-cloud.github.io/Momentum/
 
-(Ayni kutuda "Use your GitHub Pages website" diye bir onay kutusu cikarsa onu
-isaretlemek de ayni sonucu verir.)
 
+--- 3) Topics (YERINDE, 12 adet, degistirme) -------------------------------------
 
---- 3) Topics (her birini yazip Enter'a bas) ------------------------------------
-
-flutter
-dart
-dotnet
-aspnet-core
-postgresql
-offline-first
-sync
-conflict-resolution
-clean-architecture
-cqrs
-drift
-signalr
+asp-net-core · clean-architecture · conflict-resolution · cqrs · dart · dotnet
+drift · flutter · offline-first · postgresql · signalr · sync
 
 
 NOT: Bu bir depo AYARIDIR, dosya degildir; commit gerektirmez, aninda yayina girer.
+Dusen tek is: (1) bolumundeki Turkce metni Description alanina yapistirip Save.

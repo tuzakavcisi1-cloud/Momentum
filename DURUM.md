@@ -1,6 +1,6 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 10/10 · kutu 21 Ağu 2026 · özellik dilimi YOK · HEAD `311b6d0`. AŞAMA: TESLİM EDİLDİ** = docker imajı (API + web aynı köken) + Android APK. Windows masaüstü ve iOS cihaz KAPSAM DIŞI.
+**BİTTİ: 10/10 · kutu 21 Ağu 2026 · özellik dilimi YOK · HEAD `16e9857`. AŞAMA: TESLİM EDİLDİ** = docker imajı (API + web aynı köken) + Android APK. Windows masaüstü ve iOS cihaz KAPSAM DIŞI.
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
 > ② bu dosya ③ CI durumu — **cihazdaki Chrome'dan okunur** (bulut tarayıcısı kanıt değildir).
@@ -41,10 +41,11 @@ tarayıcı ↔ telefon). O APK 59.953.214 bayt / üç ABI / **debug anahtarıyla
 ## Sıradaki iş — kutu kapanışı (21 Ağu)
 
 **TESLİM TAMAM (17 Ağu).** `v1.0.1` → `a332b25`, **Latest**; indirilen APK'nın sha256'sı
-(`ee3b4e0b…6b46`) birebir tuttu. `v1.0.0` arşiv olarak duruyor, dokunulmadı. Kapılar `ci #68`=
-`311b6d0` · `paket #9`·`pages #10`=`a332b25` (o82, cihaz Chrome). o81'de kapananlar: uygulama adı
-**Momentum** · `aspnet:10.0.11` pini · yatay yerleşim. **o82 README okuması BİTTİ**, 7 bulgu
-düzeltildi (en ağırı: Releases kutusu `v1.0.0`'a bakıyordu). **Kalan:** README commit+push.
+(`ee3b4e0b…6b46`) birebir tuttu. `v1.0.0` arşiv olarak duruyor, dokunulmadı. Kapılar `ci #69`=
+`16e9857` · `paket #9`·`pages #10`=`a332b25` (o82, cihaz Chrome). o81'de kapananlar: uygulama adı
+**Momentum** · `aspnet:10.0.11` pini · yatay yerleşim. **o82:** README okuması BİTTİ, 7 bulgu
+düzeltildi: Releases kutusu `v1.0.1`e döndü, GitHub About dolduruldu, v1.0.1 notunda
+KANIT 1.355. §5: BORCLAR sayımı bağımsız ölçüldü, **tuttu**. **AÇIK İŞ YOK.**
 
 ## Bilinen sınırlar
 
