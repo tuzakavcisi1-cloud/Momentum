@@ -1,6 +1,6 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 10/10 · kutu 21 Ağu 2026 · özellik dilimi YOK · HEAD `16e9857`. AŞAMA: TESLİM EDİLDİ** = docker imajı (API + web aynı köken) + Android APK. Windows masaüstü ve iOS cihaz KAPSAM DIŞI.
+**BİTTİ: 10/15 · kutu 2 Eyl 2026 · dilim 1/5 KİMLİK · HEAD `39e0699`. AŞAMA: `v1.0.1` TESLİM EDİLDİ, boşluk kapatma başladı.** Teslim biçimi paketlenmiş build (docker imajı + APK); yeni teslim `v1.1.0`.
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
 > ② bu dosya ③ CI durumu — **cihazdaki Chrome'dan okunur** (bulut tarayıcısı kanıt değildir).
@@ -15,37 +15,33 @@
 YASAK; süzme TEK `where`da; 32 mutant öldü.
 **Dersler:** kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ (o74) · ortamı değil **DİKİŞİ** ölç (o77).
 
-## Oturum 79 — docker paketi ve KÖR KAPI dersi
+## Oturum 79-80 (özet; ayrıntı README + `arsiv/`)
 
-`Dockerfile` · `docker-compose.yml` (postgres → migrator → api) · `paket.yml`. Şemayı `api` DEĞİL
-**ayrı migrator servisi** kurar. Bulutta üç kusur yakalandı: `cirruslabs/flutter:3.44.6` yok ·
-yüzen `sdk:10.0` pini kırabilirdi (→ `10.0.302`) · `ef bundle` başlangıç projesi Api olamaz.
-🔴 **KÖR KAPI:** kapı gövdede `flutter_bootstrap.js` **dizesini** arıyordu; o dize
-`src/client/web/index.html:44` şablonunda zaten var ⇒ bütün Flutter çıktısı **404** dönerken **dört
-ayak da yeşil** yandı. Kapı yeniden yazıldı: **dize değil VARLIK · sayı değil AD · ÜRÜN UCU**.
-Denetim 3 bloker · 6 majör · 7 minör; kapatılmayanlar §sınır 3. **İkinci ders:** düzeltmenin
-yazılmış olması indiği anlamına gelmez (sha256 yakaladı). **Üçüncü ders:** `curl … | grep -q`
-YAZMA — `pipefail` **yalancı kırmızı** yakar.
+Docker paketi: `Dockerfile` · compose (postgres → **ayrı migrator** → api) · `paket.yml`.
+🔴 **KÖR KAPI dersi:** kapı gövdede `flutter_bootstrap.js` **dizesini** arıyordu, o dize şablonda
+zaten vardı ⇒ tüm Flutter çıktısı **404**'ken dört ayak yeşil yandı. Kural: **dize değil VARLIK ·
+sayı değil AD · ÜRÜN UCU**. İkinci ders: düzeltmenin yazılmış olması indiği anlamına gelmez
+(sha256 yakaladı). Üçüncü: `curl … | grep -q` YAZMA — `pipefail` **yalancı kırmızı** yakar.
+Paket **gerçek makinede** ölçüldü (17 Ağu): 27 dk · `crossOriginIsolated=true` · drift
+**opfsLocks** · tarayıcıda yazılan görev **PostgreSQL'e ulaştı** · **çift yönlü senkron iki gerçek
+istemcide** (masaüstü ↔ telefon). Test **708/708**, `analyze` 0.
 
-## Oturum 80 — KAPANDI (canlı)
+## Sıradaki iş — DİLİM 1: KİMLİK (18-21 Ağu)
 
-Boş senkron rozeti satırın yarısını yutuyordu; düzeltildi ve **gerçek telefonda** doğrulandı:
-başlığın çizilen genişliği **~225 → ~450 px** (`KANIT/o80/01`). 3 mutant öldü, A11Y-7 regresyonu
-bulunup kapatıldı, `analyze` 0, test **708/708**.
-**Paket gerçek makinede ölçüldü** (17 Ağu, Windows + Docker Desktop): ilk derleme **27 dk** ·
-`crossOriginIsolated=true` · drift **opfsLocks** (Pages'te `sharedIndexedDb`) · tarayıcıda yazılan
-görev **PostgreSQL'e ulaştı**. **Çift yönlü senkron iki gerçek istemcide kanıtlandı** (masaüstü
-tarayıcı ↔ telefon). O APK 59.953.214 bayt / üç ABI / **debug anahtarıyla imzalı**, ama
-`SENKRON_SUNUCU_URL` Onur'un LAN IP'sine gömülü ⇒ **değerlendiricide çalışmaz**.
+**`v1.0.1` teslim edildi (17 Ağu)** → `a332b25`, **Latest**, indirilen APK'nın sha256'sı birebir
+tuttu. Kapılar `ci #70`=`39e0699` · `paket #9`·`pages #10`=`a332b25`. o82: README son okuması,
+7 bulgu düzeltildi (Releases kutusu `v1.0.1`e döndü · KANIT 1.355 · About paneli dolduruldu).
 
-## Sıradaki iş — kutu kapanışı (21 Ağu)
+🔴 **[Onur kilidi, 18 Ağu] BOŞLUKLAR KAPATILACAK.** ÖDEV kilidine göre teslim eksikti: §4(a)
+parite **6/10** (liste · proje · tekrar · hatırlatıcı yok) · §4(b) taç mücevher **1/2** (işbirliği
+vitrini yok) · §6.1 kimlik dilimi **teslim edilmedi**. Sıra **kimlik → liste(+proje klasörü) →
+işbirliği → tekrar → hatırlatıcı**; liste, işbirliğinin **ön koşuludur** (ÖDEV §8(5): paylaşım
+liste/proje düzeyinde).
 
-**TESLİM TAMAM (17 Ağu).** `v1.0.1` → `a332b25`, **Latest**; indirilen APK'nın sha256'sı
-(`ee3b4e0b…6b46`) birebir tuttu. `v1.0.0` arşiv olarak duruyor, dokunulmadı. Kapılar `ci #69`=
-`16e9857` · `paket #9`·`pages #10`=`a332b25` (o82, cihaz Chrome). o81'de kapananlar: uygulama adı
-**Momentum** · `aspnet:10.0.11` pini · yatay yerleşim. **o82:** README okuması BİTTİ, 7 bulgu
-düzeltildi: Releases kutusu `v1.0.1`e döndü, GitHub About dolduruldu, v1.0.1 notunda
-KANIT 1.355. §5: BORCLAR sayımı bağımsız ölçüldü, **tuttu**. **AÇIK İŞ YOK.**
+**Şimdi:** `IS-EMRI-o83-kimlik.md` → Claude Code kodlar → Cowork canlıda ölçer.
+🔴 **ADR/spec YAZILMAZ** (İŞLEYİŞ md.4): bu dilimi bir kez **altı kâğıt kapı turu öldürdü, 30 gün**.
+Canlı ölçüt: iki hesap açılır, biri ötekinin görevini **göremez**; çevrimdışı yazılan satır token
+yenilendikten sonra **kaybolmadan** sunucuya ulaşır.
 
 ## Bilinen sınırlar
 

@@ -1,11 +1,10 @@
 # Momentum — PROJE ESASLARI (CLAUDE.md)
 `MOD: NORMAL`
 
-> Bu dosya ≤ 8 KB kalır ve projenin **TEK talimat dosyasıdır**; yanında tek `DURUM.md` yaşar
-> (≤ 8 KB, yerinde güncellenir: ne yapıldı · sıradaki iş · bilinen sınırlar).
-> `arsiv/` append-only tarihçedir ve **AÇILIŞTA OKUNMAZ**: oradaki eski defterlerin hükmü
-> **kalkmıştır** — yalnız *"bu karar neden alındı?"* diye sorulunca açılır. Yeni canlı defter AÇILMAZ.
-> Bu iki dosya için kapı, mutant, altın küme yazılmaz; gözle denetlenir.
+> Bu dosya ≤ 8 KB ve projenin **TEK talimat dosyasıdır**; yanında tek `DURUM.md` yaşar (≤ 8 KB,
+> yerinde güncellenir). `arsiv/` append-only tarihçedir, **AÇILIŞTA OKUNMAZ**; hükmü kalkmıştır,
+> yalnız *"bu karar neden alındı?"* diye sorulunca açılır. Yeni canlı defter AÇILMAZ. Bu iki
+> dosya için kapı/mutant/altın küme yazılmaz; gözle denetlenir.
 
 ## 1. NE
 
@@ -15,35 +14,41 @@ mimari ve kod kalitesi. Kapsam otoritesi **`docs/ODEV.md`**. Canlı demo README'
 **İŞ BÖLÜMÜ [Onur, 16 Ağu]:** ürün kodunu **Claude Code** yazar; Cowork tasarım · iş emri ·
 denetim · orkestrasyon · hafıza yapar, kod yazmaz.
 
-## 2. BİTTİ LİSTESİ (kutu **21 Ağu 2026** · sayaç DURUM.md ilk satırı)
+## 2. BİTTİ LİSTESİ (kutu **2 Eyl 2026** · sayaç DURUM.md ilk satırı · tarihler DURUM'da)
 
-- [x] Kullanıcı görev ekler, başlığını düzenler, tamamlandı olarak işaretler
-- [x] Kullanıcı görevi siler (onay sorarak) — *canlı 14 Ağu*
-- [x] Kullanıcı göreve **öncelik** ve **son tarih** verir, ikisini de listede görür — *canlı 14 Ağu*
-- [x] Kullanıcı göreve **etiket** ekler ve etikete göre süzer — *canlı 15 Ağu*
-- [x] Kullanıcı görevlerini **başlıkta arar** — *canlı 16 Ağu*
-- [x] Kullanıcı görevi **tek satır doğal dille** ekler — *canlı 15 Ağu*
-- [x] Uygulama internetsiz çalışır, veri kalıcıdır, bağlantı gelince kendiliğinden eşitlenir
-- [x] İki cihaz aynı görevi değiştirince kullanıcı çakışmayı görür ve hangi değerin kazandığını anlar
-- [x] Değerlendirici uygulamayı canlı adresten açar; tema sistemin açık/karanlık ayarına uyar
-- [x] Değerlendirici depoyu klonlar, README'deki komutla testleri koşar ve yeşil görür
+- [x] Görev ekle · başlığını düzenle · tamamla
+- [x] Görevi sil (onay sorarak)
+- [x] Göreve **öncelik** ve **son tarih** ver, ikisini de listede gör
+- [x] Göreve **etiket** ekle ve etikete göre **süz**
+- [x] Görevleri **başlıkta ara**
+- [x] Görevi **tek satır doğal dille** ekle
+- [x] İnternetsiz çalış, veri kalıcı, bağlantı gelince kendiliğinden eşitle
+- [x] İki cihaz aynı görevi değiştirince **çakışma görünür**, kazanan anlaşılır
+- [x] Canlı adresten açılır; tema sistemin **açık/karanlık** ayarına uyar
+- [x] Depo klonlanır, README'deki komutla testler **yeşil** koşar
+- [ ] **Hesap aç, giriş yap;** kendi görevlerini gör, başkasınınkini görme — *18-21 Ağu*
+- [ ] Görevleri **listelere** ayır, listeleri **klasörde** topla, görevi listeye taşı — *22-23 Ağu*
+- [ ] **İki kullanıcı bir listeyi paylaşır;** birinin yazdığı ötekinin ekranında belirir — *24-27 Ağu*
+- [ ] Göreve **tekrar** ver; tamamlayınca sonraki örnek doğar — *28-29 Ağu*
+- [ ] Göreve **hatırlatıcı** kur; zamanı gelince bildirim düşer — *30 Ağu-1 Eyl · İLK KESİLECEK*
 
 *Bu listede yasak: spec/ADR/kapı/mutant/borç. Madde eklemek §5'e kesme yazmadan olmaz.*
 
 ## 3. SIRADAKİ İŞ (tek dikey dilim)
 
-**BİTTİ LİSTESİ 10/10 — özellik dilimi YOK.** Kalan iş **TESLİM**; teslim biçimi
-**paketlenmiş build** [Onur, 16 Ağu]: docker imajı (API + web istemcisi aynı köken) + Android APK.
-Tek-komut kapısı `.github/workflows/paket.yml`tedir; **ilk sürümü KÖRDÜ**, bağımsız denetim
-ölçerek düşürdü ve kapı yeniden yazıldı (dize değil VARLIK çekilir, sayı değil AD sorulur, ÜRÜN
-UCU çağrılır). Yeni madde §5'e kesme yazmadan EKLENMEZ (İŞLEYİŞ md.1).
+**DİLİM 1 — KİMLİK** (18-21 Ağu). `users` + kayıt/giriş uçları + JWT erişim ve **yenileme**
+token'ı · `ICurrentUser` token'dan okur · **`WireOp.ActorId` sunucuda doğrulanmış `UserId`'den
+yazılır** · Flutter giriş ekranı · 401'de sessiz yenileme · yenileme düşerse **kuyruk korunarak**
+giriş ekranına dönüş. İş emri: `IS-EMRI-o83-kimlik.md`.
+🔴 **ADR/spec YAZILMAZ** (İŞLEYİŞ md.4): bu dilimi bir kez **altı kâğıt kapı turu öldürdü, 30 gün**
+(ÖDEV §6.1 errata). Sonra liste → işbirliği → tekrar → hatırlatıcı; kutu dolarsa kesme sırası
+**hatırlatıcı → tekrar → proje klasörü** [Onur kilidi, 18 Ağu].
 
 ## 4. ORTAM MAYINLARI (yalnız ÖLÇÜLMÜŞ)
 
-1. **git okuma:** `--no-optional-locks` zorunlu. Mount'ta tüm-ağaç `status`/`diff` 45 sn tavanını
-   aşar (EXIT 124) ve `.git/index.lock` bırakır ⇒ **dar komut** (`log --oneline -1` ·
-   `status --porcelain -- <yol>` · `diff --cached --name-status`) ve **her turun sonunda kilidi
-   yokla**; sandbox silemez, `mv` ile kaldırılır.
+1. **git okuma:** `--no-optional-locks` zorunlu; mount'ta tüm-ağaç `status`/`diff` 45 sn tavanını
+   aşar (EXIT 124) ve `.git/index.lock` bırakır ⇒ **daima dar yol ver**, her turun sonunda
+   **kilidi yokla** (sandbox silemez, `mv` ile kaldırılır).
 2. **git yazma:** `git add -A` **YASAK** (başka elin commit'lenmemiş işini kör alır) → yol belirt.
    Commit mesajına **çift tırnak yazma**. **Mount'tan commit YASAK** — Desktop Commander ya da
    Claude Code'dan yapılır. **PUSH ONUR'DA.** Author e-postası `onurkesimbjk@gmail.com`.
@@ -52,12 +57,11 @@ UCU çağrılır). Yeni madde §5'e kesme yazmadan EKLENMEZ (İŞLEYİŞ md.1).
    bu ortamda sonuç üretmez.
 4. **Kodlama:** yol **saf ASCII** kalmalı (Türkçe karakter `build_runner`, `flutter analyze`, AGP ve
    `.ps1` zincirlerini kırdı). `python` stdout cp1254 ⇒ `sys.stdout.reconfigure(encoding="utf-8")`.
-5. **Satır sonu / geri alım:** `* text=auto eol=lf` `core.autocrlf`'i **ezer**. Mount'ta
-   `git restore`/`checkout --` **ÇALIŞMAZ** (unlink denenir) → `git show HEAD:<yol> > <yol>`;
-   `git apply` çalışır ama sonuç **sha256 ile** doğrulanır.
+5. **Geri alım:** `* text=auto eol=lf` `core.autocrlf`'i **ezer**. Mount'ta `git restore`/
+   `checkout --` **ÇALIŞMAZ** → `git show HEAD:<yol> > <yol>`; sonuç **sha256 ile** doğrulanır.
 6. **`verify.ps1`, `Momentum.Api` ayaktayken koşulamaz** (MSB3026/3027) ⇒ sıra: cihaz kanıtı →
-   backend kapatılır (`netstat -ano | findstr :5298` **boş** dönerek ölçülür) → `verify.ps1`.
-   Kapatmayı yalnız Onur'un açık izniyle yap, yeniden başlatma.
+   backend kapat (`netstat -ano | findstr :5298` **boş** dönmeli) → `verify.ps1`. Kapatmayı
+   yalnız Onur'un izniyle yap.
 7. **Backend:** `ConnectionStrings__Momentum` verilmezse host **DB'siz** açılır, port **yine dinler**
    ⇒ hazırlık portla ölçülmez: `/health/ready` 200 + `POST /v1/sync` başlıksız 401 ve
    `X-Momentum-Dev-User` ile 200. `ASPNETCORE_ENVIRONMENT=Development` yoksa her istek 401.
@@ -70,9 +74,9 @@ UCU çağrılır). Yeni madde §5'e kesme yazmadan EKLENMEZ (İŞLEYİŞ md.1).
 
 ## 5. KAPSAM DIŞI (kesilenler — README'ye de yazılır)
 
-- **`docs/ODEV.md` §4(a)'dan kesildi:** liste · proje · tekrar (RRULE) · hatırlatıcı.
-- **§4(b)2 işbirliği vitrini:** sinyal kanalı kodda var, **çok kullanıcılı paylaşım/davet akışı yok**.
-- **§6.1 kimlik/oturum:** giriş ekranı yok; istemci `devUserId` taşır, `WireOp.ActorId` istemci-beyanlı.
+- **[18 Ağu GERİ ALINDI]** liste · proje · tekrar · hatırlatıcı · işbirliği vitrini · kimlik
+  **§2'ye taşındı**, kutu 2 Eyl'e uzadı [Onur kilidi]. `v1.0.1` bunlar kesikken teslim edildi;
+  yeni teslim `v1.1.0`.
 - **Windows masaüstü hedefi yok** [Onur, 16 Ağu]: `src/client/` yalnız `android`/`ios`/`web`
   taşır. Windows'ta uygulama **tarayıcıdan** çalışır (imajdaki web istemcisi).
 - **[o77 kesildi]** Ayrıştırma her şeyi yutunca (`#iş !p1 yarın`) hata metni YOK: metin alanda
