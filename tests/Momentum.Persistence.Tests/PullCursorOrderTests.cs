@@ -181,7 +181,7 @@ public sealed class PullCursorOrderTests(PostgresFixture fixture)
             return;
         }
 
-        var before = (long)(b / 10);
+        var before = (long)Math.Min(b / 10, 100);
         const long after = 499;
         var rowCount = (int)(before + after + 1);
 

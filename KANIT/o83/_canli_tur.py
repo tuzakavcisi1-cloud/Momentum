@@ -1,14 +1,23 @@
 # -*- coding: utf-8 -*-
-"""IS-EMRI-o83 s3.4 (o83-B ile DUZELTILDI -- B1/B3 bulgulari). Gercek calisan
-backend'e (docker compose, ayni imaj) dogrudan HTTP ile konusur -- Flutter
-istemcisinin HttpAuthAgi/HttpSenkronAgi'nin YAPTIGI AYNI cagrilar, elle
-tekrarlanir.
+"""IS-EMRI-o83 s3.4 (o83-B ile DUZELTILDI -- B1/B3 bulgulari; o83-G ile DUZELTILDI --
+pozitif kontrol eksikligi). Gercek calisan backend'e (docker compose, ayni imaj)
+dogrudan HTTP ile konusur -- Flutter istemcisinin HttpAuthAgi/HttpSenkronAgi'nin
+YAPTIGI AYNI cagrilar, elle tekrarlanir.
 
 o83-B B1 duzeltmesi: d ayagi artik a ayaginin (zaten Applied) op'unu DEGIL,
 HIC gonderilmemis YENI bir op kullanir -- d.3'un kodu boylece Duplicate
 DEGIL Applied olmak ZORUNDADIR (aksi halde ayak DUSMUS sayilir, is emri s2.2).
 o83-B B3 duzeltmesi: her kosumda TAZE e-posta (uuid ekli) -- register HER
 ZAMAN 201 doner, 409-fallback-login YOLU bu turda hic calismaz.
+
+o83-G duzeltmesi (bu is emrinin ozu): NEGATIF KONTROL, POZITIF KONTROL YESIL
+OLMADAN ANLAMSIZDIR. Eski script yalniz b_gorur_a_yi/a_gorur_b_yi'yi olcuyordu;
+bunlarin ikisi de BOS LISTE uzerinden "False" donunce bedava gecti (KANIT/o83G
+s1). Simdi HER negatif kontrolden ONCE, HEDEFIN KENDI gorevini gordugu ayri bir
+pozitif kontrolle (en fazla 10 deneme x 300ms, okuma modeli gecikmeli olabilir)
+kanitlanir; pozitif dusmuse negatif "OLCULEMEDI" yazar, "False" diye YESIL
+YAZILMAZ. entity_id/b_entity_id artik HER KOSUMDA taze (sabit 1111.../4444...
+kalici ciltte onceki kosumun sahipligiyle CAKISIYOR olabilirdi).
 """
 import base64
 import hashlib
@@ -50,6 +59,8 @@ GELISTIRME_SIRRI = "8YFLoBlqtpdfhP9Pk+fypjeAY5YFKsMrycqTHgw3zTI="
 ISSUER = "Momentum"
 AUDIENCE = "Momentum"
 KOSUM_ID = uuid.uuid4().hex[:8]  # o83-B B3: her kosum TAZE e-posta uzayi kullanir
+MAX_DENEME = 10  # o83-G s2.5: pozitif kontrol en fazla 10 deneme x 300ms
+BEKLEME_SN = 0.3
 
 KANIT = []
 
@@ -73,6 +84,20 @@ def istek(yol, govde=None, yontem=None, basliklar=None):
             return yanit.status, gov
     except urllib.error.HTTPError as e:
         return e.code, e.read().decode("utf-8")
+
+
+def pozitif_bekle(basliklar, aranan_id):
+    """o83-G s2.5: okuma modeli gecikmeli olabilir, olc -- varsayma. En fazla MAX_DENEME kez,
+    BEKLEME_SN araliklarla /v1/tasks yeniden sorgulanir; kacinci denemede tuttugu donulur.
+    Negatif kontrolde bu FONKSIYON KULLANILMAZ (bekleme yanlis negatifi gizler, s2.3)."""
+    kod, gov = None, ""
+    for deneme in range(1, MAX_DENEME + 1):
+        kod, gov = istek("/v1/tasks", basliklar=basliklar)
+        if kod == 200 and aranan_id in gov:
+            return True, deneme, kod, gov
+        if deneme < MAX_DENEME:
+            time.sleep(BEKLEME_SN)
+    return False, MAX_DENEME, kod, gov
 
 
 def b64url(b):
@@ -108,6 +133,13 @@ def yeni_op(entity_id, actor_id, client_id, baslik_metni):
 def main():
     ozet = []
 
+    # o83-G s2.1: entity_id/b_entity_id HER KOSUMDA taze -- sabit 1111.../4444... kalici
+    # ciltte onceki kosumun sahipligiyle CAKISIYOR olabilirdi. Basta uretilir+yazilir ki
+    # KANIT/o83G/01-canli-tur.txt'in basinda gorunsun.
+    entity_id = str(uuid.uuid4())
+    b_entity_id = str(uuid.uuid4())
+    kaydet("TAZE KIMLIKLER (o83-G s2.1)", "entity_id (A'nin gorevi) = %s\nb_entity_id (B'nin gorevi) = %s" % (entity_id, b_entity_id))
+
     # --- a) Hesap A acilir (TAZE e-posta -- o83-B B3), giris yapilir (register=auto-login), gorev eklenir ---
     eposta_a = "canli-a-%s@momentum.test" % KOSUM_ID
     kod, gov = istek("/v1/auth/register", {"email": eposta_a, "password": "sifreA12345"})
@@ -118,13 +150,21 @@ def main():
     a = json.loads(gov)
     a_yetkili = {"Authorization": "Bearer " + a["accessToken"]}
 
-    entity_id = "11111111-1111-1111-1111-111111111111"
     op_id, sync_govdesi = yeni_op(entity_id, a["userId"], "33333333-3333-3333-3333-333333333333", "A'nin canli gorevi")
     kod, gov = istek("/v1/sync", sync_govdesi, basliklar=a_yetkili)
     kaydet("a) POST /v1/sync (A gorev ekler, Bearer A)", "HTTP %d\n%s" % (kod, gov[:500]))
     ozet.append("a) A kaydoldu(201)+giris yapti+gorev ekledi -> HTTP %d" % kod)
 
-    # --- b/c) Hesap B acilir -- A'nin gorevini GORMEMELI; B kendi gorevini eklerse A GORMEMELI ---
+    # --- a.2) POZITIF: A kendi gorevini goruyor mu (o83-G s2.2) -- b_gorur_a_yi'nin ILGILI
+    #          pozitif kontrolu; bu dusmuse "B gormuyor" bilgi TASIMAZ (bos liste kalkani, s1). ---
+    a_kendi_gorur, a_deneme, kod, gov = pozitif_bekle(a_yetkili, entity_id)
+    kaydet("a.2) GET /v1/tasks (Bearer A, POZITIF: A kendi gorevini goruyor mu)",
+           "HTTP %s (deneme %d/%d)\nA kendi gorevini goruyor mu: %s\n%s" % (kod, a_deneme, MAX_DENEME, a_kendi_gorur, (gov or "")[:800]))
+    ozet.append("a.2) a_kendi_gorur: %s (deneme %d/%d) (beklenen: True)" % (a_kendi_gorur, a_deneme, MAX_DENEME))
+    if not a_kendi_gorur:
+        raise SystemExit("[DUS] a_kendi_gorur POZITIF kontrolu dustu -- BEKLENEN True, GERCEK False (%d/%d denemede A kendi gorevini gormedi)" % (MAX_DENEME, MAX_DENEME))
+
+    # --- b) Hesap B acilir -- A'nin gorevini GORMEMELI (NEGATIF, ILGILI pozitifi a_kendi_gorur -- yukarida True kanitlandi) ---
     eposta_b = "canli-b-%s@momentum.test" % KOSUM_ID
     kod, gov = istek("/v1/auth/register", {"email": eposta_b, "password": "sifreB12345"})
     kaydet("b) POST /v1/auth/register (B, TAZE eposta)", "HTTP %d\n%s" % (kod, gov))
@@ -134,20 +174,35 @@ def main():
     b = json.loads(gov)
     b_yetkili = {"Authorization": "Bearer " + b["accessToken"]}
 
+    # NEGATIF kontrolde bekleme YOK -- tek sorgu (beklemek yanlis negatifi gizler, s2.3).
     kod, gov = istek("/v1/tasks", basliklar=b_yetkili)
     b_gorur_a_yi = entity_id in gov
-    kaydet("b) GET /v1/tasks (Bearer B)", "HTTP %d\nA'nin gorevini icerir mi: %s\n%s" % (kod, b_gorur_a_yi, gov[:800]))
-    ozet.append("b) B, A'nin gorevini GORUYOR MU: %s (beklenen: False)" % b_gorur_a_yi)
+    kaydet("b) GET /v1/tasks (Bearer B, NEGATIF: B, A'nin gorevini goruyor mu)",
+           "HTTP %d\nB, A'nin gorevini goruyor mu: %s\n%s" % (kod, b_gorur_a_yi, gov[:800]))
+    ozet.append("b) b_gorur_a_yi: %s (beklenen: False)" % b_gorur_a_yi)
+    if b_gorur_a_yi:
+        raise SystemExit("[DUS] b_gorur_a_yi NEGATIF kontrolu dustu -- BEKLENEN False, GERCEK True (B, A'nin gorevini goruyor)")
 
-    b_entity_id = "44444444-4444-4444-4444-444444444444"
     b_op_id, sync_govdesi_b = yeni_op(b_entity_id, b["userId"], "66666666-6666-6666-6666-666666666666", "B'nin canli gorevi")
     kod, gov = istek("/v1/sync", sync_govdesi_b, basliklar=b_yetkili)
     kaydet("c) POST /v1/sync (B gorev ekler, Bearer B)", "HTTP %d\n%s" % (kod, gov[:500]))
 
+    # --- c.1) POZITIF: B kendi gorevini goruyor mu -- a_gorur_b_yi'nin ILGILI pozitif kontrolu. ---
+    b_kendi_gorur, b_deneme, kod, gov = pozitif_bekle(b_yetkili, b_entity_id)
+    kaydet("c.1) GET /v1/tasks (Bearer B, POZITIF: B kendi gorevini goruyor mu)",
+           "HTTP %s (deneme %d/%d)\nB kendi gorevini goruyor mu: %s\n%s" % (kod, b_deneme, MAX_DENEME, b_kendi_gorur, (gov or "")[:800]))
+    ozet.append("c.1) b_kendi_gorur: %s (deneme %d/%d) (beklenen: True)" % (b_kendi_gorur, b_deneme, MAX_DENEME))
+    if not b_kendi_gorur:
+        raise SystemExit("[DUS] b_kendi_gorur POZITIF kontrolu dustu -- BEKLENEN True, GERCEK False (%d/%d denemede B kendi gorevini gormedi)" % (MAX_DENEME, MAX_DENEME))
+
+    # --- c.2) NEGATIF: A, B'nin gorevini goruyor mu -- ILGILI pozitifi b_kendi_gorur, yukarida True. ---
     kod, gov = istek("/v1/tasks", basliklar=a_yetkili)
     a_gorur_b_yi = b_entity_id in gov
-    kaydet("c) GET /v1/tasks (Bearer A)", "HTTP %d\nB'nin gorevini icerir mi: %s\n%s" % (kod, a_gorur_b_yi, gov[:800]))
-    ozet.append("c) A, B'nin gorevini GORUYOR MU: %s (beklenen: False)" % a_gorur_b_yi)
+    kaydet("c.2) GET /v1/tasks (Bearer A, NEGATIF: A, B'nin gorevini goruyor mu)",
+           "HTTP %d\nA, B'nin gorevini goruyor mu: %s\n%s" % (kod, a_gorur_b_yi, gov[:800]))
+    ozet.append("c.2) a_gorur_b_yi: %s (beklenen: False)" % a_gorur_b_yi)
+    if a_gorur_b_yi:
+        raise SystemExit("[DUS] a_gorur_b_yi NEGATIF kontrolu dustu -- BEKLENEN False, GERCEK True (A, B'nin gorevini goruyor)")
 
     # --- d) erisim token'i suresi dolunca ne olur -- o83-B B1 duzeltmesi: HIC
     #        GONDERILMEMIS YENI bir op kullanilir (a'nin op'u DEGIL) -- d.3'un
