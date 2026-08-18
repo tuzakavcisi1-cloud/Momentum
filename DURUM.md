@@ -96,3 +96,9 @@ yenilendikten sonra **kaybolmadan** sunucuya ulaşır.
     17 Ağu): `ci #64`=`ce630ec` ✔ · `paket #8`=`84ff84c` (fark tek KANIT dosyası, ürün kodu değil) ·
     `pages #8`=**o78 kodu** ⇒ canlı Pages demosu teslim edilen kod DEĞİLDİ. Kapı beyanı bundan
     sonra **commit ile birlikte** yazılır.
+31. 🔴 **[o83-B ÖLÇÜLDÜ, İŞLEYİŞ md.8] `DispatcherTests.Cursor_correctness_is_unaffected_by_concurrent_dispatch_single_owner`
+    gerçek bir flake.** Havuz sızıntısı (sınır 30'un ayrı bir dalı — `TestSupport.cs` her testte taze
+    bağlantı bırakıyordu, o83-B'de `MaxPoolSize`/`ConnectionIdleLifetime` ile kelepçelendi)
+    KAPANDIKTAN SONRA bile 2/2 koşumda düştü — bağlantı açlığının dolaylı kurbanı DEĞİL, iki
+    `OutboxDispatcher`ın eşzamanlı `PumpOnceAsync` yarışının kendi zamanlama duyarlılığı. DÜZELTİLMEDİ
+    (iş emri: iki şeyi aynı anda düzeltme, sinyal kaybedilir); `verify.ps1` bu yüzden EXIT 1 kalabilir.

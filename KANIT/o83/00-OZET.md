@@ -3,6 +3,12 @@
 **El:** Claude Code. **Demir kural (§0) uygulandı:** ADR/spec/kâğıt denetim turu yazılmadı;
 iş emri → kod → çalışan üründe canlı ölçüm → BİTTİ.
 
+🔴 **o83-B REVİZYONU (18 Ağu):** Cowork'ün bağımsız denetimi 3 ölçülmüş bulgu verdi (B1/B2/B3,
+`IS-EMRI-o83-B.md`). Bu dosya o düzeltmelerle **YENİDEN YAZILDI** — her hücre aşağıdaki ham
+çıktıyla (`08-canli-tur.txt`, `09-verify-ps1.txt`) birebir eşleşir. Ürün koduna (`src/backend`,
+`src/client/lib`) **dokunulmadı** — yalnız `tests/Momentum.Persistence.Tests/TestSupport.cs`
+(havuz kelepçesi) ve `KANIT/o83/*` betikleri değişti.
+
 ## Ne yapıldı
 
 ### Backend (`src/backend`)
@@ -61,19 +67,23 @@ iş emri → kod → çalışan üründe canlı ölçüm → BİTTİ.
   `http_senkron_agi_test.dart` (5), `oturum_yoneticisi_test.dart` (9), `giris_ekrani_test.dart` (5),
   `gorev_listesi_cikis_test.dart` (3) = 22 yeni test.
 
-## Canlı tur (`08-canli-tur.txt`, `_canli_tur.py`)
+## Canlı tur (`08-canli-tur.txt`, `_canli_tur.py`) — o83-B B1/B3 DÜZELTİLDİ
 
-`docker compose up --build` (imaj SIFIRDAN, o83 kodu dahil) + gerçek Postgres. Ham HTTP çağrıları
-(Flutter'ın `HttpAuthAgi`/`HttpSenkronAgi`sinin YAPTIĞI AYNI istekler, elle tekrarlandı):
+`docker compose up -d` (mevcut `momentum:yerel` imajı — **ürün kodu değişmediği için yeniden
+build EDİLMEDİ**) + gerçek Postgres. Ham HTTP çağrıları (Flutter'ın `HttpAuthAgi`/`HttpSenkronAgi`sinin
+YAPTIĞI AYNI istekler, elle tekrarlandı). **Her koşumda TAZE e-posta** (o83-B B3) ve **d ayağı artık
+HİÇ gönderilmemiş YENİ bir op** kullanıyor (o83-B B1 — a ayağının zaten `Applied` op'unu DEĞİL):
 
 | adım | ölçüldü | sonuç |
 |---|---|---|
-| a | A kaydolur+giriş yapar+görev ekler | HTTP 201→200, op `Applied`, gerçek `Task` satırı oluştu |
+| a.0 | register (TAZE e-posta) | **HTTP 201** (ölçüldü — önceki turda 409+login-fallback'ti, B3 ile düzeltildi) |
+| a | A giriş yapar+görev ekler | `POST /v1/sync` → **200**, `applied[0].code=Applied`, gerçek `Task` satırı oluştu |
+| b.0 | register (TAZE e-posta) | **HTTP 201** |
 | b | B, A'nın görevini **GÖRMEZ** | `GET /v1/tasks` (Bearer B) → A'nın entity'si **YOK** (ölçüldü, varsayılmadı) |
 | c | A, B'nin görevini **GÖRMEZ** | B kendi görevini ekledi (`Applied`), `GET /v1/tasks` (Bearer A) → **yalnız A'nın kendi görevi**, B'ninki YOK |
-| d.1 | erişim token'ı süresi dolunca | **ZORLANDI** (§3.4.d, "zorlanır" açıkça izinli): Development sırrıyla (appsettings.Development.json, KANIT'ta açık) GEÇERLİ ama `exp` GEÇMİŞTE olan bir JWT elle imzalandı → `POST /v1/sync` → **401** |
+| d.1 | erişim token'ı süresi dolunca, **YENİ** (hiç gönderilmemiş) op | **ZORLANDI** (§3.4.d, "zorlanır" açıkça izinli): Development sırrıyla (appsettings.Development.json, KANIT'ta açık) GEÇERLİ ama `exp` GEÇMİŞTE olan bir JWT elle imzalandı → `POST /v1/sync` → **401** |
 | d.2 | yenileme | AYNI hesabın **GERÇEK** (register/login'in ürettiği) refresh token'ıyla `POST /v1/auth/refresh` → **200**, yeni çift |
-| d.3 | kuyruktaki yazım kaybolmadan ulaşır | AYNI op (aynı `operationId`) yenilenmiş token'la TEKRAR gönderildi → **200**, kod `Duplicate` (op zaten a'da işlenmişti — idempotent tekrar, veri kaybı YOK) |
+| d.3 | kuyruktaki yazım (YENİ op) kaybolmadan İLK KEZ ulaşır | **AYNI YENİ op**, yenilenmiş token'la gönderildi → **HTTP 200, `applied[0].code=Applied`** (`Duplicate` DEĞİL — bu op daha önce HİÇ başarıyla işlenmemişti, d.1'de 401 ile reddedilmişti) |
 | e | `GET /v1/tasks` | Authorization ile **200**, başlıksız **401** |
 
 **Ölçülmeyen (açıkça beyan edilir):** istemcinin KENDİSİ (Flutter widget ağacı) bu turda
@@ -82,62 +92,71 @@ oturum-düşürme/kuyruk-dokunmama davranışı `http_senkron_agi_test.dart`/`ot
 ile (gerçek ağ yerine sahte `AuthAgi`/`http.Client` ile) doğrulandı; bu turda GERÇEK backend'in o
 orkestrasyonun dayandığı sözleşmeyi (401/refresh/retry/owner-scope) birebir sağladığı ölçüldü.
 
-## verify.ps1 — ÖLÇÜLEN SONUÇ: EXIT 1 (o83 kodundan BAĞIMSIZ, önceden var olan bir kırılganlık)
+## verify.ps1 — ÖLÇÜLEN SONUÇ (o83-B sonrası): EXIT 1, TEK kök neden kaldı, TAM çıktı KANIT'ta
 
-`araclar\verify.ps1` çalıştırıldı (`09-verify-ps1.txt`):
+`araclar\verify.ps1`, **AYRI bir child process olarak** (`System.Diagnostics.Process`,
+`StandardOutputEncoding=UTF8`) koşuldu — o83 v1'in `Tee-Object` boru hattı, verify.ps1'in kendi
+`exit $LASTEXITCODE` çağrısıyla YARIM KESİLMİŞTİ (o83-B B2). Artık **TAM** çıktı + `EXIT CODE`
+satırı `09-verify-ps1.txt`de (kesilmemiş, UTF-8 Türkçe karakterler doğru).
 
-1. `dotnet build Momentum.sln -warnaserror` → **0 Uyarı, 0 Hata** (TEMİZ).
+**o83-B §2.1 havuz kelepçesi SONUÇ VERDİ:** `TestSupport.cs`e `MaxPoolSize=4` /
+`ConnectionIdleLifetime=1` / `ConnectionPruningInterval=1` eklendikten SONRA `VisibilityTests.H7b`/
+`H8`'in "too many clients already" hatası **İKİ ayrı koşumda da hiç görünmedi** — Cowork'ün
+kök-neden teşhisi (havuz sızıntısı) doğrulandı ve kapandı.
+
+1. `dotnet build Momentum.sln -warnaserror` → **0 Uyarı, 0 Hata**.
 2. `dotnet test Momentum.sln --no-build`:
-   - `Momentum.ArchitectureTests` **5/5**
-   - `Momentum.SyncCore.Tests` **44/44**
-   - `Momentum.Api.Tests` **22/22**
-   - `Momentum.Persistence.Tests` **66/69** — 3 test düşüyor, **hiçbiri o83'e ait değil**:
-     `DispatcherTests.Cursor_correctness_is_unaffected_by_concurrent_dispatch_single_owner`
-     (zamanlamaya duyarlı eşzamanlı-dispatch yarışı) ve
-     `VisibilityTests.H7b_snapshot_continuation_is_horizon_and_skips_nothing` /
-     `H8_rollback_empty_and_holdback_then_ordered_delivery` (`Npgsql.PostgresException: 53300
-     sorry, too many clients already`).
-3. CVE gate — **verify.ps1 adım 2'de durduğu için hiç çalışmadı** (ulaşılmadığı için "temiz"
-   BEYAN EDİLMEZ).
+   - `Momentum.ArchitectureTests` **5/5** · `Momentum.SyncCore.Tests` **44/44** ·
+     `Momentum.Api.Tests` **22/22**
+   - `Momentum.Persistence.Tests` **68/69** — YALNIZ
+     `DispatcherTests.Cursor_correctness_is_unaffected_by_concurrent_dispatch_single_owner` düşüyor.
+3. CVE gate — verify.ps1 adım 2'de durduğu için **hiç çalışmadı** (ulaşılmadı, "temiz" BEYAN EDİLMEZ).
 
-**Kök neden ölçüldü, varsayılmadı** — bu turda BAĞIMSIZ olarak **4 kez** tekrarlandı (o83'ün
-kendi testleri eklenmeden önceki bir ölçüm dahil): paylaşılan Testcontainers Postgres konteynerinin
-`max_connections` varsayılanı, artık 69 teste çıkmış (her biri kendi taze veritabanını/Npgsql
-havuzunu açan) `Momentum.Persistence.Tests` paketinin TEK bir süreçte sıralı toplam bağlantı
-yüküne yetmiyor; hangi testin sınırı aştığı **çalıştırmadan çalıştırmaya değişiyor**
-(`DispatcherTests` bir turda düştü, sonrakinde geçti). o83'ün YENİ testleri (`AuthEndpointTests`)
-BAŞTA 12 ayrı taze-veritabanı açıyordu; bu turda TEK bir paylaşılan uygulama+veritabanına
-indirildi (`IAsyncLifetime`, 12→1) — kendi payını azalttım ama **kök sorun paylaşılan test
-altyapısında**, o83'ün ürün kodunda DEĞİL: **o83'e özgü TÜM testler** (12 `AuthEndpointTests` +
-F5'in 2 güncellenen/1 yeni D9 testi + `ModelValidationTests` pini = 16 test) İZOLE çalıştırıldığında
-**19/19 güvenilir şekilde YEŞİL** (bu turda birden fazla kez doğrulandı).
+**o83-B §2.5 ölçümü — Dispatcher testi havuz düzeltmesinden SONRA da düşüyor (2/2 koşum):**
+bağlantı açlığının dolaylı kurbanı DEĞİL — havuz kapandıktan sonra bile aynı hata (`seen[0]`
+`"v0"` içermiyor). Bu, iki `OutboxDispatcher`ın eşzamanlı `PumpOnceAsync` yarışının **kendi
+zamanlama duyarlılığı** — gerçek bir flake (bu konuşma boyunca 7 koşumun ~6'sında düştü, en az
+1 koşumda geçti — tutarlı ama %100 deterministik değil). İş emri s2.5 PAZARLIKSIZ: **DÜZELTİLMEZ**
+("iki şeyi aynı anda düzeltme, sinyal kaybedilir"); `DURUM.md` "bilinen sınırlar" madde 31'e
+tek satır yazıldı (İŞLEYİŞ md.8).
 
-Bu iş emrinin demir kuralı (§0) kâğıt denetim turu açmamı YASAKLIYOR; paylaşılan test altyapısını
-(15+ dosyanın kullandığı ortak `TestSupport.cs`/Testcontainers kurulumu) bu dilimin kapsamı
-DIŞINDA bir konuda kendi başıma DEĞİŞTİRMEDİM. Bulgu ölçüldüğü haliyle bildirilir; kapatma kararı
-(paylaşılan Postgres'in `max_connections`'ını artırma, `verify.ps1`'i proje-başına ayırma, vb.)
-Cowork/Onur'a bırakılır.
+**Sonuç:** `verify.ps1` bu ölçülen haliyle **EXIT 1** kalıyor — ama artık TEK, belgelenmiş,
+düzeltilmesi bu dilimin dışında bırakılmış bir nedenden ötürü. Build 0/0 ve o83'e ait/etkilenen
+HER test (backend+istemci) güvenilir şekilde yeşil.
 
-## §4 KABUL ÖLÇÜTÜ — yedi madde, tek tek
+## §4 KABUL ÖLÇÜTÜ — v1'in yedi maddesi + o83-B'nin beş maddesi
 
-1. ✅ **§3.4(b)/(c) canlıda ölçüldü: iki hesap birbirinin görevini görmüyor.** Yukarıya bakınız
-   (`08-canli-tur.txt`) — GERÇEK backend, GERÇEK iki hesap, GERÇEK HTTP.
-2. ✅ **§3.4(d) canlıda ölçüldü: token yenilendikten sonra kuyruktaki yazım kaybolmadı.**
-   Yukarıya bakınız — süresi geçmiş (zorlanmış) token 401 aldı, refresh 200 döndü, AYNI op
-   yenilenmiş token'la tekrar 200 (idempotent `Duplicate`, veri kaybı yok).
-3. ✅ **`WireOp.ActorId` istemciden gönderilse bile sunucudaki `UserId` kazanıyor, mutant ısırıyor.**
-   `_mutant_kosucu_o83.py`: M-o83-F5-1/2, **2/2 ISIRDI**, bayt-özdeş geri yükleme doğrulandı.
-4. 🟡 **`flutter analyze` 0 · istemci testleri yeşil · backend testleri yeşil · `verify.ps1` EXIT 0.**
-   İlk üçü TAM karşılandı (`flutter analyze` 0 sorun, `flutter test` 730/730, backend'in
-   o83'e ait/o83'ten etkilenen HER testi yeşil). **`verify.ps1` EXIT 1** — yukarıdaki başlıkta
-   tam ölçülüp kök nedeni belgelendi; o83 kodundan bağımsız, önceden var olan bir test-altyapısı
-   kırılganlığı. Beyanla geçilmedi, ölçüldü.
-5. ✅ **`paket.yml` beş ayak + migrator hâlâ yeşil (dev-header kalkanı kırılmadı).** Canlı turda
-   ölçüldü: `docker compose up --build` → postgres healthy → migrator 0 ile çıktı → api ayakta →
-   `/health/ready` 200. Dev-header sözleşmesi (`DevCurrentUser`, `X-Momentum-Dev-User`) hiç
-   değişmedi, yalnız Development'ta JWT'nin YANINA (`CompositeCurrentUser`) eklendi.
-6. ✅ **Yeni bağımlılık eklendiyse lisans+CVE kapısı yeşil, çıktısı KANIT'ta.**
-   `flutter_secure_storage` 11.0.0 → `05-pub-lisans-kapisi.txt` (TEMİZ, exit 0) +
-   `06-pub-cve-kapisi.txt` (TEMİZ, exit 0).
-7. ✅ **`CLAUDE.md` §2'deki "Hesap aç, giriş yap…" maddesi `[x]`e döndü.** Yapıldı.
+**v1 §4 (aynen yürürlükte):**
+
+1. ✅ §3.4(b)/(c) canlıda ölçüldü: iki hesap birbirinin görevini görmüyor (`08-canli-tur.txt`).
+2. ✅ §3.4(d) canlıda ölçüldü: token yenilendikten sonra kuyruktaki yazım kaybolmadı —
+   **o83-B B1 ile düzeltilmiş kanıtla**: d.3 artık `Applied` (aşağıya bakınız).
+3. ✅ `WireOp.ActorId` istemciden gönderilse bile sunucudaki `UserId` kazanıyor, mutant ısırıyor
+   (M-o83-F5-1/2, 2/2, bayt-özdeş).
+4. 🟡 `flutter analyze` 0 · istemci testleri yeşil · backend testleri yeşil · `verify.ps1` EXIT 0.
+   İlk üçü TAM karşılandı. `verify.ps1` **EXIT 1** — yukarıda tam ölçülüp TEK kök nedeni
+   belgelendi (Dispatcher flake, DURUM.md sınır 31); o83-B'nin kendi kabul ölçütü (aşağıdaki
+   madde) bu durumu AÇIKÇA "Dispatcher geçti YA DA DURUM.md satırı" olarak öngörüyor.
+5. ✅ `paket.yml` beş ayak + migrator hâlâ yeşil (dev-header kalkanı kırılmadı) — canlı turda ölçüldü.
+6. ✅ Yeni bağımlılık (`flutter_secure_storage`) lisans+CVE kapısı yeşil, KANIT'ta.
+7. ✅ `CLAUDE.md` §2'deki "Hesap aç, giriş yap…" maddesi `[x]`e döndü.
+
+**o83-B §4 (yeni beş madde):**
+
+8. ✅ **d.3 kodu `Applied` (`Duplicate` DEĞİL).** `08-canli-tur.txt`: d ayağı artık hiç
+   gönderilmemiş YENİ bir op kullanıyor; d.1 401 (süresi geçmiş JWT), d.2 refresh 200,
+   d.3 **`applied[0].code=Applied`** — kuyruktaki yazımın token yenilendikten sonra İLK KEZ ve
+   kayıpsız ulaştığının doğru kanıtı budur (B1 kapandı).
+9. ✅ **`register` 201 canlıda görüldü.** Her koşumda taze e-posta (`canli-a-<uuid8>@momentum.test`)
+   — a.0 ve b.0 ikisi de **HTTP 201** (B3 kapandı, `00-OZET` artık ham çıktıyla birebir).
+10. 🟡 **`verify.ps1` EXIT 0; tam çıktı + exit kodu KANIT'ta.** İkinci yarısı TAM karşılandı
+    (B2 kapandı: kesilmemiş tam çıktı + `EXIT CODE (process.ExitCode) = 1` satırı `09-verify-ps1.txt`de).
+    Birinci yarısı (EXIT 0) **ölçülen sonuç EXIT 1** — tek kalan neden madde 4/11'de açıklanan,
+    düzeltilmesi YASAKLANMIŞ Dispatcher flake'i.
+11. ✅ **Dispatcher testi geçti YA DA `DURUM.md` sınır satırı yazıldı.** İkinci şık: havuz
+    düzeltmesinden SONRA da 2/2 düştü (bağlantı açlığının kurbanı değil, gerçek flake) —
+    `DURUM.md` "bilinen sınırlar" madde 31 yazıldı, düzeltilmedi (iş emri PAZARLIKSIZ).
+12. ✅ **`00-OZET.md` tablosunun her hücresi ham çıktıyla eşleşiyor.** Bu revizyon tam da bunu
+    yapıyor — canlı tur tablosu (`08-canli-tur.txt`) ve verify.ps1 bölümü (`09-verify-ps1.txt`)
+    ile birebir çapraz kontrol edildi.
 

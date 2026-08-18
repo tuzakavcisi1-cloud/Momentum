@@ -46,9 +46,18 @@ public static class TestDatabase
             await create.ExecuteNonQueryAsync();
         }
 
+        // IS-EMRI-o83-B s2.1 (Onur kilidi, 18 Agu -- Cowork'un cihazda olctugu havuz sizintisi):
+        // her test KENDI t_<guid> veritabanina acilan, assembly sonuna kadar canli kalan en az bir
+        // bosta Npgsql baglantisi birakiyordu (DisableTestParallelization=true ⇒ gercek eszamanli
+        // ihtiyac YOK, ama global connection-string-anahtarli havuz hicbir yerde budanmiyordu).
+        // max_connections ARTIRILMAZ (karar: tavan yukseltmek sizintiyi test sayisiyla dogrusal
+        // buyutur) -- havuz KAYNAGINDA kelepcelenir, TEK cagri yerinde.
         var connectionString = new NpgsqlConnectionStringBuilder(fixture.Container.GetConnectionString())
         {
             Database = databaseName,
+            MaxPoolSize = 4, // sirali kosumda fazlasi gerekmiyor
+            ConnectionIdleLifetime = 1, // saniye -- bosta baglanti budanir
+            ConnectionPruningInterval = 1,
         }.ConnectionString;
 
         var options = new DbContextOptionsBuilder<SyncDbContext>().UseNpgsql(connectionString).Options;
