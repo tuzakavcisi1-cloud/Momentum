@@ -33,12 +33,13 @@ public sealed class SyncPuller(SyncDbContext db) : ISyncPuller
     public async Task<PullPage> PullIncrementalAsync(Guid actorId, SyncCursor since, CancellationToken cancellationToken)
     {
         // xid8 has no bigint cast in Postgres (M1): pass sinceXid as text + ::xid8.
+        // KANIT/o84: a bare ORDER BY name binds to the SELECT list's ::text alias first (shadowing, sorted lexicographically) -- qualified ORDER BY + distinct cast names fix that.
         await using var command = await db.CreateRawCommandAsync(
-            "SELECT commit_xid::text, server_seq, payload::text FROM outbox_messages " +
+            "SELECT o.commit_xid::text AS commit_xid_text, o.server_seq, o.payload::text AS payload_text FROM outbox_messages o " +
             "WHERE commit_xid < pg_snapshot_xmin(pg_current_snapshot()) " +
             "AND (commit_xid, server_seq) > (@sinceXid::xid8, @sinceSeq) " +
             "AND owner_id = @actorId " +
-            "ORDER BY commit_xid, server_seq LIMIT " + PageSize,
+            "ORDER BY o.commit_xid, o.server_seq LIMIT " + PageSize,
             cancellationToken);
         command.Parameters.AddWithValue("sinceXid", since.Xid.ToString(CultureInfo.InvariantCulture));
         command.Parameters.AddWithValue("sinceSeq", since.Seq);
