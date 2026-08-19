@@ -40,6 +40,7 @@ class _SahteDepo implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async {}
 
   @override
@@ -51,6 +52,7 @@ class _SahteDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async {}
@@ -67,6 +69,18 @@ class _SahteDepo implements GorevDeposu {
 
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
+
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+
+  @override
+  Future<void> listeEkle(String ad) async {}
+
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+
+  @override
+  Future<void> listeSil(String id) async {}
 
   void yayinla(List<GorevGorunum> g) => _denetleyici.add(g);
 

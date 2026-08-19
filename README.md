@@ -31,6 +31,9 @@ Tema, sistemin **açık/karanlık** ayarına uyar. Uygulama **internetsiz** çal
 bağlantı gelince **kendiliğinden eşitlenir**; iki cihaz aynı görevi değiştirirse **çakışma
 kullanıcıya görünür** ve hangi değerin kazandığı anlaşılır.
 
+Görevler artık **listelere** ayrılabilir (varsayılan: Gelen Kutusu), ama listelerin **klasörde**
+toplanması bu dilimde bilerek KESİLDİ (`CLAUDE.md` §5).
+
 🔴 **Ayrıştırıcının sınırları ölçülmüştür ve yazılıdır:** ASCII `yarin` ve büyük harfli `Yarın`
 tanınmaz · saat başlıkta kalır · yılsız `03.01` geçmişe düşer · `#İş` ile `#iş` **ayrı**
 etikettir (sunucu Ordinal karşılaştırır). Ayrıştırma satırın tamamını yutarsa **hata metni

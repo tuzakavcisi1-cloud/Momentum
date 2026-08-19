@@ -101,6 +101,7 @@ class _SahteDepo implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async => cagrilar.add(
     'ekle|$baslik|$oncelik|${sonTarih?.toIso8601String()}|${etiketler.join(",")}',
   );
@@ -114,6 +115,7 @@ class _SahteDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async => cagrilar.add('ayrintilariGuncelle:$id');
@@ -130,6 +132,18 @@ class _SahteDepo implements GorevDeposu {
 
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
+
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+
+  @override
+  Future<void> listeEkle(String ad) async {}
+
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+
+  @override
+  Future<void> listeSil(String id) async {}
 
   void yayinla(List<GorevGorunum> g) => _denetleyici.add(g);
   void kapat() => _denetleyici.close();
@@ -190,105 +204,108 @@ void main() {
       final dbSatirlar = await db.select(db.gorevEtiketleri).get();
       expect(
         {for (final s in dbSatirlar) '${s.etiket}|${s.addTag}'},
-        {
-          for (final a in adds)
-            '${(a as Map)['el']}|${a['tag']}',
-        },
+        {for (final a in adds) '${(a as Map)['el']}|${a['tag']}'},
       );
     });
 
-    test('ATOMIKLIK: kuyruk yazimi firlarsa ETIKET satirlari da geri sarilir', () async {
-      // 🔴 CIDDI KAPI [bagimsiz denetim, o77]: etiket ekleme dongusu
-      // `transaction`in DISINA tasindiginda 667 testin HICBIRI kirilmiyordu
-      // (`g8` yalniz ETIKETSIZ `ekle`yi goruyor). Bu ayak D8'in etiket kolunu
-      // kapatir: op tele gitmisken yerelde etiket YOK = hayalet op.
-      final db2 = Veritabani(NativeDatabase.memory());
-      addTearDown(db2.close);
-      final ayarlarDeposu = AyarlarDeposu(db2, idUret: uretimIdUret);
-      final ayarlar = await ayarlarDeposu.yukleVeyaOlustur();
+    test(
+      'ATOMIKLIK: kuyruk yazimi firlarsa ETIKET satirlari da geri sarilir',
+      () async {
+        // 🔴 CIDDI KAPI [bagimsiz denetim, o77]: etiket ekleme dongusu
+        // `transaction`in DISINA tasindiginda 667 testin HICBIRI kirilmiyordu
+        // (`g8` yalniz ETIKETSIZ `ekle`yi goruyor). Bu ayak D8'in etiket kolunu
+        // kapatir: op tele gitmisken yerelde etiket YOK = hayalet op.
+        final db2 = Veritabani(NativeDatabase.memory());
+        addTearDown(db2.close);
+        final ayarlarDeposu = AyarlarDeposu(db2, idUret: uretimIdUret);
+        final ayarlar = await ayarlarDeposu.yukleVeyaOlustur();
 
-      // Uretilecek operationId ile AYNI opId'de bir satir ONCEDEN eklenir ⇒
-      // kuyruk INSERT'i PK ihlaliyle firlar (g8 deseni).
-      const catisanOpId = 'catisan-op-id';
-      await db2
-          .into(db2.senkronKuyrugu)
-          .insert(
-            SenkronKuyruguCompanion.insert(
-              opId: catisanOpId,
-              clientId: 'x',
-              entityType: 'Task',
-              entityId: 'x',
-              govdeJson: '{}',
-              hlcWallMs: 1,
-              hlcCounter: 1,
-              olusturuldu: DateTime.now().toUtc(),
-            ),
-          );
+        // Uretilecek operationId ile AYNI opId'de bir satir ONCEDEN eklenir ⇒
+        // kuyruk INSERT'i PK ihlaliyle firlar (g8 deseni).
+        const catisanOpId = 'catisan-op-id';
+        await db2
+            .into(db2.senkronKuyrugu)
+            .insert(
+              SenkronKuyruguCompanion.insert(
+                opId: catisanOpId,
+                clientId: 'x',
+                entityType: 'Task',
+                entityId: 'x',
+                govdeJson: '{}',
+                hlcWallMs: 1,
+                hlcCounter: 1,
+                olusturuldu: DateTime.now().toUtc(),
+              ),
+            );
 
-      // Cagri sirasi: 1=entityId · 2=tag · 3=operationId (CATISAN).
-      var cagri = 0;
-      String idUret() {
-        cagri++;
-        return switch (cagri) {
-          1 => 'taze-entity-id',
-          2 => 'taze-tag',
-          _ => catisanOpId,
-        };
-      }
+        // Cagri sirasi: 1=entityId · 2=tag · 3=operationId (CATISAN).
+        var cagri = 0;
+        String idUret() {
+          cagri++;
+          return switch (cagri) {
+            1 => 'taze-entity-id',
+            2 => 'taze-tag',
+            _ => catisanOpId,
+          };
+        }
 
-      final depo2 = DriftGorevDeposu(
-        db2,
-        saat: () => DateTime.now().toUtc(),
-        idUret: idUret,
-        hlc: HlcUretici(
-          simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
-          clientId: ayarlar.clientId,
-        ),
-        ayarlarDeposu: ayarlarDeposu,
-        actorId: ayarlar.devUserId,
-      );
+        final depo2 = DriftGorevDeposu(
+          db2,
+          saat: () => DateTime.now().toUtc(),
+          idUret: idUret,
+          hlc: HlcUretici(
+            simdiMs: () => DateTime.now().toUtc().millisecondsSinceEpoch,
+            clientId: ayarlar.clientId,
+          ),
+          ayarlarDeposu: ayarlarDeposu,
+          actorId: ayarlar.devUserId,
+        );
 
-      await expectLater(
-        depo2.ekle('atomiklik', etiketler: {'iş'}),
-        throwsA(anything),
-      );
+        await expectLater(
+          depo2.ekle('atomiklik', etiketler: {'iş'}),
+          throwsA(anything),
+        );
 
-      expect(await db2.select(db2.gorevler).get(), isEmpty);
-      expect(
-        await db2.select(db2.gorevEtiketleri).get(),
-        isEmpty,
-        reason: 'ETIKET satiri da GERI SARILMALI',
-      );
-      expect(
-        (await db2.select(db2.senkronKuyrugu).get()).length,
-        1,
-        reason: 'yalniz ONCEDEN eklenen catisan satir kalmali',
-      );
-    });
+        expect(await db2.select(db2.gorevler).get(), isEmpty);
+        expect(
+          await db2.select(db2.gorevEtiketleri).get(),
+          isEmpty,
+          reason: 'ETIKET satiri da GERI SARILMALI',
+        );
+        expect(
+          (await db2.select(db2.senkronKuyrugu).get()).length,
+          1,
+          reason: 'yalniz ONCEDEN eklenen catisan satir kalmali',
+        );
+      },
+    );
 
-    test('projeksiyon: gorev satiri + etiket satirlari AYNI transaction', () async {
-      await depo.ekle(
-        'rapor',
-        oncelik: 2,
-        sonTarih: DateTime.utc(2026, 12, 31),
-        etiketler: {'ev'},
-      );
+    test(
+      'projeksiyon: gorev satiri + etiket satirlari AYNI transaction',
+      () async {
+        await depo.ekle(
+          'rapor',
+          oncelik: 2,
+          sonTarih: DateTime.utc(2026, 12, 31),
+          etiketler: {'ev'},
+        );
 
-      final satir = (await db.select(db.gorevler).get()).single;
-      expect(satir.baslik, 'rapor');
-      expect(satir.oncelik, 2);
-      expect(satir.sonTarih, DateTime.utc(2026, 12, 31));
+        final satir = (await db.select(db.gorevler).get()).single;
+        expect(satir.baslik, 'rapor');
+        expect(satir.oncelik, 2);
+        expect(satir.sonTarih, DateTime.utc(2026, 12, 31));
 
-      final etiketSatiri = (await db.select(db.gorevEtiketleri).get()).single;
-      expect(etiketSatiri.gorevId, satir.id);
-      expect(etiketSatiri.etiket, 'ev');
-      expect(etiketSatiri.iptalEdildi, isFalse);
+        final etiketSatiri = (await db.select(db.gorevEtiketleri).get()).single;
+        expect(etiketSatiri.gorevId, satir.id);
+        expect(etiketSatiri.etiket, 'ev');
+        expect(etiketSatiri.iptalEdildi, isFalse);
 
-      // Ekranda gorunen ham projeksiyon da doludur.
-      final gorunur = await depo.gorevlerGorunur().first;
-      expect(gorunur.single.gorev.etiketler, ['ev']);
-      expect(gorunur.single.gorev.oncelik, 2);
-    });
+        // Ekranda gorunen ham projeksiyon da doludur.
+        final gorunur = await depo.gorevlerGorunur().first;
+        expect(gorunur.single.gorev.etiketler, ['ev']);
+        expect(gorunur.single.gorev.oncelik, 2);
+      },
+    );
 
     test('VERILMEYEN alan TELE HIC KONMAZ (geriye donuk davranis)', () async {
       await depo.ekle('yalniz baslik');
@@ -321,10 +338,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GorevEkleAlani(
-              onEkle: (s) => alinan = s,
-              simdi: () => bugun,
-            ),
+            body: GorevEkleAlani(onEkle: (s) => alinan = s, simdi: () => bugun),
           ),
         ),
       );
@@ -350,20 +364,21 @@ void main() {
       );
     });
 
-    testWidgets('ayristirma sonrasi baslik BOSSA onEkle CAGRILMAZ ve alan KALIR', (
-      tester,
-    ) async {
-      // 🔴 MUTANT KAPISI: ayristirma EKRANDA yapilsaydi widget ham metni
-      // (`#iş`, bos DEGIL) gecerli sayar, alani TEMIZLER ve ekran bos basligi
-      // sessizce duserdi -- kullanicinin yazdigi metin YOK OLURDU.
-      final s = await yaz(tester, '#iş !p1 yarın');
-      expect(s, isNull);
-      expect(
-        (tester.widget(find.byType(TextField)) as TextField).controller!.text,
-        '#iş !p1 yarın',
-        reason: 'gecersizse alan TEMIZLENMEZ (sessiz kayip yasak)',
-      );
-    });
+    testWidgets(
+      'ayristirma sonrasi baslik BOSSA onEkle CAGRILMAZ ve alan KALIR',
+      (tester) async {
+        // 🔴 MUTANT KAPISI: ayristirma EKRANDA yapilsaydi widget ham metni
+        // (`#iş`, bos DEGIL) gecerli sayar, alani TEMIZLER ve ekran bos basligi
+        // sessizce duserdi -- kullanicinin yazdigi metin YOK OLURDU.
+        final s = await yaz(tester, '#iş !p1 yarın');
+        expect(s, isNull);
+        expect(
+          (tester.widget(find.byType(TextField)) as TextField).controller!.text,
+          '#iş !p1 yarın',
+          reason: 'gecersizse alan TEMIZLENMEZ (sessiz kayip yasak)',
+        );
+      },
+    );
 
     testWidgets('duz metin eskisi gibi calisir (geriye donuk)', (tester) async {
       final s = await yaz(tester, '  Ekmek al  ');
@@ -381,30 +396,31 @@ void main() {
       expect(GorevEkleAlani(onEkle: (_) {}).simdi().isUtc, isFalse);
     });
 
-    testWidgets('_gonder `simdi`nin tarihini DONUSTURMEDEN ayristiriciya verir', (
-      tester,
-    ) async {
-      // 🔴 MUTANT KAPISI: `widget.simdi()` -> `widget.simdi().toUtc()` (ya da
-      // `.toLocal()`) mutanti BURADA olur -- saat diliminden BAGIMSIZ olarak.
-      final defter = <String>[];
-      DogalDilSonucu? alinan;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GorevEkleAlani(
-              onEkle: (s) => alinan = s,
-              simdi: () => _SondaTarih(DateTime(2026, 8, 15, 1), defter),
+    testWidgets(
+      '_gonder `simdi`nin tarihini DONUSTURMEDEN ayristiriciya verir',
+      (tester) async {
+        // 🔴 MUTANT KAPISI: `widget.simdi()` -> `widget.simdi().toUtc()` (ya da
+        // `.toLocal()`) mutanti BURADA olur -- saat diliminden BAGIMSIZ olarak.
+        final defter = <String>[];
+        DogalDilSonucu? alinan;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: GorevEkleAlani(
+                onEkle: (s) => alinan = s,
+                simdi: () => _SondaTarih(DateTime(2026, 8, 15, 1), defter),
+              ),
             ),
           ),
-        ),
-      );
-      await tester.enterText(find.byType(TextField), 'bugün rapor');
-      await tester.tap(find.bySemanticsLabel(Metinler.ekleDugmesi));
-      await tester.pump();
+        );
+        await tester.enterText(find.byType(TextField), 'bugün rapor');
+        await tester.tap(find.bySemanticsLabel(Metinler.ekleDugmesi));
+        await tester.pump();
 
-      expect(defter, isEmpty, reason: 'toUtc/toLocal CAGRILMAMALI');
-      expect(alinan!.sonTarih, DateTime.utc(2026, 8, 15));
-    });
+        expect(defter, isEmpty, reason: 'toUtc/toLocal CAGRILMAMALI');
+        expect(alinan!.sonTarih, DateTime.utc(2026, 8, 15));
+      },
+    );
 
     testWidgets('VARSAYILAN simdi urunde GERCEK saati okur', (tester) async {
       // `simdi` enjekte EDILMEZSE varsayilan `DateTime.now` kosar. Gece yarisi
@@ -471,9 +487,7 @@ void main() {
     final depo = _SahteDepo(sira);
     addTearDown(depo.kapat);
 
-    await tester.pumpWidget(
-      MaterialApp(home: GorevListesiEkrani(depo: depo)),
-    );
+    await tester.pumpWidget(MaterialApp(home: GorevListesiEkrani(depo: depo)));
     depo.yayinla(const []);
     await tester.pump();
 

@@ -45,6 +45,11 @@ class Gorevler extends Table {
   /// `yyyy-MM-dd'T'HH:mm:ss.FFFFFFFK` TryParseExact kalibina oturur.
   DateTimeColumn get sonTarih => dateTime().nullable()();
 
+  /// IS-EMRI-o85-A A2 (schemaVersion 7 -> 8): NULL = Gelen Kutusu (K4,
+  /// sanal -- satir yaratilmaz). Sunucunun `Task.projectId` scalar'iyla
+  /// (registry'de ZATEN kayitli) ayni tur/anlam; `pos`/`listPos` YOK (K3).
+  TextColumn get projeId => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -156,6 +161,22 @@ class GorevEtiketleri extends Table {
   Set<Column> get primaryKey => {gorevId, etiket, addTag};
 }
 
+/// IS-EMRI-o85-A A1: "Liste" (K1: uruttaki "Liste" = sunucudaki `Project`)
+/// -- ISTEMCI AYNASI (schemaVersion 7 -> 8). `pos` SUTUNU YOK (K3: `order`/
+/// `listPos` kanali bu dilimde ACILMAZ) -- `renk` SUTUNU YOK (ekrani yok ⇒
+/// olu sutun yazilmaz; `cakismaKayitlari.entityType`/`gorevEtiketleri.hlc`
+/// dusurme emsali).
+@DataClassName('ProjeRow')
+class Projeler extends Table {
+  TextColumn get id => text()();
+  TextColumn get ad => text()();
+  BoolColumn get silindi => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get olusturuldu => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     Gorevler,
@@ -164,6 +185,7 @@ class GorevEtiketleri extends Table {
     UzakAlanDurumu,
     CakismaKayitlari,
     GorevEtiketleri,
+    Projeler,
   ],
 )
 class Veritabani extends _$Veritabani {
@@ -176,7 +198,7 @@ class Veritabani extends _$Veritabani {
     : super(baglanti ?? _uretimBaglantisi(bildirim));
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   /// GOREV-slice-3c D1/T3: v1->v2 SQLite bir CHECK kisitini ALTER TABLE ile
   /// degistiremez -- `gorevler` (yeni 5-degerli CHECK ile) `TableMigration`
@@ -200,19 +222,25 @@ class Veritabani extends _$Veritabani {
     onCreate: (m) => m.createAll(),
     onUpgrade: (m, from, to) async {
       // [OLCULDU -- `flutter test`, o74: g3_kuyruk_kapisi v1->v3 COKTU]
-      // `alterTable` yeni tabloyu GUNCEL (v6) Dart tanimiyla yaratir, sonra
-      // ESKI tablodan TUM sutunlari SELECT eder. `oncelik`/`son_tarih` v1
-      // semasinda YOKTUR ⇒ `newColumns` yazilmazsa
+      // `alterTable` yeni tabloyu GUNCEL Dart tanimiyla yaratir, sonra ESKI
+      // tablodan TUM sutunlari SELECT eder. `oncelik`/`son_tarih`/`proje_id`
+      // v1 semasinda YOKTUR ⇒ `newColumns` yazilmazsa
       // "no such column: oncelik" ile PATLAR (v1'den gelen her kullanicinin
-      // veritabani acilista olur). `newColumns` bu ikisini "eskisinde yok,
+      // veritabani acilista olur). `newColumns` bunlari "eskisinde yok,
       // kopyalama" diye isaretler; NULL alirlar.
+      // 🔴 [IS-EMRI-o85-A ile ISIRDI, KURAL DOGDU] `newColumns` GUNCEL Dart
+      // tanimina gore listelenir: `Gorevler`e sonradan eklenen HER sutun
+      // (bu tarihte: oncelik, sonTarih, proje_id) burada da yer almak
+      // ZORUNDADIR -- yalniz KENDI eklendigi adimda degil. Unutulursa v1
+      // yolu (`gorevlerYenidenYaratildi` DALI) "no such column" ile patlar;
+      // digger yollar (v2+, `addColumn` ile giren) ETKILENMEZ.
       final gorevlerYenidenYaratildi = from < 2;
       if (from < 2) {
         await m.createTable(senkronKuyrugu);
         await m.alterTable(
           TableMigration(
             gorevler,
-            newColumns: [gorevler.oncelik, gorevler.sonTarih],
+            newColumns: [gorevler.oncelik, gorevler.sonTarih, gorevler.projeId],
           ),
         );
       }
@@ -254,6 +282,19 @@ class Veritabani extends _$Veritabani {
       // cunku yeni tablo hangi yoldan gelinirse gelinsin BIR KEZ yaratilir).
       if (from < 7) {
         await m.createTable(gorevEtiketleri);
+      }
+      // IS-EMRI-o85-A A3: v7->v8 -- YENI tablo `projeler` (createTable,
+      // KOSULSUZ, `gorevEtiketleri`nin BIREBIR deseni -- hangi yoldan
+      // gelinirse gelinsin BIR KEZ yaratilir) + `Gorevler`e TEK NULLABLE
+      // sutun. 🔴 `gorevlerYenidenYaratildi` KOSULU PAZARLIKSIZ: v5->v6'nin
+      // BIREBIR AYNISI -- v1'den gelen yolda tablo yukarida GUNCEL tanimla
+      // YENIDEN YARATILDI, `projeId` ZATEN icindedir; ikinci kez eklemek
+      // "duplicate column" ile patlar.
+      if (from < 8) {
+        await m.createTable(projeler);
+        if (!gorevlerYenidenYaratildi) {
+          await m.addColumn(gorevler, gorevler.projeId);
+        }
       }
     },
   );

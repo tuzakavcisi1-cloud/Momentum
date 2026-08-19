@@ -41,6 +41,7 @@ class _BosDepo implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async {}
   @override
   Future<void> duzenle(String id, String yeniBaslik) async {}
@@ -53,6 +54,7 @@ class _BosDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async {}
@@ -65,6 +67,15 @@ class _BosDepo implements GorevDeposu {
       Stream.value(const []);
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
+
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+  @override
+  Future<void> listeEkle(String ad) async {}
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+  @override
+  Future<void> listeSil(String id) async {}
 }
 
 Widget _ekranSarmalayici({
@@ -80,7 +91,10 @@ Widget _ekranSarmalayici({
         final taban = MediaQuery.of(context);
         final govde = GorevListesiEkrani(depo: _BosDepo(), depolama: depolama);
         return MediaQuery(
-          data: taban.copyWith(size: boyut, textScaler: TextScaler.linear(textScale)),
+          data: taban.copyWith(
+            size: boyut,
+            textScaler: TextScaler.linear(textScale),
+          ),
           // GOREV-W2 T10 (G40/d, TESHIS EDILDI): MediaQuery.size YALNIZ
           // BILGI tasir -- test yuzeyinin GERCEK RenderBox genisligini
           // DEGISTIRMEZ (800x600 sabit kalirdi, olculdu). Gercek genislik
@@ -92,7 +106,11 @@ Widget _ekranSarmalayici({
               ? govde
               : Align(
                   alignment: Alignment.topLeft,
-                  child: SizedBox(width: boyut.width, height: boyut.height, child: govde),
+                  child: SizedBox(
+                    width: boyut.width,
+                    height: boyut.height,
+                    child: govde,
+                  ),
                 ),
         );
       },
@@ -173,7 +191,10 @@ void main() {
       'G40/a — kaliciOpfs ⇒ YOK (pozitif kontrol: ayni testte geriDusus ⇒ VAR)',
       (tester) async {
         final bildirim = DepolamaBildirimi(
-          const DepolamaDurumu(sinif: DepolamaSinifi.kaliciOpfs, uygulamaAdi: 'opfsShared'),
+          const DepolamaDurumu(
+            sinif: DepolamaSinifi.kaliciOpfs,
+            uygulamaAdi: 'opfsShared',
+          ),
         );
         await tester.pumpWidget(_ekranSarmalayici(depolama: bildirim));
         await tester.pump();
@@ -188,9 +209,14 @@ void main() {
       },
     );
 
-    testWidgets('G40/b — geriDusus ⇒ VAR, ikon + metin birlikte', (tester) async {
+    testWidgets('G40/b — geriDusus ⇒ VAR, ikon + metin birlikte', (
+      tester,
+    ) async {
       final bildirim = DepolamaBildirimi(
-        const DepolamaDurumu(sinif: DepolamaSinifi.geriDusus, uygulamaAdi: 'sharedIndexedDb'),
+        const DepolamaDurumu(
+          sinif: DepolamaSinifi.geriDusus,
+          uygulamaAdi: 'sharedIndexedDb',
+        ),
       );
       await tester.pumpWidget(_ekranSarmalayici(depolama: bildirim));
       await tester.pump();
@@ -222,7 +248,10 @@ void main() {
         // KACARDI -- arac kendini kanitlar doktrini, a11y_statik_tasma_test.dart
         // R4 ile AYNI desen).
         final bildirim = DepolamaBildirimi(
-          const DepolamaDurumu(sinif: DepolamaSinifi.kaliciDegil, uygulamaAdi: 'inMemory'),
+          const DepolamaDurumu(
+            sinif: DepolamaSinifi.kaliciDegil,
+            uygulamaAdi: 'inMemory',
+          ),
         );
         await tester.pumpWidget(
           _ekranSarmalayici(
@@ -274,7 +303,10 @@ void main() {
       (tester) async {
         final tutamac = tester.ensureSemantics();
         final bildirim = DepolamaBildirimi(
-          const DepolamaDurumu(sinif: DepolamaSinifi.geriDusus, uygulamaAdi: 'sharedIndexedDb'),
+          const DepolamaDurumu(
+            sinif: DepolamaSinifi.geriDusus,
+            uygulamaAdi: 'sharedIndexedDb',
+          ),
         );
         await tester.pumpWidget(
           _ekranSarmalayici(depolama: bildirim, parlaklik: Brightness.dark),

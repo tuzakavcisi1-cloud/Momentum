@@ -23,6 +23,7 @@ class _SahteDepo implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async {}
 
   @override
@@ -34,6 +35,7 @@ class _SahteDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async {}
@@ -50,6 +52,18 @@ class _SahteDepo implements GorevDeposu {
 
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
+
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+
+  @override
+  Future<void> listeEkle(String ad) async {}
+
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+
+  @override
+  Future<void> listeSil(String id) async {}
 }
 
 Widget _sarmala(Widget cocuk) => MaterialApp(home: cocuk);
@@ -64,25 +78,26 @@ void main() {
       expect(find.byIcon(Icons.logout), findsNothing);
     });
 
-    testWidgets('onCikisYap verili: dugme var, dokununca TAM BIR KEZ cagrilir', (
-      tester,
-    ) async {
-      var cagriSayaci = 0;
-      await tester.pumpWidget(
-        _sarmala(
-          GorevListesiEkrani(
-            depo: _SahteDepo(),
-            onCikisYap: () => cagriSayaci++,
+    testWidgets(
+      'onCikisYap verili: dugme var, dokununca TAM BIR KEZ cagrilir',
+      (tester) async {
+        var cagriSayaci = 0;
+        await tester.pumpWidget(
+          _sarmala(
+            GorevListesiEkrani(
+              depo: _SahteDepo(),
+              onCikisYap: () => cagriSayaci++,
+            ),
           ),
-        ),
-      );
+        );
 
-      expect(find.byIcon(Icons.logout), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.logout));
-      await tester.pump();
+        expect(find.byIcon(Icons.logout), findsOneWidget);
+        await tester.tap(find.byIcon(Icons.logout));
+        await tester.pump();
 
-      expect(cagriSayaci, 1);
-    });
+        expect(cagriSayaci, 1);
+      },
+    );
 
     testWidgets(
       'a11y: onCikisYap+onYenile birlikte -- labeledTapTargetGuideline VE androidTapTargetGuideline gecer',
@@ -98,7 +113,10 @@ void main() {
           ),
         );
 
-        expect(find.text(Metinler.cikisYapDugmesi), findsNothing); // tooltip metni, GORUNUR metin degil
+        expect(
+          find.text(Metinler.cikisYapDugmesi),
+          findsNothing,
+        ); // tooltip metni, GORUNUR metin degil
         await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
         await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
         tutamac.dispose();

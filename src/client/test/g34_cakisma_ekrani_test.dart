@@ -15,7 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _sarmala(Widget cocuk) => MaterialApp(theme: MomentumTema.olustur(Brightness.light), home: cocuk);
+Widget _sarmala(Widget cocuk) =>
+    MaterialApp(theme: MomentumTema.olustur(Brightness.light), home: cocuk);
 
 class _SahteDepo implements GorevDeposu {
   final List<CakismaKaydi> kayitlar;
@@ -30,6 +31,7 @@ class _SahteDepo implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async {}
   @override
   Future<void> duzenle(String id, String yeniBaslik) async {}
@@ -42,6 +44,7 @@ class _SahteDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async {}
@@ -50,11 +53,23 @@ class _SahteDepo implements GorevDeposu {
   @override
   Future<void> sil(String id) async {}
   @override
-  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) => Stream.value(kayitlar);
+  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) =>
+      Stream.value(kayitlar);
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {
     cagrilar.add('$entityId:$secim');
   }
+
+  // IS-EMRI-o85-A: arayuze eklenen liste (Project) yazma yolu. Bu sahte
+  // depo onu KULLANMAZ -- govde bilerek bostur (mevcut stub'lerin aynisi).
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+  @override
+  Future<void> listeEkle(String ad) async {}
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+  @override
+  Future<void> listeSil(String id) async {}
 }
 
 Gorev _gorev() => Gorev(
@@ -68,7 +83,9 @@ Gorev _gorev() => Gorev(
 );
 
 void main() {
-  testWidgets('G34/a: GorevSatiri -> CakismaRozeti entityId=gorev.id geçirir', (tester) async {
+  testWidgets('G34/a: GorevSatiri -> CakismaRozeti entityId=gorev.id geçirir', (
+    tester,
+  ) async {
     final depo = _SahteDepo();
     await tester.pumpWidget(
       _sarmala(
@@ -87,52 +104,84 @@ void main() {
     expect(rozet.depo, same(depo));
   });
 
-  testWidgets('G34/b: cakisan alanin IKI degeri de ekranda, tasma yok', (tester) async {
+  testWidgets('G34/b: cakisan alanin IKI degeri de ekranda, tasma yok', (
+    tester,
+  ) async {
     const kayit = CakismaKaydi(
       alan: 'fields:title',
       kaybedenDeger: 'Benim yerel basligim',
       kazananDeger: 'Onlarin uzak basligi',
     );
     await tester.pumpWidget(
-      _sarmala(CakismaCozumSayfasi(entityId: 'g34-e1', depo: _SahteDepo([kayit]))),
+      _sarmala(
+        CakismaCozumSayfasi(entityId: 'g34-e1', depo: _SahteDepo([kayit])),
+      ),
     );
     await tester.pump();
 
     expect(find.text(kayit.kaybedenDeger), findsOneWidget);
     expect(find.text(kayit.kazananDeger), findsOneWidget);
-    final rp1 = tester.renderObject<RenderParagraph>(find.text(kayit.kaybedenDeger));
-    final rp2 = tester.renderObject<RenderParagraph>(find.text(kayit.kazananDeger));
+    final rp1 = tester.renderObject<RenderParagraph>(
+      find.text(kayit.kaybedenDeger),
+    );
+    final rp2 = tester.renderObject<RenderParagraph>(
+      find.text(kayit.kazananDeger),
+    );
     expect(rp1.didExceedMaxLines, isFalse);
     expect(rp2.didExceedMaxLines, isFalse);
   });
 
-  testWidgets('G34/c: iki buton 48dp + Semantics(button:true) + AYRI etiketler', (tester) async {
-    const kayit = CakismaKaydi(alan: 'fields:title', kaybedenDeger: 'A', kazananDeger: 'B');
-    await tester.pumpWidget(
-      _sarmala(CakismaCozumSayfasi(entityId: 'g34-e1', depo: _SahteDepo([kayit]))),
-    );
-    await tester.pump();
+  testWidgets(
+    'G34/c: iki buton 48dp + Semantics(button:true) + AYRI etiketler',
+    (tester) async {
+      const kayit = CakismaKaydi(
+        alan: 'fields:title',
+        kaybedenDeger: 'A',
+        kazananDeger: 'B',
+      );
+      await tester.pumpWidget(
+        _sarmala(
+          CakismaCozumSayfasi(entityId: 'g34-e1', depo: _SahteDepo([kayit])),
+        ),
+      );
+      await tester.pump();
 
-    final benimkiniTutButonu = find.widgetWithText(ElevatedButton, Metinler.cakismaBenimkiniTut);
-    final onlarinkiniAlButonu = find.widgetWithText(ElevatedButton, Metinler.cakismaOnlarinkiniAl);
-    expect(benimkiniTutButonu, findsOneWidget);
-    expect(onlarinkiniAlButonu, findsOneWidget);
-    expect(Metinler.cakismaBenimkiniTut == Metinler.cakismaOnlarinkiniAl, isFalse, reason: 'etiketler AYRI olmali');
+      final benimkiniTutButonu = find.widgetWithText(
+        ElevatedButton,
+        Metinler.cakismaBenimkiniTut,
+      );
+      final onlarinkiniAlButonu = find.widgetWithText(
+        ElevatedButton,
+        Metinler.cakismaOnlarinkiniAl,
+      );
+      expect(benimkiniTutButonu, findsOneWidget);
+      expect(onlarinkiniAlButonu, findsOneWidget);
+      expect(
+        Metinler.cakismaBenimkiniTut == Metinler.cakismaOnlarinkiniAl,
+        isFalse,
+        reason: 'etiketler AYRI olmali',
+      );
 
-    expect(tester.getSize(benimkiniTutButonu).height, MOlcu.dokunmaHedefi);
-    expect(tester.getSize(onlarinkiniAlButonu).height, MOlcu.dokunmaHedefi);
+      expect(tester.getSize(benimkiniTutButonu).height, MOlcu.dokunmaHedefi);
+      expect(tester.getSize(onlarinkiniAlButonu).height, MOlcu.dokunmaHedefi);
 
-    final semantics = tester.getSemantics(benimkiniTutButonu);
-    expect(semantics.flagsCollection.isButton, isTrue);
-  });
+      final semantics = tester.getSemantics(benimkiniTutButonu);
+      expect(semantics.flagsCollection.isButton, isTrue);
+    },
+  );
 
-  testWidgets('G34/g: BOS DURUM -- 0 kayitla Metinler.cakismaKaydiYok gorunur, butonlar YOK', (tester) async {
-    await tester.pumpWidget(
-      _sarmala(CakismaCozumSayfasi(entityId: 'g34-e1', depo: _SahteDepo(const []))),
-    );
-    await tester.pump();
+  testWidgets(
+    'G34/g: BOS DURUM -- 0 kayitla Metinler.cakismaKaydiYok gorunur, butonlar YOK',
+    (tester) async {
+      await tester.pumpWidget(
+        _sarmala(
+          CakismaCozumSayfasi(entityId: 'g34-e1', depo: _SahteDepo(const [])),
+        ),
+      );
+      await tester.pump();
 
-    expect(find.text(Metinler.cakismaKaydiYok), findsOneWidget);
-    expect(find.byType(ElevatedButton), findsNothing);
-  });
+      expect(find.text(Metinler.cakismaKaydiYok), findsOneWidget);
+      expect(find.byType(ElevatedButton), findsNothing);
+    },
+  );
 }

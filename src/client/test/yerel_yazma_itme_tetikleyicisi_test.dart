@@ -28,7 +28,6 @@ class _SahteDepo implements GorevDeposu {
 
   final _denetleyici = StreamController<List<GorevGorunum>>.broadcast();
 
-
   @override
   Stream<List<GorevGorunum>> gorevlerGorunur() => _denetleyici.stream;
 
@@ -38,6 +37,7 @@ class _SahteDepo implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async => cagrilar.add('ekle:$baslik');
 
   @override
@@ -52,6 +52,7 @@ class _SahteDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async => cagrilar.add('ayrintilar:$id');
@@ -64,11 +65,24 @@ class _SahteDepo implements GorevDeposu {
   Future<void> sil(String id) async => cagrilar.add('sil:$id');
 
   @override
-  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) => Stream.value(const []);
+  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) =>
+      Stream.value(const []);
 
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async =>
       cagrilar.add('cakismaCoz:$entityId:$secim');
+
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+
+  @override
+  Future<void> listeEkle(String ad) async {}
+
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+
+  @override
+  Future<void> listeSil(String id) async {}
 
   void yayinla(List<GorevGorunum> g) => _denetleyici.add(g);
 
@@ -100,8 +114,10 @@ void main() {
 
     await _ekle(tester, 'K112 vaka a');
 
-    expect(sira, ['ekle:K112 vaka a', 'itme'],
-        reason: 'yerel yazma sonrasi itme KOSMALI');
+    expect(sira, [
+      'ekle:K112 vaka a',
+      'itme',
+    ], reason: 'yerel yazma sonrasi itme KOSMALI');
   });
 
   testWidgets('K112/b -- SIRA: once YAZMA, sonra itme', (tester) async {
@@ -124,12 +140,15 @@ void main() {
     await _ekle(tester, 'sira');
 
     // TEK liste, GERCEK sira: yazma once, itme sonra.
-    expect(sira, ['ekle:sira', 'itme'],
-        reason: 'itme ONCE kosarsa kuyrugu BOS gorur -- M137 bu ayakta olur');
+    expect(sira, [
+      'ekle:sira',
+      'itme',
+    ], reason: 'itme ONCE kosarsa kuyrugu BOS gorur -- M137 bu ayakta olur');
   });
 
-  testWidgets('K112/c -- YANLIS-POZITIF: onYerelYazma null ise cokmez',
-      (tester) async {
+  testWidgets('K112/c -- YANLIS-POZITIF: onYerelYazma null ise cokmez', (
+    tester,
+  ) async {
     final depo = _SahteDepo(<String>[]);
     addTearDown(depo.kapat);
 

@@ -26,6 +26,21 @@ class _GorevGuncellemesi {
   bool oncelikGeldi = false;
   DateTime? sonTarih;
   bool sonTarihGeldi = false;
+  // IS-EMRI-o85-A C3: `projectId` -- Task tarafinin `Project`e bagi.
+  // `null` OLABILECEGI icin (Gelen Kutusu'na tasindi) "geldi mi" AYRI bir
+  // bayrakla tasinir -- oncelik/sonTarih'in AYNI deseni.
+  String? projeId;
+  bool projeIdGeldi = false;
+}
+
+/// IS-EMRI-o85-A C1: `Project` icin AYRI havuz -- `_GorevGuncellemesi`nin
+/// dar esdegeri, yalniz `name`/`isDeleted` tanir (K3: `pos`/`renk` bu
+/// dilimde YOK, `Projeler`de `guncellendi` sutunu da YOK).
+class _ProjeGuncellemesi {
+  String? ad;
+  bool? silindi;
+  int? olusturulduWallMs;
+  bool herhangiBirKanalKazandi = false;
 }
 
 Hlc _hlcOku(Map<String, Object?> hlcMap) => Hlc.fromJson(hlcMap);
@@ -73,8 +88,16 @@ class UzakDegisiklikUygulayici {
 
   /// D2: `changes[i] = {cursor, payload}`; `payload` bir WireOp'tur, HER
   /// yazimin KENDI HLC'si vardir. Tie-break `payload['operationId']`.
+  ///
+  /// IS-EMRI-o85-A C1: `entityType` DALI -- `Task` bugunku yola
+  /// (`guncellemeler`/`_kanalUygula`) DEGISMEDEN gider; `Project` AYRI bir
+  /// havuza (`projeGuncellemeleri`/`_projeKanalUygula`) gider; BASKA HICBIR
+  /// entityType projeksiyona YAZILMAZ (yalniz `UzakAlanDurumu`ya, D2'nin
+  /// "bilinmeyen alan sessizce atlanmaz" ayni disiplini entityType icin de
+  /// gecerlidir).
   Future<void> changesUygula(List<Map<String, Object?>> changes) async {
     final guncellemeler = <String, _GorevGuncellemesi>{};
+    final projeGuncellemeleri = <String, _ProjeGuncellemesi>{};
     for (final degisiklik in changes) {
       final payload = degisiklik['payload'] as Map<String, Object?>;
       final entityId = payload['entityId'] as String;
@@ -83,12 +106,26 @@ class UzakDegisiklikUygulayici {
       final opHlcWall =
           (payload['opHlc'] as Map<String, Object?>)['wallMs'] as int;
 
-      final g = guncellemeler.putIfAbsent(entityId, () => _GorevGuncellemesi());
-      g.olusturulduWallMs = g.olusturulduWallMs == null
-          ? opHlcWall
-          : (opHlcWall < g.olusturulduWallMs!
-                ? opHlcWall
-                : g.olusturulduWallMs);
+      _GorevGuncellemesi? g;
+      _ProjeGuncellemesi? pg;
+      if (entityType == 'Task') {
+        g = guncellemeler.putIfAbsent(entityId, () => _GorevGuncellemesi());
+        g.olusturulduWallMs = g.olusturulduWallMs == null
+            ? opHlcWall
+            : (opHlcWall < g.olusturulduWallMs!
+                  ? opHlcWall
+                  : g.olusturulduWallMs);
+      } else if (entityType == 'Project') {
+        pg = projeGuncellemeleri.putIfAbsent(
+          entityId,
+          () => _ProjeGuncellemesi(),
+        );
+        pg.olusturulduWallMs = pg.olusturulduWallMs == null
+            ? opHlcWall
+            : (opHlcWall < pg.olusturulduWallMs!
+                  ? opHlcWall
+                  : pg.olusturulduWallMs);
+      }
 
       // [KIRMIZI] D2 -- null kanal korumasi PAZARLIKSIZ: her kanal okumasi
       // `as Map<String,Object?>? ?? const {}` bicimindedir.
@@ -98,20 +135,40 @@ class UzakDegisiklikUygulayici {
         final yazim = girdi.value as Map<String, Object?>;
         final hlc = _hlcOku(yazim['hlc'] as Map<String, Object?>);
         final deger = yazim['value'] as String?;
-        await _kanalUygula(
-          entityType: entityType,
-          entityId: entityId,
-          alan: 'fields:$ad',
-          anahtar: AlanAnahtari(
-            wall: hlc.wallMs,
-            counter: hlc.counter,
-            clientId: hlc.clientId,
-            opId: operationId,
-          ),
-          g: g,
-          kanalAdi: ad,
-          fieldsDegeri: deger,
+        final anahtar = AlanAnahtari(
+          wall: hlc.wallMs,
+          counter: hlc.counter,
+          clientId: hlc.clientId,
+          opId: operationId,
         );
+        if (g != null) {
+          await _kanalUygula(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'fields:$ad',
+            anahtar: anahtar,
+            g: g,
+            kanalAdi: ad,
+            fieldsDegeri: deger,
+          );
+        } else if (pg != null) {
+          await _projeKanalUygula(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'fields:$ad',
+            anahtar: anahtar,
+            pg: pg,
+            fieldsDegeri: deger,
+          );
+        } else {
+          await _metaDepo.degerlendirVeMetaYaz(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'fields:$ad',
+            gelenAnahtar: anahtar,
+            kuyrukTabani: await kuyrukTabaniSaglayici(entityId, 'fields:$ad'),
+          );
+        }
       }
 
       final groups = (payload['groups'] as Map<String, Object?>?) ?? const {};
@@ -121,20 +178,40 @@ class UzakDegisiklikUygulayici {
         final hlc = _hlcOku(yazim['hlc'] as Map<String, Object?>);
         final grupFields =
             (yazim['fields'] as Map<String, Object?>?) ?? const {};
-        await _kanalUygula(
-          entityType: entityType,
-          entityId: entityId,
-          alan: 'groups:$ad',
-          anahtar: AlanAnahtari(
-            wall: hlc.wallMs,
-            counter: hlc.counter,
-            clientId: hlc.clientId,
-            opId: operationId,
-          ),
-          g: g,
-          kanalAdi: ad,
-          groupFields: grupFields,
+        final anahtar = AlanAnahtari(
+          wall: hlc.wallMs,
+          counter: hlc.counter,
+          clientId: hlc.clientId,
+          opId: operationId,
         );
+        if (g != null) {
+          await _kanalUygula(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'groups:$ad',
+            anahtar: anahtar,
+            g: g,
+            kanalAdi: ad,
+            groupFields: grupFields,
+          );
+        } else if (pg != null) {
+          await _projeKanalUygula(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'groups:$ad',
+            anahtar: anahtar,
+            pg: pg,
+            groupFields: grupFields,
+          );
+        } else {
+          await _metaDepo.degerlendirVeMetaYaz(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'groups:$ad',
+            gelenAnahtar: anahtar,
+            kuyrukTabani: await kuyrukTabaniSaglayici(entityId, 'groups:$ad'),
+          );
+        }
       }
 
       // [BEYAN] order kanali icin gercek bir tel ornegi bu dilimde
@@ -182,6 +259,7 @@ class UzakDegisiklikUygulayici {
       }
     }
     await _projeksiyonYaz(guncellemeler);
+    await _projeksiyonYazProje(projeGuncellemeleri);
   }
 
   /// ODEV.md §4(a) §4.2 birlestirme kurallari. IKISI DE IDEMPOTENT ve
@@ -326,12 +404,28 @@ class UzakDegisiklikUygulayici {
   /// D2: `snapshot[i] = {entityType, entityId, scalars[], sets[], groups[]}`
   /// -- tie-break `winOperationId` DOGRUDAN gelir, uydurulmaz. BIRLESTIRICI:
   /// tablo temizlenmez, snapshotta olmayan yerel satir dokunulmadan durur.
+  ///
+  /// IS-EMRI-o85-A C2: `changesUygula`nin AYNI `entityType` dali -- `Project`
+  /// varliklari snapshot'ta gelir (`ReadOwnedEntitiesAsync` entityType'tan
+  /// bagimsizdir, o84/o85-A s1.3); dal acilmazsa liste TEMIZ KURULUMDA
+  /// GORUNMEZ.
   Future<void> snapshotUygula(List<Map<String, Object?>> snapshot) async {
     final guncellemeler = <String, _GorevGuncellemesi>{};
+    final projeGuncellemeleri = <String, _ProjeGuncellemesi>{};
     for (final entity in snapshot) {
       final entityType = entity['entityType'] as String;
       final entityId = entity['entityId'] as String;
-      final g = guncellemeler.putIfAbsent(entityId, () => _GorevGuncellemesi());
+
+      _GorevGuncellemesi? g;
+      _ProjeGuncellemesi? pg;
+      if (entityType == 'Task') {
+        g = guncellemeler.putIfAbsent(entityId, () => _GorevGuncellemesi());
+      } else if (entityType == 'Project') {
+        pg = projeGuncellemeleri.putIfAbsent(
+          entityId,
+          () => _ProjeGuncellemesi(),
+        );
+      }
 
       final scalars = (entity['scalars'] as List?) ?? const [];
       for (final ham in scalars) {
@@ -339,25 +433,50 @@ class UzakDegisiklikUygulayici {
         final ad = scalar['field'] as String;
         final hlc = _hlcOku(scalar['hlc'] as Map<String, Object?>);
         final winOpId = scalar['winOperationId'] as String;
-        g.olusturulduWallMs = g.olusturulduWallMs == null
-            ? hlc.wallMs
-            : (hlc.wallMs < g.olusturulduWallMs!
-                  ? hlc.wallMs
-                  : g.olusturulduWallMs);
-        await _kanalUygula(
-          entityType: entityType,
-          entityId: entityId,
-          alan: 'fields:$ad',
-          anahtar: AlanAnahtari(
-            wall: hlc.wallMs,
-            counter: hlc.counter,
-            clientId: hlc.clientId,
-            opId: winOpId,
-          ),
-          g: g,
-          kanalAdi: ad,
-          fieldsDegeri: scalar['value'] as String?,
+        final anahtar = AlanAnahtari(
+          wall: hlc.wallMs,
+          counter: hlc.counter,
+          clientId: hlc.clientId,
+          opId: winOpId,
         );
+        if (g != null) {
+          g.olusturulduWallMs = g.olusturulduWallMs == null
+              ? hlc.wallMs
+              : (hlc.wallMs < g.olusturulduWallMs!
+                    ? hlc.wallMs
+                    : g.olusturulduWallMs);
+          await _kanalUygula(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'fields:$ad',
+            anahtar: anahtar,
+            g: g,
+            kanalAdi: ad,
+            fieldsDegeri: scalar['value'] as String?,
+          );
+        } else if (pg != null) {
+          pg.olusturulduWallMs = pg.olusturulduWallMs == null
+              ? hlc.wallMs
+              : (hlc.wallMs < pg.olusturulduWallMs!
+                    ? hlc.wallMs
+                    : pg.olusturulduWallMs);
+          await _projeKanalUygula(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'fields:$ad',
+            anahtar: anahtar,
+            pg: pg,
+            fieldsDegeri: scalar['value'] as String?,
+          );
+        } else {
+          await _metaDepo.degerlendirVeMetaYaz(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'fields:$ad',
+            gelenAnahtar: anahtar,
+            kuyrukTabani: await kuyrukTabaniSaglayici(entityId, 'fields:$ad'),
+          );
+        }
       }
 
       final groups = (entity['groups'] as List?) ?? const [];
@@ -368,25 +487,50 @@ class UzakDegisiklikUygulayici {
         final winOpId = grup['winOperationId'] as String;
         final grupFields =
             (grup['fields'] as Map<String, Object?>?) ?? const {};
-        g.olusturulduWallMs = g.olusturulduWallMs == null
-            ? hlc.wallMs
-            : (hlc.wallMs < g.olusturulduWallMs!
-                  ? hlc.wallMs
-                  : g.olusturulduWallMs);
-        await _kanalUygula(
-          entityType: entityType,
-          entityId: entityId,
-          alan: 'groups:$ad',
-          anahtar: AlanAnahtari(
-            wall: hlc.wallMs,
-            counter: hlc.counter,
-            clientId: hlc.clientId,
-            opId: winOpId,
-          ),
-          g: g,
-          kanalAdi: ad,
-          groupFields: grupFields,
+        final anahtar = AlanAnahtari(
+          wall: hlc.wallMs,
+          counter: hlc.counter,
+          clientId: hlc.clientId,
+          opId: winOpId,
         );
+        if (g != null) {
+          g.olusturulduWallMs = g.olusturulduWallMs == null
+              ? hlc.wallMs
+              : (hlc.wallMs < g.olusturulduWallMs!
+                    ? hlc.wallMs
+                    : g.olusturulduWallMs);
+          await _kanalUygula(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'groups:$ad',
+            anahtar: anahtar,
+            g: g,
+            kanalAdi: ad,
+            groupFields: grupFields,
+          );
+        } else if (pg != null) {
+          pg.olusturulduWallMs = pg.olusturulduWallMs == null
+              ? hlc.wallMs
+              : (hlc.wallMs < pg.olusturulduWallMs!
+                    ? hlc.wallMs
+                    : pg.olusturulduWallMs);
+          await _projeKanalUygula(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'groups:$ad',
+            anahtar: anahtar,
+            pg: pg,
+            groupFields: grupFields,
+          );
+        } else {
+          await _metaDepo.degerlendirVeMetaYaz(
+            entityType: entityType,
+            entityId: entityId,
+            alan: 'groups:$ad',
+            gelenAnahtar: anahtar,
+            kuyrukTabani: await kuyrukTabaniSaglayici(entityId, 'groups:$ad'),
+          );
+        }
       }
       // ODEV.md §4(a): etiket uzlasmasi (SINIR D2/1.4 KAPANDI). `sets`
       // ANAHTARI VARSA -- bos liste OLSA BILE -- kosar; anahtar HIC YOKSA
@@ -399,6 +543,7 @@ class UzakDegisiklikUygulayici {
       }
     }
     await _projeksiyonYaz(guncellemeler);
+    await _projeksiyonYazProje(projeGuncellemeleri);
   }
 
   /// Tek bir kanalin (`fields:ad` ya da `groups:ad`) meta+projeksiyon
@@ -479,6 +624,18 @@ class UzakDegisiklikUygulayici {
           : (anahtar.wall > g.guncellendiWallMs!
                 ? anahtar.wall
                 : g.guncellendiWallMs);
+    } else if (alan == 'fields:projectId') {
+      // IS-EMRI-o85-A C3: `null` = Gelen Kutusu (K4) -- oncelik/sonTarih'in
+      // AYNI "geldi mi" bayrak deseni. Cakisma tespiti KAPSAM DISI (asagida,
+      // `_projeksiyonYaz`'da `_cakismaTespitEtVeYaz` bu alan icin CAGRILMAZ).
+      g.projeId = fieldsDegeri;
+      g.projeIdGeldi = true;
+      g.herhangiBirKanalKazandi = true;
+      g.guncellendiWallMs = g.guncellendiWallMs == null
+          ? anahtar.wall
+          : (anahtar.wall > g.guncellendiWallMs!
+                ? anahtar.wall
+                : g.guncellendiWallMs);
     } else if (alan == 'groups:completion') {
       final status = groupFields?['status'] as String?;
       g.tamamlandi = status == 'done'; // Ordinal, TAM dize
@@ -489,6 +646,43 @@ class UzakDegisiklikUygulayici {
           : (anahtar.wall > g.guncellendiWallMs!
                 ? anahtar.wall
                 : g.guncellendiWallMs);
+    }
+    // Bilinmeyen alan: UzakAlanDurumu'na YAZILDI (yukarida), projeksiyona DOKUNULMADI.
+  }
+
+  /// IS-EMRI-o85-A C1: `_kanalUygula`nin `Project` esdegeri -- yalniz IKI
+  /// eslemesi var (`fields:name`, `fields:isDeleted`). Meta karari AYNI
+  /// `_metaDepo.degerlendirVeMetaYaz` cagrisidir -- PK zaten
+  /// `(entityType, entityId, alan)`, Task/Project entity id'leri arasinda
+  /// CARPISMA YOKTUR (UUID). C3: bu iki alan icin de cakisma tespiti
+  /// KAPSAM DISIDIR -- `kanonikDize` cagrilmaz (`priority`/`dueAt`in Task
+  /// tarafinda yazilan sinirin AYNISI).
+  Future<void> _projeKanalUygula({
+    required String entityType,
+    required String entityId,
+    required String alan,
+    required AlanAnahtari anahtar,
+    required _ProjeGuncellemesi pg,
+    String? fieldsDegeri,
+    Map<String, Object?>? groupFields,
+  }) async {
+    final projeksiyonKazandi = await _metaDepo.degerlendirVeMetaYaz(
+      entityType: entityType,
+      entityId: entityId,
+      alan: alan,
+      gelenAnahtar: anahtar,
+      kuyrukTabani: await kuyrukTabaniSaglayici(entityId, alan),
+    );
+    if (!projeksiyonKazandi) return;
+
+    if (alan == 'fields:name') {
+      pg.ad = fieldsDegeri ?? '';
+      pg.herhangiBirKanalKazandi = true;
+    } else if (alan == 'fields:isDeleted') {
+      // [KIRMIZI] D4 -- Ordinal, TAM dize karsilastirma (Task tarafinin
+      // AYNI kurali, satir ~442).
+      pg.silindi = fieldsDegeri == 'true';
+      pg.herhangiBirKanalKazandi = true;
     }
     // Bilinmeyen alan: UzakAlanDurumu'na YAZILDI (yukarida), projeksiyona DOKUNULMADI.
   }
@@ -526,6 +720,7 @@ class UzakDegisiklikUygulayici {
                 silindi: Value(g.silindi ?? false),
                 oncelik: Value(g.oncelik),
                 sonTarih: Value(g.sonTarih),
+                projeId: Value(g.projeId),
                 // R9/T1 (K72 -- P6/D4 DARALTILDI): INSERT-from-pull 'senkronize'
                 // ile dogar -- bu satirda bekleyen yerel yazim YOKTUR (henuz
                 // kuyrukta hic op yok), P6/P7'nin korudugu senaryo bu DEGILDIR.
@@ -545,6 +740,10 @@ class UzakDegisiklikUygulayici {
           // DUSURURDU.
           oncelik: g.oncelikGeldi ? Value(g.oncelik) : const Value.absent(),
           sonTarih: g.sonTarihGeldi ? Value(g.sonTarih) : const Value.absent(),
+          // IS-EMRI-o85-A C3: cakisma tespiti KAPSAM DISI -- asagida
+          // `_cakismaTespitEtVeYaz` bu alan icin CAGRILMAZ (priority/dueAt
+          // ile AYNI sinir, kanonikDize 'fields:projectId' TANIMAZ).
+          projeId: g.projeIdGeldi ? Value(g.projeId) : const Value.absent(),
           guncellendi: g.guncellendiWallMs != null
               ? Value(
                   DateTime.fromMillisecondsSinceEpoch(
@@ -580,6 +779,52 @@ class UzakDegisiklikUygulayici {
             kazananAnahtari: g.tamamlandiKazananAnahtari!,
           );
         }
+      }
+    }
+  }
+
+  /// IS-EMRI-o85-A C1: `_projeksiyonYaz`nin `Project` esdegeri --
+  /// `Projeler`de `guncellendi` sutunu YOK (K3), bu yuzden Task tarafinin
+  /// `guncellendiWallMs` izlemesi burada YOKTUR. C3: cakisma tespiti
+  /// KAPSAM DISI -- `_cakismaTespitEtVeYaz`/`kanonikDize` cagrilmaz.
+  Future<void> _projeksiyonYazProje(
+    Map<String, _ProjeGuncellemesi> guncellemeler,
+  ) async {
+    for (final girdi in guncellemeler.entries) {
+      final entityId = girdi.key;
+      final pg = girdi.value;
+      if (!pg.herhangiBirKanalKazandi) continue;
+
+      final mevcut = await (_db.select(
+        _db.projeler,
+      )..where((t) => t.id.equals(entityId))).getSingleOrNull();
+      if (mevcut == null) {
+        // D4/B3 esdegeri: YENI entity -- Projeler'e kurala bagli INSERT.
+        final olusturulduWall = pg.olusturulduWallMs ?? 0;
+        await _db
+            .into(_db.projeler)
+            .insert(
+              ProjelerCompanion.insert(
+                id: entityId,
+                ad: pg.ad ?? '',
+                silindi: Value(pg.silindi ?? false),
+                olusturuldu: DateTime.fromMillisecondsSinceEpoch(
+                  olusturulduWall,
+                  isUtc: true,
+                ),
+              ),
+            );
+      } else {
+        await (_db.update(
+          _db.projeler,
+        )..where((t) => t.id.equals(entityId))).write(
+          ProjelerCompanion(
+            ad: pg.ad != null ? Value(pg.ad!) : const Value.absent(),
+            silindi: pg.silindi != null
+                ? Value(pg.silindi!)
+                : const Value.absent(),
+          ),
+        );
       }
     }
   }

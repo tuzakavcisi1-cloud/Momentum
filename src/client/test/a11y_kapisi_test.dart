@@ -69,7 +69,10 @@ const Map<String, String> _fixtureDuyuru = {
 // zamanlayici, testler arasi "Timer is still pending" INVARYANT ihlaline yol
 // aciyordu (olculdu, ilk kosumda). Sadece gercekten animasyon TEST EDEN yer
 // bunu false'a cevirir.
-Widget _vitrinSarmalayici({bool azaltilmisAnimasyon = true, double textScale = 1.0}) {
+Widget _vitrinSarmalayici({
+  bool azaltilmisAnimasyon = true,
+  double textScale = 1.0,
+}) {
   return MaterialApp(
     home: Builder(
       builder: (context) {
@@ -122,6 +125,7 @@ class _SabitDepo implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async {}
   @override
   Future<void> duzenle(String id, String yeniBaslik) async {}
@@ -134,6 +138,7 @@ class _SabitDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async {}
@@ -142,9 +147,21 @@ class _SabitDepo implements GorevDeposu {
   @override
   Future<void> sil(String id) async {}
   @override
-  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) => Stream.value(const []);
+  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) =>
+      Stream.value(const []);
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
+
+  // IS-EMRI-o85-A: arayuze eklenen liste (Project) yazma yolu. Bu sahte
+  // depo onu KULLANMAZ -- govde bilerek bostur (mevcut stub'lerin aynisi).
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+  @override
+  Future<void> listeEkle(String ad) async {}
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+  @override
+  Future<void> listeSil(String id) async {}
 }
 
 /// A11Y-7/hata durumunu tetiklemek icin: akis HER ZAMAN hata verir.
@@ -158,6 +175,7 @@ class _HataliDepo implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async {}
   @override
   Future<void> duzenle(String id, String yeniBaslik) async {}
@@ -170,6 +188,7 @@ class _HataliDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async {}
@@ -178,9 +197,21 @@ class _HataliDepo implements GorevDeposu {
   @override
   Future<void> sil(String id) async {}
   @override
-  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) => Stream.value(const []);
+  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) =>
+      Stream.value(const []);
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
+
+  // IS-EMRI-o85-A: arayuze eklenen liste (Project) yazma yolu. Bu sahte
+  // depo onu KULLANMAZ -- govde bilerek bostur (mevcut stub'lerin aynisi).
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+  @override
+  Future<void> listeEkle(String ad) async {}
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+  @override
+  Future<void> listeSil(String id) async {}
 }
 
 Gorev _ornekGorev(String baslik) => Gorev(
@@ -202,37 +233,58 @@ void main() {
     test('gorunur (8) birebir', () {
       expect(Metinler.yalnizcaBuCihazda, _fixtureGorunur['yalnizcaBuCihazda']);
       expect(Metinler.gonderiliyor, _fixtureGorunur['gonderiliyor']);
-      expect(Metinler.cevrimdisiKaydedildi, _fixtureGorunur['cevrimdisiKaydedildi']);
+      expect(
+        Metinler.cevrimdisiKaydedildi,
+        _fixtureGorunur['cevrimdisiKaydedildi'],
+      );
       expect(Metinler.cakismaVar, _fixtureGorunur['cakismaVar']);
       expect(Metinler.bosDurum, _fixtureGorunur['bosDurum']);
-      expect(Metinler.birSeylerTersGitti, _fixtureGorunur['birSeylerTersGitti']);
+      expect(
+        Metinler.birSeylerTersGitti,
+        _fixtureGorunur['birSeylerTersGitti'],
+      );
       expect(Metinler.yenidenDene, _fixtureGorunur['yenidenDene']);
       expect(Metinler.yukleniyor, _fixtureGorunur['yukleniyor']);
     });
 
-    test('rozet kisa gorunur (3) birebir -- GOREV-A7, F6 13 dizgesine DAHIL DEGIL', () {
-      expect(Metinler.rozetKisaYerel, _fixtureRozetKisa['rozetKisaYerel']);
-      expect(Metinler.rozetKisaCevrimdisi, _fixtureRozetKisa['rozetKisaCevrimdisi']);
-      expect(Metinler.rozetKisaGonderilmedi, _fixtureRozetKisa['rozetKisaGonderilmedi']);
-      // Kisa metin TAM metinden GERCEKTEN kisa olmali -- aksi halde
-      // D-A7-1'in butun gerekcesi (236 px'te 2 satir) kaybolur.
-      expect(
-        Metinler.rozetKisaYerel.length,
-        lessThan(Metinler.yalnizcaBuCihazda.length),
-      );
-      expect(
-        Metinler.rozetKisaCevrimdisi.length,
-        lessThan(Metinler.cevrimdisiKaydedildi.length),
-      );
-      expect(
-        Metinler.rozetKisaGonderilmedi.length,
-        lessThan(Metinler.gonderilmemisDegisiklik.length),
-      );
-    });
+    test(
+      'rozet kisa gorunur (3) birebir -- GOREV-A7, F6 13 dizgesine DAHIL DEGIL',
+      () {
+        expect(Metinler.rozetKisaYerel, _fixtureRozetKisa['rozetKisaYerel']);
+        expect(
+          Metinler.rozetKisaCevrimdisi,
+          _fixtureRozetKisa['rozetKisaCevrimdisi'],
+        );
+        expect(
+          Metinler.rozetKisaGonderilmedi,
+          _fixtureRozetKisa['rozetKisaGonderilmedi'],
+        );
+        // Kisa metin TAM metinden GERCEKTEN kisa olmali -- aksi halde
+        // D-A7-1'in butun gerekcesi (236 px'te 2 satir) kaybolur.
+        expect(
+          Metinler.rozetKisaYerel.length,
+          lessThan(Metinler.yalnizcaBuCihazda.length),
+        );
+        expect(
+          Metinler.rozetKisaCevrimdisi.length,
+          lessThan(Metinler.cevrimdisiKaydedildi.length),
+        );
+        expect(
+          Metinler.rozetKisaGonderilmedi.length,
+          lessThan(Metinler.gonderilmemisDegisiklik.length),
+        );
+      },
+    );
 
     test('semantics duyurusu (5) birebir', () {
-      expect(Metinler.duyuruGorevlerYukleniyor, _fixtureDuyuru['duyuruGorevlerYukleniyor']);
-      expect(Metinler.duyuruSenkronizeEdildi, _fixtureDuyuru['duyuruSenkronizeEdildi']);
+      expect(
+        Metinler.duyuruGorevlerYukleniyor,
+        _fixtureDuyuru['duyuruGorevlerYukleniyor'],
+      );
+      expect(
+        Metinler.duyuruSenkronizeEdildi,
+        _fixtureDuyuru['duyuruSenkronizeEdildi'],
+      );
       expect(Metinler.duyuruCevrimdisi, _fixtureDuyuru['duyuruCevrimdisi']);
       expect(Metinler.duyuruCakismaVar, _fixtureDuyuru['duyuruCakismaVar']);
       expect(Metinler.duyuruHata, _fixtureDuyuru['duyuruHata']);
@@ -254,15 +306,21 @@ void main() {
       tutamac.dispose();
     });
 
-    testWidgets('A11Y-5: disableAnimations altinda tum sureler 0', (tester) async {
+    testWidgets('A11Y-5: disableAnimations altinda tum sureler 0', (
+      tester,
+    ) async {
       await tester.pumpWidget(_vitrinSarmalayici(azaltilmisAnimasyon: true));
       await tester.pump();
-      final donenOklar = tester.widgetList<AnimatedRotation>(find.byType(AnimatedRotation));
+      final donenOklar = tester.widgetList<AnimatedRotation>(
+        find.byType(AnimatedRotation),
+      );
       expect(donenOklar, isNotEmpty);
       for (final w in donenOklar) {
         expect(w.duration, Duration.zero);
       }
-      final yumusatmalar = tester.widgetList<AnimatedOpacity>(find.byType(AnimatedOpacity));
+      final yumusatmalar = tester.widgetList<AnimatedOpacity>(
+        find.byType(AnimatedOpacity),
+      );
       expect(yumusatmalar, isNotEmpty);
       for (final w in yumusatmalar) {
         expect(w.duration, Duration.zero);
@@ -297,9 +355,15 @@ void main() {
           expect(satir, findsOneWidget, reason: girdi.key);
           final rozet = find.descendant(
             of: satir,
-            matching: find.byWidgetPredicate((w) => w.runtimeType == girdi.value),
+            matching: find.byWidgetPredicate(
+              (w) => w.runtimeType == girdi.value,
+            ),
           );
-          expect(rozet, findsOneWidget, reason: '${girdi.key} -- rozet bulunamadi');
+          expect(
+            rozet,
+            findsOneWidget,
+            reason: '${girdi.key} -- rozet bulunamadi',
+          );
           expect(
             find.descendant(of: rozet, matching: find.byType(Icon)),
             findsWidgets,
@@ -339,19 +403,24 @@ void main() {
       },
     );
 
-    testWidgets('A11Y-4: textScaler 2.0 altinda beklenmeyen tasma (FlutterError) yok', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_vitrinSarmalayici(textScale: 2.0));
-      await tester.pump();
-      expect(tester.takeException(), isNull);
-    });
+    testWidgets(
+      'A11Y-4: textScaler 2.0 altinda beklenmeyen tasma (FlutterError) yok',
+      (tester) async {
+        await tester.pumpWidget(_vitrinSarmalayici(textScale: 2.0));
+        await tester.pump();
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 
   group('A11Y-2: GorevEkleAlani odak halkasi', () {
-    testWidgets('focusedBorder.width == odakKalinlik, color == birincil', (tester) async {
+    testWidgets('focusedBorder.width == odakKalinlik, color == birincil', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        MaterialApp(home: Scaffold(body: GorevEkleAlani(onEkle: (_) {}))),
+        MaterialApp(
+          home: Scaffold(body: GorevEkleAlani(onEkle: (_) {})),
+        ),
       );
       final alan = tester.widget<TextField>(find.byType(TextField));
       final context = tester.element(find.byType(GorevEkleAlani));
@@ -372,10 +441,14 @@ void main() {
       tutamac.dispose();
     });
 
-    testWidgets('YEREL: A11Y-1 + A11Y-3 + gorev satiri gorunur', (tester) async {
+    testWidgets('YEREL: A11Y-1 + A11Y-3 + gorev satiri gorunur', (
+      tester,
+    ) async {
       final tutamac = tester.ensureSemantics();
       await tester.pumpWidget(
-        _gercekEkranSarmalayici(_SabitDepo([_ornekGorev('G5 gercek ekran testi')])),
+        _gercekEkranSarmalayici(
+          _SabitDepo([_ornekGorev('G5 gercek ekran testi')]),
+        ),
       );
       await tester.pump();
       expect(find.text('G5 gercek ekran testi'), findsOneWidget);

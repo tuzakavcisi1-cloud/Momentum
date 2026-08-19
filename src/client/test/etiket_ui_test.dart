@@ -35,6 +35,7 @@ class _SahteDepo implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async => cagrilar.add('ekle:$baslik');
 
   @override
@@ -47,6 +48,7 @@ class _SahteDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async {
@@ -71,6 +73,18 @@ class _SahteDepo implements GorevDeposu {
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async =>
       cagrilar.add('cakismaCoz:$entityId');
+
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+
+  @override
+  Future<void> listeEkle(String ad) async {}
+
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+
+  @override
+  Future<void> listeSil(String id) async {}
 
   void yayinla(List<GorevGorunum> g) => _denetleyici.add(g);
 
@@ -127,11 +141,19 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('etiket_cipi_iş')));
     await tester.pump();
     expect(find.text('Rapor'), findsOneWidget);
-    expect(find.text('Market'), findsNothing, reason: 'suzme FIILEN uygulanmali');
+    expect(
+      find.text('Market'),
+      findsNothing,
+      reason: 'suzme FIILEN uygulanmali',
+    );
 
     await tester.tap(find.byKey(const ValueKey('etiket_cipi_iş')));
     await tester.pump();
-    expect(find.text('Market'), findsOneWidget, reason: 'ikinci dokunus suzmeyi kaldirir');
+    expect(
+      find.text('Market'),
+      findsOneWidget,
+      reason: 'ikinci dokunus suzmeyi kaldirir',
+    );
   });
 
   testWidgets('secili etiket AKISTAN KAYBOLURSA suzme kendiliginden duser', (
@@ -180,53 +202,64 @@ void main() {
     expect(GorevSatiri.metaMetni(oncelikli), 'Yüksek · 21 Ağu 2026 · #iş');
   });
 
-  testWidgets('diyalogdan etiket eklenir -> depoya `etiketEklenen` iner, ITME tetiklenir', (
-    tester,
-  ) async {
-    final sira = <String>[];
-    final depo = _SahteDepo(sira);
-    addTearDown(depo.kapat);
-    await tester.pumpWidget(
-      MaterialApp(
-        home: GorevListesiEkrani(
-          depo: depo,
-          onYerelYazma: () async => sira.add('itme'),
+  testWidgets(
+    'diyalogdan etiket eklenir -> depoya `etiketEklenen` iner, ITME tetiklenir',
+    (tester) async {
+      final sira = <String>[];
+      final depo = _SahteDepo(sira);
+      addTearDown(depo.kapat);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: GorevListesiEkrani(
+            depo: depo,
+            onYerelYazma: () async => sira.add('itme'),
+          ),
         ),
-      ),
-    );
-    depo.yayinla([_gorunum('g1', 'Rapor', const ['ev'])]);
-    await tester.pump();
+      );
+      depo.yayinla([
+        _gorunum('g1', 'Rapor', const ['ev']),
+      ]);
+      await tester.pump();
 
-    await tester.tap(find.byTooltip(Metinler.gorevDuzenle));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip(Metinler.gorevDuzenle));
+      await tester.pumpAndSettle();
 
-    // Mevcut etiket cip olarak gorunur.
-    expect(find.widgetWithText(InputChip, 'ev'), findsOneWidget);
+      // Mevcut etiket cip olarak gorunur.
+      expect(find.widgetWithText(InputChip, 'ev'), findsOneWidget);
 
-    await tester.enterText(find.byKey(const ValueKey('etiket_alani')), '  iş  ');
-    await tester.tap(find.byTooltip(Metinler.etiketEkle));
-    await tester.pump();
-    expect(find.widgetWithText(InputChip, 'iş'), findsOneWidget,
-        reason: 'kirpilmis etiket cip olarak eklenmeli');
+      await tester.enterText(
+        find.byKey(const ValueKey('etiket_alani')),
+        '  iş  ',
+      );
+      await tester.tap(find.byTooltip(Metinler.etiketEkle));
+      await tester.pump();
+      expect(
+        find.widgetWithText(InputChip, 'iş'),
+        findsOneWidget,
+        reason: 'kirpilmis etiket cip olarak eklenmeli',
+      );
 
-    // Mevcut 'ev' cipini SIL.
-    await tester.tap(
-      find.descendant(
-        of: find.widgetWithText(InputChip, 'ev'),
-        matching: find.byTooltip(Metinler.etiketKaldir),
-      ),
-    );
-    await tester.pump();
+      // Mevcut 'ev' cipini SIL.
+      await tester.tap(
+        find.descendant(
+          of: find.widgetWithText(InputChip, 'ev'),
+          matching: find.byTooltip(Metinler.etiketKaldir),
+        ),
+      );
+      await tester.pump();
 
-    await tester.tap(find.text(Metinler.kaydetDugmesi));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text(Metinler.kaydetDugmesi));
+      await tester.pumpAndSettle();
 
-    expect(depo.etiketYazimlari.length, 1);
-    expect(depo.etiketYazimlari.single.eklenen, {'iş'});
-    expect(depo.etiketYazimlari.single.silinen, {'ev'});
-    expect(sira, ['ayrintilar:g1', 'itme'],
-        reason: 'K112 dikisi: ONCE yerel yazma, SONRA itme');
-  });
+      expect(depo.etiketYazimlari.length, 1);
+      expect(depo.etiketYazimlari.single.eklenen, {'iş'});
+      expect(depo.etiketYazimlari.single.silinen, {'ev'});
+      expect(sira, [
+        'ayrintilar:g1',
+        'itme',
+      ], reason: 'K112 dikisi: ONCE yerel yazma, SONRA itme');
+    },
+  );
 
   testWidgets('gecersiz etiket (bos / azami uzunlugu asan) EKLENMEZ', (
     tester,
@@ -251,8 +284,11 @@ void main() {
     );
     await tester.tap(find.byTooltip(Metinler.etiketEkle));
     await tester.pump();
-    expect(find.byType(InputChip), findsNothing,
-        reason: '32 karakter kelepcesi diyalogda UYGULANMALI');
+    expect(
+      find.byType(InputChip),
+      findsNothing,
+      reason: '32 karakter kelepcesi diyalogda UYGULANMALI',
+    );
 
     // HICBIR degisiklik yok -> Kaydet geri cagirimi TETIKLEMEZ (D2).
     await tester.tap(find.text(Metinler.kaydetDugmesi));

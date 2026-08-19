@@ -66,6 +66,17 @@ class GorevListesiEkrani extends StatefulWidget {
 class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
   late Stream<List<GorevGorunum>> _akis;
 
+  /// IS-EMRI-o85-A D1: Drawer'i besleyen liste akisi -- `_akis`tan AYRI
+  /// stream (Drift `.watch()` -- ayri tablo, ayri degisiklik kaynagi).
+  late Stream<List<Proje>> _listelerAkisi;
+
+  /// IS-EMRI-o85-A K1/D4: AKTIF liste -- `null` = Gelen Kutusu (K4). 🔴
+  /// D4 PAZARLIKSIZ: bu bir SUZGEC DEGIL, BAGLAMDIR -- `_suzgecleriTemizle`
+  /// (asagida) BUNA DOKUNMAZ. DURUM sinir 28'in "ekleme suzgecleri
+  /// SIFIRLAR" kurali arama/etiket cipleri icindir; aktif liste sifirlanirsa
+  /// kullanici bir listeye gorev ekleyip Gelen Kutusu'na firlar.
+  String? _secilenListeId;
+
   /// ODEV.md §4(a): TEK SECIM (Onur kilidi ④ -- coklu secimin AND/OR
   /// semantigi ve arama alani KAPSAM DISI). `null` = suzme yok.
   /// 🔴 SUZME DART TARAFINDA: AYNI stream kullanilir, yeniden ABONE
@@ -84,6 +95,7 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
   void initState() {
     super.initState();
     _akis = widget.depo.gorevlerGorunur();
+    _listelerAkisi = widget.depo.listelerGorunur();
   }
 
   @override
@@ -115,6 +127,197 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
     setState(() {
       _akis = widget.depo.gorevlerGorunur();
     });
+  }
+
+  /// IS-EMRI-o85-A C4: `_secilenListeId` GECERLI (silinmemis) bir listeyi
+  /// gosteriyorsa AYNEN kullanilir; degilse (hic secilmedi ya da secili
+  /// liste SILINDI -- baska bir cihazdan bile olsa) Gelen Kutusu'na duser.
+  /// "Etkin secim" TEK KAYNAKTIR: bos durum adi, Drawer vurgusu, suzme ve
+  /// yeni gorevin dogacagi liste HEP BUNU okur -- ikinci bir karar noktasi
+  /// acilmaz.
+  String? _etkinSecim(List<Proje> listeler) {
+    final id = _secilenListeId;
+    if (id == null) return null;
+    return listeler.any((p) => p.id == id) ? id : null;
+  }
+
+  String _aktifListeAdi(List<Proje> listeler, String? etkinSecim) {
+    if (etkinSecim == null) return Metinler.gelenKutusu;
+    for (final proje in listeler) {
+      if (proje.id == etkinSecim) return proje.ad;
+    }
+    return Metinler.gelenKutusu;
+  }
+
+  Future<void> _listeEkleDiyaloguAc(BuildContext context) async {
+    final ad = await showDialog<String>(
+      context: context,
+      builder: (_) =>
+          const _ListeAdiDiyalogu(baslik: Metinler.listeYeniDugmesi),
+    );
+    if (ad == null) return;
+    unawaited(_yerelYaz(() => widget.depo.listeEkle(ad)));
+  }
+
+  Future<void> _listeYenidenAdlandirDiyaloguAc(
+    BuildContext context,
+    Proje proje,
+  ) async {
+    final ad = await showDialog<String>(
+      context: context,
+      builder: (_) => _ListeAdiDiyalogu(
+        baslik: Metinler.listeYenidenAdlandirDugmesi,
+        baslangicAdi: proje.ad,
+      ),
+    );
+    if (ad == null || ad == proje.ad) return;
+    unawaited(_yerelYaz(() => widget.depo.listeDuzenle(proje.id, ad)));
+  }
+
+  /// K5: silinen liste O ANDA secili idiyse Gelen Kutusu'na donulur --
+  /// gorevlerin `projeId`si DEGISTIRILMEZ (C4), yalniz ekran baglami duser.
+  Future<void> _listeSilOnayDiyaloguAc(
+    BuildContext context,
+    Proje proje,
+  ) async {
+    final onaylandi = await showDialog<bool>(
+      context: context,
+      builder: (dialogBaglami) => AlertDialog(
+        title: Text(
+          Metinler.listeSil,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        content: Text(
+          Metinler.listeSilOnay,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogBaglami).pop(),
+            child: Text(
+              Metinler.iptalDugmesi,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogBaglami).pop(true),
+            child: Text(
+              Metinler.listeSil,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+    if (onaylandi != true) return;
+    if (_secilenListeId == proje.id) {
+      setState(() => _secilenListeId = null);
+    }
+    unawaited(_yerelYaz(() => widget.depo.listeSil(proje.id)));
+  }
+
+  /// IS-EMRI-o85-A D1: `[Gelen Kutusu] + listeler`. Secim ekranin
+  /// BAGLAMIDIR (D4) -- dokunus hem `_secilenListeId`yi degistirir hem
+  /// Drawer'i kapatir.
+  Widget _drawer(
+    BuildContext context,
+    List<Proje> listeler,
+    String? etkinSecim,
+  ) {
+    return Drawer(
+      child: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  ListTile(
+                    key: const ValueKey('liste_gelen_kutusu'),
+                    leading: const Icon(Icons.inbox_outlined),
+                    title: Text(
+                      Metinler.gelenKutusu,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    selected: etkinSecim == null,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      setState(() => _secilenListeId = null);
+                    },
+                  ),
+                  if (listeler.isNotEmpty)
+                    Divider(height: 1, color: MRenk.ayirici(context)),
+                  for (final proje in listeler)
+                    ListTile(
+                      key: ValueKey('liste_${proje.id}'),
+                      leading: const Icon(Icons.list_outlined),
+                      title: Text(
+                        proje.ad,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      selected: etkinSecim == proje.id,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        setState(() => _secilenListeId = proje.id);
+                      },
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit_outlined, size: MOlcu.ikon),
+                            tooltip: Metinler.listeYenidenAdlandirDugmesi,
+                            constraints: BoxConstraints.tightFor(
+                              width: MOlcu.dokunmaHedefi,
+                              height: MOlcu.dokunmaHedefi,
+                            ),
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              _listeYenidenAdlandirDiyaloguAc(context, proje);
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete_outline, size: MOlcu.ikon),
+                            tooltip: Metinler.listeSil,
+                            constraints: BoxConstraints.tightFor(
+                              width: MOlcu.dokunmaHedefi,
+                              height: MOlcu.dokunmaHedefi,
+                            ),
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              _listeSilOnayDiyaloguAc(context, proje);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Divider(height: 1, color: MRenk.ayirici(context)),
+            ListTile(
+              key: const ValueKey('liste_ekle_dugmesi'),
+              leading: const Icon(Icons.add),
+              title: Text(
+                Metinler.listeYeniDugmesi,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                _listeEkleDiyaloguAc(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   /// ODEV.md §4(a): arama alani -- CIP SERIDININ USTUNDE (Onur kilidi ④:
@@ -212,183 +415,304 @@ class _GorevListesiEkraniState extends State<GorevListesiEkrani> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: MRenk.yuzey(context),
-      appBar: (widget.onYenile == null && widget.onCikisYap == null)
-          ? null
-          : AppBar(
-              backgroundColor: MRenk.yuzey(context),
-              elevation: 0,
-              actions: [
-                if (widget.onYenile != null)
-                  IconButton(
-                    key: const ValueKey('elle_yenile_dugmesi'),
-                    icon: const Icon(Icons.refresh),
-                    tooltip: 'Yenile',
-                    onPressed: () => widget.onYenile!(),
+    // IS-EMRI-o85-A D1: TUM Scaffold (Drawer + govde) TEK `List<Proje>`
+    // aninagorunumune sarilir -- Drawer'in kendisi VE govdenin bos-durum
+    // adi/suzme/yeni-gorev-listesi karari AYNI `etkinSecim`i (C4) okur,
+    // ikinci bir karar noktasi acilmaz.
+    return StreamBuilder<List<Proje>>(
+      stream: _listelerAkisi,
+      builder: (context, listelerAnlik) {
+        final listeler = listelerAnlik.data ?? const <Proje>[];
+        final etkinSecim = _etkinSecim(listeler);
+        return Scaffold(
+          drawer: _drawer(context, listeler, etkinSecim),
+          backgroundColor: MRenk.yuzey(context),
+          appBar: (widget.onYenile == null && widget.onCikisYap == null)
+              ? null
+              : AppBar(
+                  backgroundColor: MRenk.yuzey(context),
+                  elevation: 0,
+                  actions: [
+                    if (widget.onYenile != null)
+                      IconButton(
+                        key: const ValueKey('elle_yenile_dugmesi'),
+                        icon: const Icon(Icons.refresh),
+                        tooltip: 'Yenile',
+                        onPressed: () => widget.onYenile!(),
+                      ),
+                    if (widget.onCikisYap != null)
+                      IconButton(
+                        key: const ValueKey('cikis_yap_dugmesi'),
+                        icon: const Icon(Icons.logout),
+                        tooltip: Metinler.cikisYapDugmesi,
+                        onPressed: () => widget.onCikisYap!(),
+                      ),
+                  ],
+                ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                // GOREV-W2 T4: listenin USTUNE -- `depolama == null` iken
+                // ValueListenableBuilder hic kurulmaz, DepolamaSeridi hic
+                // olusmaz (geriye donuk uyumlu).
+                if (widget.depolama != null)
+                  ValueListenableBuilder<DepolamaDurumu>(
+                    valueListenable: widget.depolama!,
+                    builder: (context, durum, _) =>
+                        DepolamaSeridi(durum: durum),
                   ),
-                if (widget.onCikisYap != null)
-                  IconButton(
-                    key: const ValueKey('cikis_yap_dugmesi'),
-                    icon: const Icon(Icons.logout),
-                    tooltip: Metinler.cikisYapDugmesi,
-                    onPressed: () => widget.onCikisYap!(),
-                  ),
-              ],
-            ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // GOREV-W2 T4: listenin USTUNE -- `depolama == null` iken
-            // ValueListenableBuilder hic kurulmaz, DepolamaSeridi hic
-            // olusmaz (geriye donuk uyumlu).
-            if (widget.depolama != null)
-              ValueListenableBuilder<DepolamaDurumu>(
-                valueListenable: widget.depolama!,
-                builder: (context, durum, _) => DepolamaSeridi(durum: durum),
-              ),
-            Expanded(
-              child: StreamBuilder<List<GorevGorunum>>(
-                stream: _akis,
-                builder: (context, anlik) {
-                  if (anlik.hasError) {
-                    return HataDurumu(onYenidenDene: _yenidenDene);
-                  }
-                  if (!anlik.hasData) {
-                    return const YuklenmeDurumu();
-                  }
-                  final gorunumler = anlik.data!;
-                  if (gorunumler.isEmpty) {
-                    return const BosDurum();
-                  }
-                  final tumEtiketler = <String>{
-                    for (final g in gorunumler) ...g.gorev.etiketler,
-                  }.toList()..sort();
-                  // Secili etiket listeden KAYBOLDUYSA (son tasiyicisi
-                  // silindi/etiketi kaldirildi) suzme KENDILIGINDEN duser.
-                  // `setState` BUILD ICINDE CAGRILMAZ -- yerel degiskenle
-                  // cozulur, alan bir sonraki dokunusta zaten guncellenir.
-                  final secili = tumEtiketler.contains(_secilenEtiket)
-                      ? _secilenEtiket
-                      : null;
-                  // 🔴 TEK SUZME YOLU: etiket cipi ile arama AYNI `where`da
-                  // CARPILIR. Ikinci bir suzme yolu acmak `kanonik-kopya`
-                  // riskidir; eslesme kurali da burada DEGIL, saf
-                  // `aramaEslesir`dedir (bos sorgu = suzme yok orada karara
-                  // baglanir, burada IKINCI KEZ kontrol EDILMEZ).
-                  final suzulmus = gorunumler
-                      .where(
-                        (g) =>
-                            (secili == null ||
-                                g.gorev.etiketler.contains(secili)) &&
-                            aramaEslesir(baslik: g.gorev.baslik, sorgu: _arama),
-                      )
-                      .toList();
-                  return Column(
-                    children: [
-                      _aramaAlani(context),
-                      // Etiketsiz projede serit HIC CIZILMEZ ⇒ mevcut duzen
-                      // testleri (bos/yerel/hata vitrinleri dahil) ETKILENMEZ.
-                      if (tumEtiketler.isNotEmpty)
-                        _etiketSeridi(tumEtiketler, secili),
-                      Expanded(
-                        child: suzulmus.isEmpty
-                            // Gorev VAR ama suzgecler hicbirini gecirmiyor:
-                            // "Henüz görev yok." demek YALAN olurdu.
-                            ? BosDurum.eslesmeYok(
-                                onSuzgecleriTemizle: _suzgecleriTemizle,
-                              )
-                            : ListView.builder(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: MBosluk.m,
+                Expanded(
+                  child: StreamBuilder<List<GorevGorunum>>(
+                    stream: _akis,
+                    builder: (context, anlik) {
+                      if (anlik.hasError) {
+                        return HataDurumu(onYenidenDene: _yenidenDene);
+                      }
+                      if (!anlik.hasData) {
+                        return const YuklenmeDurumu();
+                      }
+                      final gorunumler = anlik.data!;
+                      // IS-EMRI-o85-A D4/C4: liste BAGLAMDIR, en DIS suzgec --
+                      // etiket/arama'dan ONCE uygulanir ve BosDurum'un "hic
+                      // gorev yok" karari BUNA gore verilir (aktif listede/
+                      // Gelen Kutusu'nda gercekten tek gorev yoksa). Gelen
+                      // Kutusu = projeId YOK YA DA projeId ARTIK GECERSIZ
+                      // (liste silindi, C4 -- `etkinSecim` zaten bu kurala gore
+                      // hesaplandi, TEK KAYNAK).
+                      final aktifListeIdleri = listeler
+                          .map((p) => p.id)
+                          .toSet();
+                      final listedekiler = gorunumler.where((g) {
+                        if (etkinSecim != null) {
+                          return g.gorev.projeId == etkinSecim;
+                        }
+                        return g.gorev.projeId == null ||
+                            !aktifListeIdleri.contains(g.gorev.projeId);
+                      }).toList();
+                      if (listedekiler.isEmpty) {
+                        // D5: liste adi YALNIZ gercek bir liste secili VE
+                        // BOSKEN eklenir -- Gelen Kutusu'nun (etkinSecim ==
+                        // null) bos durumu MEVCUT "Henüz görev yok." metnini
+                        // AYNEN korur (agac BIREBIR ESKISI, a11y/vitrin
+                        // testleri ETKILENMEZ).
+                        return BosDurum(
+                          listeAdi: etkinSecim == null
+                              ? null
+                              : _aktifListeAdi(listeler, etkinSecim),
+                        );
+                      }
+                      final tumEtiketler = <String>{
+                        for (final g in listedekiler) ...g.gorev.etiketler,
+                      }.toList()..sort();
+                      // Secili etiket listeden KAYBOLDUYSA (son tasiyicisi
+                      // silindi/etiketi kaldirildi) suzme KENDILIGINDEN duser.
+                      // `setState` BUILD ICINDE CAGRILMAZ -- yerel degiskenle
+                      // cozulur, alan bir sonraki dokunusta zaten guncellenir.
+                      final secili = tumEtiketler.contains(_secilenEtiket)
+                          ? _secilenEtiket
+                          : null;
+                      // 🔴 TEK SUZME YOLU: etiket cipi ile arama AYNI `where`da
+                      // CARPILIR. Ikinci bir suzme yolu acmak `kanonik-kopya`
+                      // riskidir; eslesme kurali da burada DEGIL, saf
+                      // `aramaEslesir`dedir (bos sorgu = suzme yok orada karara
+                      // baglanir, burada IKINCI KEZ kontrol EDILMEZ).
+                      final suzulmus = listedekiler
+                          .where(
+                            (g) =>
+                                (secili == null ||
+                                    g.gorev.etiketler.contains(secili)) &&
+                                aramaEslesir(
+                                  baslik: g.gorev.baslik,
+                                  sorgu: _arama,
                                 ),
-                                itemCount: suzulmus.length,
-                                itemBuilder: (context, i) {
-                                  final gorunum = suzulmus[i];
-                                  return GorevSatiri(
-                                    key: ValueKey(
-                                      'gorev_satiri_${gorunum.gorev.id}',
+                          )
+                          .toList();
+                      return Column(
+                        children: [
+                          _aramaAlani(context),
+                          // Etiketsiz projede serit HIC CIZILMEZ ⇒ mevcut duzen
+                          // testleri (bos/yerel/hata vitrinleri dahil) ETKILENMEZ.
+                          if (tumEtiketler.isNotEmpty)
+                            _etiketSeridi(tumEtiketler, secili),
+                          Expanded(
+                            child: suzulmus.isEmpty
+                                // Gorev VAR ama suzgecler hicbirini gecirmiyor:
+                                // "Henüz görev yok." demek YALAN olurdu.
+                                ? BosDurum.eslesmeYok(
+                                    onSuzgecleriTemizle: _suzgecleriTemizle,
+                                  )
+                                : ListView.builder(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: MBosluk.m,
                                     ),
-                                    gorev: gorunum.gorev,
-                                    onTamamlaDegisti: (deger) => unawaited(
-                                      _yerelYaz(
-                                        () => widget.depo.tamamlaGeriAl(
-                                          gorunum.gorev.id,
-                                          tamamlandi: deger,
+                                    itemCount: suzulmus.length,
+                                    itemBuilder: (context, i) {
+                                      final gorunum = suzulmus[i];
+                                      return GorevSatiri(
+                                        key: ValueKey(
+                                          'gorev_satiri_${gorunum.gorev.id}',
                                         ),
-                                      ),
-                                    ),
-                                    senkronDurumu: gorunum.senkronDurumu,
-                                    cakismaVarMi: gorunum.cakismaVarMi,
-                                    depo: widget.depo,
-                                    // IS-EMRI-o68 kriter 3 + ODEV.md §4(a):
-                                    // duzenleme boylece URUN YOLUNDAN cagrilir --
-                                    // `onTamamlaDegisti`'nin BIREBIR AYNI deseni
-                                    // (K112: once YEREL YAZMA, sonra itme --
-                                    // `_yerelYaz` sarmalayicisi ATLANMAZ).
-                                    onAyrintilarDuzenlendi: (degisiklik) =>
-                                        unawaited(
+                                        gorev: gorunum.gorev,
+                                        onTamamlaDegisti: (deger) => unawaited(
                                           _yerelYaz(
-                                            () =>
-                                                widget.depo.ayrintilariGuncelle(
-                                                  gorunum.gorev.id,
-                                                  baslik: degisiklik.baslik,
-                                                  oncelik: degisiklik.oncelik,
-                                                  sonTarih: degisiklik.sonTarih,
-                                                  etiketEklenen:
-                                                      degisiklik.etiketEklenen,
-                                                  etiketSilinen:
-                                                      degisiklik.etiketSilinen,
-                                                ),
+                                            () => widget.depo.tamamlaGeriAl(
+                                              gorunum.gorev.id,
+                                              tamamlandi: deger,
+                                            ),
                                           ),
                                         ),
-                                    // IS-EMRI-o72: duzenleme kablosunun BIREBIR
-                                    // AYNI deseni (K112: once YEREL YAZMA, sonra
-                                    // itme -- `_yerelYaz` sarmalayicisi ATLANMAZ).
-                                    onSil: () => unawaited(
-                                      _yerelYaz(
-                                        () => widget.depo.sil(gorunum.gorev.id),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            GorevEkleAlani(
-              // K112: ONCE yerel yazma, SONRA itme (`_yerelYaz` sirayi
-              // pazarliksiz tutar). Dort alan TEK `ekle()` cagrisina gider ⇒
-              // TEK `WireOp`.
-              // 🔴 EKLEME SUZGECLERI SIFIRLAR [Onur kilidi, 16 Agu 2026].
-              // OLCULDU (bagimsiz denetim, 15 Agu): suzgec acikken eklenen
-              // gorev listeye GIRIYOR ama ekranda GORUNMUYORDU ve hicbir
-              // geri bildirim yoktu (depoda 2 gorev / ekranda 1 satir /
-              // bildirim 0) -- kullanici yazdigini kaybettigini sanardi.
-              // SENKRON sifirlanir: akis yeni degeri yayinlamadan once
-              // suzgec duser, ara karede satir KAYBOLMAZ. `onEkle` yalnizca
-              // dogrulamayi GECEN girdide atesler (`gorevBasligiDogrula`) ⇒
-              // bos/gecersiz girdi suzgeci SIFIRLAMAZ.
-              onEkle: (istek) {
-                _suzgecleriTemizle();
-                unawaited(
-                  _yerelYaz(
-                    () => widget.depo.ekle(
-                      istek.baslik,
-                      oncelik: istek.oncelik,
-                      sonTarih: istek.sonTarih,
-                      etiketler: istek.etiketler.toSet(),
-                    ),
+                                        senkronDurumu: gorunum.senkronDurumu,
+                                        cakismaVarMi: gorunum.cakismaVarMi,
+                                        depo: widget.depo,
+                                        listeler: listeler,
+                                        // IS-EMRI-o68 kriter 3 + ODEV.md §4(a):
+                                        // duzenleme boylece URUN YOLUNDAN cagrilir --
+                                        // `onTamamlaDegisti`'nin BIREBIR AYNI deseni
+                                        // (K112: once YEREL YAZMA, sonra itme --
+                                        // `_yerelYaz` sarmalayicisi ATLANMAZ).
+                                        onAyrintilarDuzenlendi: (degisiklik) =>
+                                            unawaited(
+                                              _yerelYaz(
+                                                () => widget.depo
+                                                    .ayrintilariGuncelle(
+                                                      gorunum.gorev.id,
+                                                      baslik: degisiklik.baslik,
+                                                      oncelik:
+                                                          degisiklik.oncelik,
+                                                      sonTarih:
+                                                          degisiklik.sonTarih,
+                                                      projeId:
+                                                          degisiklik.projeId,
+                                                      etiketEklenen: degisiklik
+                                                          .etiketEklenen,
+                                                      etiketSilinen: degisiklik
+                                                          .etiketSilinen,
+                                                    ),
+                                              ),
+                                            ),
+                                        // IS-EMRI-o72: duzenleme kablosunun BIREBIR
+                                        // AYNI deseni (K112: once YEREL YAZMA, sonra
+                                        // itme -- `_yerelYaz` sarmalayicisi ATLANMAZ).
+                                        onSil: () => unawaited(
+                                          _yerelYaz(
+                                            () => widget.depo.sil(
+                                              gorunum.gorev.id,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+                GorevEkleAlani(
+                  // K112: ONCE yerel yazma, SONRA itme (`_yerelYaz` sirayi
+                  // pazarliksiz tutar). Dort alan TEK `ekle()` cagrisina gider ⇒
+                  // TEK `WireOp`.
+                  // 🔴 EKLEME SUZGECLERI SIFIRLAR [Onur kilidi, 16 Agu 2026].
+                  // OLCULDU (bagimsiz denetim, 15 Agu): suzgec acikken eklenen
+                  // gorev listeye GIRIYOR ama ekranda GORUNMUYORDU ve hicbir
+                  // geri bildirim yoktu (depoda 2 gorev / ekranda 1 satir /
+                  // bildirim 0) -- kullanici yazdigini kaybettigini sanardi.
+                  // SENKRON sifirlanir: akis yeni degeri yayinlamadan once
+                  // suzgec duser, ara karede satir KAYBOLMAZ. `onEkle` yalnizca
+                  // dogrulamayi GECEN girdide atesler (`gorevBasligiDogrula`) ⇒
+                  // bos/gecersiz girdi suzgeci SIFIRLAMAZ.
+                  onEkle: (istek) {
+                    _suzgecleriTemizle();
+                    unawaited(
+                      _yerelYaz(
+                        () => widget.depo.ekle(
+                          istek.baslik,
+                          oncelik: istek.oncelik,
+                          sonTarih: istek.sonTarih,
+                          etiketler: istek.etiketler.toSet(),
+                          // IS-EMRI-o85-A B3: gorev AKTIF listede dogar --
+                          // `etkinSecim` (C4) TEK KAYNAKTIR, silinmis bir
+                          // listeye yazilmaz.
+                          projeId: etkinSecim,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// IS-EMRI-o85-A D2: liste yarat/yeniden adlandir icin TEK diyalog --
+/// `_GorevDuzenleDiyalogu`nun (gorev_satiri.dart) controller-dispose
+/// deseninin AYNISI (o68'de olculen dispose yarisina karsi ayni koruma).
+class _ListeAdiDiyalogu extends StatefulWidget {
+  final String baslik;
+  final String baslangicAdi;
+
+  const _ListeAdiDiyalogu({required this.baslik, this.baslangicAdi = ''});
+
+  @override
+  State<_ListeAdiDiyalogu> createState() => _ListeAdiDiyaloguState();
+}
+
+class _ListeAdiDiyaloguState extends State<_ListeAdiDiyalogu> {
+  late final TextEditingController _denetleyici;
+
+  @override
+  void initState() {
+    super.initState();
+    _denetleyici = TextEditingController(text: widget.baslangicAdi);
+  }
+
+  @override
+  void dispose() {
+    _denetleyici.dispose();
+    super.dispose();
+  }
+
+  // Bos ad kaydedilmez -- diyalog ACIK KALIR (gorevBasligiDogrula'nin bos
+  // girdide diyalogu acik birakan AYNI deseni, gorev_ekle_alani.dart).
+  void _kaydet() {
+    final ad = _denetleyici.text.trim();
+    if (ad.isEmpty) return;
+    Navigator.of(context).pop(ad);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.baslik, overflow: TextOverflow.ellipsis, maxLines: 1),
+      content: TextField(
+        key: const ValueKey('liste_adi_alani'),
+        controller: _denetleyici,
+        autofocus: true,
+        onSubmitted: (_) => _kaydet(),
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            Metinler.iptalDugmesi,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+        TextButton(
+          onPressed: _kaydet,
+          child: Text(
+            Metinler.kaydetDugmesi,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+      ],
     );
   }
 }

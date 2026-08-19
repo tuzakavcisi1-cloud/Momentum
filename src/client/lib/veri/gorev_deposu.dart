@@ -50,6 +50,11 @@ class GorevAyrintiDegisikligi {
   final Yazim<int?>? oncelik;
   final Yazim<DateTime?>? sonTarih;
 
+  /// IS-EMRI-o85-A B2: `Yazim(null)` = Gelen Kutusu'na taşı (deger tele
+  /// `value: null` olarak yazilir, registry'de "state 2: mesru null" --
+  /// malformed DEGIL). `null` (alanin kendisi) = projeId DEGISMEDI.
+  final Yazim<String?>? projeId;
+
   /// ODEV.md §4(a) etiket dilimi: OR-Set'te "yeni deger" YOKTUR, EKLEME ve
   /// SILME vardir ⇒ bu iki alan `Yazim` DEGILDIR (bir OR-Set'i "temizlenmis"
   /// diye damgalamak anlamsizdir). Bos kume = o yonde degisiklik yok.
@@ -60,6 +65,7 @@ class GorevAyrintiDegisikligi {
     this.baslik,
     this.oncelik,
     this.sonTarih,
+    this.projeId,
     this.etiketEklenen = const {},
     this.etiketSilinen = const {},
   });
@@ -70,6 +76,7 @@ class GorevAyrintiDegisikligi {
       baslik == null &&
       oncelik == null &&
       sonTarih == null &&
+      projeId == null &&
       etiketEklenen.isEmpty &&
       etiketSilinen.isEmpty;
 }
@@ -117,6 +124,12 @@ class Gorev {
   /// HIC bilmez ve bos liste onlarin GERCEK durumudur.
   final List<String> etiketler;
 
+  /// IS-EMRI-o85-A K1: gorevin ait oldugu "Liste" (sunucudaki `Project`)
+  /// -- NULL = Gelen Kutusu (K4, sanal -- satir yaratilmaz). HAM sutundur,
+  /// varsayilan `null`: mevcut ~50 cagri yeri (testler dahil) bu alani hic
+  /// bilmez ve `null` onlarin GERCEK durumudur.
+  final String? projeId;
+
   const Gorev({
     required this.id,
     required this.baslik,
@@ -128,6 +141,24 @@ class Gorev {
     this.oncelik,
     this.sonTarih,
     this.etiketler = const [],
+    this.projeId,
+  });
+}
+
+/// IS-EMRI-o85-A K1: uruntteki "Liste" -- sunucudaki `Project`in istemci
+/// aynasi (F4 dikisi -- `Gorev`/`GorevRow` ayriminin aynisi). `pos`/`renk`
+/// YOK (K3: order kanali bu dilimde acilmaz; renk ekrani yok).
+class Proje {
+  final String id;
+  final String ad;
+  final bool silindi;
+  final DateTime olusturuldu;
+
+  const Proje({
+    required this.id,
+    required this.ad,
+    required this.silindi,
+    required this.olusturuldu,
   });
 }
 
@@ -183,11 +214,19 @@ abstract class GorevDeposu {
   ///
   /// DOGRULAMA BURADA DEGILDIR: baslik/etiket kurallari `gorevBasligiDogrula`
   /// ve `etiketDogrula`nin tekelindedir, cagiran onlardan gecirir.
+  ///
+  /// IS-EMRI-o85-A B3: [projeId] verilirse (aktif liste secili) AYNI TEK
+  /// `WireOp` ve TEK `transaction()` icinde `projectId` alanina yazilir --
+  /// `ekle` SONRA `ayrintilariGuncelle` YASAGININ (yukarida) ayni gerekcesi.
+  /// `null` = Gelen Kutusu'nda dogar (K4) -- tele HIC KONMAZ (oncelik/
+  /// sonTarih'in AYNI deseni: yeni varlikta olmayan bir alani yazmak
+  /// anlamsizdir).
   Future<void> ekle(
     String baslik, {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   });
 
   Future<void> duzenle(String id, String yeniBaslik);
@@ -204,11 +243,16 @@ abstract class GorevDeposu {
   /// cozulur: diyalog acikken gelen uzak bir add BAYAT bir `observed` ile
   /// gonderilseydi ADD-WINS ile hayatta kalir, kullanicinin gordugu sonuc
   /// ile sunucununki AYRISIRDI.
+  /// IS-EMRI-o85-A B2: [projeId] gorevi TASIR -- `Yazim(null)` Gelen
+  /// Kutusu'na tasimaktir (deger tele `value: null` yazilir, "state 2:
+  /// mesru null"). `projeId` verilmezse (alanin kendisi `null`) HIC
+  /// DOKUNULMAZ.
   Future<void> ayrintilariGuncelle(
     String id, {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   });
@@ -225,6 +269,25 @@ abstract class GorevDeposu {
   /// GOREV-SS2 D-SS2-6: entity'nin TUM cakisma kayitlarina TEK secim
   /// uygulanir (karar entity basinadir, S1).
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim);
+
+  /// IS-EMRI-o85-A K1/D1: silinmemis listeler (Drawer icin). Gelen Kutusu
+  /// BURADA YOKTUR -- sanaldir, ekran tarafinda sabit ilk satir olarak
+  /// eklenir (K4, satir yaratilmaz).
+  Stream<List<Proje>> listelerGorunur();
+
+  /// IS-EMRI-o85-A B1: liste yaratma -- `entityType: 'Project'`, TEK
+  /// `WireOp`/`transaction()` (`ekle`nin AYNI deseni). `pos`/`color`
+  /// YAZILMAZ (K3).
+  Future<void> listeEkle(String ad);
+
+  /// IS-EMRI-o85-A B1: yeniden adlandirma -- `fields:name`.
+  Future<void> listeDuzenle(String id, String yeniAd);
+
+  /// IS-EMRI-o85-A B1/K5: silme -- `fields:isDeleted = 'true'`. O listedeki
+  /// gorevlerin `projeId`si BURADA DEGISTIRILMEZ (K5, C4) -- ekranda Gelen
+  /// Kutusu'na dusmeleri SORGUNUN silinmis listeyi GOSTERMEMESINDENDIR,
+  /// yerel bir yazimdan degil (yeni op dogurup iki cihazda IRAKSARDI).
+  Future<void> listeSil(String id);
 }
 
 /// GOREV-SS2 D-SS2-4 PAZARLIKSIZ: cakisma tespiti icin TEK temsil alani --
@@ -352,6 +415,7 @@ class DriftGorevDeposu implements GorevDeposu {
     oncelik: satir.oncelik,
     sonTarih: satir.sonTarih,
     etiketler: etiketler,
+    projeId: satir.projeId,
   );
 
   /// ODEV.md §4(a): etiket toplama BANT-ICI AYIRAC KULLANMAZ.
@@ -450,6 +514,9 @@ class DriftGorevDeposu implements GorevDeposu {
 
     final sorgu =
         _db.select(_db.gorevler).join([
+            // IS-EMRI-o85-A B4: `entityType.equals('Task')` KALIR -- rozet
+            // GOREV SATIRININ durumudur, liste satirinin degil (liste
+            // satirlarina rozet BU DILIMDE YOKTUR, beyan edilmis sinir).
             leftOuterJoin(
               kuyruk,
               kuyruk.entityId.equalsExp(_db.gorevler.id) &
@@ -519,6 +586,7 @@ class DriftGorevDeposu implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async {
     final simdi = saat();
     final id = idUret();
@@ -528,12 +596,16 @@ class DriftGorevDeposu implements GorevDeposu {
     // KEZ cagrildi). YENI varlikta `null` bir alani tele koymak ANLAMSIZDIR
     // (sunucuda zaten yoktur) ⇒ yalniz VERILEN alanlar yazilir; bos bir
     // `dueAt: null` yazmak, arada gelen uzak bir yazimi LWW ile ezerdi.
+    // IS-EMRI-o85-A B3: `projeId` AYNI kuralla -- Gelen Kutusu'nda (K4)
+    // dogan bir gorev icin `projectId` hic tele konmaz.
     final alanlar = {
       'title': WireFieldWrite(value: baslik, hlc: opHlc),
       if (oncelik != null)
         'priority': WireFieldWrite(value: oncelikTele(oncelik), hlc: opHlc),
       if (sonTarih != null)
         'dueAt': WireFieldWrite(value: sonTarihTele(sonTarih), hlc: opHlc),
+      if (projeId != null)
+        'projectId': WireFieldWrite(value: projeId, hlc: opHlc),
     };
 
     // ETIKET ADD'LERI: YENI varlikta `observed` COZULMEZ (ortada iptal
@@ -569,6 +641,7 @@ class DriftGorevDeposu implements GorevDeposu {
               guncellendi: simdi,
               oncelik: Value(oncelik),
               sonTarih: Value(sonTarih),
+              projeId: Value(projeId),
             ),
           );
       for (final giris in etiketTaglari.entries) {
@@ -620,6 +693,7 @@ class DriftGorevDeposu implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async {
@@ -631,12 +705,16 @@ class DriftGorevDeposu implements GorevDeposu {
     if (baslik == null &&
         oncelik == null &&
         sonTarih == null &&
+        projeId == null &&
         eklenen.isEmpty &&
         silinen.isEmpty) {
       return;
     }
 
     final opHlc = hlc.sonrakiHlc();
+    // IS-EMRI-o85-A B2: `projeId.deger` `null` OLABILIR (Gelen Kutusu'na
+    // tasima) -- bu durumda BILE `WireFieldWrite(value: null, ...)` YAZILIR,
+    // cunku `projeId != null` (Yazim SARILMISTIR) "alan DEGISTI" demektir.
     final alanlar = {
       if (baslik != null)
         'title': WireFieldWrite(value: baslik.deger, hlc: opHlc),
@@ -650,6 +728,8 @@ class DriftGorevDeposu implements GorevDeposu {
           value: sonTarihTele(sonTarih.deger),
           hlc: opHlc,
         ),
+      if (projeId != null)
+        'projectId': WireFieldWrite(value: projeId.deger, hlc: opHlc),
     };
 
     await _db.transaction(() async {
@@ -716,6 +796,9 @@ class DriftGorevDeposu implements GorevDeposu {
               : const Value.absent(),
           sonTarih: sonTarih != null
               ? Value(sonTarih.deger)
+              : const Value.absent(),
+          projeId: projeId != null
+              ? Value(projeId.deger)
               : const Value.absent(),
           guncellendi: Value(saat()),
         ),
@@ -850,6 +933,107 @@ class DriftGorevDeposu implements GorevDeposu {
       await (_db.delete(
         _db.cakismaKayitlari,
       )..where((t) => t.entityId.equals(entityId))).go();
+    });
+  }
+
+  /// IS-EMRI-o85-A K1/D1: silinmemis listeler, `gorevlerGorunur`nin AYNI
+  /// siralama deseni (olusturuldu, sonra id -- deterministik tie-break).
+  /// Gelen Kutusu BURADA YOKTUR -- ekran tarafinda sanal ilk satir eklenir.
+  @override
+  Stream<List<Proje>> listelerGorunur() {
+    return (_db.select(_db.projeler)
+          ..where((t) => t.silindi.equals(false))
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.olusturuldu),
+            (t) => OrderingTerm(expression: t.id),
+          ]))
+        .watch()
+        .map(
+          (satirlar) => satirlar
+              .map(
+                (s) => Proje(
+                  id: s.id,
+                  ad: s.ad,
+                  silindi: s.silindi,
+                  olusturuldu: s.olusturuldu,
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  /// IS-EMRI-o85-A B1: liste yaratma -- `ekle`nin AYNI deseni (`entityType:
+  /// 'Project'`, TEK `WireOp`, TEK `transaction()`). `pos`/`color` YAZILMAZ
+  /// (K3) -- tel biçimi mevcut `Task` yazımlarının BIREBIR aynısıdır.
+  @override
+  Future<void> listeEkle(String ad) async {
+    final simdi = saat();
+    final id = idUret();
+    final opHlc = hlc.sonrakiHlc();
+
+    final op = WireOp(
+      operationId: idUret(),
+      clientId: hlc.clientId,
+      entityId: id,
+      actorId: actorId,
+      entityType: 'Project',
+      opHlc: opHlc,
+      fields: {'name': WireFieldWrite(value: ad, hlc: opHlc)},
+    );
+
+    await _db.transaction(() async {
+      await _db
+          .into(_db.projeler)
+          .insert(ProjelerCompanion.insert(id: id, ad: ad, olusturuldu: simdi));
+      await _kuyrugaYaz(op);
+    });
+  }
+
+  /// IS-EMRI-o85-A B1: yeniden adlandirma -- `duzenle`nin (Task) AYNI deseni.
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {
+    final opHlc = hlc.sonrakiHlc();
+    final op = WireOp(
+      operationId: idUret(),
+      clientId: hlc.clientId,
+      entityId: id,
+      actorId: actorId,
+      entityType: 'Project',
+      opHlc: opHlc,
+      fields: {'name': WireFieldWrite(value: yeniAd, hlc: opHlc)},
+    );
+
+    await _db.transaction(() async {
+      await (_db.update(_db.projeler)..where((t) => t.id.equals(id))).write(
+        ProjelerCompanion(ad: Value(yeniAd)),
+      );
+      await _kuyrugaYaz(op);
+    });
+  }
+
+  /// IS-EMRI-o85-A B1/K5: silme -- `sil`in (Task) AYNI deseni
+  /// (`fields:isDeleted = 'true'`). O listedeki gorevlerin `projeId`si
+  /// BURADA DEGISTIRILMEZ (K5/C4) -- yeni bir op dogurup iki cihazda
+  /// IRAKSARDI; Gelen Kutusu'na dusmeleri ekran sorgusunun silinmis listeyi
+  /// GOSTERMEMESINDENDIR.
+  @override
+  Future<void> listeSil(String id) async {
+    final opHlc = hlc.sonrakiHlc();
+    final op = WireOp(
+      operationId: idUret(),
+      clientId: hlc.clientId,
+      entityId: id,
+      actorId: actorId,
+      entityType: 'Project',
+      opHlc: opHlc,
+      fields: {'isDeleted': WireFieldWrite(value: 'true', hlc: opHlc)},
+    );
+
+    await _db.transaction(() async {
+      await (_db.update(_db.projeler)..where((t) => t.id.equals(id))).write(
+        const ProjelerCompanion(silindi: Value(true)),
+      );
+      await _kuyrugaYaz(op);
     });
   }
 

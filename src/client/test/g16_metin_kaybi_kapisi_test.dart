@@ -83,6 +83,7 @@ class _SahteDepoY6Y7 implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async {}
   @override
   Future<void> duzenle(String id, String yeniBaslik) async {}
@@ -95,6 +96,7 @@ class _SahteDepoY6Y7 implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async {}
@@ -103,9 +105,21 @@ class _SahteDepoY6Y7 implements GorevDeposu {
   @override
   Future<void> sil(String id) async {}
   @override
-  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) => Stream.value(_kayitlar);
+  Stream<List<CakismaKaydi>> cakismaKayitlariniIzle(String entityId) =>
+      Stream.value(_kayitlar);
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
+
+  // IS-EMRI-o85-A: arayuze eklenen liste (Project) yazma yolu. Bu sahte
+  // depo onu KULLANMAZ -- govde bilerek bostur (mevcut stub'lerin aynisi).
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+  @override
+  Future<void> listeEkle(String ad) async {}
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+  @override
+  Future<void> listeSil(String id) async {}
 }
 
 // GOREV-SS2 [T5]: Y7'nin govde olcumu icin UZUN bir cakisma degeri --
@@ -201,7 +215,8 @@ final _y5 = _Bilesen(
 final _y6 = _Bilesen(
   kod: 'Y6',
   aciklama: 'cakisma_rozeti.dart (AppBar basligi, Metinler.duyuruCakismaVar)',
-  olustur: () => const CakismaCozumSayfasi(entityId: 'y6', depo: _SahteDepoY6Y7([])),
+  olustur: () =>
+      const CakismaCozumSayfasi(entityId: 'y6', depo: _SahteDepoY6Y7([])),
   bul: () => find.text(Metinler.duyuruCakismaVar),
   // BEYAN EDILMIS SINIR: genislik formulu YOK -- yalniz OLCEK yarisi (A2)
   // kontrol edilir (yukaridaki gerekce).
@@ -216,14 +231,30 @@ final _y6 = _Bilesen(
 final _y7 = _Bilesen(
   kod: 'Y7',
   aciklama: 'cakisma_rozeti.dart (govde, deger blogu -- kaybedenDeger)',
-  olustur: () => const CakismaCozumSayfasi(entityId: 'y7', depo: _SahteDepoY6Y7([_y7Kayit])),
+  olustur: () => const CakismaCozumSayfasi(
+    entityId: 'y7',
+    depo: _SahteDepoY6Y7([_y7Kayit]),
+  ),
   bul: () => find.text(_y7Kayit.kaybedenDeger),
   beklenenGenislik: (g, s) => (g - 3 * MBosluk.m) / 2,
 );
 
 final _hepsi = <_Bilesen>[_y1, _y2, _y3, _y4, _y5, _y6, _y7]; // A2 -- 7
-final _a3Kapsami = <_Bilesen>[_y1, _y2, _y3, _y4, _y5, _y7]; // A3 -- 6, Y6 HARIC (SS4)
-final _olcumKapsami = <_Bilesen>[_y2, _y3, _y4, _y5, _y7]; // A1/A4 -- 5, Y1+Y6 HARIC (SS1)
+final _a3Kapsami = <_Bilesen>[
+  _y1,
+  _y2,
+  _y3,
+  _y4,
+  _y5,
+  _y7,
+]; // A3 -- 6, Y6 HARIC (SS4)
+final _olcumKapsami = <_Bilesen>[
+  _y2,
+  _y3,
+  _y4,
+  _y5,
+  _y7,
+]; // A1/A4 -- 5, Y1+Y6 HARIC (SS1)
 
 // GOREV-A9 [K93]: PUBLIC (alt cizgisiz) -- `_a9_probe_test.dart` bu
 // sarmalayiciyi DOGRUDAN kullanmak ZORUNDA (spec kriter 2: "kendi kurulumunu
@@ -341,92 +372,107 @@ void main() {
   group(
     'G16/A1 -- yalniz Y2-Y5+Y7: RenderParagraph.didExceedMaxLines FALSE olmali',
     () {
-    // SS1 (spec 5/6): Y1 burada YOK -- maxLines:1 alir ve 320dp x 2.0x'te
-    // gercekci her baslikta didExceedMaxLines=true olur; S1'in "Y1'de kayip
-    // KABUL EDILIR" beyaniyla dogrudan CATISIRDI. Y1 A2 ile olculur.
-    // GOREV-A9 [K93]: Y6 da YOK -- AppBar olcek kelepcesi ($1.34$), izgaranin
-    // 1.5x/2.0x ayaklari oraya ULASMAZ (spec SS4/Y6, SS8/S1). Y6 A2 ile olculur.
-    for (final b in _olcumKapsami) {
-      for (final olcek in _olcekler) {
-        for (final genislik in _genislikler) {
-          testWidgets('${b.kod}: ${genislik}dp x ${olcek}x -- kirpma YOK', (
-            tester,
-          ) async {
-            final rp = await _pompalaVeDogrula(tester, b, genislik, olcek);
-            expect(
-              rp.didExceedMaxLines,
-              isFalse,
-              reason:
-                  '${b.kod} (${b.aciklama}) KIRPILDI (${genislik}dp x ${olcek}x) -- '
-                  'maxLines yetersiz.',
-            );
-          });
+      // SS1 (spec 5/6): Y1 burada YOK -- maxLines:1 alir ve 320dp x 2.0x'te
+      // gercekci her baslikta didExceedMaxLines=true olur; S1'in "Y1'de kayip
+      // KABUL EDILIR" beyaniyla dogrudan CATISIRDI. Y1 A2 ile olculur.
+      // GOREV-A9 [K93]: Y6 da YOK -- AppBar olcek kelepcesi ($1.34$), izgaranin
+      // 1.5x/2.0x ayaklari oraya ULASMAZ (spec SS4/Y6, SS8/S1). Y6 A2 ile olculur.
+      for (final b in _olcumKapsami) {
+        for (final olcek in _olcekler) {
+          for (final genislik in _genislikler) {
+            testWidgets('${b.kod}: ${genislik}dp x ${olcek}x -- kirpma YOK', (
+              tester,
+            ) async {
+              final rp = await _pompalaVeDogrula(tester, b, genislik, olcek);
+              expect(
+                rp.didExceedMaxLines,
+                isFalse,
+                reason:
+                    '${b.kod} (${b.aciklama}) KIRPILDI (${genislik}dp x ${olcek}x) -- '
+                    'maxLines yetersiz.',
+              );
+            });
+          }
         }
       }
-    }
-  });
+    },
+  );
 
-  group('G16/A2 -- Y1-Y7 (hepsi): her Text maxLines!=null VE overflow==ellipsis', () {
-    // Y1'in TEK olcusu budur (SS1): liste satirinda maxLines:1 + ellipsis,
-    // kayip a11y_statik_tasma_test ile UYUMLU sekilde KABUL EDILIR.
-    // GOREV-A9 [K93]: Y6'nin da TEK olcusu budur (AppBar basligi, olcek
-    // kelepceli -- A1/A3/A4'e giremez).
-    for (final b in _hepsi) {
-      for (final olcek in _olcekler) {
-        for (final genislik in _genislikler) {
-          testWidgets('${b.kod}: ${genislik}dp x ${olcek}x -- maxLines+ellipsis beyani', (
-            tester,
-          ) async {
-            await tester.pumpWidget(
-              sarmalayici(genislik: genislik, olcek: olcek, bilesen: b.olustur()),
+  group(
+    'G16/A2 -- Y1-Y7 (hepsi): her Text maxLines!=null VE overflow==ellipsis',
+    () {
+      // Y1'in TEK olcusu budur (SS1): liste satirinda maxLines:1 + ellipsis,
+      // kayip a11y_statik_tasma_test ile UYUMLU sekilde KABUL EDILIR.
+      // GOREV-A9 [K93]: Y6'nin da TEK olcusu budur (AppBar basligi, olcek
+      // kelepceli -- A1/A3/A4'e giremez).
+      for (final b in _hepsi) {
+        for (final olcek in _olcekler) {
+          for (final genislik in _genislikler) {
+            testWidgets(
+              '${b.kod}: ${genislik}dp x ${olcek}x -- maxLines+ellipsis beyani',
+              (tester) async {
+                await tester.pumpWidget(
+                  sarmalayici(
+                    genislik: genislik,
+                    olcek: olcek,
+                    bilesen: b.olustur(),
+                  ),
+                );
+                await tester.pump();
+                final widget = tester.widget<Text>(b.bul());
+                expect(
+                  widget.maxLines,
+                  isNotNull,
+                  reason: '${b.kod} (${b.aciklama}) maxLines TASIMIYOR.',
+                );
+                expect(
+                  widget.overflow,
+                  TextOverflow.ellipsis,
+                  reason:
+                      '${b.kod} (${b.aciklama}) overflow:ellipsis TASIMIYOR.',
+                );
+              },
             );
-            await tester.pump();
-            final widget = tester.widget<Text>(b.bul());
-            expect(
-              widget.maxLines,
-              isNotNull,
-              reason: '${b.kod} (${b.aciklama}) maxLines TASIMIYOR.',
-            );
-            expect(
-              widget.overflow,
-              TextOverflow.ellipsis,
-              reason: '${b.kod} (${b.aciklama}) overflow:ellipsis TASIMIYOR.',
-            );
-          });
+          }
         }
       }
-    }
-  });
+    },
+  );
 
   group(
     'G16/A3 -- Y1-Y5+Y7 (Y6 HARIC): tester.takeException() null (RenderFlex tasmasi yakalanir)',
     () {
-    // GOREV-A9 [K93/spec SS8/S4]: Y6 burada YOK -- A3 `bul()` KULLANMAZ,
-    // yalniz `olustur()`'u pompalayip `takeException()`'a bakar; `_y6` ile
-    // `_y7` AYNI sayfayi (CakismaCozumSayfasi) urettigi icin burada
-    // BIREBIR AYNI testi uretirdi -- sayi dekoratif test tasimaz.
-    for (final b in _a3Kapsami) {
-      for (final olcek in _olcekler) {
-        for (final genislik in _genislikler) {
-          testWidgets('${b.kod}: ${genislik}dp x ${olcek}x -- istisna yok', (
-            tester,
-          ) async {
-            await tester.pumpWidget(
-              sarmalayici(genislik: genislik, olcek: olcek, bilesen: b.olustur()),
-            );
-            await tester.pump();
-            expect(
-              tester.takeException(),
-              isNull,
-              reason:
-                  '${b.kod} (${b.aciklama}) ${genislik}dp x ${olcek}x noktasinda '
-                  'beklenmeyen istisna (ör. RenderFlex tasmasi) firladi.',
-            );
-          });
+      // GOREV-A9 [K93/spec SS8/S4]: Y6 burada YOK -- A3 `bul()` KULLANMAZ,
+      // yalniz `olustur()`'u pompalayip `takeException()`'a bakar; `_y6` ile
+      // `_y7` AYNI sayfayi (CakismaCozumSayfasi) urettigi icin burada
+      // BIREBIR AYNI testi uretirdi -- sayi dekoratif test tasimaz.
+      for (final b in _a3Kapsami) {
+        for (final olcek in _olcekler) {
+          for (final genislik in _genislikler) {
+            testWidgets('${b.kod}: ${genislik}dp x ${olcek}x -- istisna yok', (
+              tester,
+            ) async {
+              await tester.pumpWidget(
+                sarmalayici(
+                  genislik: genislik,
+                  olcek: olcek,
+                  bilesen: b.olustur(),
+                ),
+              );
+              await tester.pump();
+              expect(
+                tester.takeException(),
+                isNull,
+                reason:
+                    '${b.kod} (${b.aciklama}) ${genislik}dp x ${olcek}x noktasinda '
+                    'beklenmeyen istisna (ör. RenderFlex tasmasi) firladi.',
+              );
+            });
+          }
         }
       }
-    }
-  });
+    },
+  );
 
   group(
     'G16/A4 -- yalniz Y2-Y5+Y7: cizilen kutu metnin ISTEDIGI yuksekligi KISALTMAMALI',

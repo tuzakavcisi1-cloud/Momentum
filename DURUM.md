@@ -96,3 +96,10 @@ Açık (ayrı karar): G20 testi emekli değişmezi sabitliyor · `docker-compose
     basamak sınırında satırlar **sessizce kayboluyordu** (canlı: 510'un 500'ü teslim). `v1.0.1`
     bununla teslim edildi. Kanıt `KANIT/o84` + `KANIT/o83F`; `Cursor_correctness_…` 3/3 ⇒ ayrı flake
     YOK. **Ders: zamanlamaya benzeyen kusurdan önce `EXPLAIN Sort Key`'e bak.**
+32. **[o85-A] `projeId`/`fields:projectId` ÇAKIŞMA TESPİTİNE GİRMEZ** — madde 9'un aynı sınıfı:
+    `kanonikDize` bu alan için ÇAĞRILMAZ, `cakismaKayitlari`'na YAZILMAZ; LWW sessizce kazanır/kaybeder.
+33. 🔴 **[o85-A ÖLÇÜLDÜ, backend `TaskProjection.cs`'te "CHANNEL WARNING" yorumuyla teyitli] Kanal-adı
+    asimetrisi UYUYOR:** fractional alanlar (`pos`/`listPos`/`boardPos`) snapshot'ta **`scalars[]`**
+    (`fields:$ad`), artımlıda **ayrı `order` haritası** (`order:$ad`) olarak gelir — AYNI alan, İKİ
+    FARKLI `alan` dizgesi. Bu dilimde `pos`/`listPos` YAZILMADI (K3) ⇒ bugün etkisiz; kanal açılınca
+    o84'ün gölgelenmiş `ORDER BY`'ıyla AYNI SINIF bir sessiz-kayıp riski — İLK ÖLÇÜLECEK yer burasıdır.

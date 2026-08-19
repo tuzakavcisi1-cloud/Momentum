@@ -160,9 +160,28 @@ class Metinler {
   static const String zatenHesabinVarMi = 'Zaten hesabın var mı? Giriş yap';
   static const String girisHatasiGecersizBilgi = 'E-posta veya parola hatalı.';
   static const String girisHatasiEpostaKullanimda = 'Bu e-posta zaten kayıtlı.';
-  static const String girisHatasiGenel = 'Bir şeyler ters gitti, tekrar deneyin.';
-  static const String girisHatasiAg = 'Sunucuya ulaşılamadı, bağlantını kontrol et.';
+  static const String girisHatasiGenel =
+      'Bir şeyler ters gitti, tekrar deneyin.';
+  static const String girisHatasiAg =
+      'Sunucuya ulaşılamadı, bağlantını kontrol et.';
   static const String girisHatasiKisaSifre = 'Parola en az 8 karakter olmalı.';
   static const String oturumAcikBekleniyor = 'Oturum hazırlanıyor…';
   static const String cikisYapDugmesi = 'Çıkış yap';
+
+  // IS-EMRI-o85-A -- DILIM 2 "Liste" (K1: uruntteki "Liste" = telde/kodda
+  // `Project`). F6'nin 13 dizgesine DAHIL DEGIL (yukaridaki EK gruplarin
+  // AYNI deseni).
+  static const String gelenKutusu = 'Gelen Kutusu';
+  static const String listeYeniDugmesi = 'Yeni liste';
+  static const String listeYenidenAdlandirDugmesi = 'Yeniden adlandır';
+  static const String listeSil = 'Listeyi sil';
+  static const String listeSilOnay =
+      'Bu liste silinsin mi? İçindeki görevler Gelen Kutusu\'na taşınır.';
+  static const String listeBasligi = 'Liste';
+
+  /// D5: liste boşken mevcut `bos_durum.dart` deseni, liste adıyla. `Metinler
+  /// .bosDurum` gibi SABIT DEGIL (liste adi calisma-zamaninda gelir) --
+  /// EK grubun tek FONKSIYON uyesi, F6 kilidi yalniz `const String`leri sinar.
+  static String bosDurumListe(String listeAdi) =>
+      '$listeAdi listesinde henüz görev yok.';
 }

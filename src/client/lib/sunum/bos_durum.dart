@@ -14,12 +14,18 @@ class BosDurum extends StatelessWidget {
   /// aramayi VE cip secimini tek dokunusta sifirlar.
   final VoidCallback? onSuzgecleriTemizle;
 
-  const BosDurum({super.key}) : onSuzgecleriTemizle = null;
+  /// IS-EMRI-o85-A D5: birinci varyantta DOLU ise mesaj AKTIF liste/Gelen
+  /// Kutusu adini icerir (`Metinler.bosDurumListe`). `null` ise mevcut
+  /// `Metinler.bosDurum` metni AYNEN kalir (agac BIREBIR ESKISI, asagidaki
+  /// yorumun kilidi bozulmaz).
+  final String? listeAdi;
+
+  const BosDurum({super.key, this.listeAdi}) : onSuzgecleriTemizle = null;
 
   const BosDurum.eslesmeYok({
     super.key,
     required VoidCallback this.onSuzgecleriTemizle,
-  });
+  }) : listeAdi = null;
 
   /// GOREV-A8 [K90/spec SS4/Y2]: OLCULDU (KANIT/A8/00-OLCUM.txt), izgaranin
   /// en kotu noktasinda (320dp x 2.0x) -- ellipsis TEK BASINA metni fiilen
@@ -41,10 +47,14 @@ class BosDurum extends StatelessWidget {
     // Ikinci varyant icin `Column` sarmalayip ikisini BIRLESTIRMEK, mevcut
     // A8 tasma olcumunu ve vitrin testlerini gorunmez bicimde kaydirirdi.
     if (temizle == null) {
+      final ad = listeAdi;
       return Center(
         child: Padding(
           padding: EdgeInsets.all(MBosluk.l),
-          child: _metin(context, Metinler.bosDurum),
+          child: _metin(
+            context,
+            ad == null ? Metinler.bosDurum : Metinler.bosDurumListe(ad),
+          ),
         ),
       );
     }

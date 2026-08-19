@@ -34,7 +34,10 @@ import 'destekler/sahte_senkron_agi.dart';
 
 /// g5_karantina_kapisi_test.dart'taki `_uygulananYanit`in yerel kopyasi --
 /// dosyalar arasi PRIVATE sembol paylasilamaz.
-SenkronSonucu _basariliYanit(Map<String, Object?> govde, {String kod = 'Applied'}) {
+SenkronSonucu _basariliYanit(
+  Map<String, Object?> govde, {
+  String kod = 'Applied',
+}) {
   final ops = (govde['ops'] as List).cast<Map<String, Object?>>();
   return SenkronBasarili(
     jsonEncode({
@@ -90,7 +93,9 @@ class _DurumSarmalayiciState extends State<_DurumSarmalayici> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Scaffold(body: SenkronRozeti(durum: _durum)));
+    return MaterialApp(
+      home: Scaffold(body: SenkronRozeti(durum: _durum)),
+    );
   }
 }
 
@@ -163,60 +168,71 @@ void main() {
 
   // ============ G11-A1 -- rozetDikisi SAF birim tablosu (D2) ============
 
-  test('G11-A1: rozetDikisi -- dort taban kuralinin her satiri ayri expect (D2)', () {
-    // kural 1: ucusta>0 => kuyrukta, K ne olursa olsun kazanir.
-    expect(
-      rozetDikisi('yerel', ucusta: 1, bekleyen: 0, zehirli: 0).$1,
-      SenkronDurumTuru.kuyrukta,
-    );
-    expect(
-      rozetDikisi('senkronize', ucusta: 2, bekleyen: 5, zehirli: 1).$1,
-      SenkronDurumTuru.kuyrukta,
-    );
+  test(
+    'G11-A1: rozetDikisi -- dort taban kuralinin her satiri ayri expect (D2)',
+    () {
+      // kural 1: ucusta>0 => kuyrukta, K ne olursa olsun kazanir.
+      expect(
+        rozetDikisi('yerel', ucusta: 1, bekleyen: 0, zehirli: 0).$1,
+        SenkronDurumTuru.kuyrukta,
+      );
+      expect(
+        rozetDikisi('senkronize', ucusta: 2, bekleyen: 5, zehirli: 1).$1,
+        SenkronDurumTuru.kuyrukta,
+      );
 
-    // kural 2: ucusta=0, bekleyen>0, K=='cevrimdisi' => cevrimdisi.
-    expect(
-      rozetDikisi('cevrimdisi', ucusta: 0, bekleyen: 1, zehirli: 0).$1,
-      SenkronDurumTuru.cevrimdisi,
-    );
+      // kural 2: ucusta=0, bekleyen>0, K=='cevrimdisi' => cevrimdisi.
+      expect(
+        rozetDikisi('cevrimdisi', ucusta: 0, bekleyen: 1, zehirli: 0).$1,
+        SenkronDurumTuru.cevrimdisi,
+      );
 
-    // kural 3: ucusta=0, bekleyen>0, K != 'cevrimdisi' VE K != 'yerel' =>
-    // gonderilmemis (YENI). K != 'yerel' siniri BUILD BULGUSU (rozetDikisi
-    // doc yorumuna bkz.): satır sunucuda VAR olmasi (DESIGN.md v2 §4)
-    // gerekir, hic senkronlanmamis bir satir (K='yerel') bunu SAGLAMAZ --
-    // ölçüldü: bu siniri olmadan g10 AYAK6 ("taze görev -> Yalnızca bu
-    // cihazda") KIRILIYORDU.
-    expect(
-      rozetDikisi('senkronize', ucusta: 0, bekleyen: 1, zehirli: 0).$1,
-      SenkronDurumTuru.gonderilmemis,
-    );
-    expect(
-      rozetDikisi('cakisma', ucusta: 0, bekleyen: 1, zehirli: 0).$1,
-      SenkronDurumTuru.gonderilmemis,
-      reason: 'K=cakisma da rule 3e girer -- G11-A7 bilesik senaryosunun temeli',
-    );
-    expect(
-      rozetDikisi('yerel', ucusta: 0, bekleyen: 3, zehirli: 0).$1,
-      SenkronDurumTuru.yerel,
-      reason: 'K=yerel ISTISNA -- hic senkronlanmamis satir sunucuda YOK, gonderilmemis YANLIS OLURDU',
-    );
+      // kural 3: ucusta=0, bekleyen>0, K != 'cevrimdisi' VE K != 'yerel' =>
+      // gonderilmemis (YENI). K != 'yerel' siniri BUILD BULGUSU (rozetDikisi
+      // doc yorumuna bkz.): satır sunucuda VAR olmasi (DESIGN.md v2 §4)
+      // gerekir, hic senkronlanmamis bir satir (K='yerel') bunu SAGLAMAZ --
+      // ölçüldü: bu siniri olmadan g10 AYAK6 ("taze görev -> Yalnızca bu
+      // cihazda") KIRILIYORDU.
+      expect(
+        rozetDikisi('senkronize', ucusta: 0, bekleyen: 1, zehirli: 0).$1,
+        SenkronDurumTuru.gonderilmemis,
+      );
+      expect(
+        rozetDikisi('cakisma', ucusta: 0, bekleyen: 1, zehirli: 0).$1,
+        SenkronDurumTuru.gonderilmemis,
+        reason:
+            'K=cakisma da rule 3e girer -- G11-A7 bilesik senaryosunun temeli',
+      );
+      expect(
+        rozetDikisi('yerel', ucusta: 0, bekleyen: 3, zehirli: 0).$1,
+        SenkronDurumTuru.yerel,
+        reason:
+            'K=yerel ISTISNA -- hic senkronlanmamis satir sunucuda YOK, gonderilmemis YANLIS OLURDU',
+      );
 
-    // kural 4: ucusta=0, bekleyen=0 => K eslemesi.
-    expect(rozetDikisi('yerel', ucusta: 0, bekleyen: 0, zehirli: 0).$1, SenkronDurumTuru.yerel);
-    expect(
-      rozetDikisi('senkronize', ucusta: 0, bekleyen: 0, zehirli: 0).$1,
-      SenkronDurumTuru.senkronize,
-    );
-    expect(
-      rozetDikisi('cevrimdisi', ucusta: 0, bekleyen: 0, zehirli: 0).$1,
-      SenkronDurumTuru.cevrimdisi,
-    );
-    expect(rozetDikisi('cakisma', ucusta: 0, bekleyen: 0, zehirli: 0).$1, SenkronDurumTuru.yerel);
-    expect(
-      rozetDikisi('kuyrukta', ucusta: 0, bekleyen: 0, zehirli: 0).$1,
-      SenkronDurumTuru.kuyrukta,
-    );
-  });
+      // kural 4: ucusta=0, bekleyen=0 => K eslemesi.
+      expect(
+        rozetDikisi('yerel', ucusta: 0, bekleyen: 0, zehirli: 0).$1,
+        SenkronDurumTuru.yerel,
+      );
+      expect(
+        rozetDikisi('senkronize', ucusta: 0, bekleyen: 0, zehirli: 0).$1,
+        SenkronDurumTuru.senkronize,
+      );
+      expect(
+        rozetDikisi('cevrimdisi', ucusta: 0, bekleyen: 0, zehirli: 0).$1,
+        SenkronDurumTuru.cevrimdisi,
+      );
+      expect(
+        rozetDikisi('cakisma', ucusta: 0, bekleyen: 0, zehirli: 0).$1,
+        SenkronDurumTuru.yerel,
+      );
+      expect(
+        rozetDikisi('kuyrukta', ucusta: 0, bekleyen: 0, zehirli: 0).$1,
+        SenkronDurumTuru.kuyrukta,
+      );
+    },
+  );
 
   // ============ G11-A2 -- taninmayan K firlatir (D3) ============
 
@@ -235,56 +251,67 @@ void main() {
 
   // ============ G11-A3 -- R10 ASIL SENARYO (D2) ============
 
-  test('G11-A3: R10 ASIL SENARYO -- senkronize satir duzenle() ile gonderilmemis olur', () async {
-    await depo.ekle('R10 senaryosu');
-    final id = (await db.select(db.gorevler).get()).single.id;
+  test(
+    'G11-A3: R10 ASIL SENARYO -- senkronize satir duzenle() ile gonderilmemis olur',
+    () async {
+      await depo.ekle('R10 senaryosu');
+      final id = (await db.select(db.gorevler).get()).single.id;
 
-    // Gercek uretim yolu: basarili itme turu satiri 'senkronize' yapar
-    // (senkron_dongusu.dart _tekSonucIsle -> _rozetYaz).
-    await donguOlustur(SahteSenkronAgi()).turCalistir();
-    expect((await db.select(db.gorevler).get()).single.senkronDurumu, 'senkronize');
+      // Gercek uretim yolu: basarili itme turu satiri 'senkronize' yapar
+      // (senkron_dongusu.dart _tekSonucIsle -> _rozetYaz).
+      await donguOlustur(SahteSenkronAgi()).turCalistir();
+      expect(
+        (await db.select(db.gorevler).get()).single.senkronDurumu,
+        'senkronize',
+      );
 
-    // R10 kusuru: duzenle() KOLONA DOKUNMAZ (K75 kirmizi cizgi) -- yalniz
-    // kuyruga yeni bir 'bekliyor' op yazar.
-    await depo.duzenle(id, 'R10 senaryosu v2');
+      // R10 kusuru: duzenle() KOLONA DOKUNMAZ (K75 kirmizi cizgi) -- yalniz
+      // kuyruga yeni bir 'bekliyor' op yazar.
+      await depo.duzenle(id, 'R10 senaryosu v2');
 
-    final gorunum = (await depo.gorevlerGorunur().first).single;
-    expect(gorunum.senkronDurumu, SenkronDurumTuru.gonderilmemis);
-    expect(
-      gorunum.gorev.senkronDurumu,
-      'senkronize',
-      reason: 'K75 PAZARLIKSIZ: kolon degismedi -- rozet KUYRUKTAN turedi',
-    );
-  });
+      final gorunum = (await depo.gorevlerGorunur().first).single;
+      expect(gorunum.senkronDurumu, SenkronDurumTuru.gonderilmemis);
+      expect(
+        gorunum.gorev.senkronDurumu,
+        'senkronize',
+        reason: 'K75 PAZARLIKSIZ: kolon degismedi -- rozet KUYRUKTAN turedi',
+      );
+    },
+  );
 
   // ============ G11-A4 -- IKI GOREV, entityId izolasyonu (D6) ============
 
-  test('G11-A4: IKI GOREV -- Anin bekleyen opu var, Bnin yok (D6 entityId izolasyonu)', () async {
-    await depo.ekle('Gorev A');
-    await depo.ekle('Gorev B');
-    final satirlar = await db.select(db.gorevler).get();
-    final idA = satirlar.firstWhere((g) => g.baslik == 'Gorev A').id;
-    final idB = satirlar.firstWhere((g) => g.baslik == 'Gorev B').id;
+  test(
+    'G11-A4: IKI GOREV -- Anin bekleyen opu var, Bnin yok (D6 entityId izolasyonu)',
+    () async {
+      await depo.ekle('Gorev A');
+      await depo.ekle('Gorev B');
+      final satirlar = await db.select(db.gorevler).get();
+      final idA = satirlar.firstWhere((g) => g.baslik == 'Gorev A').id;
+      final idB = satirlar.firstWhere((g) => g.baslik == 'Gorev B').id;
 
-    await donguOlustur(SahteSenkronAgi()).turCalistir(); // ikisi de senkronize olur.
+      await donguOlustur(
+        SahteSenkronAgi(),
+      ).turCalistir(); // ikisi de senkronize olur.
 
-    await depo.duzenle(idA, 'Gorev A v2'); // YALNIZ A icin bekleyen op.
+      await depo.duzenle(idA, 'Gorev A v2'); // YALNIZ A icin bekleyen op.
 
-    final gorunumler = await depo.gorevlerGorunur().first;
-    final gorunumA = gorunumler.firstWhere((g) => g.gorev.id == idA);
-    final gorunumB = gorunumler.firstWhere((g) => g.gorev.id == idB);
+      final gorunumler = await depo.gorevlerGorunur().first;
+      final gorunumA = gorunumler.firstWhere((g) => g.gorev.id == idA);
+      final gorunumB = gorunumler.firstWhere((g) => g.gorev.id == idB);
 
-    expect(
-      gorunumA.senkronDurumu,
-      SenkronDurumTuru.gonderilmemis,
-      reason: 'A: kendi bekleyen opu var',
-    );
-    expect(
-      gorunumB.senkronDurumu,
-      SenkronDurumTuru.senkronize,
-      reason: 'B: hicbir bekleyen opu yok -- Anin sayimi Bye SIZMAMALI',
-    );
-  });
+      expect(
+        gorunumA.senkronDurumu,
+        SenkronDurumTuru.gonderilmemis,
+        reason: 'A: kendi bekleyen opu var',
+      );
+      expect(
+        gorunumB.senkronDurumu,
+        SenkronDurumTuru.senkronize,
+        reason: 'B: hicbir bekleyen opu yok -- Anin sayimi Bye SIZMAMALI',
+      );
+    },
+  );
 
   // ============ G11-A5 -- YALNIZ KUYRUGA YAZ, akis yeniden yayin (D6) ============
 
@@ -296,9 +323,8 @@ void main() {
       // Onceki oturum cokmus gibi: kuyruk satiri 'gonderildi'de takili
       // kaldi (gercek yol: senkron_dongusu.dart bir tur cevap BEKLERKEN
       // uygulama kapanirsa satir bu durumda kalir).
-      await (db.update(
-        db.senkronKuyrugu,
-      )..where((t) => t.entityId.equals(id))).write(const SenkronKuyruguCompanion(durum: Value('gonderildi')));
+      await (db.update(db.senkronKuyrugu)..where((t) => t.entityId.equals(id)))
+          .write(const SenkronKuyruguCompanion(durum: Value('gonderildi')));
 
       final iterator = StreamIterator(depo.gorevlerGorunur());
       // expect() ortada FIRLARSA asagidaki iterator.cancel() hic calismaz --
@@ -322,7 +348,8 @@ void main() {
         // da gecerli, taban rule 4'e duser. Onemli olan DEGER degil, GECIS:
         // kuyrukta -> yerel hala akisin YENIDEN YAYIN yaptigini kanitlar.
         SenkronDurumTuru.yerel,
-        reason: 'kurtarma sonrasi U=0,B=1,K=yerel -- akis YENIDEN YAYIN yapmis olmali (kuyrukta -> yerel gecisi)',
+        reason:
+            'kurtarma sonrasi U=0,B=1,K=yerel -- akis YENIDEN YAYIN yapmis olmali (kuyrukta -> yerel gecisi)',
       );
     },
   );
@@ -352,7 +379,9 @@ void main() {
       // henuz hic VAR OLMADIGI icin "gonderilmemis" YANLIS olurdu.
       expect(iterator.current.single.senkronDurumu, SenkronDurumTuru.yerel);
 
-      final turFuture = donguOlustur(agi).turCalistir(); // KASITLI await edilmedi.
+      final turFuture = donguOlustur(
+        agi,
+      ).turCalistir(); // KASITLI await edilmedi.
 
       // Istek gonderilirken (satir 'gonderildi'ye gecerken) akis YENI bir
       // kare yayinlar -- sabit sleep YOK, stream'in kendisi koşulu bekletir.
@@ -360,7 +389,8 @@ void main() {
       expect(
         iterator.current.single.senkronDurumu,
         SenkronDurumTuru.kuyrukta,
-        reason: 'ag hala askida, U>0 -- her sey baska turlu olsa bile kuyrukta kazanir',
+        reason:
+            'ag hala askida, U>0 -- her sey baska turlu olsa bile kuyrukta kazanir',
       );
 
       tamamlanmasinBekle.complete(_basariliYanit(await _sonIstek(agi)));
@@ -379,10 +409,14 @@ void main() {
       // op1: reddedilir -- zehirli + K='cakisma'.
       await donguOlustur(
         SahteSenkronAgi(
-          davranis: (govde, cagriNo) async => _basariliYanit(govde, kod: 'RejectedInvalid'),
+          davranis: (govde, cagriNo) async =>
+              _basariliYanit(govde, kod: 'RejectedInvalid'),
         ),
       ).turCalistir();
-      expect((await db.select(db.senkronKuyrugu).get()).single.durum, 'zehirli');
+      expect(
+        (await db.select(db.senkronKuyrugu).get()).single.durum,
+        'zehirli',
+      );
 
       // op2: YENI bekleyen op -- tur COSTURULMEZ, kuyrukta op1(zehirli) +
       // op2(bekliyor) BIRLIKTE durur.
@@ -447,21 +481,31 @@ void main() {
 
   // ============ G11-A8 -- 4xx: Z=0 ama K=cakisma (D1) ============
 
-  test('G11-A8: 4xx -- zehirli uretmez ama K=cakisma yazar, cakisma ikonu yine de gorunur (D1)', () async {
-    await depo.ekle('4xx testi');
-    final agi = SahteSenkronAgi(davranis: (govde, cagriNo) async => const SenkronHttpHatasi(400));
-    await donguOlustur(agi).turCalistir();
+  test(
+    'G11-A8: 4xx -- zehirli uretmez ama K=cakisma yazar, cakisma ikonu yine de gorunur (D1)',
+    () async {
+      await depo.ekle('4xx testi');
+      final agi = SahteSenkronAgi(
+        davranis: (govde, cagriNo) async => const SenkronHttpHatasi(400),
+      );
+      await donguOlustur(agi).turCalistir();
 
-    final kuyrukSatiri = (await db.select(db.senkronKuyrugu).get()).single;
-    expect(kuyrukSatiri.durum, 'bekliyor', reason: 'D9: 400 -- satir bekliyor kalir, zehirli OLMAZ');
+      final kuyrukSatiri = (await db.select(db.senkronKuyrugu).get()).single;
+      expect(
+        kuyrukSatiri.durum,
+        'bekliyor',
+        reason: 'D9: 400 -- satir bekliyor kalir, zehirli OLMAZ',
+      );
 
-    final gorunum = (await depo.gorevlerGorunur().first).single;
-    expect(
-      gorunum.cakismaVarMi,
-      isTrue,
-      reason: 'Z=0 ama K=cakisma -- D1: yalniz Z>0 YETERSIZ, K==cakisma dali de kanali acar',
-    );
-  });
+      final gorunum = (await depo.gorevlerGorunur().first).single;
+      expect(
+        gorunum.cakismaVarMi,
+        isTrue,
+        reason:
+            'Z=0 ama K=cakisma -- D1: yalniz Z>0 YETERSIZ, K==cakisma dali de kanali acar',
+      );
+    },
+  );
 
   // ============ G11-A9 -- groupBy: uc kuyruk satiri, TEK gorunum (D6) ============
 
@@ -482,57 +526,75 @@ void main() {
   // satiri kadar (3) tekrar eder") OLGUSAL OLARAK YANLISTI.
   // ONARIM: IKI gorevle kur -- toplam cokmesi ancak boyle GORUNUR olur
   // (groupBy yoksa 2 gorev icin de TEK satir doner).
-  test('G11-A9: groupBy -- IKI gorev (biri UC bekleyen op), gorunumde IKI satir (D6)', () async {
-    await depo.ekle('groupBy A'); // A: 1. bekleyen op.
-    final idA = (await db.select(db.gorevler).get()).single.id;
-    await depo.duzenle(idA, 'A-v2'); // A: 2. bekleyen op.
-    await depo.duzenle(idA, 'A-v3'); // A: 3. bekleyen op.
-    await depo.ekle('groupBy B'); // B: tek bekleyen op.
-    final idB = (await db.select(db.gorevler).get())
-        .firstWhere((s) => s.id != idA)
-        .id;
+  test(
+    'G11-A9: groupBy -- IKI gorev (biri UC bekleyen op), gorunumde IKI satir (D6)',
+    () async {
+      await depo.ekle('groupBy A'); // A: 1. bekleyen op.
+      final idA = (await db.select(db.gorevler).get()).single.id;
+      await depo.duzenle(idA, 'A-v2'); // A: 2. bekleyen op.
+      await depo.duzenle(idA, 'A-v3'); // A: 3. bekleyen op.
+      await depo.ekle('groupBy B'); // B: tek bekleyen op.
+      final idB = (await db.select(db.gorevler).get())
+          .firstWhere((s) => s.id != idA)
+          .id;
 
-    expect(
-      (await db.select(db.senkronKuyrugu).get()),
-      hasLength(4),
-      reason: 'onkosul: A=3 op, B=1 op',
-    );
+      expect(
+        (await db.select(db.senkronKuyrugu).get()),
+        hasLength(4),
+        reason: 'onkosul: A=3 op, B=1 op',
+      );
 
-    final gorunumler = await depo.gorevlerGorunur().first;
-    expect(
-      gorunumler,
-      hasLength(2),
-      reason: 'groupBy dusarse sorgu TOPLAM sorgusuna coker ve TEK satir doner',
-    );
-    expect(
-      gorunumler.map((g) => g.gorev.id).toSet(),
-      {idA, idB},
-      reason: 'iki gorev de gorunumde, sayimlar gorev BASINA gruplanmis olmali',
-    );
-    // K='yerel' (bu senaryoda hic senkronlanmadi) -- D2 kural 3'un K!='yerel'
-    // istisnasi (rozetDikisi build bulgusu) burada da devrede, taban rule
-    // 4'e duser. groupBy'in ISPATI 'hasLength(1)' -- deger degil, SAYI onemli.
-    expect(
-      gorunumler.every((g) => g.senkronDurumu == SenkronDurumTuru.yerel),
-      isTrue,
-      reason: 'ikisi de hic senkronlanmadi (K=yerel) -- D2 kural 3 istisnasi [K76]',
-    );
-  });
+      final gorunumler = await depo.gorevlerGorunur().first;
+      expect(
+        gorunumler,
+        hasLength(2),
+        reason:
+            'groupBy dusarse sorgu TOPLAM sorgusuna coker ve TEK satir doner',
+      );
+      expect(
+        gorunumler.map((g) => g.gorev.id).toSet(),
+        {idA, idB},
+        reason:
+            'iki gorev de gorunumde, sayimlar gorev BASINA gruplanmis olmali',
+      );
+      // K='yerel' (bu senaryoda hic senkronlanmadi) -- D2 kural 3'un K!='yerel'
+      // istisnasi (rozetDikisi build bulgusu) burada da devrede, taban rule
+      // 4'e duser. groupBy'in ISPATI 'hasLength(1)' -- deger degil, SAYI onemli.
+      expect(
+        gorunumler.every((g) => g.senkronDurumu == SenkronDurumTuru.yerel),
+        isTrue,
+        reason:
+            'ikisi de hic senkronlanmadi (K=yerel) -- D2 kural 3 istisnasi [K76]',
+      );
+    },
+  );
 
   // ============ G11-A10 -- silindi: kuyruk satiri diriltmez (D6) ============
 
-  test('G11-A10: silindi -- silinen gorev gorunumde yok, kuyruk satiri onu diriltmiyor (D6)', () async {
-    await depo.ekle('silinecek gorev');
-    final id = (await db.select(db.gorevler).get()).single.id;
-    await depo.sil(id); // silindi=true + kuyruga 'isDeleted' (bekliyor) op'u.
+  test(
+    'G11-A10: silindi -- silinen gorev gorunumde yok, kuyruk satiri onu diriltmiyor (D6)',
+    () async {
+      await depo.ekle('silinecek gorev');
+      final id = (await db.select(db.gorevler).get()).single.id;
+      await depo.sil(id); // silindi=true + kuyruga 'isDeleted' (bekliyor) op'u.
 
-    final kuyrukSatirlari = (await db.select(db.senkronKuyrugu).get())
-        .where((s) => s.entityId == id);
-    expect(kuyrukSatirlari, isNotEmpty, reason: 'onkosul: silinen gorevin HALA bekleyen bir kuyruk satiri var');
+      final kuyrukSatirlari = (await db.select(db.senkronKuyrugu).get()).where(
+        (s) => s.entityId == id,
+      );
+      expect(
+        kuyrukSatirlari,
+        isNotEmpty,
+        reason: 'onkosul: silinen gorevin HALA bekleyen bir kuyruk satiri var',
+      );
 
-    final gorunumler = await depo.gorevlerGorunur().first;
-    expect(gorunumler, isEmpty, reason: 'silindi=true satir LEFT JOIN uzerinden dahi geri gelmemeli');
-  });
+      final gorunumler = await depo.gorevlerGorunur().first;
+      expect(
+        gorunumler,
+        isEmpty,
+        reason: 'silindi=true satir LEFT JOIN uzerinden dahi geri gelmemeli',
+      );
+    },
+  );
 
   // ============ G11-A11 -- duyuru gecis (D9) ============
 
@@ -540,11 +602,15 @@ void main() {
     'G11-A11: duyuru -- yerel -> senkronize gecisinde BIR duyuru; ikinci (ayni durumlu) pump\'ta tekrar YOK (D9)',
     (tester) async {
       final duyurular = _duyurulariYakala(tester);
-      await tester.pumpWidget(const _DurumSarmalayici(ilkDurum: SenkronDurumTuru.yerel));
+      await tester.pumpWidget(
+        const _DurumSarmalayici(ilkDurum: SenkronDurumTuru.yerel),
+      );
       await tester.pump();
       expect(duyurular, isEmpty, reason: 'yerel duyuru metni tasimiyor');
 
-      final durumState = tester.state<_DurumSarmalayiciState>(find.byType(_DurumSarmalayici));
+      final durumState = tester.state<_DurumSarmalayiciState>(
+        find.byType(_DurumSarmalayici),
+      );
 
       durumState.durumDegistir(SenkronDurumTuru.senkronize);
       await tester.pump();
@@ -555,7 +621,9 @@ void main() {
       // YOK.
       durumState.durumDegistir(SenkronDurumTuru.senkronize);
       await tester.pump();
-      expect(duyurular, [Metinler.duyuruSenkronizeEdildi], reason: 'ayni durum -- ikinci duyuru YOK');
+      expect(duyurular, [
+        Metinler.duyuruSenkronizeEdildi,
+      ], reason: 'ayni durum -- ikinci duyuru YOK');
     },
   );
 
@@ -569,49 +637,74 @@ void main() {
   // sutunudur ⇒ invaryant ihlal edilmedi, yalniz liste uzadi. `etiketler` de
   // HAM projeksiyondur (OR-Set'in aktif elemanlari, AYNI sorguda toplanir) --
   // kuyruktan turetilen bir deger DEGILDIR.
-  test('G11-A12a: Gorev YALNIZ ham sutun tasir -- U/B/Z sayimlari veri katmanindan disari cikmaz (D5)', () {
-    final kaynak = File('lib/veri/gorev_deposu.dart').readAsStringSync();
-    final sinifBaslangic = kaynak.indexOf('class Gorev {');
-    expect(sinifBaslangic, greaterThan(-1), reason: 'Gorev sinifi bulunamadi');
-    final sinifBitis = kaynak.indexOf('\n}', sinifBaslangic);
-    final govde = kaynak.substring(sinifBaslangic, sinifBitis);
+  test(
+    'G11-A12a: Gorev YALNIZ ham sutun tasir -- U/B/Z sayimlari veri katmanindan disari cikmaz (D5)',
+    () {
+      final kaynak = File('lib/veri/gorev_deposu.dart').readAsStringSync();
+      final sinifBaslangic = kaynak.indexOf('class Gorev {');
+      expect(
+        sinifBaslangic,
+        greaterThan(-1),
+        reason: 'Gorev sinifi bulunamadi',
+      );
+      final sinifBitis = kaynak.indexOf('\n}', sinifBaslangic);
+      final govde = kaynak.substring(sinifBaslangic, sinifBitis);
 
-    final alanlar = RegExp(
-      r'^\s*final\s+\S+\s+(\w+);',
-      multiLine: true,
-    ).allMatches(govde).map((m) => m.group(1)).toList();
+      final alanlar = RegExp(
+        r'^\s*final\s+\S+\s+(\w+);',
+        multiLine: true,
+      ).allMatches(govde).map((m) => m.group(1)).toList();
 
-    expect(
-      alanlar,
-      [
-        'id',
-        'baslik',
-        'tamamlandi',
-        'olusturuldu',
-        'guncellendi',
-        'senkronDurumu',
-        'silindi',
-        'oncelik',
-        'sonTarih',
-        'etiketler',
-      ],
-      reason:
-          'Gorev yalniz HAM SUTUN tasir -- U/B/Z sayimlari GorevGorunum '
-          'katmaninda kalmali, Gorev\'e SIZMAMALI',
-    );
-  });
+      expect(
+        alanlar,
+        [
+          'id',
+          'baslik',
+          'tamamlandi',
+          'olusturuldu',
+          'guncellendi',
+          'senkronDurumu',
+          'silindi',
+          'oncelik',
+          'sonTarih',
+          'etiketler',
+          // IS-EMRI-o85-A: `projeId` -- HAM DB sutunudur (K1: Liste = Project),
+          // kuyruktan turetilmez ⇒ invaryant ihlal edilmedi, liste yine uzadi.
+          'projeId',
+        ],
+        reason:
+            'Gorev yalniz HAM SUTUN tasir -- U/B/Z sayimlari GorevGorunum '
+            'katmaninda kalmali, Gorev\'e SIZMAMALI',
+      );
+    },
+  );
 
-  test('G11-A12b: rozetDikisi SAF -- DB/BuildContext/saat erisimi yok (D4)', () {
-    final kaynak = File('lib/veri/gorev_deposu.dart').readAsStringSync();
-    final imzaBaslangic = kaynak.indexOf('rozetDikisi(');
-    expect(imzaBaslangic, greaterThan(-1), reason: 'rozetDikisi tanimi bulunamadi');
-    final govde = _govdeCikar(kaynak, imzaBaslangic);
+  test(
+    'G11-A12b: rozetDikisi SAF -- DB/BuildContext/saat erisimi yok (D4)',
+    () {
+      final kaynak = File('lib/veri/gorev_deposu.dart').readAsStringSync();
+      final imzaBaslangic = kaynak.indexOf('rozetDikisi(');
+      expect(
+        imzaBaslangic,
+        greaterThan(-1),
+        reason: 'rozetDikisi tanimi bulunamadi',
+      );
+      final govde = _govdeCikar(kaynak, imzaBaslangic);
 
-    expect(govde.contains('_db'), isFalse, reason: 'SAF: DB erisimi olamaz');
-    expect(govde.contains('await'), isFalse, reason: 'SAF: I/O/async olamaz');
-    expect(govde.contains('DateTime.now'), isFalse, reason: 'SAF: saat erisimi olamaz (D4)');
-    expect(govde.contains('BuildContext'), isFalse, reason: 'SAF: BuildContext erisimi olamaz');
-  });
+      expect(govde.contains('_db'), isFalse, reason: 'SAF: DB erisimi olamaz');
+      expect(govde.contains('await'), isFalse, reason: 'SAF: I/O/async olamaz');
+      expect(
+        govde.contains('DateTime.now'),
+        isFalse,
+        reason: 'SAF: saat erisimi olamaz (D4)',
+      );
+      expect(
+        govde.contains('BuildContext'),
+        isFalse,
+        reason: 'SAF: BuildContext erisimi olamaz',
+      );
+    },
+  );
 }
 
 /// G11-A6 icin: SahteSenkronAgi'nin ALICI govdesini (son istegi) okur --

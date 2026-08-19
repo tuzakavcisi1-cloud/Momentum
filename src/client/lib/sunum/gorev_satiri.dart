@@ -39,6 +39,12 @@ class GorevSatiri extends StatelessWidget {
   // yerleri ve testler bunu hic bilmez.
   final VoidCallback? onSil;
 
+  // IS-EMRI-o85-A D3: "Listeye tasi" secimi icin ayrintilar diyalogunun
+  // ihtiyac duydugu liste kumesi. Varsayilan bos liste: mevcut cagri
+  // yerleri (testler dahil) bunu hic bilmez ve bos liste (Gelen Kutusu
+  // DISINDA secenek YOK) onlarin GERCEK durumudur.
+  final List<Proje> listeler;
+
   const GorevSatiri({
     super.key,
     required this.gorev,
@@ -48,6 +54,7 @@ class GorevSatiri extends StatelessWidget {
     this.depo,
     this.onAyrintilarDuzenlendi,
     this.onSil,
+    this.listeler = const [],
   });
 
   /// GOREV-A7 D-A7-3: baslik icin ayrilan ASGARI genislik. 96dp'dir ve
@@ -375,6 +382,8 @@ class GorevSatiri extends StatelessWidget {
         baslangicOncelik: gorev.oncelik,
         baslangicSonTarih: gorev.sonTarih,
         baslangicEtiketleri: gorev.etiketler,
+        baslangicProjeId: gorev.projeId,
+        listeler: listeler,
       ),
     );
     if (degisiklik == null || degisiklik.bosMu) return;
@@ -462,11 +471,19 @@ class _GorevDuzenleDiyalogu extends StatefulWidget {
   /// dogmaz, `bosMu` bunu yakalar).
   final List<String> baslangicEtiketleri;
 
+  // IS-EMRI-o85-A B2/D3: `null` = Gelen Kutusu (K4). `listeler` D2/D3'un
+  // "Listeye tasi" secim seridini besler (Onur kilidi: gorunur ChoiceChip,
+  // acilir liste DEGIL -- oncelik seridiyle AYNI olculmus gerekce, altta).
+  final String? baslangicProjeId;
+  final List<Proje> listeler;
+
   const _GorevDuzenleDiyalogu({
     required this.baslangicBasligi,
     required this.baslangicOncelik,
     required this.baslangicSonTarih,
     required this.baslangicEtiketleri,
+    required this.baslangicProjeId,
+    required this.listeler,
   });
 
   @override
@@ -479,6 +496,7 @@ class _GorevDuzenleDiyaloguState extends State<_GorevDuzenleDiyalogu> {
   late int? _oncelik;
   late DateTime? _sonTarih;
   late List<String> _etiketler;
+  late String? _projeId;
 
   @override
   void initState() {
@@ -492,6 +510,7 @@ class _GorevDuzenleDiyaloguState extends State<_GorevDuzenleDiyalogu> {
     // KOPYA: `widget.baslangicEtiketleri` (depo listesi) DEGISTIRILMEZ --
     // fark hesabi kapanista ONA karsi yapilir.
     _etiketler = List<String>.of(widget.baslangicEtiketleri);
+    _projeId = widget.baslangicProjeId;
   }
 
   @override
@@ -577,6 +596,8 @@ class _GorevDuzenleDiyaloguState extends State<_GorevDuzenleDiyalogu> {
         sonTarih: _sonTarih == widget.baslangicSonTarih
             ? null
             : Yazim(_sonTarih),
+        // IS-EMRI-o85-A B2: `Yazim(null)` = Gelen Kutusu'na tasi.
+        projeId: _projeId == widget.baslangicProjeId ? null : Yazim(_projeId),
         // ODEV.md §4(a): FARK. Ekleyip geri silen kullanici hicbir op
         // dogurmaz (iki kume de bos ⇒ `bosMu`).
         etiketEklenen: _etiketler
@@ -646,6 +667,46 @@ class _GorevDuzenleDiyaloguState extends State<_GorevDuzenleDiyalogu> {
                   ),
               ],
             ),
+            // IS-EMRI-o85-A D3: "Listeye tasi" -- oncelik seridinin BIREBIR
+            // AYNI deseni (gorunur ChoiceChip, acilir liste DEGIL, ayni
+            // olculmus web-otomasyon gerekcesi yukarida). Liste yoksa serit
+            // HIC CIZILMEZ -- Gelen Kutusu'ndan baska secenek yoksa gostermek
+            // anlamsizdir ve mevcut duzen olcumlerini (etiketsiz gorevin
+            // AYNISI) etkilemez.
+            if (widget.listeler.isNotEmpty) ...[
+              SizedBox(height: MBosluk.m),
+              Text(
+                Metinler.listeBasligi,
+                style: MTipo.etiketS,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+              SizedBox(height: MBosluk.xs),
+              Wrap(
+                spacing: MBosluk.xs,
+                children: [
+                  ChoiceChip(
+                    label: Text(
+                      Metinler.gelenKutusu,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    selected: _projeId == null,
+                    onSelected: (_) => setState(() => _projeId = null),
+                  ),
+                  for (final proje in widget.listeler)
+                    ChoiceChip(
+                      label: Text(
+                        proje.ad,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      selected: _projeId == proje.id,
+                      onSelected: (_) => setState(() => _projeId = proje.id),
+                    ),
+                ],
+              ),
+            ],
             SizedBox(height: MBosluk.m),
             Text(
               Metinler.sonTarihBasligi,

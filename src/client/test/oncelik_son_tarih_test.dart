@@ -62,10 +62,8 @@ Map<String, Object?> _degisiklik({
     'entityType': 'Task',
     'opHlc': _hlcJson(wall, 1, clientId),
     'fields': alanlar.map(
-      (ad, deger) => MapEntry(ad, {
-        'value': deger,
-        'hlc': _hlcJson(wall, 1, clientId),
-      }),
+      (ad, deger) =>
+          MapEntry(ad, {'value': deger, 'hlc': _hlcJson(wall, 1, clientId)}),
     ),
   },
 };
@@ -100,11 +98,14 @@ void main() {
   });
 
   group('SAF: tel bicimi (backend sozlesmesine karsi)', () {
-    test('priority ONDALIK TAMSAYI dizesidir (int.TryParse/InvariantCulture)', () {
-      expect(oncelikTele(1), '1');
-      expect(oncelikTele(3), '3');
-      expect(oncelikTele(null), isNull, reason: 'null = alani TEMIZLE');
-    });
+    test(
+      'priority ONDALIK TAMSAYI dizesidir (int.TryParse/InvariantCulture)',
+      () {
+        expect(oncelikTele(1), '1');
+        expect(oncelikTele(3), '3');
+        expect(oncelikTele(null), isNull, reason: 'null = alani TEMIZLE');
+      },
+    );
 
     test('dueAt sunucunun TryParseExact kalibina oturur', () {
       final tel = sonTarihTele(DateTime.utc(2026, 8, 21));
@@ -113,7 +114,9 @@ void main() {
       // 'FFFFFFF' en fazla YEDI ondalik basamak kabul eder; Dart UC basamak
       // uretir (mikrosaniye varsa ALTI), ikisi de kalibin icinde kalir.
       expect(
-        RegExp(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{1,7}Z$').hasMatch(tel!),
+        RegExp(
+          r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{1,7}Z$',
+        ).hasMatch(tel!),
         isTrue,
         reason: 'tel bicimi sunucunun kabul ettigi ISO kalibinda olmali: $tel',
       );
@@ -132,9 +135,15 @@ void main() {
 
   group('SAF: satirda gosterim', () {
     test('tarih etiketi YEREL SAATE CEVIRMEZ (takvim gunu)', () {
-      expect(GorevSatiri.tarihEtiketi(DateTime.utc(2026, 8, 21)), '21 Ağu 2026');
+      expect(
+        GorevSatiri.tarihEtiketi(DateTime.utc(2026, 8, 21)),
+        '21 Ağu 2026',
+      );
       expect(GorevSatiri.tarihEtiketi(DateTime.utc(2026, 1, 1)), '1 Oca 2026');
-      expect(GorevSatiri.tarihEtiketi(DateTime.utc(2026, 12, 31)), '31 Ara 2026');
+      expect(
+        GorevSatiri.tarihEtiketi(DateTime.utc(2026, 12, 31)),
+        '31 Ara 2026',
+      );
     });
 
     test('ay kisaltmalari tablosu 12 uzunlugunda ve 1..12 ile indislenir', () {
@@ -227,24 +236,27 @@ void main() {
       return jsonDecode(kuyruk.last.govdeJson) as Map<String, Object?>;
     }
 
-    test('oncelik + son tarih yazilir; projeksiyon VE kuyruk AYNI turda', () async {
-      final id = await mevcutId();
-      await depo.ayrintilariGuncelle(
-        id,
-        oncelik: const Yazim(1),
-        sonTarih: Yazim(DateTime.utc(2026, 8, 21)),
-      );
+    test(
+      'oncelik + son tarih yazilir; projeksiyon VE kuyruk AYNI turda',
+      () async {
+        final id = await mevcutId();
+        await depo.ayrintilariGuncelle(
+          id,
+          oncelik: const Yazim(1),
+          sonTarih: Yazim(DateTime.utc(2026, 8, 21)),
+        );
 
-      final satir = await db.select(db.gorevler).getSingle();
-      expect(satir.oncelik, 1);
-      expect(satir.sonTarih, DateTime.utc(2026, 8, 21));
+        final satir = await db.select(db.gorevler).getSingle();
+        expect(satir.oncelik, 1);
+        expect(satir.sonTarih, DateTime.utc(2026, 8, 21));
 
-      final govde = await sonOpGovdesi();
-      final alanlar = govde['fields'] as Map<String, Object?>;
-      expect(alanlar.keys.toSet(), {'priority', 'dueAt'});
-      expect((alanlar['priority'] as Map)['value'], '1');
-      expect((alanlar['dueAt'] as Map)['value'], '2026-08-21T00:00:00.000Z');
-    });
+        final govde = await sonOpGovdesi();
+        final alanlar = govde['fields'] as Map<String, Object?>;
+        expect(alanlar.keys.toSet(), {'priority', 'dueAt'});
+        expect((alanlar['priority'] as Map)['value'], '1');
+        expect((alanlar['dueAt'] as Map)['value'], '2026-08-21T00:00:00.000Z');
+      },
+    );
 
     test('DEGISMEYEN alan tele KONMAZ (yalniz baslik gonderilir)', () async {
       final id = await mevcutId();
@@ -261,19 +273,22 @@ void main() {
       );
     });
 
-    test('Yazim(null) = TEMIZLE: tele `value: null` konur, kolon NULL olur', () async {
-      final id = await mevcutId();
-      await depo.ayrintilariGuncelle(id, oncelik: const Yazim(2));
-      expect((await db.select(db.gorevler).getSingle()).oncelik, 2);
+    test(
+      'Yazim(null) = TEMIZLE: tele `value: null` konur, kolon NULL olur',
+      () async {
+        final id = await mevcutId();
+        await depo.ayrintilariGuncelle(id, oncelik: const Yazim(2));
+        expect((await db.select(db.gorevler).getSingle()).oncelik, 2);
 
-      await depo.ayrintilariGuncelle(id, oncelik: const Yazim(null));
-      expect((await db.select(db.gorevler).getSingle()).oncelik, isNull);
+        await depo.ayrintilariGuncelle(id, oncelik: const Yazim(null));
+        expect((await db.select(db.gorevler).getSingle()).oncelik, isNull);
 
-      final govde = await sonOpGovdesi();
-      final alanlar = govde['fields'] as Map<String, Object?>;
-      expect(alanlar.containsKey('priority'), isTrue);
-      expect((alanlar['priority'] as Map)['value'], isNull);
-    });
+        final govde = await sonOpGovdesi();
+        final alanlar = govde['fields'] as Map<String, Object?>;
+        expect(alanlar.containsKey('priority'), isTrue);
+        expect((alanlar['priority'] as Map)['value'], isNull);
+      },
+    );
 
     test('HICBIR alan verilmezse op URETILMEZ (D2: bos op yasak)', () async {
       final id = await mevcutId();
@@ -439,7 +454,9 @@ void main() {
       ),
     );
 
-    testWidgets('oncelik + son tarih VARSA meta satiri CIZILIR', (tester) async {
+    testWidgets('oncelik + son tarih VARSA meta satiri CIZILIR', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         sarmala(_gorev(oncelik: 1, sonTarih: DateTime.utc(2026, 8, 21))),
       );
@@ -483,7 +500,10 @@ void main() {
             'meta satiri TAM BIR Text eklemeli; metasiz durumda EK dugum '
             'OLMAMALI (bos Text ekleyen mutant burada olur)',
       );
-      expect(find.text('${Metinler.oncelikYuksek} · 21 Ağu 2026'), findsOneWidget);
+      expect(
+        find.text('${Metinler.oncelikYuksek} · 21 Ağu 2026'),
+        findsOneWidget,
+      );
     });
   });
 
@@ -556,39 +576,43 @@ void main() {
       expect(c.sonTarih, isNull);
     });
 
-    testWidgets('KIRPILMAMIS baslikli gorevde yalniz oncelik degisirse baslik TELE KONMAZ', (
-      tester,
-    ) async {
-      // Uzaktan 'Rapor gonder ' (sondaki bosluk) gelmis olabilir. Ham degerle
-      // karsilastiran bir el, kullanici basliga HIC DOKUNMASA bile `title`i
-      // yeniden damgalar ve arada gelen uzak yazimi LWW ile EZER.
-      final depo = _KayitTutanDepo(
-        Gorev(
-          id: 'ornek',
-          baslik: 'Rapor gonder ',
-          tamamlandi: false,
-          olusturuldu: DateTime.utc(2026, 8, 10),
-          guncellendi: DateTime.utc(2026, 8, 10),
-          senkronDurumu: 'yerel',
-          silindi: false,
-        ),
-      );
-      await tester.pumpWidget(
-        MaterialApp(home: GorevListesiEkrani(depo: depo)),
-      );
-      await tester.pumpAndSettle();
+    testWidgets(
+      'KIRPILMAMIS baslikli gorevde yalniz oncelik degisirse baslik TELE KONMAZ',
+      (tester) async {
+        // Uzaktan 'Rapor gonder ' (sondaki bosluk) gelmis olabilir. Ham degerle
+        // karsilastiran bir el, kullanici basliga HIC DOKUNMASA bile `title`i
+        // yeniden damgalar ve arada gelen uzak yazimi LWW ile EZER.
+        final depo = _KayitTutanDepo(
+          Gorev(
+            id: 'ornek',
+            baslik: 'Rapor gonder ',
+            tamamlandi: false,
+            olusturuldu: DateTime.utc(2026, 8, 10),
+            guncellendi: DateTime.utc(2026, 8, 10),
+            senkronDurumu: 'yerel',
+            silindi: false,
+          ),
+        );
+        await tester.pumpWidget(
+          MaterialApp(home: GorevListesiEkrani(depo: depo)),
+        );
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.byIcon(Icons.edit_outlined));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(Metinler.oncelikOrta));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(Metinler.kaydetDugmesi));
-      await tester.pumpAndSettle();
+        await tester.tap(find.byIcon(Icons.edit_outlined));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(Metinler.oncelikOrta));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(Metinler.kaydetDugmesi));
+        await tester.pumpAndSettle();
 
-      expect(depo.cagrilar, hasLength(1));
-      expect(depo.cagrilar.single.baslik, isNull);
-      expect(depo.cagrilar.single.oncelik!.deger, oncelikSayiya(Oncelik.orta));
-    });
+        expect(depo.cagrilar, hasLength(1));
+        expect(depo.cagrilar.single.baslik, isNull);
+        expect(
+          depo.cagrilar.single.oncelik!.deger,
+          oncelikSayiya(Oncelik.orta),
+        );
+      },
+    );
   });
 }
 
@@ -622,6 +646,7 @@ class _KayitTutanDepo implements GorevDeposu {
     int? oncelik,
     DateTime? sonTarih,
     Set<String> etiketler = const {},
+    String? projeId,
   }) async {}
 
   @override
@@ -633,6 +658,7 @@ class _KayitTutanDepo implements GorevDeposu {
     Yazim<String>? baslik,
     Yazim<int?>? oncelik,
     Yazim<DateTime?>? sonTarih,
+    Yazim<String?>? projeId,
     Set<String>? etiketEklenen,
     Set<String>? etiketSilinen,
   }) async => cagrilar.add(_Cagri(id, baslik, oncelik, sonTarih));
@@ -649,4 +675,16 @@ class _KayitTutanDepo implements GorevDeposu {
 
   @override
   Future<void> cakismaCoz(String entityId, CakismaSecimi secim) async {}
+
+  @override
+  Stream<List<Proje>> listelerGorunur() => Stream.value(const []);
+
+  @override
+  Future<void> listeEkle(String ad) async {}
+
+  @override
+  Future<void> listeDuzenle(String id, String yeniAd) async {}
+
+  @override
+  Future<void> listeSil(String id) async {}
 }

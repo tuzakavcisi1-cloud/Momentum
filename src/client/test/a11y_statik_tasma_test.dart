@@ -15,7 +15,7 @@ library;
 //
 // GOREV-A9 [K93/spec SS5/G5] -- GENISLETME: R1 (mevcut, degismez) + R2 (YENI:
 // ellipsis tasiyan HER govde maxLines de tasir) + R4 (YENI: pozitif kontrol --
-// tarayicinin bulduğu Text( aday sayisi = 34 [taban 8 -> 12 -> 13 -> 16 -> 20 -> 25 -> 29 -> 30 -> 34
+// tarayicinin bulduğu Text( aday sayisi = 47 [taban 8 -> 12 -> 13 -> 16 -> 20 -> 25 -> 29 -> 30 -> 34 -> 47
 // guncellendi;
 // kanonik deger R4'un expect'indedir, bu satir ona atiftir],
 // arac kendini kanitlar). R3 (govde
@@ -51,8 +51,12 @@ class _TextCagrisi {
 List<File> _taranacakDosyalar() {
   final kok = Directory('lib');
   return <File>[
-    ...Directory('${kok.path}/sunum').listSync(recursive: true).whereType<File>(),
-    ...Directory('${kok.path}/vitrin').listSync(recursive: true).whereType<File>(),
+    ...Directory(
+      '${kok.path}/sunum',
+    ).listSync(recursive: true).whereType<File>(),
+    ...Directory(
+      '${kok.path}/vitrin',
+    ).listSync(recursive: true).whereType<File>(),
   ].where((f) => f.path.endsWith('.dart')).toList();
 }
 
@@ -102,61 +106,79 @@ List<_TextCagrisi> _textCagrilariniTopla(File dosya, {int pencere = 25}) {
 }
 
 void main() {
-  test('R1: lib/sunum ve lib/vitrin altindaki her Text( cagrisi korunakli (overflow/maxLines)', () {
-    final dosyalar = _taranacakDosyalar();
-    expect(dosyalar, isNotEmpty, reason: 'lib/sunum + lib/vitrin taranacak dosya bulunamadi');
+  test(
+    'R1: lib/sunum ve lib/vitrin altindaki her Text( cagrisi korunakli (overflow/maxLines)',
+    () {
+      final dosyalar = _taranacakDosyalar();
+      expect(
+        dosyalar,
+        isNotEmpty,
+        reason: 'lib/sunum + lib/vitrin taranacak dosya bulunamadi',
+      );
 
-    final korunmasizlar = <String>[];
-    for (final dosya in dosyalar) {
-      for (final cagri in _textCagrilariniTopla(dosya)) {
-        // maxLines TEK BASINA YETMEZ (M16): overflow:ellipsis OLMADAN maxLines,
-        // Flutter varsayilani TextOverflow.clip'e duser -- SESSIZ kirpma.
-        final korunakli = cagri.govde.contains('TextOverflow.ellipsis');
-        if (!korunakli) {
-          korunmasizlar.add('${cagri.dosyaYolu}:${cagri.satirNo}: ${cagri.ilkSatirHam}');
+      final korunmasizlar = <String>[];
+      for (final dosya in dosyalar) {
+        for (final cagri in _textCagrilariniTopla(dosya)) {
+          // maxLines TEK BASINA YETMEZ (M16): overflow:ellipsis OLMADAN maxLines,
+          // Flutter varsayilani TextOverflow.clip'e duser -- SESSIZ kirpma.
+          final korunakli = cagri.govde.contains('TextOverflow.ellipsis');
+          if (!korunakli) {
+            korunmasizlar.add(
+              '${cagri.dosyaYolu}:${cagri.satirNo}: ${cagri.ilkSatirHam}',
+            );
+          }
         }
       }
-    }
 
-    expect(
-      korunmasizlar,
-      isEmpty,
-      reason:
-          'Asagidaki Text() cagrilari overflow: TextOverflow.ellipsis tasimiyor -- '
-          'textScaler 2.0 altinda SESSIZCE kirpilabilir (A11Y-4, M16):\n'
-          '${korunmasizlar.join('\n')}',
-    );
-  });
-
-  test('R2: ellipsis tasiyan her govde maxLines de tasir (GOREV-A9, sinif kapisi)', () {
-    final dosyalar = _taranacakDosyalar();
-    expect(dosyalar, isNotEmpty, reason: 'lib/sunum + lib/vitrin taranacak dosya bulunamadi');
-
-    final ihlaller = <String>[];
-    for (final dosya in dosyalar) {
-      for (final cagri in _textCagrilariniTopla(dosya)) {
-        final ellipsisVar = cagri.govde.contains('TextOverflow.ellipsis');
-        if (!ellipsisVar) continue; // R1'in konusu, R2'nin degil.
-        final maxLinesVar = RegExp(r'\bmaxLines\s*:').hasMatch(cagri.govde);
-        if (!maxLinesVar) {
-          ihlaller.add('${cagri.dosyaYolu}:${cagri.satirNo}: ${cagri.ilkSatirHam}');
-        }
-      }
-    }
-
-    expect(
-      ihlaller,
-      isEmpty,
-      reason:
-          'Asagidaki Text() cagrilari TextOverflow.ellipsis tasiyor ama maxLines '
-          'TASIMIYOR -- ellipsis TEK BASINA metni fiilen tek satira indirir ve '
-          'fazlasini SESSIZCE atar (B3, KANIT/A7):\n'
-          '${ihlaller.join('\n')}',
-    );
-  });
+      expect(
+        korunmasizlar,
+        isEmpty,
+        reason:
+            'Asagidaki Text() cagrilari overflow: TextOverflow.ellipsis tasimiyor -- '
+            'textScaler 2.0 altinda SESSIZCE kirpilabilir (A11Y-4, M16):\n'
+            '${korunmasizlar.join('\n')}',
+      );
+    },
+  );
 
   test(
-    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 34 (arac kendini kanitlar)',
+    'R2: ellipsis tasiyan her govde maxLines de tasir (GOREV-A9, sinif kapisi)',
+    () {
+      final dosyalar = _taranacakDosyalar();
+      expect(
+        dosyalar,
+        isNotEmpty,
+        reason: 'lib/sunum + lib/vitrin taranacak dosya bulunamadi',
+      );
+
+      final ihlaller = <String>[];
+      for (final dosya in dosyalar) {
+        for (final cagri in _textCagrilariniTopla(dosya)) {
+          final ellipsisVar = cagri.govde.contains('TextOverflow.ellipsis');
+          if (!ellipsisVar) continue; // R1'in konusu, R2'nin degil.
+          final maxLinesVar = RegExp(r'\bmaxLines\s*:').hasMatch(cagri.govde);
+          if (!maxLinesVar) {
+            ihlaller.add(
+              '${cagri.dosyaYolu}:${cagri.satirNo}: ${cagri.ilkSatirHam}',
+            );
+          }
+        }
+      }
+
+      expect(
+        ihlaller,
+        isEmpty,
+        reason:
+            'Asagidaki Text() cagrilari TextOverflow.ellipsis tasiyor ama maxLines '
+            'TASIMIYOR -- ellipsis TEK BASINA metni fiilen tek satira indirir ve '
+            'fazlasini SESSIZCE atar (B3, KANIT/A7):\n'
+            '${ihlaller.join('\n')}',
+      );
+    },
+  );
+
+  test(
+    'R4: pozitif kontrol -- tarayicinin buldugu Text( aday sayisi = 47 (arac kendini kanitlar)',
     () {
       final dosyalar = _taranacakDosyalar();
       final adaylar = <String>[];
@@ -213,11 +235,22 @@ void main() {
       // hata metni, giris/kayit dugmesi etiketi, mod-degistirme baglantisi
       // (dordu de overflow/maxLines korumali). Yeni ekranin KENDISI bu
       // turun konusu -- baska hicbir dosyaya dokunulmadi.
+      // 🔴 IS-EMRI-o85-A (DILIM 2 LISTE) TABAN BILEREK GUNCELLENDI 34 -> 47:
+      // ON UC YENI Text( SATIRI. gorev_listesi_ekrani.dart'ta ON: Drawer'in
+      // `_drawer()`'i UC (Gelen Kutusu basligi, liste basligi -- TEK kaynak
+      // satiri, Yeni liste basligi), `_listeSilOnayDiyaloguAc()`'in silme
+      // onay diyaloğu DORT (baslik + govde + Iptal + Sil dugmesi, gorev
+      // silme onayinin AYNI deseni) ve `_ListeAdiDiyalogu` widget'i UC
+      // (diyalog basligi + Iptal + Kaydet dugmesi, ayrinti diyaloğunun AYNI
+      // deseni). gorev_satiri.dart'ta UC: 'Liste' bolum etiketi + Gelen
+      // Kutusu cip etiketi + liste cipi etiketi (TEK kaynak satiri, oncelik
+      // ciplerinin AYNI deseni). Sayi VARSAYILMADI: `git diff | grep -c
+      // 'Text('` ile OLCULDU (10 + 3 = 13).
       expect(
         adaylar.length,
-        34,
+        47,
         reason:
-            'Text( aday sayisi 34 DEGIL -- ya tarayici bozuldu (regex hic '
+            'Text( aday sayisi 47 DEGIL -- ya tarayici bozuldu (regex hic '
             'eslesmiyor ⇒ R1/R2 kor) ya taban degisti (yeni bir Text( eklendi/'
             'silindi). Bulunanlar:\n${adaylar.join('\n')}',
       );

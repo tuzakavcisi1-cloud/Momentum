@@ -119,6 +119,17 @@ class $GorevlerTable extends Gorevler with TableInfo<$GorevlerTable, GorevRow> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _projeIdMeta = const VerificationMeta(
+    'projeId',
+  );
+  @override
+  late final GeneratedColumn<String> projeId = GeneratedColumn<String>(
+    'proje_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -130,6 +141,7 @@ class $GorevlerTable extends Gorevler with TableInfo<$GorevlerTable, GorevRow> {
     silindi,
     oncelik,
     sonTarih,
+    projeId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -211,6 +223,12 @@ class $GorevlerTable extends Gorevler with TableInfo<$GorevlerTable, GorevRow> {
         sonTarih.isAcceptableOrUnknown(data['son_tarih']!, _sonTarihMeta),
       );
     }
+    if (data.containsKey('proje_id')) {
+      context.handle(
+        _projeIdMeta,
+        projeId.isAcceptableOrUnknown(data['proje_id']!, _projeIdMeta),
+      );
+    }
     return context;
   }
 
@@ -256,6 +274,10 @@ class $GorevlerTable extends Gorevler with TableInfo<$GorevlerTable, GorevRow> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}son_tarih'],
       ),
+      projeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}proje_id'],
+      ),
     );
   }
 
@@ -289,6 +311,11 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
   /// `toIso8601String()`idir ve sunucunun
   /// `yyyy-MM-dd'T'HH:mm:ss.FFFFFFFK` TryParseExact kalibina oturur.
   final DateTime? sonTarih;
+
+  /// IS-EMRI-o85-A A2 (schemaVersion 7 -> 8): NULL = Gelen Kutusu (K4,
+  /// sanal -- satir yaratilmaz). Sunucunun `Task.projectId` scalar'iyla
+  /// (registry'de ZATEN kayitli) ayni tur/anlam; `pos`/`listPos` YOK (K3).
+  final String? projeId;
   const GorevRow({
     required this.id,
     required this.baslik,
@@ -299,6 +326,7 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
     required this.silindi,
     this.oncelik,
     this.sonTarih,
+    this.projeId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -315,6 +343,9 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
     }
     if (!nullToAbsent || sonTarih != null) {
       map['son_tarih'] = Variable<DateTime>(sonTarih);
+    }
+    if (!nullToAbsent || projeId != null) {
+      map['proje_id'] = Variable<String>(projeId);
     }
     return map;
   }
@@ -334,6 +365,9 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
       sonTarih: sonTarih == null && nullToAbsent
           ? const Value.absent()
           : Value(sonTarih),
+      projeId: projeId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(projeId),
     );
   }
 
@@ -352,6 +386,7 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
       silindi: serializer.fromJson<bool>(json['silindi']),
       oncelik: serializer.fromJson<int?>(json['oncelik']),
       sonTarih: serializer.fromJson<DateTime?>(json['sonTarih']),
+      projeId: serializer.fromJson<String?>(json['projeId']),
     );
   }
   @override
@@ -367,6 +402,7 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
       'silindi': serializer.toJson<bool>(silindi),
       'oncelik': serializer.toJson<int?>(oncelik),
       'sonTarih': serializer.toJson<DateTime?>(sonTarih),
+      'projeId': serializer.toJson<String?>(projeId),
     };
   }
 
@@ -380,6 +416,7 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
     bool? silindi,
     Value<int?> oncelik = const Value.absent(),
     Value<DateTime?> sonTarih = const Value.absent(),
+    Value<String?> projeId = const Value.absent(),
   }) => GorevRow(
     id: id ?? this.id,
     baslik: baslik ?? this.baslik,
@@ -390,6 +427,7 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
     silindi: silindi ?? this.silindi,
     oncelik: oncelik.present ? oncelik.value : this.oncelik,
     sonTarih: sonTarih.present ? sonTarih.value : this.sonTarih,
+    projeId: projeId.present ? projeId.value : this.projeId,
   );
   GorevRow copyWithCompanion(GorevlerCompanion data) {
     return GorevRow(
@@ -410,6 +448,7 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
       silindi: data.silindi.present ? data.silindi.value : this.silindi,
       oncelik: data.oncelik.present ? data.oncelik.value : this.oncelik,
       sonTarih: data.sonTarih.present ? data.sonTarih.value : this.sonTarih,
+      projeId: data.projeId.present ? data.projeId.value : this.projeId,
     );
   }
 
@@ -424,7 +463,8 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
           ..write('senkronDurumu: $senkronDurumu, ')
           ..write('silindi: $silindi, ')
           ..write('oncelik: $oncelik, ')
-          ..write('sonTarih: $sonTarih')
+          ..write('sonTarih: $sonTarih, ')
+          ..write('projeId: $projeId')
           ..write(')'))
         .toString();
   }
@@ -440,6 +480,7 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
     silindi,
     oncelik,
     sonTarih,
+    projeId,
   );
   @override
   bool operator ==(Object other) =>
@@ -453,7 +494,8 @@ class GorevRow extends DataClass implements Insertable<GorevRow> {
           other.senkronDurumu == this.senkronDurumu &&
           other.silindi == this.silindi &&
           other.oncelik == this.oncelik &&
-          other.sonTarih == this.sonTarih);
+          other.sonTarih == this.sonTarih &&
+          other.projeId == this.projeId);
 }
 
 class GorevlerCompanion extends UpdateCompanion<GorevRow> {
@@ -466,6 +508,7 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
   final Value<bool> silindi;
   final Value<int?> oncelik;
   final Value<DateTime?> sonTarih;
+  final Value<String?> projeId;
   final Value<int> rowid;
   const GorevlerCompanion({
     this.id = const Value.absent(),
@@ -477,6 +520,7 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
     this.silindi = const Value.absent(),
     this.oncelik = const Value.absent(),
     this.sonTarih = const Value.absent(),
+    this.projeId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   GorevlerCompanion.insert({
@@ -489,6 +533,7 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
     this.silindi = const Value.absent(),
     this.oncelik = const Value.absent(),
     this.sonTarih = const Value.absent(),
+    this.projeId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        baslik = Value(baslik),
@@ -504,6 +549,7 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
     Expression<bool>? silindi,
     Expression<int>? oncelik,
     Expression<DateTime>? sonTarih,
+    Expression<String>? projeId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -516,6 +562,7 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
       if (silindi != null) 'silindi': silindi,
       if (oncelik != null) 'oncelik': oncelik,
       if (sonTarih != null) 'son_tarih': sonTarih,
+      if (projeId != null) 'proje_id': projeId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -530,6 +577,7 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
     Value<bool>? silindi,
     Value<int?>? oncelik,
     Value<DateTime?>? sonTarih,
+    Value<String?>? projeId,
     Value<int>? rowid,
   }) {
     return GorevlerCompanion(
@@ -542,6 +590,7 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
       silindi: silindi ?? this.silindi,
       oncelik: oncelik ?? this.oncelik,
       sonTarih: sonTarih ?? this.sonTarih,
+      projeId: projeId ?? this.projeId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -576,6 +625,9 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
     if (sonTarih.present) {
       map['son_tarih'] = Variable<DateTime>(sonTarih.value);
     }
+    if (projeId.present) {
+      map['proje_id'] = Variable<String>(projeId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -594,6 +646,7 @@ class GorevlerCompanion extends UpdateCompanion<GorevRow> {
           ..write('silindi: $silindi, ')
           ..write('oncelik: $oncelik, ')
           ..write('sonTarih: $sonTarih, ')
+          ..write('projeId: $projeId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2970,6 +3023,316 @@ class GorevEtiketleriCompanion extends UpdateCompanion<GorevEtiketiRow> {
   }
 }
 
+class $ProjelerTable extends Projeler with TableInfo<$ProjelerTable, ProjeRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProjelerTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _adMeta = const VerificationMeta('ad');
+  @override
+  late final GeneratedColumn<String> ad = GeneratedColumn<String>(
+    'ad',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _silindiMeta = const VerificationMeta(
+    'silindi',
+  );
+  @override
+  late final GeneratedColumn<bool> silindi = GeneratedColumn<bool>(
+    'silindi',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("silindi" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _olusturulduMeta = const VerificationMeta(
+    'olusturuldu',
+  );
+  @override
+  late final GeneratedColumn<DateTime> olusturuldu = GeneratedColumn<DateTime>(
+    'olusturuldu',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, ad, silindi, olusturuldu];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'projeler';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProjeRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('ad')) {
+      context.handle(_adMeta, ad.isAcceptableOrUnknown(data['ad']!, _adMeta));
+    } else if (isInserting) {
+      context.missing(_adMeta);
+    }
+    if (data.containsKey('silindi')) {
+      context.handle(
+        _silindiMeta,
+        silindi.isAcceptableOrUnknown(data['silindi']!, _silindiMeta),
+      );
+    }
+    if (data.containsKey('olusturuldu')) {
+      context.handle(
+        _olusturulduMeta,
+        olusturuldu.isAcceptableOrUnknown(
+          data['olusturuldu']!,
+          _olusturulduMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_olusturulduMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProjeRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProjeRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      ad: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ad'],
+      )!,
+      silindi: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}silindi'],
+      )!,
+      olusturuldu: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}olusturuldu'],
+      )!,
+    );
+  }
+
+  @override
+  $ProjelerTable createAlias(String alias) {
+    return $ProjelerTable(attachedDatabase, alias);
+  }
+}
+
+class ProjeRow extends DataClass implements Insertable<ProjeRow> {
+  final String id;
+  final String ad;
+  final bool silindi;
+  final DateTime olusturuldu;
+  const ProjeRow({
+    required this.id,
+    required this.ad,
+    required this.silindi,
+    required this.olusturuldu,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['ad'] = Variable<String>(ad);
+    map['silindi'] = Variable<bool>(silindi);
+    map['olusturuldu'] = Variable<DateTime>(olusturuldu);
+    return map;
+  }
+
+  ProjelerCompanion toCompanion(bool nullToAbsent) {
+    return ProjelerCompanion(
+      id: Value(id),
+      ad: Value(ad),
+      silindi: Value(silindi),
+      olusturuldu: Value(olusturuldu),
+    );
+  }
+
+  factory ProjeRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProjeRow(
+      id: serializer.fromJson<String>(json['id']),
+      ad: serializer.fromJson<String>(json['ad']),
+      silindi: serializer.fromJson<bool>(json['silindi']),
+      olusturuldu: serializer.fromJson<DateTime>(json['olusturuldu']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'ad': serializer.toJson<String>(ad),
+      'silindi': serializer.toJson<bool>(silindi),
+      'olusturuldu': serializer.toJson<DateTime>(olusturuldu),
+    };
+  }
+
+  ProjeRow copyWith({
+    String? id,
+    String? ad,
+    bool? silindi,
+    DateTime? olusturuldu,
+  }) => ProjeRow(
+    id: id ?? this.id,
+    ad: ad ?? this.ad,
+    silindi: silindi ?? this.silindi,
+    olusturuldu: olusturuldu ?? this.olusturuldu,
+  );
+  ProjeRow copyWithCompanion(ProjelerCompanion data) {
+    return ProjeRow(
+      id: data.id.present ? data.id.value : this.id,
+      ad: data.ad.present ? data.ad.value : this.ad,
+      silindi: data.silindi.present ? data.silindi.value : this.silindi,
+      olusturuldu: data.olusturuldu.present
+          ? data.olusturuldu.value
+          : this.olusturuldu,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjeRow(')
+          ..write('id: $id, ')
+          ..write('ad: $ad, ')
+          ..write('silindi: $silindi, ')
+          ..write('olusturuldu: $olusturuldu')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, ad, silindi, olusturuldu);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProjeRow &&
+          other.id == this.id &&
+          other.ad == this.ad &&
+          other.silindi == this.silindi &&
+          other.olusturuldu == this.olusturuldu);
+}
+
+class ProjelerCompanion extends UpdateCompanion<ProjeRow> {
+  final Value<String> id;
+  final Value<String> ad;
+  final Value<bool> silindi;
+  final Value<DateTime> olusturuldu;
+  final Value<int> rowid;
+  const ProjelerCompanion({
+    this.id = const Value.absent(),
+    this.ad = const Value.absent(),
+    this.silindi = const Value.absent(),
+    this.olusturuldu = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProjelerCompanion.insert({
+    required String id,
+    required String ad,
+    this.silindi = const Value.absent(),
+    required DateTime olusturuldu,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       ad = Value(ad),
+       olusturuldu = Value(olusturuldu);
+  static Insertable<ProjeRow> custom({
+    Expression<String>? id,
+    Expression<String>? ad,
+    Expression<bool>? silindi,
+    Expression<DateTime>? olusturuldu,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (ad != null) 'ad': ad,
+      if (silindi != null) 'silindi': silindi,
+      if (olusturuldu != null) 'olusturuldu': olusturuldu,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProjelerCompanion copyWith({
+    Value<String>? id,
+    Value<String>? ad,
+    Value<bool>? silindi,
+    Value<DateTime>? olusturuldu,
+    Value<int>? rowid,
+  }) {
+    return ProjelerCompanion(
+      id: id ?? this.id,
+      ad: ad ?? this.ad,
+      silindi: silindi ?? this.silindi,
+      olusturuldu: olusturuldu ?? this.olusturuldu,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (ad.present) {
+      map['ad'] = Variable<String>(ad.value);
+    }
+    if (silindi.present) {
+      map['silindi'] = Variable<bool>(silindi.value);
+    }
+    if (olusturuldu.present) {
+      map['olusturuldu'] = Variable<DateTime>(olusturuldu.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjelerCompanion(')
+          ..write('id: $id, ')
+          ..write('ad: $ad, ')
+          ..write('silindi: $silindi, ')
+          ..write('olusturuldu: $olusturuldu, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$Veritabani extends GeneratedDatabase {
   _$Veritabani(QueryExecutor e) : super(e);
   $VeritabaniManager get managers => $VeritabaniManager(this);
@@ -2983,6 +3346,7 @@ abstract class _$Veritabani extends GeneratedDatabase {
   late final $GorevEtiketleriTable gorevEtiketleri = $GorevEtiketleriTable(
     this,
   );
+  late final $ProjelerTable projeler = $ProjelerTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2994,6 +3358,7 @@ abstract class _$Veritabani extends GeneratedDatabase {
     uzakAlanDurumu,
     cakismaKayitlari,
     gorevEtiketleri,
+    projeler,
   ];
 }
 
@@ -3008,6 +3373,7 @@ typedef $$GorevlerTableCreateCompanionBuilder =
       Value<bool> silindi,
       Value<int?> oncelik,
       Value<DateTime?> sonTarih,
+      Value<String?> projeId,
       Value<int> rowid,
     });
 typedef $$GorevlerTableUpdateCompanionBuilder =
@@ -3021,6 +3387,7 @@ typedef $$GorevlerTableUpdateCompanionBuilder =
       Value<bool> silindi,
       Value<int?> oncelik,
       Value<DateTime?> sonTarih,
+      Value<String?> projeId,
       Value<int> rowid,
     });
 
@@ -3075,6 +3442,11 @@ class $$GorevlerTableFilterComposer
 
   ColumnFilters<DateTime> get sonTarih => $composableBuilder(
     column: $table.sonTarih,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projeId => $composableBuilder(
+    column: $table.projeId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -3132,6 +3504,11 @@ class $$GorevlerTableOrderingComposer
     column: $table.sonTarih,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get projeId => $composableBuilder(
+    column: $table.projeId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$GorevlerTableAnnotationComposer
@@ -3177,6 +3554,9 @@ class $$GorevlerTableAnnotationComposer
 
   GeneratedColumn<DateTime> get sonTarih =>
       $composableBuilder(column: $table.sonTarih, builder: (column) => column);
+
+  GeneratedColumn<String> get projeId =>
+      $composableBuilder(column: $table.projeId, builder: (column) => column);
 }
 
 class $$GorevlerTableTableManager
@@ -3216,6 +3596,7 @@ class $$GorevlerTableTableManager
                 Value<bool> silindi = const Value.absent(),
                 Value<int?> oncelik = const Value.absent(),
                 Value<DateTime?> sonTarih = const Value.absent(),
+                Value<String?> projeId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => GorevlerCompanion(
                 id: id,
@@ -3227,6 +3608,7 @@ class $$GorevlerTableTableManager
                 silindi: silindi,
                 oncelik: oncelik,
                 sonTarih: sonTarih,
+                projeId: projeId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3240,6 +3622,7 @@ class $$GorevlerTableTableManager
                 Value<bool> silindi = const Value.absent(),
                 Value<int?> oncelik = const Value.absent(),
                 Value<DateTime?> sonTarih = const Value.absent(),
+                Value<String?> projeId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => GorevlerCompanion.insert(
                 id: id,
@@ -3251,6 +3634,7 @@ class $$GorevlerTableTableManager
                 silindi: silindi,
                 oncelik: oncelik,
                 sonTarih: sonTarih,
+                projeId: projeId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -4505,6 +4889,183 @@ typedef $$GorevEtiketleriTableProcessedTableManager =
       GorevEtiketiRow,
       PrefetchHooks Function()
     >;
+typedef $$ProjelerTableCreateCompanionBuilder =
+    ProjelerCompanion Function({
+      required String id,
+      required String ad,
+      Value<bool> silindi,
+      required DateTime olusturuldu,
+      Value<int> rowid,
+    });
+typedef $$ProjelerTableUpdateCompanionBuilder =
+    ProjelerCompanion Function({
+      Value<String> id,
+      Value<String> ad,
+      Value<bool> silindi,
+      Value<DateTime> olusturuldu,
+      Value<int> rowid,
+    });
+
+class $$ProjelerTableFilterComposer
+    extends Composer<_$Veritabani, $ProjelerTable> {
+  $$ProjelerTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ad => $composableBuilder(
+    column: $table.ad,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get silindi => $composableBuilder(
+    column: $table.silindi,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get olusturuldu => $composableBuilder(
+    column: $table.olusturuldu,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProjelerTableOrderingComposer
+    extends Composer<_$Veritabani, $ProjelerTable> {
+  $$ProjelerTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ad => $composableBuilder(
+    column: $table.ad,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get silindi => $composableBuilder(
+    column: $table.silindi,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get olusturuldu => $composableBuilder(
+    column: $table.olusturuldu,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProjelerTableAnnotationComposer
+    extends Composer<_$Veritabani, $ProjelerTable> {
+  $$ProjelerTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get ad =>
+      $composableBuilder(column: $table.ad, builder: (column) => column);
+
+  GeneratedColumn<bool> get silindi =>
+      $composableBuilder(column: $table.silindi, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get olusturuldu => $composableBuilder(
+    column: $table.olusturuldu,
+    builder: (column) => column,
+  );
+}
+
+class $$ProjelerTableTableManager
+    extends
+        RootTableManager<
+          _$Veritabani,
+          $ProjelerTable,
+          ProjeRow,
+          $$ProjelerTableFilterComposer,
+          $$ProjelerTableOrderingComposer,
+          $$ProjelerTableAnnotationComposer,
+          $$ProjelerTableCreateCompanionBuilder,
+          $$ProjelerTableUpdateCompanionBuilder,
+          (ProjeRow, BaseReferences<_$Veritabani, $ProjelerTable, ProjeRow>),
+          ProjeRow,
+          PrefetchHooks Function()
+        > {
+  $$ProjelerTableTableManager(_$Veritabani db, $ProjelerTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProjelerTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProjelerTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProjelerTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> ad = const Value.absent(),
+                Value<bool> silindi = const Value.absent(),
+                Value<DateTime> olusturuldu = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProjelerCompanion(
+                id: id,
+                ad: ad,
+                silindi: silindi,
+                olusturuldu: olusturuldu,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String ad,
+                Value<bool> silindi = const Value.absent(),
+                required DateTime olusturuldu,
+                Value<int> rowid = const Value.absent(),
+              }) => ProjelerCompanion.insert(
+                id: id,
+                ad: ad,
+                silindi: silindi,
+                olusturuldu: olusturuldu,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProjelerTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Veritabani,
+      $ProjelerTable,
+      ProjeRow,
+      $$ProjelerTableFilterComposer,
+      $$ProjelerTableOrderingComposer,
+      $$ProjelerTableAnnotationComposer,
+      $$ProjelerTableCreateCompanionBuilder,
+      $$ProjelerTableUpdateCompanionBuilder,
+      (ProjeRow, BaseReferences<_$Veritabani, $ProjelerTable, ProjeRow>),
+      ProjeRow,
+      PrefetchHooks Function()
+    >;
 
 class $VeritabaniManager {
   final _$Veritabani _db;
@@ -4521,4 +5082,6 @@ class $VeritabaniManager {
       $$CakismaKayitlariTableTableManager(_db, _db.cakismaKayitlari);
   $$GorevEtiketleriTableTableManager get gorevEtiketleri =>
       $$GorevEtiketleriTableTableManager(_db, _db.gorevEtiketleri);
+  $$ProjelerTableTableManager get projeler =>
+      $$ProjelerTableTableManager(_db, _db.projeler);
 }
