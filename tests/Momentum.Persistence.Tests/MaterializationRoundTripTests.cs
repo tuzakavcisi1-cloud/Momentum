@@ -88,6 +88,67 @@ public sealed class MaterializationRoundTripTests(PostgresFixture fixture)
         (await Db.ScalarAsync<string[]>(connectionString, "SELECT malformed_fields FROM task_lists WHERE entity_id = @e", ("e", entity))).ShouldBe(projected.MalformedFields);
     }
 
+    /// <summary>
+    /// IS-EMRI-o85-B D2+D3 (birlesik test): (1) Project op (name+isDeleted) -> "projects" satiri,
+    /// alan alan hidratlanmis projeksiyona karsi dogrulanir; (2) name guncellemesi satiri YERINDE
+    /// gunceller (ayni entity_id, ikinci satir DOGMAZ); (3) owner_id DEGISMEZ -- ikinci bir aktorun
+    /// (ownerB) ayni entity'ye yazdigi op KABUL edilir (LWW alan degisikligi uygulanir) ama
+    /// EntityMaterializer'in DO UPDATE SET'i owner_id'yi ATLADIGI icin sahiplik ownerA'da kalir (F2).
+    /// (4) KANAL TESTI (mutant-16'nin muadili): `pos` YALNIZ Orders'tan gelen bir op'ta materyalize
+    /// satirda DOLU olmali -- ProjectProjection.Pos'u Fields'ten okumaya ceviren mutant burada OLUR.
+    /// </summary>
+    [Fact]
+    public async Task Project_materialization_round_trips_field_by_field_and_preserves_first_writer_ownership()
+    {
+        var connectionString = await TestDatabase.CreateAsync(fixture);
+        await using var app = new SyncTestApp(connectionString);
+        var ownerA = Guid.NewGuid();
+        var ownerB = Guid.NewGuid();
+        var entity = Guid.NewGuid();
+
+        // 1) ownerA yaratir: name + pos (Orders kanalindan).
+        await app.SyncAsync(ownerA, Wire.PushNoPull(ownerA, Wire.Op(Guid.CreateVersion7(), ownerA, entity, ownerA, 1,
+            fields: new Dictionary<string, WireFieldWrite>(StringComparer.Ordinal) { ["name"] = new("İş", Wire.Hlc(ownerA, 1)) },
+            entityType: "Project")));
+        await app.SyncAsync(ownerA, Wire.PushNoPull(ownerA, OrderOp(ownerA, entity, "Project", "pos", "m1", 2)));
+
+        var hydrated1 = await app.HydrateAsync("Project", entity);
+        var projected1 = ProjectProjection.From(entity, hydrated1);
+
+        (await Db.ScalarAsync<string>(connectionString, "SELECT name FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe("İş");
+        (await Db.ScalarAsync<string>(connectionString, "SELECT name FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe(projected1.Name);
+        (await Db.ScalarAsync<bool>(connectionString, "SELECT is_deleted FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe(false);
+        // D3 KANAL KANITI: pos, Orders'tan gelen op'ta DOLU (Fields'e cevrilirse bu satir kirmizi olur).
+        (await Db.ScalarAsync<string>(connectionString, "SELECT pos FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe("m1");
+        (await Db.ScalarAsync<string>(connectionString, "SELECT pos FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe(projected1.Pos);
+        (await Db.ScalarAsync<Guid>(connectionString, "SELECT owner_id FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe(ownerA);
+
+        // 2) BASKA bir aktor (ownerB) ayni entity'ye yazar: name gunceller + isDeleted=true isaretler.
+        // Kabul edilir (LWW), ama sahiplik CALINAMAZ.
+        await app.SyncAsync(ownerB, Wire.PushNoPull(ownerB, Wire.Op(Guid.CreateVersion7(), ownerB, entity, ownerB, 3,
+            fields: new Dictionary<string, WireFieldWrite>(StringComparer.Ordinal)
+            {
+                ["name"] = new("İş 2", Wire.Hlc(ownerB, 3)),
+                ["isDeleted"] = new("true", Wire.Hlc(ownerB, 3)),
+            },
+            entityType: "Project")));
+
+        var hydrated2 = await app.HydrateAsync("Project", entity);
+        var projected2 = ProjectProjection.From(entity, hydrated2);
+
+        // name AYNI SATIRDA guncellendi (yerinde) -- tek satir kaldigi asagida ayrica dogrulanir.
+        (await Db.ScalarAsync<string>(connectionString, "SELECT name FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe("İş 2");
+        (await Db.ScalarAsync<string>(connectionString, "SELECT name FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe(projected2.Name);
+        (await Db.ScalarAsync<bool>(connectionString, "SELECT is_deleted FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe(true);
+        (await Db.ScalarAsync<bool>(connectionString, "SELECT is_deleted FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe(projected2.IsDeleted);
+
+        // owner_id DEGISMEDI -- ikinci yazan sahiplik ALAMAZ (F2, EntityMaterializer DO UPDATE SET'te owner_id YOK).
+        (await Db.ScalarAsync<Guid>(connectionString, "SELECT owner_id FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe(ownerA);
+
+        // TAM-SATIR UPSERT: ikinci yazim yeni satir DOGURMADI, ayni entity_id icin tam olarak bir satir var.
+        (await Db.ScalarAsync<long>(connectionString, "SELECT count(*) FROM projects WHERE entity_id = @e", ("e", entity))).ShouldBe(1L);
+    }
+
     /// <summary>ORDER KANALI PINI: WireOp built INLINE (Wire has no Order helper).</summary>
     private static WireOp OrderOp(Guid client, Guid entity, string entityType, string field, string value, uint counter) =>
         new(Guid.CreateVersion7(), client, entity, client, entityType, Wire.Hlc(client, counter),

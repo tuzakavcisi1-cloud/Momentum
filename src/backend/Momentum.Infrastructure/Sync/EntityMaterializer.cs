@@ -28,8 +28,11 @@ public sealed class EntityMaterializer(SyncDbContext db) : IEntityMaterializer
             case "TaskList":
                 await MaterializeTaskListAsync(op.EntityId, state, ownerId, cancellationToken);
                 break;
+            case "Project":
+                await MaterializeProjectAsync(op.EntityId, state, ownerId, cancellationToken);
+                break;
             default:
-                break; // D6 anchor: Project/Tag/unrecognized entityType -- silent no-op, zero new rows
+                break; // D6 anchor: Tag/unrecognized entityType -- silent no-op, zero new rows
         }
     }
 
@@ -103,6 +106,30 @@ public sealed class EntityMaterializer(SyncDbContext db) : IEntityMaterializer
         command.Parameters.AddWithValue("id", entityId);
         command.Parameters.AddWithValue("owner", ownerId);
         command.Parameters.AddWithValue("name", (object?)projection.Name ?? DBNull.Value);
+        command.Parameters.AddWithValue("isDeleted", projection.IsDeleted);
+        command.Parameters.AddWithValue("pos", (object?)projection.Pos ?? DBNull.Value);
+        command.Parameters.AddWithValue("hasConflict", projection.HasDeleteEditConflict);
+        command.Parameters.AddWithValue("malformed", projection.MalformedFields.ToArray());
+        await command.ExecuteNonQueryAsync(cancellationToken);
+    }
+
+    // IS-EMRI-o85-B: MaterializeTaskListAsync'in birebir deseni (+ color sutunu). `members` (OrSet)
+    // burada YAZILMAZ -- bu dilimde materyalize edilmiyor (§B, ProjectProjection.cs).
+    private async Task MaterializeProjectAsync(Guid entityId, EntityState state, Guid ownerId, CancellationToken cancellationToken)
+    {
+        var projection = ProjectProjection.From(entityId, state);
+
+        await using var command = await db.CreateRawCommandAsync(
+            "INSERT INTO projects (entity_id, owner_id, name, color, is_deleted, pos, has_delete_edit_conflict, malformed_fields) " +
+            "VALUES (@id, @owner, @name, @color, @isDeleted, @pos, @hasConflict, @malformed) " +
+            "ON CONFLICT (entity_id) DO UPDATE SET " +
+            "name = excluded.name, color = excluded.color, is_deleted = excluded.is_deleted, pos = excluded.pos, " +
+            "has_delete_edit_conflict = excluded.has_delete_edit_conflict, malformed_fields = excluded.malformed_fields",
+            cancellationToken);
+        command.Parameters.AddWithValue("id", entityId);
+        command.Parameters.AddWithValue("owner", ownerId);
+        command.Parameters.AddWithValue("name", (object?)projection.Name ?? DBNull.Value);
+        command.Parameters.AddWithValue("color", (object?)projection.Color ?? DBNull.Value);
         command.Parameters.AddWithValue("isDeleted", projection.IsDeleted);
         command.Parameters.AddWithValue("pos", (object?)projection.Pos ?? DBNull.Value);
         command.Parameters.AddWithValue("hasConflict", projection.HasDeleteEditConflict);

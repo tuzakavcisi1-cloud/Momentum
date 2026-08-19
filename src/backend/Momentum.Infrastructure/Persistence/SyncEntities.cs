@@ -111,6 +111,21 @@ public sealed class TaskListRow
     public List<string> MalformedFields { get; set; } = [];
 }
 
+// IS-EMRI-o85-B: vitrin/mimari butunluk (Project zaten registry'de kayitli, DILIM 2'de uctan uca
+// akiyordu -- bu satir yalniz materyalizasyonu ekler, davranis DEGISMEZ). TaskListRow'un birebir
+// deseni + Color (registry'de "color" scalar olarak zaten var).
+public sealed class ProjectRow
+{
+    public Guid EntityId { get; set; }
+    public Guid OwnerId { get; set; }
+    public string? Name { get; set; }
+    public string? Color { get; set; }
+    public bool IsDeleted { get; set; }
+    public string? Pos { get; set; }
+    public bool HasDeleteEditConflict { get; set; }
+    public List<string> MalformedFields { get; set; } = [];
+}
+
 public sealed class TaskTagRow
 {
     public Guid TaskId { get; set; }

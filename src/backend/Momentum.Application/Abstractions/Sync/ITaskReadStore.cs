@@ -18,6 +18,10 @@ public interface ITaskReadStore
 
     Task<IReadOnlyList<TaskListProjection>> ListTaskListsAsync(
         Guid ownerId, bool includeDeleted, int limit, TaskKeysetCursor? cursor, CancellationToken cancellationToken);
+
+    // IS-EMRI-o85-B: ListTaskListsAsync'in birebir imzasi (ayni iki-dalli keyset kurali gecerli).
+    Task<IReadOnlyList<ProjectProjection>> ListProjectsAsync(
+        Guid ownerId, bool includeDeleted, int limit, TaskKeysetCursor? cursor, CancellationToken cancellationToken);
 }
 
 /// <summary>

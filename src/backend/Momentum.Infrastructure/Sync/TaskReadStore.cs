@@ -119,6 +119,48 @@ public sealed class TaskReadStore(SyncDbContext db) : ITaskReadStore
         return results;
     }
 
+    // IS-EMRI-o85-B: ListTaskListsAsync'in birebir SQL'i (+ color sutunu). Ayni iki-dalli keyset
+    // kurali PAZARLIKSIZ tekrarlanir -- "OR pos IS NULL" kolu DUSMEZ (null bolmesini cokertir).
+    public async Task<IReadOnlyList<ProjectProjection>> ListProjectsAsync(
+        Guid ownerId, bool includeDeleted, int limit, TaskKeysetCursor? cursor, CancellationToken cancellationToken)
+    {
+        await using var command = await db.CreateRawCommandAsync(
+            "SELECT entity_id, name, color, is_deleted, pos, has_delete_edit_conflict, malformed_fields " +
+            "FROM projects " +
+            "WHERE owner_id = @ownerId " +
+            "AND (@includeDeleted OR NOT is_deleted) " +
+            "AND (" +
+            "  NOT @hasCursor " +
+            "  OR (@cursorPos::text IS NOT NULL AND ((pos IS NOT NULL AND (pos, entity_id) > (@cursorPos::text, @cursorId::uuid)) OR pos IS NULL)) " +
+            "  OR (@cursorPos::text IS NULL AND (pos IS NULL AND entity_id > @cursorId::uuid))" +
+            ") " +
+            "ORDER BY pos, entity_id " +
+            "LIMIT @limit",
+            cancellationToken);
+        command.Parameters.AddWithValue("ownerId", ownerId);
+        command.Parameters.AddWithValue("includeDeleted", includeDeleted);
+        command.Parameters.AddWithValue("hasCursor", cursor is not null);
+        command.Parameters.AddWithValue("cursorPos", (object?)cursor?.Pos ?? DBNull.Value);
+        command.Parameters.AddWithValue("cursorId", cursor?.EntityId ?? Guid.Empty);
+        command.Parameters.AddWithValue("limit", limit);
+
+        var results = new List<ProjectProjection>();
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            results.Add(new ProjectProjection(
+                EntityId: reader.GetGuid(0),
+                Name: reader.IsDBNull(1) ? null : reader.GetString(1),
+                Color: reader.IsDBNull(2) ? null : reader.GetString(2),
+                IsDeleted: reader.GetBoolean(3),
+                Pos: reader.IsDBNull(4) ? null : reader.GetString(4),
+                HasDeleteEditConflict: reader.GetBoolean(5),
+                MalformedFields: reader.GetFieldValue<string[]>(6)));
+        }
+
+        return results;
+    }
+
     private static TaskProjection ReadTaskRow(NpgsqlDataReader reader) => new(
         EntityId: reader.GetGuid(0),
         Title: reader.IsDBNull(1) ? null : reader.GetString(1),

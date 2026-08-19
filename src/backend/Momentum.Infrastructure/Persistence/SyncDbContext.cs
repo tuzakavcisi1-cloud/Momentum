@@ -30,6 +30,8 @@ public sealed class SyncDbContext(DbContextOptions<SyncDbContext> options) : DbC
 
     public DbSet<TaskListRow> TaskLists => Set<TaskListRow>();
 
+    public DbSet<ProjectRow> Projects => Set<ProjectRow>();
+
     public DbSet<TaskTagRow> TaskTags => Set<TaskTagRow>();
 
     // IS-EMRI-o83 D1: plain CRUD tables (Infrastructure/Auth/*Store.cs), same DbContext as Sync's

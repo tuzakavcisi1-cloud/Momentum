@@ -176,6 +176,91 @@ public sealed class TaskMaterializationD0Tests(PostgresFixture fixture)
         collected.ShouldBe(expectedOrder);
     }
 
+    /// <summary>
+    /// IS-EMRI-o85-B D4: GET /v1/projects okuma ucu -- owner suzgeci, includeDeleted=false soft-delete
+    /// eler, keyset ikinci sayfa tekrarsiz getirir. Bu sinifin ContainsEntityAsync/WebApplicationFactory
+    /// deseninin birebir tekrari (slice-3a'nin D0 uclusunun bir parcasi DEGIL -- o85-B'nin kendi testi,
+    /// ayni harness'i paylastigi icin bu dosyaya girer).
+    /// </summary>
+    [Fact]
+    public async Task Project_read_endpoint_owner_filter_soft_delete_and_keyset_pagination()
+    {
+        var connectionString = await TestDatabase.CreateAsync(fixture);
+        var actorA = Guid.NewGuid();
+        var actorB = Guid.NewGuid();
+
+        await using var factoryA = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => builder
+            .UseSetting("ConnectionStrings:Momentum", connectionString)
+            .ConfigureTestServices(services => services.AddScoped<ICurrentUser>(_ => new FakeCurrentUser(actorA))));
+        await using var factoryB = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => builder
+            .UseSetting("ConnectionStrings:Momentum", connectionString)
+            .ConfigureTestServices(services => services.AddScoped<ICurrentUser>(_ => new FakeCurrentUser(actorB))));
+
+        var clientA = factoryA.CreateClient();
+        var clientB = factoryB.CreateClient();
+
+        await using var app = new SyncTestApp(connectionString);
+
+        // Owner suzgeci: A yaratir, A gorur, B gormez.
+        var projectEntity = Guid.NewGuid();
+        await app.SyncAsync(actorA, Wire.PushNoPull(actorA, Wire.Op(Guid.CreateVersion7(), actorA, projectEntity, actorA, 1,
+            fields: new Dictionary<string, WireFieldWrite>(StringComparer.Ordinal) { ["name"] = new("A's project", Wire.Hlc(actorA, 1)) },
+            entityType: "Project")));
+        (await ContainsEntityAsync(clientA, "/v1/projects", projectEntity)).ShouldBeTrue();
+        (await ContainsEntityAsync(clientB, "/v1/projects", projectEntity)).ShouldBeFalse();
+
+        // includeDeleted=false: silinmis proje varsayilan listede ELENIR; includeDeleted=true'da gorunur.
+        var deletedEntity = Guid.NewGuid();
+        await app.SyncAsync(actorA, Wire.PushNoPull(actorA, Wire.Op(Guid.CreateVersion7(), actorA, deletedEntity, actorA, 1,
+            fields: new Dictionary<string, WireFieldWrite>(StringComparer.Ordinal)
+            {
+                ["name"] = new("Deleted", Wire.Hlc(actorA, 1)),
+                ["isDeleted"] = new("true", Wire.Hlc(actorA, 1)),
+            },
+            entityType: "Project")));
+        (await ContainsEntityAsync(clientA, "/v1/projects", deletedEntity)).ShouldBeFalse();
+        (await ContainsEntityAsync(clientA, "/v1/projects?includeDeleted=true", deletedEntity)).ShouldBeTrue();
+
+        // Keyset: 3 ayri proje (ayrik pos), limit=2 -- iki sayfa, TEKRARSIZ, hepsi gelir.
+        var paged = new (Guid Entity, string Pos)[]
+        {
+            (Guid.NewGuid(), "p1"),
+            (Guid.NewGuid(), "p2"),
+            (Guid.NewGuid(), "p3"),
+        };
+        foreach (var (entity, pos) in paged)
+        {
+            await app.SyncAsync(actorA, Wire.PushNoPull(actorA, ProjectOrderOp(actorA, entity, "pos", pos, 1)));
+        }
+
+        var collected = new List<Guid>();
+        string? cursor = null;
+        for (var page = 0; page < 10; page++)
+        {
+            var url = cursor is null ? "/v1/projects?limit=2" : $"/v1/projects?limit=2&cursor={Uri.EscapeDataString(cursor)}";
+            var response = await clientA.GetFromJsonAsync<JsonElement>(url);
+            foreach (var item in response.GetProperty("items").EnumerateArray())
+            {
+                collected.Add(item.GetProperty("entityId").GetGuid());
+            }
+
+            var next = response.GetProperty("nextCursor");
+            if (next.ValueKind == JsonValueKind.Null)
+            {
+                break;
+            }
+
+            cursor = next.GetString();
+        }
+
+        // A'nin projeleri: 3 pos'lu (p1<p2<p3) + projectEntity (pos NULL -> NULLS LAST) = 4;
+        // deletedEntity varsayilan listeye hic girmez.
+        var expectedOrder = paged.Select(t => t.Entity).Append(projectEntity).ToList();
+        collected.Count.ShouldBe(4);
+        collected.Distinct().Count().ShouldBe(4);
+        collected.ShouldBe(expectedOrder);
+    }
+
     private static async Task<bool> ContainsEntityAsync(HttpClient client, string path, Guid entityId)
     {
         var page = await client.GetFromJsonAsync<JsonElement>(path);
@@ -188,6 +273,12 @@ public sealed class TaskMaterializationD0Tests(PostgresFixture fixture)
     /// </summary>
     private static WireOp TaskOrderOp(Guid client, Guid entity, string field, string value, uint counter) =>
         new(Guid.CreateVersion7(), client, entity, client, "Task", Wire.Hlc(client, counter),
+            Fields: null, Sets: null, Groups: null,
+            Order: new Dictionary<string, WireFieldWrite>(StringComparer.Ordinal) { [field] = new(value, Wire.Hlc(client, counter)) });
+
+    /// <summary>IS-EMRI-o85-B: TaskOrderOp'un birebir deseni, entityType="Project".</summary>
+    private static WireOp ProjectOrderOp(Guid client, Guid entity, string field, string value, uint counter) =>
+        new(Guid.CreateVersion7(), client, entity, client, "Project", Wire.Hlc(client, counter),
             Fields: null, Sets: null, Groups: null,
             Order: new Dictionary<string, WireFieldWrite>(StringComparer.Ordinal) { [field] = new(value, Wire.Hlc(client, counter)) });
 }

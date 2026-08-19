@@ -165,6 +165,26 @@ public sealed class TaskListRowConfiguration : IEntityTypeConfiguration<TaskList
     }
 }
 
+// IS-EMRI-o85-B: TaskListRowConfiguration'in birebir deseni + color sutunu (registry'de Project'in
+// "color" scalar'i zaten kayitli).
+public sealed class ProjectRowConfiguration : IEntityTypeConfiguration<ProjectRow>
+{
+    public void Configure(EntityTypeBuilder<ProjectRow> builder)
+    {
+        builder.ToTable("projects");
+        builder.HasKey(x => x.EntityId);
+        builder.Property(x => x.EntityId).HasColumnName("entity_id").ValueGeneratedNever();
+        builder.Property(x => x.OwnerId).HasColumnName("owner_id");
+        builder.Property(x => x.Name).HasColumnName("name");
+        builder.Property(x => x.Color).HasColumnName("color");
+        builder.Property(x => x.IsDeleted).HasColumnName("is_deleted").HasDefaultValue(false);
+        builder.Property(x => x.Pos).HasColumnName("pos").UseCollation("C");
+        builder.Property(x => x.HasDeleteEditConflict).HasColumnName("has_delete_edit_conflict").HasDefaultValue(false);
+        builder.Property(x => x.MalformedFields).HasColumnName("malformed_fields").HasDefaultValueSql("'{}'");
+        builder.HasIndex(x => new { x.OwnerId, x.IsDeleted, x.Pos, x.EntityId }).HasDatabaseName("ix_projects_owner_deleted_pos_entity");
+    }
+}
+
 public sealed class TaskTagRowConfiguration : IEntityTypeConfiguration<TaskTagRow>
 {
     public void Configure(EntityTypeBuilder<TaskTagRow> builder)
