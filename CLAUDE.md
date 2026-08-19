@@ -26,7 +26,7 @@ denetim · orkestrasyon · hafıza yapar, kod yazmaz.
 - [x] İki cihaz aynı görevi değiştirince **çakışma görünür**, kazanan anlaşılır
 - [x] Canlı adresten açılır; tema sistemin **açık/karanlık** ayarına uyar
 - [x] Depo klonlanır, README'deki komutla testler **yeşil** koşar
-- [x] **Hesap aç, giriş yap;** kendi görevlerini gör, başkasınınkini görme — *18-21 Ağu*
+- [x] **Hesap aç, giriş yap;** kendi görevlerini gör, başkasınınkini görme — *19 Ağu*
 - [ ] Görevleri **listelere** ayır, listeleri **klasörde** topla, görevi listeye taşı — *22-23 Ağu*
 - [ ] **İki kullanıcı bir listeyi paylaşır;** birinin yazdığı ötekinin ekranında belirir — *24-27 Ağu*
 - [ ] Göreve **tekrar** ver; tamamlayınca sonraki örnek doğar — *28-29 Ağu*
@@ -36,13 +36,15 @@ denetim · orkestrasyon · hafıza yapar, kod yazmaz.
 
 ## 3. SIRADAKİ İŞ (tek dikey dilim)
 
-**DİLİM 1 — KİMLİK** (18-21 Ağu). `users` + kayıt/giriş uçları + JWT erişim ve **yenileme**
-token'ı · `ICurrentUser` token'dan okur · **`WireOp.ActorId` sunucuda doğrulanmış `UserId`'den
-yazılır** · Flutter giriş ekranı · 401'de sessiz yenileme · yenileme düşerse **kuyruk korunarak**
-giriş ekranına dönüş. İş emri: `IS-EMRI-o83-kimlik.md`.
-🔴 **ADR/spec YAZILMAZ** (İŞLEYİŞ md.4): bu dilimi bir kez **altı kâğıt kapı turu öldürdü, 30 gün**
-(ÖDEV §6.1 errata). Sonra liste → işbirliği → tekrar → hatırlatıcı; kutu dolarsa kesme sırası
-**hatırlatıcı → tekrar → proje klasörü** [Onur kilidi, 18 Ağu].
+**DİLİM 2 — LİSTE (+proje klasörü)** (22-23 Ağu). Görevler **listelere** ayrılır, listeler
+**klasörde** toplanır, görev listeye taşınır. Tasarım şıklarla sunulur → kilit → iş emri.
+Liste **işbirliğinin ön koşuludur** (ÖDEV §8(5)).
+🔴 **ADR/spec YAZILMAZ** (İŞLEYİŞ md.4): kimliği bir kez **altı kâğıt kapı turu öldürdü, 30 gün**
+(ÖDEV §6.1). Sonra işbirliği → tekrar → hatırlatıcı; kutu dolarsa kesme sırası **hatırlatıcı →
+tekrar → proje klasörü** [Onur kilidi, 18 Ağu].
+
+**DİLİM 1 — KİMLİK BİTTİ** (19 Ağu): `ci #73`·`paket #11`·`pages #12` **üçü de `aa04d04`** ve
+yeşil. Kanıt `KANIT/o83G`+`o83F`+`o84`.
 
 ## 4. ORTAM MAYINLARI (yalnız ÖLÇÜLMÜŞ)
 

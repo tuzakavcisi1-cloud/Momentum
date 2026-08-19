@@ -1,6 +1,6 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 10/15 · kutu 2 Eyl 2026 · dilim 1/5 KİMLİK · HEAD `c706a97`. AŞAMA: `v1.0.1` TESLİM EDİLDİ, boşluk kapatma başladı.** Teslim biçimi paketlenmiş build (docker imajı + APK); yeni teslim `v1.1.0`.
+**BİTTİ: 11/15 · kutu 2 Eyl 2026 · dilim 1/5 KİMLİK · HEAD `c706a97`. AŞAMA: `v1.0.1` TESLİM EDİLDİ, boşluk kapatma başladı.** Teslim biçimi paketlenmiş build (docker imajı + APK); yeni teslim `v1.1.0`.
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
 > ② bu dosya ③ CI durumu — **cihaz Chrome'undan** (bulut tarayıcısı kanıt değil).
@@ -9,11 +9,11 @@
 ## Oturum 74–80 (özet; ayrıntı `arsiv/` + README)
 
 **Pinler:** takvim günü `DateTime.utc(y,m,d)`, tek nokta `GorevSatiri.takvimGunu`, `intl` **0.20.2** ·
-`gorev_etiketleri` SALT-EKLEME, tombstone TELE ÇIKMAZ · doğal dil dört alan TEK `WireOp` + TEK
-`transaction`, ayrıştırıcı SAF · `arama_eslestirme.dart` SAF, katlama tablosu TEK KAYNAK.
+`gorev_etiketleri` SALT-EKLEME, tombstone TELE ÇIKMAZ · doğal dil dört alan TEK `WireOp`+`transaction`,
+ayrıştırıcı SAF · `arama_eslestirme.dart` SAF, katlama tablosu TEK KAYNAK.
 **Paket:** `Dockerfile` + compose (postgres → ayrı migrator → api) + `paket.yml`; gerçek makinede
 ölçüldü (17 Ağu): `crossOriginIsolated=true` · drift **opfsLocks** · çift yönlü senkron iki gerçek
-istemcide. Test 708/708, `analyze` 0.
+istemcide. 708/708, `analyze` 0.
 **Dersler:** kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ · ortamı değil **DİKİŞİ** ölç ·
 🔴 kör kapı: **dize değil VARLIK · sayı değil AD · ÜRÜN UCU** (düzeltmenin yazılmış olması indiği
 anlamına gelmez — sha256 yakaladı).
@@ -28,15 +28,15 @@ vitrini yok) · §6.1 kimlik dilimi **teslim edilmedi**. Sıra **kimlik → list
 işbirliği → tekrar → hatırlatıcı**; liste, işbirliğinin **ön koşuludur** (ÖDEV §8(5): paylaşım
 liste/proje düzeyinde).
 
-**[18 Ağu · o83-F + o83-G] KİMLİK DİLİMİ CANLIDA YEŞİL.** HEAD `09e2720`. Çekme sırası kusuru
-kapandı; c ayağı **pozitif kontrolle** yeniden ölçüldü (`KANIT/o83G`): `a_kendi_gorur`=True(1/10) ·
-`b_kendi_gorur`=True(1/10) · `a_gorur_b_yi`=False (A'nın listesi **dolu**) · `b_gorur_a_yi`=False.
-`verify.ps1` **EXIT 0** (142/142, 0 uyarı, CVE temiz).
-🔴 **BİTTİ İLAN EDİLMEDİ** — sınır 30 gereği kapı beyanı commit ile birlikte yazılır: `09e2720`
-**push edilip** `ci`/`paket`/`pages` bu commit'le yeşil görülmeden kapanmaz. Push Onur'da.
-Açık temizlik: (a) `KANIT/o83/08-canli-tur.txt` o83-G koşumuyla **üzerine yazıldı** (o83'ün kırmızı
-kaydı yalnız git'te, `8110133`) — geri alınacak, betiğin çıktı yolu parametreleştirilecek ·
-(b) `b_gorur_a_yi` B kendi görevini eklemeden önce ölçülüyor, sonraya alınacak (2 satır).
+🔴 **[19 Ağu] DİLİM 1 KİMLİK BİTTİ.** Kapı beyanı, commit'le (cihaz Chrome): `ci #73` ·
+`paket #11` · `pages #12` — **üçü de `aa04d04`** ve yeşil. Canlı izolasyon dört kontrolle
+ölçüldü (`KANIT/o83G`): kendi görevini görüyor / ötekininkini görmüyor, **hiçbiri boş liste
+üstünde değil**. `verify.ps1` EXIT 0 (142/142). Yol boyunca kapanan iki kusur: `SyncPuller`
+gölgelenmiş `ORDER BY` (sessiz veri kaybı, `KANIT/o84`) ve `paket` AYAK 1'in bayat dize kontrolü.
+
+**SIRADAKİ: DİLİM 2 — LİSTE (+proje klasörü)** (22-23 Ağu). Tasarım şıklarla sunulur → Onur
+kilitler → iş emri. Liste, işbirliğinin ön koşuludur (ÖDEV §8(5)).
+Açık (ayrı karar): G20 testi emekli değişmezi sabitliyor · `docker-compose.yml:31` `DEV_USER_ID` ölü.
 
 🔴 **ADR/spec YAZILMAZ** (İŞLEYİŞ md.4): bu dilimi bir kez **altı kâğıt kapı turu öldürdü, 30 gün**.
 
@@ -88,10 +88,9 @@ kaydı yalnız git'te, `8110133`) — geri alınacak, betiğin çıktı yolu par
     istemcisini `deadbeef-0000-4000-8000-000000000001` ile derler; APK bu define verilmeden
     derlenirse **rastgele** kullanıcı üretir ⇒ emülatör ile tarayıcı birbirini GÖRMEZ.
     `SENKRON_SUNUCU_URL` varsayılanı `main.dart:25` = `http://10.0.2.2:5298`.
-30. 🔴 **[o81 §5 DOĞRULAMA] DEVİR'in "üç kapı da son kodla koştu" beyanı TUTMADI** (cihaz Chrome,
-    17 Ağu): `ci #64`=`ce630ec` ✔ · `paket #8`=`84ff84c` (fark tek KANIT dosyası, ürün kodu değil) ·
-    `pages #8`=**o78 kodu** ⇒ canlı Pages demosu teslim edilen kod DEĞİLDİ. Kapı beyanı bundan
-    sonra **commit ile birlikte** yazılır.
+30. 🔴 **[o81 §5] "üç kapı da son kodla koştu" beyanı TUTMADI** (cihaz Chrome, 17 Ağu):
+    `pages #8` = **o78 kodu** ⇒ canlı demo teslim edilen kod DEĞİLDİ. Kapı beyanı bundan sonra
+    **commit ile birlikte** yazılır. **[o84] `pages` push'ta KOŞMAZ — elle tetiklenir.**
 31. **[o83-D/E/F + o84 · KAPANDI 18 Ağu] "flake" değildi:** `SyncPuller`de `SELECT commit_xid::text
     … ORDER BY commit_xid` — cast'ın çıktı adı sütunu **gölgeliyordu** ⇒ sıra METİN, `WHERE` SAYISAL;
     basamak sınırında satırlar **sessizce kayboluyordu** (canlı: 510'un 500'ü teslim). `v1.0.1`
