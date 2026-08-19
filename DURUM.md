@@ -1,36 +1,26 @@
 # DURUM.md — Momentum
 
-**BİTTİ: 10/15 · kutu 2 Eyl 2026 · dilim 1/5 KİMLİK · HEAD `39e0699`. AŞAMA: `v1.0.1` TESLİM EDİLDİ, boşluk kapatma başladı.** Teslim biçimi paketlenmiş build (docker imajı + APK); yeni teslim `v1.1.0`.
+**BİTTİ: 10/15 · kutu 2 Eyl 2026 · dilim 1/5 KİMLİK · HEAD `c706a97`. AŞAMA: `v1.0.1` TESLİM EDİLDİ, boşluk kapatma başladı.** Teslim biçimi paketlenmiş build (docker imajı + APK); yeni teslim `v1.1.0`.
 
 > Açılış ≤3 komut: ① `git --no-optional-locks log --oneline -1` + `status --porcelain -- src`
-> ② bu dosya ③ CI durumu — **cihazdaki Chrome'dan okunur** (bulut tarayıcısı kanıt değildir).
-> `arsiv/` AÇILMAZ. **Flutter komutları `src/client`'tan koşulur** (bilinen sınır 1).
+> ② bu dosya ③ CI durumu — **cihaz Chrome'undan** (bulut tarayıcısı kanıt değil).
+> `arsiv/` AÇILMAZ. **Flutter `src/client`'tan koşulur** (sınır 1).
 
-## Oturum 74–78 (özet; ayrıntı `arsiv/`)
+## Oturum 74–80 (özet; ayrıntı `arsiv/` + README)
 
-**Takvim günü pini:** `DateTime.utc(y,m,d)`, tek nokta `GorevSatiri.takvimGunu`; `intl` **0.20.2**.
-**Etiket:** `gorev_etiketleri(...)` SALT-EKLEME; `sets` LWW meta'ya ASLA bağlanmaz; tombstone TELE ÇIKMAZ.
-**Doğal dil (o77):** dört alan TEK `WireOp` + TEK `transaction`; ayrıştırıcı SAF; 41 mutant öldü.
-**Arama (o78):** `arama_eslestirme.dart` SAF; katlama tablosu TEK KAYNAK, ham `toLowerCase`
-YASAK; süzme TEK `where`da; 32 mutant öldü.
-**Dersler:** kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ (o74) · ortamı değil **DİKİŞİ** ölç (o77).
-
-## Oturum 79-80 (özet; ayrıntı README + `arsiv/`)
-
-Docker paketi: `Dockerfile` · compose (postgres → **ayrı migrator** → api) · `paket.yml`.
-🔴 **KÖR KAPI dersi:** kapı gövdede `flutter_bootstrap.js` **dizesini** arıyordu, o dize şablonda
-zaten vardı ⇒ tüm Flutter çıktısı **404**'ken dört ayak yeşil yandı. Kural: **dize değil VARLIK ·
-sayı değil AD · ÜRÜN UCU**. İkinci ders: düzeltmenin yazılmış olması indiği anlamına gelmez
-(sha256 yakaladı). Üçüncü: `curl … | grep -q` YAZMA — `pipefail` **yalancı kırmızı** yakar.
-Paket **gerçek makinede** ölçüldü (17 Ağu): 27 dk · `crossOriginIsolated=true` · drift
-**opfsLocks** · tarayıcıda yazılan görev **PostgreSQL'e ulaştı** · **çift yönlü senkron iki gerçek
-istemcide** (masaüstü ↔ telefon). Test **708/708**, `analyze` 0.
+**Pinler:** takvim günü `DateTime.utc(y,m,d)`, tek nokta `GorevSatiri.takvimGunu`, `intl` **0.20.2** ·
+`gorev_etiketleri` SALT-EKLEME, tombstone TELE ÇIKMAZ · doğal dil dört alan TEK `WireOp` + TEK
+`transaction`, ayrıştırıcı SAF · `arama_eslestirme.dart` SAF, katlama tablosu TEK KAYNAK.
+**Paket:** `Dockerfile` + compose (postgres → ayrı migrator → api) + `paket.yml`; gerçek makinede
+ölçüldü (17 Ağu): `crossOriginIsolated=true` · drift **opfsLocks** · çift yönlü senkron iki gerçek
+istemcide. Test 708/708, `analyze` 0.
+**Dersler:** kâğıt denetimi migration'ın v1 yolunu KOŞAMAZ · ortamı değil **DİKİŞİ** ölç ·
+🔴 kör kapı: **dize değil VARLIK · sayı değil AD · ÜRÜN UCU** (düzeltmenin yazılmış olması indiği
+anlamına gelmez — sha256 yakaladı).
 
 ## Sıradaki iş — DİLİM 1: KİMLİK (18-21 Ağu)
 
-**`v1.0.1` teslim edildi (17 Ağu)** → `a332b25`, **Latest**, indirilen APK'nın sha256'sı birebir
-tuttu. Kapılar `ci #70`=`39e0699` · `paket #9`·`pages #10`=`a332b25`. o82: README son okuması,
-7 bulgu düzeltildi (Releases kutusu `v1.0.1`e döndü · KANIT 1.355 · About paneli dolduruldu).
+**`v1.0.1` teslim edildi (17 Ağu)** → `a332b25`, APK sha256 tuttu; kapılar `ci #70`=`39e0699` · `paket #9`·`pages #10`=`a332b25`. o82 README okuması: 7 bulgu düzeltildi (ayrıntı README).
 
 🔴 **[Onur kilidi, 18 Ağu] BOŞLUKLAR KAPATILACAK.** ÖDEV kilidine göre teslim eksikti: §4(a)
 parite **6/10** (liste · proje · tekrar · hatırlatıcı yok) · §4(b) taç mücevher **1/2** (işbirliği
@@ -38,10 +28,17 @@ vitrini yok) · §6.1 kimlik dilimi **teslim edilmedi**. Sıra **kimlik → list
 işbirliği → tekrar → hatırlatıcı**; liste, işbirliğinin **ön koşuludur** (ÖDEV §8(5): paylaşım
 liste/proje düzeyinde).
 
-**Şimdi:** `IS-EMRI-o83-kimlik.md` → Claude Code kodlar → Cowork canlıda ölçer.
+**[18 Ağu · o83-F + o83-G] KİMLİK DİLİMİ CANLIDA YEŞİL.** HEAD `09e2720`. Çekme sırası kusuru
+kapandı; c ayağı **pozitif kontrolle** yeniden ölçüldü (`KANIT/o83G`): `a_kendi_gorur`=True(1/10) ·
+`b_kendi_gorur`=True(1/10) · `a_gorur_b_yi`=False (A'nın listesi **dolu**) · `b_gorur_a_yi`=False.
+`verify.ps1` **EXIT 0** (142/142, 0 uyarı, CVE temiz).
+🔴 **BİTTİ İLAN EDİLMEDİ** — sınır 30 gereği kapı beyanı commit ile birlikte yazılır: `09e2720`
+**push edilip** `ci`/`paket`/`pages` bu commit'le yeşil görülmeden kapanmaz. Push Onur'da.
+Açık temizlik: (a) `KANIT/o83/08-canli-tur.txt` o83-G koşumuyla **üzerine yazıldı** (o83'ün kırmızı
+kaydı yalnız git'te, `8110133`) — geri alınacak, betiğin çıktı yolu parametreleştirilecek ·
+(b) `b_gorur_a_yi` B kendi görevini eklemeden önce ölçülüyor, sonraya alınacak (2 satır).
+
 🔴 **ADR/spec YAZILMAZ** (İŞLEYİŞ md.4): bu dilimi bir kez **altı kâğıt kapı turu öldürdü, 30 gün**.
-Canlı ölçüt: iki hesap açılır, biri ötekinin görevini **göremez**; çevrimdışı yazılan satır token
-yenilendikten sonra **kaybolmadan** sunucuya ulaşır.
 
 ## Bilinen sınırlar
 
@@ -53,7 +50,6 @@ yenilendikten sonra **kaybolmadan** sunucuya ulaşır.
    **[o81] Kalan TEK açık bulgu:** arm64 kırılması manifestle gösterildi, **gerçek arm64'te
    KOŞULMADI** (donanım yok). Ötekiler kapandı: `aspnet:10.0` pini iş emrinde · yatay yerleşim
    ÖLÇÜLDÜ (temiz) · TalkBack **kapsam dışı** yazıldı (README §Beyan edilmiş sınırlar).
-4. **Kimlik `devUserId` ile taşınıyor** ⇒ gerçek zamanlı işbirliği gösterilemez (kapsam dışı).
 6. **Pages demosunda backend yok** ⇒ satır kuyrukta kalır, rozet **"↑ Gönderiliyor"**da asılı
    durur (o81 canlı ölçüm; "Çevrimdışı" diyen eski satır YANLIŞTI). Senkron ayağı Pages'te ASLA
    ölçülemez, **pakette ölçülür**. Eşitlenmiş satır rozet GÖSTERMEZ (`senkronize => null`).
@@ -96,9 +92,8 @@ yenilendikten sonra **kaybolmadan** sunucuya ulaşır.
     17 Ağu): `ci #64`=`ce630ec` ✔ · `paket #8`=`84ff84c` (fark tek KANIT dosyası, ürün kodu değil) ·
     `pages #8`=**o78 kodu** ⇒ canlı Pages demosu teslim edilen kod DEĞİLDİ. Kapı beyanı bundan
     sonra **commit ile birlikte** yazılır.
-31. 🔴 **[o83-B ÖLÇÜLDÜ, İŞLEYİŞ md.8] `DispatcherTests.Cursor_correctness_is_unaffected_by_concurrent_dispatch_single_owner`
-    gerçek bir flake.** Havuz sızıntısı (sınır 30'un ayrı bir dalı — `TestSupport.cs` her testte taze
-    bağlantı bırakıyordu, o83-B'de `MaxPoolSize`/`ConnectionIdleLifetime` ile kelepçelendi)
-    KAPANDIKTAN SONRA bile 2/2 koşumda düştü — bağlantı açlığının dolaylı kurbanı DEĞİL, iki
-    `OutboxDispatcher`ın eşzamanlı `PumpOnceAsync` yarışının kendi zamanlama duyarlılığı. DÜZELTİLMEDİ
-    (iş emri: iki şeyi aynı anda düzeltme, sinyal kaybedilir); `verify.ps1` bu yüzden EXIT 1 kalabilir.
+31. **[o83-D/E/F + o84 · KAPANDI 18 Ağu] "flake" değildi:** `SyncPuller`de `SELECT commit_xid::text
+    … ORDER BY commit_xid` — cast'ın çıktı adı sütunu **gölgeliyordu** ⇒ sıra METİN, `WHERE` SAYISAL;
+    basamak sınırında satırlar **sessizce kayboluyordu** (canlı: 510'un 500'ü teslim). `v1.0.1`
+    bununla teslim edildi. Kanıt `KANIT/o84` + `KANIT/o83F`; `Cursor_correctness_…` 3/3 ⇒ ayrı flake
+    YOK. **Ders: zamanlamaya benzeyen kusurdan önce `EXPLAIN Sort Key`'e bak.**

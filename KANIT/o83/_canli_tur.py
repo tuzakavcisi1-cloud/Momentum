@@ -10,14 +10,22 @@ DEGIL Applied olmak ZORUNDADIR (aksi halde ayak DUSMUS sayilir, is emri s2.2).
 o83-B B3 duzeltmesi: her kosumda TAZE e-posta (uuid ekli) -- register HER
 ZAMAN 201 doner, 409-fallback-login YOLU bu turda hic calismaz.
 
-o83-G duzeltmesi (bu is emrinin ozu): NEGATIF KONTROL, POZITIF KONTROL YESIL
-OLMADAN ANLAMSIZDIR. Eski script yalniz b_gorur_a_yi/a_gorur_b_yi'yi olcuyordu;
-bunlarin ikisi de BOS LISTE uzerinden "False" donunce bedava gecti (KANIT/o83G
-s1). Simdi HER negatif kontrolden ONCE, HEDEFIN KENDI gorevini gordugu ayri bir
-pozitif kontrolle (en fazla 10 deneme x 300ms, okuma modeli gecikmeli olabilir)
+o83-G duzeltmesi: NEGATIF KONTROL, POZITIF KONTROL YESIL OLMADAN ANLAMSIZDIR.
+Eski script yalniz b_gorur_a_yi/a_gorur_b_yi'yi olcuyordu; bunlarin ikisi de
+BOS LISTE uzerinden "False" donunce bedava gecti (KANIT/o83G s1). Simdi HER
+negatif kontrolden ONCE, HEDEFIN KENDI gorevini gordugu ayri bir pozitif
+kontrolle (en fazla 10 deneme x 300ms, okuma modeli gecikmeli olabilir)
 kanitlanir; pozitif dusmuse negatif "OLCULEMEDI" yazar, "False" diye YESIL
 YAZILMAZ. entity_id/b_entity_id artik HER KOSUMDA taze (sabit 1111.../4444...
 kalici ciltte onceki kosumun sahipligiyle CAKISIYOR olabilirdi).
+
+o83-H duzeltmesi: (A1) cikti yolu artik ZORUNLU argumandir (sys.argv[1]),
+varsayilan yol YOK -- bir o83-sonrasi kosum bir daha o83'un KENDI KANIT
+dosyasinin (08-canli-tur.txt) uzerine YAZAMASIN. (A2) b_gorur_a_yi artik
+b_kendi_gorur'dan SONRA olculur (B once kendi gorevini ekler) -- (A3) HER
+iki negatif de olculdugu anda ilgili listenin BOS OLMADIGI (items:[] DEGIL)
+ayrica dogrulanir, bos ise SystemExit ("OLCULEMEDI") -- bos liste artik
+POZITIF kontrolun GEREGI degil, HER negatifin KENDI kalkani.
 """
 import base64
 import hashlib
@@ -100,6 +108,22 @@ def pozitif_bekle(basliklar, aranan_id):
     return False, MAX_DENEME, kod, gov
 
 
+def negatif_olc(basliklar, aranan_id, etiket):
+    """o83-H A3: negatif kontrol aninda ilgili listenin DOLU olmasi sarttir -- bos liste
+    (items:[]) "gormuyor"u BEDAVA dogru yapar, bu da negatifin KENDI kalkani olurdu (KANIT/o83G
+    s1). Bekleme YOK, pozitif_bekle KULLANILMAZ -- tek sorgu (bekleme yanlis negatifi gizler,
+    s2.3)."""
+    kod, gov = istek("/v1/tasks", basliklar=basliklar)
+    try:
+        items_sayisi = len(json.loads(gov).get("items", []))
+    except Exception:
+        items_sayisi = 0
+    if items_sayisi == 0:
+        raise SystemExit("[DUS] %s: OLCULEMEDI (liste bos) -- negatif kontrol anlamsiz" % etiket)
+    bulundu = aranan_id in gov
+    return bulundu, items_sayisi, kod, gov
+
+
 def b64url(b):
     return base64.urlsafe_b64encode(b).rstrip(b"=")
 
@@ -131,6 +155,13 @@ def yeni_op(entity_id, actor_id, client_id, baslik_metni):
 
 
 def main():
+    # o83-H A1: cikti yolu ZORUNLU argumandir, varsayilan YOK -- bir o83-sonrasi kosum bir
+    # daha o83'un KENDI kanit dosyasinin uzerine yazamasin. Hicbir HTTP cagrisindan ONCE kontrol
+    # edilir (argumansiz cagrida hicbir yan etki, hicbir yazim olmaz).
+    if len(sys.argv) < 2:
+        raise SystemExit("[DUR] cikti yolu zorunlu argumandir")
+    cikti_yolu = sys.argv[1]
+
     ozet = []
 
     # o83-G s2.1: entity_id/b_entity_id HER KOSUMDA taze -- sabit 1111.../4444... kalici
@@ -164,7 +195,7 @@ def main():
     if not a_kendi_gorur:
         raise SystemExit("[DUS] a_kendi_gorur POZITIF kontrolu dustu -- BEKLENEN True, GERCEK False (%d/%d denemede A kendi gorevini gormedi)" % (MAX_DENEME, MAX_DENEME))
 
-    # --- b) Hesap B acilir -- A'nin gorevini GORMEMELI (NEGATIF, ILGILI pozitifi a_kendi_gorur -- yukarida True kanitlandi) ---
+    # --- b) Hesap B acilir ---
     eposta_b = "canli-b-%s@momentum.test" % KOSUM_ID
     kod, gov = istek("/v1/auth/register", {"email": eposta_b, "password": "sifreB12345"})
     kaydet("b) POST /v1/auth/register (B, TAZE eposta)", "HTTP %d\n%s" % (kod, gov))
@@ -174,33 +205,35 @@ def main():
     b = json.loads(gov)
     b_yetkili = {"Authorization": "Bearer " + b["accessToken"]}
 
-    # NEGATIF kontrolde bekleme YOK -- tek sorgu (beklemek yanlis negatifi gizler, s2.3).
-    kod, gov = istek("/v1/tasks", basliklar=b_yetkili)
-    b_gorur_a_yi = entity_id in gov
-    kaydet("b) GET /v1/tasks (Bearer B, NEGATIF: B, A'nin gorevini goruyor mu)",
-           "HTTP %d\nB, A'nin gorevini goruyor mu: %s\n%s" % (kod, b_gorur_a_yi, gov[:800]))
-    ozet.append("b) b_gorur_a_yi: %s (beklenen: False)" % b_gorur_a_yi)
-    if b_gorur_a_yi:
-        raise SystemExit("[DUS] b_gorur_a_yi NEGATIF kontrolu dustu -- BEKLENEN False, GERCEK True (B, A'nin gorevini goruyor)")
-
+    # --- b.1) B kendi gorevini ekler (o83-H A2: NEGATIFLERDEN ONCE -- boylece asagidaki her iki
+    #          negatif de DOLU liste ustunde olcer, bos liste kalkani hicbirine kalmaz). ---
     b_op_id, sync_govdesi_b = yeni_op(b_entity_id, b["userId"], "66666666-6666-6666-6666-666666666666", "B'nin canli gorevi")
     kod, gov = istek("/v1/sync", sync_govdesi_b, basliklar=b_yetkili)
-    kaydet("c) POST /v1/sync (B gorev ekler, Bearer B)", "HTTP %d\n%s" % (kod, gov[:500]))
+    kaydet("b.1) POST /v1/sync (B gorev ekler, Bearer B)", "HTTP %d\n%s" % (kod, gov[:500]))
 
-    # --- c.1) POZITIF: B kendi gorevini goruyor mu -- a_gorur_b_yi'nin ILGILI pozitif kontrolu. ---
+    # --- b.2) POZITIF: B kendi gorevini goruyor mu -- b_gorur_a_yi VE a_gorur_b_yi'nin ILGILI pozitifi. ---
     b_kendi_gorur, b_deneme, kod, gov = pozitif_bekle(b_yetkili, b_entity_id)
-    kaydet("c.1) GET /v1/tasks (Bearer B, POZITIF: B kendi gorevini goruyor mu)",
+    kaydet("b.2) GET /v1/tasks (Bearer B, POZITIF: B kendi gorevini goruyor mu)",
            "HTTP %s (deneme %d/%d)\nB kendi gorevini goruyor mu: %s\n%s" % (kod, b_deneme, MAX_DENEME, b_kendi_gorur, (gov or "")[:800]))
-    ozet.append("c.1) b_kendi_gorur: %s (deneme %d/%d) (beklenen: True)" % (b_kendi_gorur, b_deneme, MAX_DENEME))
+    ozet.append("b.2) b_kendi_gorur: %s (deneme %d/%d) (beklenen: True)" % (b_kendi_gorur, b_deneme, MAX_DENEME))
     if not b_kendi_gorur:
         raise SystemExit("[DUS] b_kendi_gorur POZITIF kontrolu dustu -- BEKLENEN True, GERCEK False (%d/%d denemede B kendi gorevini gormedi)" % (MAX_DENEME, MAX_DENEME))
 
-    # --- c.2) NEGATIF: A, B'nin gorevini goruyor mu -- ILGILI pozitifi b_kendi_gorur, yukarida True. ---
-    kod, gov = istek("/v1/tasks", basliklar=a_yetkili)
-    a_gorur_b_yi = b_entity_id in gov
-    kaydet("c.2) GET /v1/tasks (Bearer A, NEGATIF: A, B'nin gorevini goruyor mu)",
-           "HTTP %d\nA, B'nin gorevini goruyor mu: %s\n%s" % (kod, a_gorur_b_yi, gov[:800]))
-    ozet.append("c.2) a_gorur_b_yi: %s (beklenen: False)" % a_gorur_b_yi)
+    # --- b.3) NEGATIF: B, A'nin gorevini goruyor mu -- artik B'nin listesi b_kendi_gorur ile
+    #          KESINLIKLE DOLU (o83-H A2); negatif_olc bunu AYRICA dogrular (A3). ---
+    b_gorur_a_yi, b_liste_sayisi, kod, gov = negatif_olc(b_yetkili, entity_id, "b_gorur_a_yi")
+    kaydet("b.3) GET /v1/tasks (Bearer B, NEGATIF: B, A'nin gorevini goruyor mu)",
+           "HTTP %d (liste DOLU: %d oge)\nB, A'nin gorevini goruyor mu: %s\n%s" % (kod, b_liste_sayisi, b_gorur_a_yi, gov[:800]))
+    ozet.append("b.3) b_gorur_a_yi: %s (liste %d oge ile DOLU) (beklenen: False)" % (b_gorur_a_yi, b_liste_sayisi))
+    if b_gorur_a_yi:
+        raise SystemExit("[DUS] b_gorur_a_yi NEGATIF kontrolu dustu -- BEKLENEN False, GERCEK True (B, A'nin gorevini goruyor)")
+
+    # --- c) NEGATIF: A, B'nin gorevini goruyor mu -- ILGILI pozitifi a_kendi_gorur (basta True);
+    #        A'nin listesi kendi gorevi ile KESINLIKLE DOLU; negatif_olc bunu AYRICA dogrular. ---
+    a_gorur_b_yi, a_liste_sayisi, kod, gov = negatif_olc(a_yetkili, b_entity_id, "a_gorur_b_yi")
+    kaydet("c) GET /v1/tasks (Bearer A, NEGATIF: A, B'nin gorevini goruyor mu)",
+           "HTTP %d (liste DOLU: %d oge)\nA, B'nin gorevini goruyor mu: %s\n%s" % (kod, a_liste_sayisi, a_gorur_b_yi, gov[:800]))
+    ozet.append("c) a_gorur_b_yi: %s (liste %d oge ile DOLU) (beklenen: False)" % (a_gorur_b_yi, a_liste_sayisi))
     if a_gorur_b_yi:
         raise SystemExit("[DUS] a_gorur_b_yi NEGATIF kontrolu dustu -- BEKLENEN False, GERCEK True (A, B'nin gorevini goruyor)")
 
@@ -241,7 +274,7 @@ def main():
 
     kaydet("OZET", "\n".join(ozet))
 
-    with io.open(r"C:\dev\Momentum\KANIT\o83\08-canli-tur.txt", "w", encoding="utf-8", newline="\n") as f:
+    with io.open(cikti_yolu, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(KANIT))
 
     print("\nTUM ADIMLAR BEKLENEN SEKILDE GECTI.")

@@ -1,42 +1,28 @@
-=== TAZE KIMLIKLER (o83-G s2.1) ===
-entity_id (A'nin gorevi) = 7bf6b784-6f9d-43dd-9e7d-4d71f504f89b
-b_entity_id (B'nin gorevi) = 00162ef4-6d0d-4a71-bc16-784838887e5c
-
 === a) POST /v1/auth/register (A, TAZE eposta) ===
 HTTP 201
-{"userId":"01a016e3-1b3d-7a5c-8a3a-d67131d420a3","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWEwMTZlMy0xYjNkLTdhNWMtOGEzYS1kNjcxMzFkNDIwYTMiLCJuYmYiOjE3ODcwOTAzNzcsImV4cCI6MTc4NzA5MTI3NywiaXNzIjoiTW9tZW50dW0iLCJhdWQiOiJNb21lbnR1bSJ9.LQbFVQq5wvhW6QrrqGY-lvz0ovK_PuPME8RV-z_S_EQ","accessTokenExpiresAt":"2026-08-18T22:14:37.799513+00:00","refreshToken":"vzQvgJ/tvUGGFhhMdakubY9lTTmi8dS1cIeqkPOOV2w="}
+{"userId":"01a01401-49dc-7b1c-b600-dcbc486c1c3a","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWEwMTQwMS00OWRjLTdiMWMtYjYwMC1kY2JjNDg2YzFjM2EiLCJuYmYiOjE3ODcwNDIwMjQsImV4cCI6MTc4NzA0MjkyNCwiaXNzIjoiTW9tZW50dW0iLCJhdWQiOiJNb21lbnR1bSJ9.bCPRR90oNZxZ9vtSv_19iT46-m6dNZvpHj7M4qGDubk","accessTokenExpiresAt":"2026-08-18T08:48:44.495828+00:00","refreshToken":"CWDauEHSL+hyw/ch8fLHrKiIu7nt50DbbirRGQ09pAM="}
 
 === a) POST /v1/sync (A gorev ekler, Bearer A) ===
 HTTP 200
-{"serverHlc":{"wallMs":1787090377851,"counter":0,"clientId":"33333333-3333-3333-3333-333333333333"},"nextCursor":{"xid":1389,"seq":0},"hasMore":false,"resyncRequired":false,"applied":[{"operationId":"01a016e3-1c7a-7500-a826-58399881bb3e","code":"Applied","effectiveOpHlc":{"wallMs":1787090377851,"counter":0,"clientId":"33333333-3333-3333-3333-333333333333"}}],"changes":[],"snapshot":[{"entityType":"Task","entityId":"7bf6b784-6f9d-43dd-9e7d-4d71f504f89b","scalars":[{"field":"title","value":"A'nin 
-
-=== a.2) GET /v1/tasks (Bearer A, POZITIF: A kendi gorevini goruyor mu) ===
-HTTP 200 (deneme 1/10)
-A kendi gorevini goruyor mu: True
-{"items":[{"entityId":"7bf6b784-6f9d-43dd-9e7d-4d71f504f89b","title":"A'nin canli gorevi","notes":null,"priority":null,"dueAt":null,"remindAt":null,"projectId":null,"isDeleted":false,"recurrenceRule":null,"listPos":null,"boardPos":null,"status":null,"completedAt":null,"hasDeleteEditConflict":false,"malformedFields":[],"tags":[]}],"nextCursor":null}
+{"serverHlc":{"wallMs":1787042024591,"counter":0,"clientId":"33333333-3333-3333-3333-333333333333"},"nextCursor":{"xid":1372,"seq":0},"hasMore":false,"resyncRequired":false,"applied":[{"operationId":"01a01401-4c8e-7654-981a-5e45eda53384","code":"Applied","effectiveOpHlc":{"wallMs":1787042024591,"counter":0,"clientId":"33333333-3333-3333-3333-333333333333"}}],"changes":[],"snapshot":[{"entityType":"Task","entityId":"11111111-1111-1111-1111-111111111111","scalars":[{"field":"title","value":"A'nin 
 
 === b) POST /v1/auth/register (B, TAZE eposta) ===
 HTTP 201
-{"userId":"01a016e3-1e3f-76cf-8757-2f0d11ea540c","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWEwMTZlMy0xZTNmLTc2Y2YtODc1Ny0yZjBkMTFlYTU0MGMiLCJuYmYiOjE3ODcwOTAzNzgsImV4cCI6MTc4NzA5MTI3OCwiaXNzIjoiTW9tZW50dW0iLCJhdWQiOiJNb21lbnR1bSJ9.XjY4tillEltGNj1t2Y_Xv-J_r9DzhO19hyGbt4ZF6qs","accessTokenExpiresAt":"2026-08-18T22:14:38.4002213+00:00","refreshToken":"zrh/34qOgaKRaqILn7/gAwDSCmRBW7rH5BcBSE7EjGw="}
+{"userId":"01a01401-4e88-71b8-9ea8-056259715fef","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWEwMTQwMS00ZTg4LTcxYjgtOWVhOC0wNTYyNTk3MTVmZWYiLCJuYmYiOjE3ODcwNDIwMjUsImV4cCI6MTc4NzA0MjkyNSwiaXNzIjoiTW9tZW50dW0iLCJhdWQiOiJNb21lbnR1bSJ9.yvVGboUZpqtaE8GJXpDuYblnqVMEp6LVv_b3LJGQyJk","accessTokenExpiresAt":"2026-08-18T08:48:45.1999507+00:00","refreshToken":"P7Crp26wekVz7ZY0q+fdc6jp8RWi/tdwWEFOLkCaND4="}
 
-=== b) GET /v1/tasks (Bearer B, NEGATIF: B, A'nin gorevini goruyor mu) ===
+=== b) GET /v1/tasks (Bearer B) ===
 HTTP 200
-B, A'nin gorevini goruyor mu: False
+A'nin gorevini icerir mi: False
 {"items":[],"nextCursor":null}
 
 === c) POST /v1/sync (B gorev ekler, Bearer B) ===
 HTTP 200
-{"serverHlc":{"wallMs":1787090378420,"counter":0,"clientId":"66666666-6666-6666-6666-666666666666"},"nextCursor":{"xid":1393,"seq":0},"hasMore":false,"resyncRequired":false,"applied":[{"operationId":"01a016e3-1eb4-78b7-8547-d5891fb14754","code":"Applied","effectiveOpHlc":{"wallMs":1787090378420,"counter":0,"clientId":"66666666-6666-6666-6666-666666666666"}}],"changes":[],"snapshot":[{"entityType":"Task","entityId":"00162ef4-6d0d-4a71-bc16-784838887e5c","scalars":[{"field":"title","value":"B'nin 
+{"serverHlc":{"wallMs":1787042025272,"counter":0,"clientId":"66666666-6666-6666-6666-666666666666"},"nextCursor":{"xid":1378,"seq":0},"hasMore":false,"resyncRequired":false,"applied":[{"operationId":"01a01401-4f38-7dd4-83e0-121066e71eda","code":"Applied","effectiveOpHlc":{"wallMs":1787042025272,"counter":0,"clientId":"66666666-6666-6666-6666-666666666666"}}],"changes":[],"snapshot":[{"entityType":"Task","entityId":"44444444-4444-4444-4444-444444444444","scalars":[{"field":"title","value":"B'nin 
 
-=== c.1) GET /v1/tasks (Bearer B, POZITIF: B kendi gorevini goruyor mu) ===
-HTTP 200 (deneme 1/10)
-B kendi gorevini goruyor mu: True
-{"items":[{"entityId":"00162ef4-6d0d-4a71-bc16-784838887e5c","title":"B'nin canli gorevi","notes":null,"priority":null,"dueAt":null,"remindAt":null,"projectId":null,"isDeleted":false,"recurrenceRule":null,"listPos":null,"boardPos":null,"status":null,"completedAt":null,"hasDeleteEditConflict":false,"malformedFields":[],"tags":[]}],"nextCursor":null}
-
-=== c.2) GET /v1/tasks (Bearer A, NEGATIF: A, B'nin gorevini goruyor mu) ===
+=== c) GET /v1/tasks (Bearer A) ===
 HTTP 200
-A, B'nin gorevini goruyor mu: False
-{"items":[{"entityId":"7bf6b784-6f9d-43dd-9e7d-4d71f504f89b","title":"A'nin canli gorevi","notes":null,"priority":null,"dueAt":null,"remindAt":null,"projectId":null,"isDeleted":false,"recurrenceRule":null,"listPos":null,"boardPos":null,"status":null,"completedAt":null,"hasDeleteEditConflict":false,"malformedFields":[],"tags":[]}],"nextCursor":null}
+B'nin gorevini icerir mi: False
+{"items":[],"nextCursor":null}
 
 === d.1) POST /v1/sync (SURESI GECMIS JWT, ayni imza sirriyla ZORLANDI, YENI op) ===
 HTTP 401
@@ -44,12 +30,12 @@ HTTP 401
 
 === d.2) POST /v1/auth/refresh (A'nin GERCEK refresh token'i) ===
 HTTP 200
-{"userId":"01a016e3-1b3d-7a5c-8a3a-d67131d420a3","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWEwMTZlMy0xYjNkLTdhNWMtOGEzYS1kNjcxMzFkNDIwYTMiLCJuYmYiOjE3ODcwOTAzNzgsImV4cCI6MTc4NzA5MTI3OCwiaXNzIjoiTW9tZW50dW0iLCJhdWQiOiJNb21lbnR1bSJ9.0aAR7AdyoE_EFK9djS1HWzLxDVMU7O2IB0JDq3b20-A","accessTokenExpiresAt":"2026-08-18T22:14:38.7051424+00:00","refreshToken":"8zpMG5FcPXalvneRGOs4lWpwoi/e+yEz9iCV5T/UsYc="}
+{"userId":"01a01401-49dc-7b1c-b600-dcbc486c1c3a","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWEwMTQwMS00OWRjLTdiMWMtYjYwMC1kY2JjNDg2YzFjM2EiLCJuYmYiOjE3ODcwNDIwMjUsImV4cCI6MTc4NzA0MjkyNSwiaXNzIjoiTW9tZW50dW0iLCJhdWQiOiJNb21lbnR1bSJ9.FpTnc3nX7MhctxztNOVyxWJRGdZNxMoHqicJGik3Z8Y","accessTokenExpiresAt":"2026-08-18T08:48:45.4121286+00:00","refreshToken":"FQdVWutFpztH1e5s+NlzFjm0Tln1tjeVY20RcLbZ+jc="}
 
 === d.3) POST /v1/sync (YENI op, YENILENMIS token ile ILK KEZ basariyla gonderilir) ===
 HTTP 200
 applied[0].code=Applied (beklenen: Applied, Duplicate DEGIL)
-{"serverHlc":{"wallMs":1787090378507,"counter":0,"clientId":"88888888-8888-8888-8888-888888888888"},"nextCursor":{"xid":1397,"seq":0},"hasMore":false,"resyncRequired":false,"applied":[{"operationId":"01a016e3-1f0b-7b8b-b875-bfa6f663283b","code":"Applied","effectiveOpHlc":{"wallMs":1787090378507,"counter":0,"clientId":"88888888-8888-8888-8888-888888888888"}}],"changes":[],"snapshot":[{"entityType":"Task","entityId":"77777777-7777-7777-7777-777777777777","scalars":[{"field":"title","value":"D-ayag
+{"serverHlc":{"wallMs":1787042025314,"counter":0,"clientId":"88888888-8888-8888-8888-888888888888"},"nextCursor":{"xid":1382,"seq":0},"hasMore":false,"resyncRequired":false,"applied":[{"operationId":"01a01401-4f62-705c-9ab6-6724b67f7f34","code":"Applied","effectiveOpHlc":{"wallMs":1787042025314,"counter":0,"clientId":"88888888-8888-8888-8888-888888888888"}}],"changes":[],"snapshot":[{"entityType":"Task","entityId":"11111111-1111-1111-1111-111111111111","scalars":[{"field":"title","value":"A'nin 
 
 === e) yetkili/yetkisiz GET /v1/tasks ===
 yetkili=200
@@ -58,11 +44,9 @@ yetkisiz=401
 === OZET ===
 a.0) register (TAZE eposta) -> HTTP 201 (beklenen: 201)
 a) A kaydoldu(201)+giris yapti+gorev ekledi -> HTTP 200
-a.2) a_kendi_gorur: True (deneme 1/10) (beklenen: True)
 b.0) register (TAZE eposta) -> HTTP 201 (beklenen: 201)
-b) b_gorur_a_yi: False (beklenen: False)
-c.1) b_kendi_gorur: True (deneme 1/10) (beklenen: True)
-c.2) a_gorur_b_yi: False (beklenen: False)
+b) B, A'nin gorevini GORUYOR MU: False (beklenen: False)
+c) A, B'nin gorevini GORUYOR MU: False (beklenen: False)
 d.1) suresi gecmis JWT ile YENI op push -> HTTP 401 (beklenen: 401)
 d.2) refresh -> HTTP 200 (beklenen: 200)
 d.3) YENI op, yenilenmis token ile -> HTTP 200, kod=Applied (beklenen: 200 + Applied)
