@@ -103,3 +103,6 @@ Açık (ayrı karar): G20 testi emekli değişmezi sabitliyor · `docker-compose
     (`fields:$ad`), artımlıda **ayrı `order` haritası** (`order:$ad`) olarak gelir — AYNI alan, İKİ
     FARKLI `alan` dizgesi. Bu dilimde `pos`/`listPos` YAZILMADI (K3) ⇒ bugün etkisiz; kanal açılınca
     o84'ün gölgelenmiş `ORDER BY`'ıyla AYNI SINIF bir sessiz-kayıp riski — İLK ÖLÇÜLECEK yer burasıdır.
+34. **[o85-A BEYAN] Liste diliminin canlı ölçümü PROTOKOL SEVİYESİNDEDİR** (`/v1/sync` HTTP
+    çağrıları, `KANIT/o85A/_canli_tur_o85a*.py`) — **Flutter UI'ı canlı koşturulmadı**; ekran
+    davranışı widget testleriyle ölçüldü. o83-G'nin kimlik ölçümüyle aynı yöntem ve aynı sınır.

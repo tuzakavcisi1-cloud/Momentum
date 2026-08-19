@@ -34,6 +34,10 @@ kullanıcıya görünür** ve hangi değerin kazandığı anlaşılır.
 Görevler artık **listelere** ayrılabilir (varsayılan: Gelen Kutusu), ama listelerin **klasörde**
 toplanması bu dilimde bilerek KESİLDİ (`CLAUDE.md` §5).
 
+Üründe **"Liste"** denen kap, kodda ve senkron telinde **`Project`** entity'sidir (birincil
+referans Todoist'te de kap "Project"tir); `TaskList` entity'si registry'de duruyor ama bu
+sürümde **kullanılmıyor**.
+
 🔴 **Ayrıştırıcının sınırları ölçülmüştür ve yazılıdır:** ASCII `yarin` ve büyük harfli `Yarın`
 tanınmaz · saat başlıkta kalır · yılsız `03.01` geçmişe düşer · `#İş` ile `#iş` **ayrı**
 etikettir (sunucu Ordinal karşılaştırır). Ayrıştırma satırın tamamını yutarsa **hata metni

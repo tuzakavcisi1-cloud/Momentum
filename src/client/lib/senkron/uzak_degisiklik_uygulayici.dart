@@ -252,10 +252,13 @@ class UzakDegisiklikUygulayici {
       // yazilir ama `Gorevler` satiri DOGMAZ (projeksiyon yalniz bilinen
       // kanallardan dogar) -- satir gorunmez durur, sonradan gelen entity
       // ile birlesir. Ikisi de DURUM.md/oturum belgesinde yazilidir.
-      final sets = (payload['sets'] as Map<String, Object?>?) ?? const {};
-      final tagsDelta = sets['tags'] as Map<String, Object?>?;
-      if (tagsDelta != null) {
-        await _etiketDeltaUygula(entityId, tagsDelta);
+      // IS-EMRI-o85A2 §B: diger uc kanalin (fields/groups/order) sekli aynen -- `Task` DISI entityType'ta bu blok hic calismaz (test yazilmadi: erisilemez yol, sunucu zaten reddediyor).
+      if (entityType == 'Task') {
+        final sets = (payload['sets'] as Map<String, Object?>?) ?? const {};
+        final tagsDelta = sets['tags'] as Map<String, Object?>?;
+        if (tagsDelta != null) {
+          await _etiketDeltaUygula(entityId, tagsDelta);
+        }
       }
     }
     await _projeksiyonYaz(guncellemeler);
@@ -535,7 +538,8 @@ class UzakDegisiklikUygulayici {
       // ODEV.md §4(a): etiket uzlasmasi (SINIR D2/1.4 KAPANDI). `sets`
       // ANAHTARI VARSA -- bos liste OLSA BILE -- kosar; anahtar HIC YOKSA
       // kosmaz (gerekce `_etiketSnapshotUzlas` belgesinde).
-      if (entity.containsKey('sets')) {
+      // IS-EMRI-o85A2 §B: `changesUygula` ile AYNI daraltma -- `Task` DISI entityType'ta bu blok hic calismaz.
+      if (entityType == 'Task' && entity.containsKey('sets')) {
         await _etiketSnapshotUzlas(
           entityId,
           (entity['sets'] as List?) ?? const [],
