@@ -1,18 +1,17 @@
 # Momentum — PROJE ESASLARI (CLAUDE.md)
 `MOD: NORMAL`
 
-> Bu dosya ≤ 8 KB ve projenin **TEK talimat dosyasıdır**; yanında tek `DURUM.md` yaşar (≤ 8 KB,
-> yerinde güncellenir). `arsiv/` append-only tarihçedir, **AÇILIŞTA OKUNMAZ**; hükmü kalkmıştır,
-> yalnız *"bu karar neden alındı?"* diye sorulunca açılır. Yeni canlı defter AÇILMAZ. Bu iki
-> dosya için kapı/mutant/altın küme yazılmaz; gözle denetlenir.
+> Bu dosya ≤ 8 KB, projenin **TEK talimat dosyasıdır**; yanında tek `DURUM.md` yaşar (≤ 8 KB).
+> `arsiv/` append-only tarihçedir, **AÇILIŞTA OKUNMAZ**, hükmü kalkmıştır — yalnız *"bu karar neden
+> alındı?"* diye sorulunca açılır. Yeni canlı defter AÇILMAZ. Bu iki dosyaya kapı/mutant yazılmaz.
 
 ## 1. NE
 
-Çok platformlu görev yönetimi (to-do): **Flutter** (Web + Android canlı, iOS yalnız CI'da derlenir
-— Mac yok) + **N-katmanlı .NET/ASP.NET Core** + **PostgreSQL**. İşe-alım/portfolyo ödevi; odak
-mimari ve kod kalitesi. Kapsam otoritesi **`docs/ODEV.md`**. Canlı demo README'de.
-**İŞ BÖLÜMÜ [Onur, 16 Ağu]:** ürün kodunu **Claude Code** yazar; Cowork tasarım · iş emri ·
-denetim · orkestrasyon · hafıza yapar, kod yazmaz.
+Çok platformlu görev yönetimi (to-do): **Flutter** (Web + Android canlı, iOS yalnız CI'da —
+Mac yok) + **N-katmanlı .NET/ASP.NET Core** + **PostgreSQL**. İşe-alım/portfolyo ödevi; odak mimari
+ve kod kalitesi. Kapsam otoritesi **`docs/ODEV.md`**. Canlı demo README'de.
+**İŞ BÖLÜMÜ [Onur, 16 Ağu]:** ürün kodunu **Claude Code** yazar; Cowork tasarım · iş emri · denetim ·
+orkestrasyon · hafıza yapar, **kod yazmaz**.
 
 ## 2. BİTTİ LİSTESİ (kutu **2 Eyl 2026** · sayaç DURUM.md ilk satırı · tarihler DURUM'da)
 
@@ -27,7 +26,7 @@ denetim · orkestrasyon · hafıza yapar, kod yazmaz.
 - [x] Canlı adresten açılır; tema sistemin **açık/karanlık** ayarına uyar
 - [x] Depo klonlanır, README'deki komutla testler **yeşil** koşar
 - [x] **Hesap aç, giriş yap;** kendi görevlerini gör, başkasınınkini görme — *19 Ağu*
-- [ ] Görevleri **listelere** ayır, listeleri **klasörde** topla, görevi listeye taşı — *22-23 Ağu*
+- [x] Görevleri **listelere** ayır, görevi listeye taşı — *20 Ağu*
 - [ ] **İki kullanıcı bir listeyi paylaşır;** birinin yazdığı ötekinin ekranında belirir — *24-27 Ağu*
 - [ ] Göreve **tekrar** ver; tamamlayınca sonraki örnek doğar — *28-29 Ağu*
 - [ ] Göreve **hatırlatıcı** kur; zamanı gelince bildirim düşer — *30 Ağu-1 Eyl · İLK KESİLECEK*
@@ -36,53 +35,53 @@ denetim · orkestrasyon · hafıza yapar, kod yazmaz.
 
 ## 3. SIRADAKİ İŞ (tek dikey dilim)
 
-**DİLİM 2 — LİSTE (+proje klasörü)** (22-23 Ağu). Görevler **listelere** ayrılır, listeler
-**klasörde** toplanır, görev listeye taşınır. Tasarım şıklarla sunulur → kilit → iş emri.
-Liste **işbirliğinin ön koşuludur** (ÖDEV §8(5)).
+**DİLİM 3 — İŞBİRLİĞİ** (24-27 Ağu, taç mücevher). İki kullanıcı bir listeyi paylaşır; birinin
+yazdığı ötekinin ekranında belirir. Ön koşul ÖLÇÜLDÜ (DURUM sınır 35): scope **yazımı** hazır ama
+`SyncPuller` **owner-only** ⇒ pull'a scope kolu + `Project.members` materyalizasyonu gerekir.
+Ara adım **`IS-EMRI-o85-B`**: `projects` materyalizasyonu + `GET /v1/projects` (vitrin).
+Tasarım şıklarla sunulur → kilit → iş emri.
 🔴 **ADR/spec YAZILMAZ** (İŞLEYİŞ md.4): kimliği bir kez **altı kâğıt kapı turu öldürdü, 30 gün**
-(ÖDEV §6.1). Sonra işbirliği → tekrar → hatırlatıcı; kutu dolarsa kesme sırası **hatırlatıcı →
-tekrar → proje klasörü** [Onur kilidi, 18 Ağu].
+(ÖDEV §6.1). Sonra tekrar → hatırlatıcı; kutu dolarsa kesme sırası **hatırlatıcı → tekrar**
+[Onur kilidi, 18 Ağu].
 
-**DİLİM 1 — KİMLİK BİTTİ** (19 Ağu): `ci #73`·`paket #11`·`pages #12` **üçü de `aa04d04`** ve
-yeşil. Kanıt `KANIT/o83G`+`o83F`+`o84`.
+**DİLİM 2 — LİSTE BİTTİ** (20 Ağu): `ci #75`·`paket #12`·`pages #13` **üçü de `e9bcb91`** ve
+yeşil. Kanıt `KANIT/o85A`+`o85A2`.
 
 ## 4. ORTAM MAYINLARI (yalnız ÖLÇÜLMÜŞ)
 
 1. **git okuma:** `--no-optional-locks` zorunlu; mount'ta tüm-ağaç `status`/`diff` 45 sn tavanını
-   aşar (EXIT 124) ve `.git/index.lock` bırakır ⇒ **daima dar yol ver**, her turun sonunda
-   **kilidi yokla** (sandbox silemez, `mv` ile kaldırılır).
-2. **git yazma:** `git add -A` **YASAK** (başka elin commit'lenmemiş işini kör alır) → yol belirt.
-   Commit mesajına **çift tırnak yazma**. **Mount'tan commit YASAK** — Desktop Commander ya da
-   Claude Code'dan yapılır. **PUSH ONUR'DA.** Author e-postası `onurkesimbjk@gmail.com`.
+   aşar ve `.git/index.lock` bırakır ⇒ **daima dar yol**, tur sonunda **kilidi yokla**.
+   `rev-parse --short` **tek** revizyon alır (iki verilirse "Needed a single revision").
+2. **git yazma:** `git add -A` **YASAK** (başka elin işini kör alır) → yol belirt. Mesaja **çift
+   tırnak yazma**. **Mount'tan commit YASAK** (DC ya da Claude Code). **PUSH ONUR'DA.**
+   Author `onurkesimbjk@gmail.com`.
 3. **flutter `.bat`'tir** → tam yol `C:\src\flutter\bin\flutter.bat` (subprocess PATHEXT'i çözmez).
-   DC kabuğunda `flutter test` `PROGRAMFILES(X86)` enjekte edilmeden çöker; `--platform chrome`
-   bu ortamda sonuç üretmez.
-4. **Kodlama:** yol **saf ASCII** kalmalı (Türkçe karakter `build_runner`, `flutter analyze`, AGP ve
-   `.ps1` zincirlerini kırdı). `python` stdout cp1254 ⇒ `sys.stdout.reconfigure(encoding="utf-8")`.
-5. **Geri alım:** `* text=auto eol=lf` `core.autocrlf`'i **ezer**. Mount'ta `git restore`/
-   `checkout --` **ÇALIŞMAZ** → `git show HEAD:<yol> > <yol>`; sonuç **sha256 ile** doğrulanır.
+   DC kabuğunda `PROGRAMFILES(X86)` enjekte edilmeden çöker; `--platform chrome` sonuç üretmez.
+4. **Kodlama:** yol **saf ASCII** (Türkçe karakter `build_runner`, `analyze`, AGP, `.ps1` kırdı).
+   `python` stdout cp1254 ⇒ `sys.stdout.reconfigure(encoding="utf-8")`.
+5. **Geri alım:** `* text=auto eol=lf` `core.autocrlf`'i **ezer**. Mount'ta `git restore`/`checkout
+   --` **ÇALIŞMAZ** → `git show HEAD:<yol> > <yol>`; sonuç **sha256 ile** doğrulanır.
 6. **`verify.ps1`, `Momentum.Api` ayaktayken koşulamaz** (MSB3026/3027) ⇒ sıra: cihaz kanıtı →
-   backend kapat (`netstat -ano | findstr :5298` **boş** dönmeli) → `verify.ps1`. Kapatmayı
-   yalnız Onur'un izniyle yap.
-7. **Backend:** `ConnectionStrings__Momentum` verilmezse host **DB'siz** açılır, port **yine dinler**
-   ⇒ hazırlık portla ölçülmez: `/health/ready` 200 + `POST /v1/sync` başlıksız 401 ve
-   `X-Momentum-Dev-User` ile 200. `ASPNETCORE_ENVIRONMENT=Development` yoksa her istek 401.
-8. **Mount'ta `os.remove`/`unlink` YASAK** (sandbox silemez) → artık dosya
-   `arsiv/_SILINECEKLER/<oturum>/`'e `mv` edilir; kalıcı silme Onur'da.
-9. **Bulut ≠ cihaz:** Cowork bulutta UTC koşar ⇒ tarih `TZ='Europe/Istanbul' date` ile ölçülür;
-   **CI `istemci` işi de `TZ: Europe/Istanbul` koşar** [o77]. Bulut tarayıcısı canlı kanıt DEĞİLDİR.
-10. **Kapı bütçesi (İŞLEYİŞ md.3):** `araclar/` ÷ `src/` satır oranı ≤ %10; `src/**/test/` girmez
-    (onlar üründür). Yeni kapı dosyası açılmaz.
+   backend kapat (`netstat -ano | findstr :5298` **boş**) → `verify.ps1`. Kapatma Onur'un izniyle.
+7. **Backend:** `ConnectionStrings__Momentum` yoksa host **DB'siz** açılır ama port **dinler** ⇒
+   hazırlık portla ölçülmez: `/health/ready` 200 + `POST /v1/sync` başlıksız 401, `X-Momentum-Dev-User`
+   ile 200. `ASPNETCORE_ENVIRONMENT=Development` yoksa her istek 401.
+8. **Mount'ta `os.remove`/`unlink` YASAK** → artık dosya `arsiv/_SILINECEKLER/<oturum>/`'e `mv`
+   edilir; kalıcı silme Onur'da.
+9. **Bulut ≠ cihaz:** Cowork UTC koşar ⇒ tarih `TZ='Europe/Istanbul' date` ile ölçülür; **CI
+   `istemci` işi de `TZ: Europe/Istanbul`** [o77]. Bulut tarayıcısı canlı kanıt DEĞİLDİR.
+10. **Kapı bütçesi (İŞLEYİŞ md.3):** `araclar/` ÷ `src/` satır oranı ≤ %10; `src/**/test/` girmez.
+    Yeni kapı dosyası açılmaz.
 
 ## 5. KAPSAM DIŞI (kesilenler — README'ye de yazılır)
 
-- **[18 Ağu GERİ ALINDI]** liste · proje · tekrar · hatırlatıcı · işbirliği vitrini · kimlik
-  **§2'ye taşındı**, kutu 2 Eyl'e uzadı [Onur kilidi]. `v1.0.1` bunlar kesikken teslim edildi;
-  yeni teslim `v1.1.0`.
-- **Windows masaüstü hedefi yok** [Onur, 16 Ağu]: `src/client/` yalnız `android`/`ios`/`web`
-  taşır. Windows'ta uygulama **tarayıcıdan** çalışır (imajdaki web istemcisi).
-- **[o77 kesildi]** Ayrıştırma her şeyi yutunca (`#iş !p1 yarın`) hata metni YOK: metin alanda
-  kalır. Sessiz kayıp yok, geri bildirim de yok.
+- **[18 Ağu GERİ ALINDI]** liste · tekrar · hatırlatıcı · işbirliği · kimlik **§2'ye taşındı**,
+  kutu 2 Eyl'e uzadı [Onur kilidi]. `v1.0.1` bunlar kesikken çıktı; yeni teslim `v1.1.0`.
+- **[o85 KESİLDİ] Proje/liste klasörü** (üst kap): yeni entityType + materyalizasyon + registry
+  dokunuşu demekti [Onur kilidi, 19 Ağu]. Üründe "Liste" denen kap kodda/telde **`Project`**'tir.
+- **Windows masaüstü hedefi yok** [Onur, 16 Ağu]: `src/client/` yalnız `android`/`ios`/`web` taşır;
+  Windows'ta uygulama **tarayıcıdan** çalışır.
+- **[o77 kesildi]** Ayrıştırma her şeyi yutunca (`#iş !p1 yarın`) hata metni YOK: metin alanda kalır.
 - **Zaten kapsam dışı (ODEV §4.1/§6.1):** AI asistan · Google Takvim · Kanban/Takvim · iOS cihaz ·
   parola sıfırlama · e-posta doğrulama · OAuth · 2FA · RBAC.
 
