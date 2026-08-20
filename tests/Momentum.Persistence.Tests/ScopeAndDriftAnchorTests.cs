@@ -10,28 +10,41 @@ using Xunit;
 
 namespace Momentum.Persistence.Tests;
 
-/// <summary>D6/D7/D8 (GOREV slice-3a) -- three MUTANTSIZ anchors (regression safeguards / drift documentation, not mutant-gated).</summary>
+/// <summary>D6 (artik MUTANT-GATED, IS-EMRI-o85B2 §B) + D7/D8 (GOREV slice-3a, MUTANTSIZ) -- regression safeguards / drift documentation.</summary>
 [Collection(PostgresCollection.Name)]
 public sealed class ScopeAndDriftAnchorTests(PostgresFixture fixture)
 {
-    /// <summary>D6 [mutantsiz -- kapsam cipasi]: Project/Tag ops are out-of-scope -- zero new rows in all three materialized tables.</summary>
+    /// <summary>
+    /// D6 [kapsam cipasi]: `Tag` kapsam disidir -- uc eski materyalize tabloda sifir satir. `Project`
+    /// IS-EMRI-o85-B ile kapsama GIRDI: `projects` tablosuna tam bir satir yazar (pozitif kontrol).
+    /// IS-EMRI-o85B2 B1 olcumu: "D6_out_of_scope" dizgesi .github//araclar//verify.ps1'de GECMIYOR ⇒
+    /// ad da duzeltildi (asagida).
+    /// </summary>
     [Fact]
-    public async Task D6_out_of_scope_entity_types_produce_zero_new_rows()
+    public async Task D6_Tag_kapsam_disi_sifir_satir_Project_ise_materyalize_edilir()
     {
         var connectionString = await TestDatabase.CreateAsync(fixture);
         await using var app = new SyncTestApp(connectionString);
         var actor = Guid.NewGuid();
+        var projectEntity = Guid.NewGuid();
+        var tagEntity = Guid.NewGuid();
 
-        await app.SyncAsync(actor, Wire.PushNoPull(actor, Wire.Op(Guid.CreateVersion7(), actor, Guid.NewGuid(), actor, 1,
+        await app.SyncAsync(actor, Wire.PushNoPull(actor, Wire.Op(Guid.CreateVersion7(), actor, projectEntity, actor, 1,
             fields: new Dictionary<string, WireFieldWrite>(StringComparer.Ordinal) { ["name"] = new("P", Wire.Hlc(actor, 1)) },
             entityType: "Project")));
-        await app.SyncAsync(actor, Wire.PushNoPull(actor, Wire.Op(Guid.CreateVersion7(), actor, Guid.NewGuid(), actor, 1,
+        await app.SyncAsync(actor, Wire.PushNoPull(actor, Wire.Op(Guid.CreateVersion7(), actor, tagEntity, actor, 1,
             fields: new Dictionary<string, WireFieldWrite>(StringComparer.Ordinal) { ["label"] = new("T", Wire.Hlc(actor, 1)) },
             entityType: "Tag")));
 
+        // Tag: hala kapsam disi -- uc eski tabloda sifir satir.
         (await Db.ScalarAsync<long>(connectionString, "SELECT count(*) FROM tasks")).ShouldBe(0L);
         (await Db.ScalarAsync<long>(connectionString, "SELECT count(*) FROM task_lists")).ShouldBe(0L);
         (await Db.ScalarAsync<long>(connectionString, "SELECT count(*) FROM task_tags")).ShouldBe(0L);
+
+        // Project: ARTIK kapsam ici -- POZITIF KONTROL (IS-EMRI-o85B2 B3, ayni testte).
+        (await Db.ScalarAsync<long>(connectionString, "SELECT count(*) FROM projects WHERE entity_id = @e", ("e", projectEntity))).ShouldBe(1L);
+        // Tag op'u projects'e satir DOGURMADI ("gorunmemeli" iddiasi da olculur).
+        (await Db.ScalarAsync<long>(connectionString, "SELECT count(*) FROM projects")).ShouldBe(1L);
     }
 
     /// <summary>

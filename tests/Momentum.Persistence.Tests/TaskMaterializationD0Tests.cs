@@ -201,13 +201,30 @@ public sealed class TaskMaterializationD0Tests(PostgresFixture fixture)
 
         await using var app = new SyncTestApp(connectionString);
 
+        // IS-EMRI-o85B2 A2: null bolmesi (pos'suz) UC entity'den olusur, HEPSI tek bir monoton UUIDv7
+        // seriden -- Guid.NewGuid() (v4) KARISTIRILMAZ: rastgele v4, Postgres bayt sirasinda monoton
+        // v7'lerin arasina duser ve beklenen sirayi belirsizlestirir (D0c'nin AYNI gerekcesi, bu dosyada
+        // yukarida: "bare back-to-back Guid.CreateVersion7() calls land in the SAME millisecond and
+        // tie-break on RANDOM bits, NOT a monotonic counter").
+        var noPos = Enumerable.Range(0, 3)
+            .Select(i => Guid.CreateVersion7(DateTimeOffset.FromUnixTimeMilliseconds(Wire.BaseWall + i)))
+            .ToArray();
+        var projectEntity = noPos[0];
+
         // Owner suzgeci: A yaratir, A gorur, B gormez.
-        var projectEntity = Guid.NewGuid();
         await app.SyncAsync(actorA, Wire.PushNoPull(actorA, Wire.Op(Guid.CreateVersion7(), actorA, projectEntity, actorA, 1,
             fields: new Dictionary<string, WireFieldWrite>(StringComparer.Ordinal) { ["name"] = new("A's project", Wire.Hlc(actorA, 1)) },
             entityType: "Project")));
         (await ContainsEntityAsync(clientA, "/v1/projects", projectEntity)).ShouldBeTrue();
         (await ContainsEntityAsync(clientB, "/v1/projects", projectEntity)).ShouldBeFalse();
+
+        // Null bolmesindeki diger iki pos'suz proje (uc bolmeye cikarir, A2).
+        foreach (var entity in noPos.Skip(1))
+        {
+            await app.SyncAsync(actorA, Wire.PushNoPull(actorA, Wire.Op(Guid.CreateVersion7(), actorA, entity, actorA, 1,
+                fields: new Dictionary<string, WireFieldWrite>(StringComparer.Ordinal) { ["name"] = new("A's project", Wire.Hlc(actorA, 1)) },
+                entityType: "Project")));
+        }
 
         // includeDeleted=false: silinmis proje varsayilan listede ELENIR; includeDeleted=true'da gorunur.
         var deletedEntity = Guid.NewGuid();
@@ -221,7 +238,7 @@ public sealed class TaskMaterializationD0Tests(PostgresFixture fixture)
         (await ContainsEntityAsync(clientA, "/v1/projects", deletedEntity)).ShouldBeFalse();
         (await ContainsEntityAsync(clientA, "/v1/projects?includeDeleted=true", deletedEntity)).ShouldBeTrue();
 
-        // Keyset: 3 ayri proje (ayrik pos), limit=2 -- iki sayfa, TEKRARSIZ, hepsi gelir.
+        // Keyset: 3 ayri proje (ayrik pos) + 3 pos'suz (null bolmesi), limit=2 -- UC sayfa, TEKRARSIZ, hepsi gelir.
         var paged = new (Guid Entity, string Pos)[]
         {
             (Guid.NewGuid(), "p1"),
@@ -253,11 +270,12 @@ public sealed class TaskMaterializationD0Tests(PostgresFixture fixture)
             cursor = next.GetString();
         }
 
-        // A'nin projeleri: 3 pos'lu (p1<p2<p3) + projectEntity (pos NULL -> NULLS LAST) = 4;
-        // deletedEntity varsayilan listeye hic girmez.
-        var expectedOrder = paged.Select(t => t.Entity).Append(projectEntity).ToList();
-        collected.Count.ShouldBe(4);
-        collected.Distinct().Count().ShouldBe(4);
+        // A'nin projeleri: 3 pos'lu (p1<p2<p3) + 3 pos'suz (noPos, uretim sirasiyla -> NULLS LAST) = 6;
+        // deletedEntity varsayilan listeye hic girmez. Imlec artik NULL bolmesinin ICINE duser (son
+        // sayfa pos'suz bir satirda biter) -- uc kollu yuklemin UCUNCU kolunu (cursorPos IS NULL) BU ISIRIR.
+        var expectedOrder = paged.Select(t => t.Entity).Concat(noPos).ToList();
+        collected.Count.ShouldBe(6);
+        collected.Distinct().Count().ShouldBe(6);
         collected.ShouldBe(expectedOrder);
     }
 
